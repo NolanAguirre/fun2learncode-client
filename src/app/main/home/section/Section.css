@@ -1,0 +1,18 @@
+.home-section{
+    padding: 0 50px;
+    display:flex;
+    flex-direction: column;
+}
+.home-section-info{
+    display: inline-flex;
+    flex-wrap: wrap;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid black;
+}
+.home-section-image{
+    padding: 0px 20px;
+}
+.home-section-text{
+    flex:1;
+}
