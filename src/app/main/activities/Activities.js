@@ -1,15 +1,13 @@
 import React, {Component} from 'react';
-import './Activity.css';
+import './Activities.css';
 import Section from '../home/section/Section';
 import axios from 'axios';
-class Activity extends Component {
+class Activities extends Component {
     constructor(props){
         super(props);
         this.state = {activities:null}
     }
-    componentDidUpdate(prevProps) {
-        if (this.props.type !== prevProps.type) {
-        console.log(this.props.type)
+    fetchActivites(){
         axios.post('http://localhost:3005/graphql',{query:`{
         	allActivityCatagories(condition:{name:"${this.props.type}"}){
             edges{
@@ -38,6 +36,13 @@ class Activity extends Component {
             console.log(err);
         })
     }
+    componentDidMount() {
+        this.fetchActivites();
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.type !== prevProps.type) {
+            this.fetchActivites();
+        }
     }
     componentWillUnmount() {
     }
@@ -50,4 +55,4 @@ class Activity extends Component {
     }
 }
 
-export default Activity;
+export default Activities;
