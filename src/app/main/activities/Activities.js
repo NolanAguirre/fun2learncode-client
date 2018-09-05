@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './Activities.css';
-import Section from '../home/section/Section';
+import Activity from './activity/Activity';
 import axios from 'axios';
 class Activities extends Component {
     constructor(props){
@@ -26,11 +26,11 @@ class Activities extends Component {
           }
         }`}).then((res)=>{
             console.log(res);
-            let sections = res.data.data.allActivityCatagories.edges[0].node.activitiesByType.edges.map((element)=>{
-                return <Section name={element.node.name} description={element.node.description} key={element.node.id}></Section>
+            let Activities = res.data.data.allActivityCatagories.edges[0].node.activitiesByType.edges.map((element)=>{
+                return <Activity name={element.node.name} description={element.node.description} key={element.node.id}></Activity>
             })
             this.setState({
-                activities: sections
+                activities: Activities
             })
         }).catch((err)=>{
             console.log(err);
