@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router} from "react-router-dom";
 import './index.css';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import App from './app/App';
+const routeNames = ['Home', 'About Us', 'Summer Camps', 'Classes', 'Labs', 'Workshops', 'Login'];
 
-ReactDOM.render(<App />, document.getElementById('root'));
-registerServiceWorker();
+ReactDOM.render( <Router><div><App routeNames={routeNames} /> </div></Router>, document.getElementById('root'));
