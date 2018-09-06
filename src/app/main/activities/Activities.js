@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import './Activities.css';
 import Activity from './activity/Activity';
+import Event from './activity/event/Event';
 import axios from 'axios';
 class Activities extends Component {
     constructor(props){
         super(props);
-        this.state = {activities:null}
+        this.state = {activities:[]}
     }
     fetchActivites(){
         axios.post('http://localhost:3005/graphql',{query:`{
@@ -15,7 +16,7 @@ class Activities extends Component {
                 activitiesByType{
                   edges{
                     node{
-                      name,
+                      name
                       description
                       id
                     }
@@ -25,12 +26,11 @@ class Activities extends Component {
             }
           }
         }`}).then((res)=>{
-            console.log(res);
-            let Activities = res.data.data.allActivityCatagories.edges[0].node.activitiesByType.edges.map((element)=>{
-                return <Activity name={element.node.name} description={element.node.description} key={element.node.id}></Activity>
+            let temp = res.data.data.allActivityCatagories.edges[0].node.activitiesByType.edges.map((element)=>{
+                return <Activity name={element.node.name} description={element.node.description} id={element.node.id} key={element.node.id}></Activity>
             })
             this.setState({
-                activities: Activities
+               activities: temp
             })
         }).catch((err)=>{
             console.log(err);
