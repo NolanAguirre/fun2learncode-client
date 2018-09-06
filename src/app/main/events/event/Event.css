@@ -1,0 +1,37 @@
+.event-contaier{
+    display:flex;
+}
+.event-contaier h3{
+    margin-bottom: 0;
+    text-align: center;
+}
+.event-contaier > div{
+    padding: 20px 30px;
+}
+.event-dates{
+
+}
+.event-dates ul{
+    margin-top: 0;
+    list-style: none;
+}
+.event-location{
+
+}
+.event-register{
+    margin: auto;
+    background-color: white;
+    padding-bottom: 40px !important;
+}
+.event-register-btn{
+    padding: 20px 20px;
+    font-size: 20px;
+    background-color: #41a62a;
+    color: white;
+}
+.event-register-price{
+    padding-bottom: 40px;
+    padding-top: 20px;
+    text-align: center;
+    font-size: 36px;
+}

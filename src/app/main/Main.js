@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import './Main.css';
 import Home from './home/Home';
 import Activities from './activities/Activities'
+import Events from './events/Events'
 class Main extends Component {
     render() {
         return (
@@ -13,6 +14,7 @@ class Main extends Component {
                     <Route exact path='/Classes' render={(props)=><Activities type="Classes"/>}/>
                     <Route exact path='/Labs' render={(props)=><Activities type="Labs"/>}/>
                     <Route exact path='/Workshops' render={(props)=><Activities type="Workshops"/>}/>
+                    <Route path="/Events/:id" component={Events}/>
                 </Switch>
         </div>);
     }

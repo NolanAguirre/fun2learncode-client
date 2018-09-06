@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import './Activities.css';
 import Activity from './activity/Activity';
-import Event from './activity/event/Event';
 import axios from 'axios';
 class Activities extends Component {
     constructor(props){
@@ -48,8 +47,8 @@ class Activities extends Component {
     }
     render() {
         return (
-            <div className="home">
-        <h2>{this.props.type}</h2>
+        <div className="home">
+            <h2>{this.props.type}</h2>
             {this.state.activities}
         </div>);
     }
