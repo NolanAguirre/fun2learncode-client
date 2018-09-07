@@ -11,7 +11,7 @@ function TimeTableRow(props){
     let startDate = new Date(props.data.startTime)
     return (<tr>
         <td>{startDate.toDateString()}</td>
-        <td>{formatHours(startDate)}</td>
+        <td>{formatHours(startDate)}-{formatHours(new Date(props.data.endTime))}</td>
     </tr>);
 }
 
