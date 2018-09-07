@@ -83,7 +83,7 @@ class Events extends Component {
     render() {
         return (
             <div className="events">
-                <h1>{this.state.name}</h1>
+                <h1 className="events-title">{this.state.name}</h1>
                 {this.state.events}
             </div>);
     }
