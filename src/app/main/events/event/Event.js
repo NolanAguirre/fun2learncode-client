@@ -1,5 +1,6 @@
 import React from 'react';
 import './Event.css'
+import { Link } from "react-router-dom";
 function EventComponent(props) {
     return (
         <div className="event-contaier">
@@ -21,7 +22,7 @@ function EventComponent(props) {
             </div>
             <div className="event-register">
                 <div className="event-register-price">${props.node.price}</div>
-                <div className="event-register-btn">Register Now</div>
+                <Link to={`/Registration/${props.node.id}`}><div className="event-register-btn">Register Now</div></Link>
             </div>
         </div>
     );
