@@ -16,7 +16,7 @@ function EventComponent(props) {
                     <h3>{props.node.location.alias}</h3>
                     <div>{props.node.location.street}, {props.node.location.city} {props.node.location.state}</div>
                 </div>
-                <div><iframe width="300" height="200" id={props.node.id} src="https://maps.google.com/maps?q=fun2learncode&t=&z=13&ie=UTF8&iwloc=&output=embed" frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0"></iframe>
+                <div><iframe width="400" height="300" id={props.node.id} src="https://maps.google.com/maps?q=fun2learncode&t=&z=13&ie=UTF8&iwloc=&output=embed" frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0"></iframe>
                 </div>
             </div>
             <div className="event-register">
