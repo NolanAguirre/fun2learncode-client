@@ -1,0 +1,36 @@
+.login{
+    flex:1;
+    display:flex;
+}
+.login-container{
+    margin: auto;
+}
+.login-widget{
+    padding: 40px;
+    background-color:white;
+    margin: auto;
+    box-sizing: border-box;
+}
+.login-form input {
+    margin-top: 40px;
+    display: block;
+    height: 40px;
+    padding: .65rem 1rem;
+    font-size: 2rem;
+    line-height: 1.25;
+    color: #1a2e34;
+    background-color: #fff;
+    border: 1px solid #cdd6e4;
+    border-radius: .1875rem;
+    box-shadow: none;
+    background-clip: padding-box;
+}
+
+.login-form button {
+    margin-top: 60px;
+    padding: 10px 40px;
+}
+.login-headers{
+    display: flex;
+    justify-content: center;
+}
