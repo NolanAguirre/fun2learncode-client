@@ -7,7 +7,7 @@ import Footer from './footer/Footer'
 class App extends Component {
     render() {
         return (
-        <div className="app">
+        <div className="app-container">
             <NavBar routeNames={this.props.routeNames}></NavBar>
             <Main></Main>
             <Footer></Footer>

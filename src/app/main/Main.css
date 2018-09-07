@@ -1,4 +1,11 @@
 .main{
     flex:1;
     display: flex;
+    -webkit-flex:1;
+}
+.main-contents{
+    max-width: 1200px;
+    display: flex;
+    flex:1;
+    margin: 0 auto;
 }
