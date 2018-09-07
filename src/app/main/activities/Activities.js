@@ -48,8 +48,8 @@ class Activities extends Component {
     render() {
         return (
         <div className="home">
-            <h2>{this.props.type}</h2>
-            {this.state.activities}
+            <h1 className="activities-header">{this.props.type}</h1>
+            <div>{this.state.activities}</div>
         </div>);
     }
 }
