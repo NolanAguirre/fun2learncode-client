@@ -20,9 +20,12 @@ function EventComponent(props) {
                 <div><iframe width="400" height="300" id={props.node.id} src="https://maps.google.com/maps?q=fun2learncode&t=&z=13&ie=UTF8&iwloc=&output=embed" frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0"></iframe>
                 </div>
             </div>
-            <div className="event-register">
-                <div className="event-register-price">${props.node.price}</div>
-                <Link to={`/Registration/${props.node.id}`}><div className="event-register-btn">Register Now</div></Link>
+            <div className="event-register-container">
+                <div className="event-capacity">Seats Left: {props.node.capacity}</div>
+                <div className="event-register">
+                    <div className="event-register-price">${props.node.price}</div>
+                    <Link to={`/Registration/${props.node.id}`}><div className="event-register-btn">Register Now</div></Link>
+                </div>
             </div>
         </div>
     );

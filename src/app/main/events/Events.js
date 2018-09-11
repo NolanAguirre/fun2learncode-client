@@ -12,7 +12,8 @@ class Events extends Component {
             events: null
         }
     }
-    fetchEvents() {
+
+    fetchEvents () {
         axios.post('http://localhost:3005/graphql', {
             query: `{
           activityById(id: "${this.props.match.params.id}") {
@@ -21,6 +22,7 @@ class Events extends Component {
             eventsByEventType {
               edges {
                 node {
+                    capacity
                     id
                     price
                   addressByAddress {
@@ -60,6 +62,7 @@ class Events extends Component {
                         name: this.props.name,
                         description: this.props.description,
                         location: element.node.addressByAddress,
+                        capacity: element.node.capacity,
                         date: dates,
                         id: element.node.id,
                         price:element.node.price
