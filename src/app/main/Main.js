@@ -16,10 +16,7 @@ class Main extends Component {
                 <div className="main-contents">
                 <Switch>
                     <Route exact path='/Home' component={Home}/>
-                    <Route exact path='/Summer Camps' render={(props)=><Activities type="Summer Camps"/>}/>
-                    <Route exact path='/Classes' render={(props)=><Activities type="Classes"/>}/>
-                    <Route exact path='/Labs' render={(props)=><Activities type="Labs"/>}/>
-                    <Route exact path='/Workshops' render={(props)=><Activities type="Workshops"/>}/>
+                    <Route exact path='/Activity/:type' component={Activities}/>
                     <Route exact path='/Login' component={Login}/>
                     <Route path="/Events/:id" component={Events}/>
                     <Route path="/Registration/:id" component={Registration}/>

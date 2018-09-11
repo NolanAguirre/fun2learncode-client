@@ -9,7 +9,7 @@ class Activities extends Component {
     }
     fetchActivites(){
         axios.post('http://localhost:3005/graphql',{query:`{
-        	allActivityCatagories(condition:{name:"${this.props.type}"}){
+        	allActivityCatagories(condition:{name:"${this.props.match.params.type}"}){
             edges{
               node{
                 activitiesByType{
@@ -39,7 +39,7 @@ class Activities extends Component {
         this.fetchActivites();
     }
     componentDidUpdate(prevProps) {
-        if (this.props.type !== prevProps.type) {
+        if (this.props.match.params.type!== prevProps.match.params.type) {
             this.fetchActivites();
         }
     }

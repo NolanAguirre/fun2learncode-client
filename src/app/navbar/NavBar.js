@@ -3,8 +3,8 @@ import './NavBar.css'
 import Item from './item/Item'
 function NavBar(props) {
     const routeNames = props.routeNames;
-    const routesNameList = routeNames.map((routeName) => {
-        return <Item key={routeName} name={routeName}></Item>;
+    const routesNameList = routeNames.map((routeObj) => {
+        return <Item key={routeObj.name} route={routeObj.route} name={routeObj.name}></Item>;
     })
     return (
     <header className="navbar">

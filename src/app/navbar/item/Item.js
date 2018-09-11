@@ -3,7 +3,7 @@ import './Item.css'
 import { Link } from "react-router-dom";
 
 function Item(props) {
-    return <Link to={`/${props.name}`}><div className="nav-bar-item">{props.name}</div></Link>
+    return <Link to={`/${props.route}`}><div className="nav-bar-item">{props.name}</div></Link>
 
 }
 
