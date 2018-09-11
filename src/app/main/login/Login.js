@@ -18,11 +18,12 @@ class Login extends Component{
     }
     handleSubmit(event){
         axios.post('http://localhost:3005/graphql',{query:`mutation{
-          authenticate(input:{arg0:"nolanaguirre08@gmail.com"password:"potato"}){
+          authenticate(input:{arg0:"${this.state.email}"password:"${this.state.password}"}){
         		jwtToken
           }
         }`}).then((res)=>{
             console.log(res);
+            this.props.history.push(this.props.redirectUrl || '/');
         })
         event.preventDefault();
     }
