@@ -3,6 +3,16 @@ import ReactDOM from 'react-dom';
 import {BrowserRouter as Router} from "react-router-dom";
 import './index.css';
 import App from './app/App';
+import { ApolloClient } from 'apollo-client';
+import { HttpLink } from 'apollo-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloProvider } from 'react-apollo';
+
+const client = new ApolloClient({
+  link: new HttpLink({uri:'http://localhost:3005/graphql'}),
+  cache: new InMemoryCache(),
+});
+
 const routeNames = [
     {
         name: 'Home',
@@ -29,6 +39,8 @@ const routeNames = [
 ];
 
 ReactDOM.render(<Router>
-    <div className="app"><App routeNames={routeNames}/>
-    </div>
+    <ApolloProvider client={client}>
+        <div className="app"><App routeNames={routeNames}/>
+        </div>
+    </ApolloProvider>
 </Router>, document.getElementById('root'));
