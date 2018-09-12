@@ -19,25 +19,25 @@ const routeNames = [
         name: 'Summer Camps',
         route: 'Activity/Summer Camps',
         test: (prop) => {
-            return !prop.user || prop.user.role == "FTLC_USER"
+            return !prop.user || prop.user.role === "FTLC_USER"
         }
     }, {
         name: 'Classes',
         route: 'Activity/Classes',
         test: (prop) => {
-            return !prop.user || prop.user.role == "FTLC_USER"
+            return !prop.user || prop.user.role === "FTLC_USER"
         }
     }, {
         name: 'Labs',
         route: 'Activity/Labs',
         test: (prop) => {
-            return !prop.user || prop.user.role == "FTLC_USER"
+            return !prop.user || prop.user.role === "FTLC_USER"
         }
     }, {
         name: 'Workshops',
         route: 'Activity/Workshops',
         test: (prop) => {
-            return !prop.user || prop.user.role == "FTLC_USER"
+            return !prop.user || prop.user.role === "FTLC_USER"
         }
     }, {
         name: 'Login',
@@ -49,13 +49,13 @@ const routeNames = [
         name: 'Manage Students',
         route: 'User/Manage Students',
         test: (prop) => {
-            return prop.user && prop.user.role == "FTLC_USER"
+            return prop.user && prop.user.role === "FTLC_USER"
         }
     },{
         name: 'Account',
         route: 'User/Account',
         test: (prop) => {
-            return prop.user && prop.user.role == "FTLC_USER"
+            return prop.user && prop.user.role === "FTLC_USER"
         }
     }, {
         name: 'Logout',
