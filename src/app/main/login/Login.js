@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './Login.css';
 import axios from 'axios';
+import UserStore from '../../Store'
 class Login extends Component{
     constructor(props){
         super(props);
@@ -22,8 +23,11 @@ class Login extends Component{
         		jwtToken
           }
         }`}).then((res)=>{
-            console.log(res);
-            this.props.history.push(this.props.redirectUrl || '/');
+            if(res.data.data.authenticate.jwtToken){
+                this.props.history.push(this.props.redirectUrl || '/');
+                UserStore.add({authToken:res.data.data.authenticate.jwtToken});
+            }
+            // TODO handle failed login
         })
         event.preventDefault();
     }
