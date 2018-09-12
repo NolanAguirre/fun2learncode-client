@@ -34,7 +34,7 @@ class App extends Component {
     }
     render() {
         return (<div className="app-container">
-        <Query query={GET_USER}>{
+        {(this.state.authToken)? (<Query query={GET_USER}>{
             ({loading, error, data}) => {
                 if (loading) {
                     return 'Loading...';
@@ -49,7 +49,10 @@ class App extends Component {
                     </div>
                 );
         }
-            }</Query>
+    }</Query>):(<div className="app-inner">
+        <NavBar></NavBar>
+        <Main></Main>
+    </div>)}
             <Footer></Footer>
         </div>);
     }
