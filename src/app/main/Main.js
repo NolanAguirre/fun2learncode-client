@@ -19,7 +19,7 @@ class Main extends Component {
                         <Route exact path='/Home' component={Home}/>
                         <Route exact path='/Activity/:type' component={Activities}/>
                         <Route exact path='/Login' component={Login}/>
-                        <Route path="/Events/:id" component={Events}/>
+                        <Route path="/Events/:name/:id" component={Events}/>
                         <Route path="/Registration/:id" render={(props)=><Registration {...this.props}{...props}></Registration>}/>
                         <Route path="/User/Manage Students" render={(props)=><ManageStudents {...this.props}{...props}></ManageStudents>}/>
                 </Switch>

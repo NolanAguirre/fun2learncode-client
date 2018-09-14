@@ -14,7 +14,7 @@ function Activity(props) {
                     </div>
                 </div>
                 <div className="activity-view-events">
-                    <Link to={`/Events/${props.id}`}><button className="activity-view-events-btn">View Event Dates</button></Link>
+                    <Link to={`/Events/${props.name}/${props.id}`}><button className="activity-view-events-btn">View Event Dates</button></Link>
                 </div>
             </div>
             <div className="activity-body">
