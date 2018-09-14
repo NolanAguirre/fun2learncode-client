@@ -1,17 +1,14 @@
 import EventEmitter from 'events';
-class Store extends EventEmitter{
-    constructor(){
+class Store extends EventEmitter {
+    constructor() {
         super();
-        this.data={};
+        this.data = {};
     }
-    contains(key){
-        return key in this.data;
-    }
-    set(key, value){
+    set(key, value) {
         this.data[key] = value;
-       this.emit(key, value);
+        this.emit(key, value);
     }
-    get(key){
+    get(key) {
         return this.data[key]
     }
 }
