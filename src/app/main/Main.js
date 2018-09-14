@@ -5,8 +5,9 @@ import Home from './home/Home';
 import Activities from './activities/Activities';
 import Events from './events/Events';
 import Login from './login/Login';
-import Registration from './registration/Registration'
-import ManageStudents from './manageStudents/ManageStudents'
+import Registration from './registration/Registration';
+import ManageStudents from './manageStudents/ManageStudents';
+import Logout from './logout/Logout'
 class Main extends Component {
     constructor(props){
         super(props);
@@ -22,7 +23,8 @@ class Main extends Component {
                         <Route path="/Events/:name/:id" component={Events}/>
                         <Route path="/Registration/:id" render={(props)=><Registration {...this.props}{...props}></Registration>}/>
                         <Route path="/User/Manage Students" render={(props)=><ManageStudents {...this.props}{...props}></ManageStudents>}/>
-                </Switch>
+                        <Route path="/Logout" component={Logout}></Route>
+            </Switch>
             </div>
         </div>);
     }

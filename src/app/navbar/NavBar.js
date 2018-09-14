@@ -16,6 +16,18 @@ const routeNames = [
             return !prop.user
         }
     }, {
+        name: 'Manage Students',
+        route: 'User/Manage Students',
+        test: (prop) => {
+            return prop.user && prop.user.role === "FTLC_USER"
+        }
+    }, {
+        name: 'Account',
+        route: 'User/Account',
+        test: (prop) => {
+            return prop.user && prop.user.role === "FTLC_USER"
+        }
+    }, {
         name: 'Summer Camps',
         route: 'Activity/Summer Camps',
         test: (prop) => {
@@ -44,18 +56,6 @@ const routeNames = [
         route: 'Login',
         test: (prop) => {
             return !prop.user
-        }
-    }, {
-        name: 'Manage Students',
-        route: 'User/Manage Students',
-        test: (prop) => {
-            return prop.user && prop.user.role === "FTLC_USER"
-        }
-    },{
-        name: 'Account',
-        route: 'User/Account',
-        test: (prop) => {
-            return prop.user && prop.user.role === "FTLC_USER"
         }
     }, {
         name: 'Logout',
