@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import './Login.css';
 import axios from 'axios';
-import UserStore from '../../Store'
+import UserStore from '../../UserStore'
+import Logo from '../../drawing.svg';
 class Login extends Component{
     constructor(props){
         super(props);
@@ -25,7 +26,7 @@ class Login extends Component{
         }`}).then((res)=>{
             if(res.data.data.authenticate.jwtToken){
                 this.props.history.push(this.props.redirectUrl || '/');
-                UserStore.add({authToken:res.data.data.authenticate.jwtToken});
+                UserStore.set('authToken', res.data.data.authenticate.jwtToken);
             }
             // TODO handle failed login
         })
@@ -36,7 +37,7 @@ class Login extends Component{
     <div className="login-container">
         <div className="login-widget">
             <div className="login-headers">
-                <a><img className="nav-logo" src="https://raw.githubusercontent.com/Fun2LearnCode/company-logo-assets/master/resources/exported%20pictures/f2lc-logo.png?token=AJvhOqDp9aWM4gIruJw3aa4_8PxjHUQSks5bmGk8wA%3D%3D"></img></a>
+                <a><img className="nav-logo" src={Logo}></img></a>
             </div>
             <form onSubmit={this.handleSubmit} className="login-form">
                 <input name="email" type="email" onChange={this.handleChange}placeholder="email"></input>

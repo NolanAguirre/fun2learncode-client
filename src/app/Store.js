@@ -1,32 +1,19 @@
-class Store{
+import EventEmitter from 'events';
+class Store extends EventEmitter{
     constructor(){
-        this.data=[];
-        this.event=[];
+        super();
+        this.data={};
     }
-    contains(item){
-        return this.data.filter((element)=>{return Object.keys(element)[0] == Object.keys(item)[0] || item}).length == 1;
+    contains(key){
+        return key in this.data;
     }
-    add(item){
-        if(this.contains(item)){
-            this.get(Object.keys(item)[0])[Object.keys(item)[0]] = item[Object.keys(item)[0]];
-        }else{
-            this.data.push(item);
-        }
-       this.event.filter((element)=>{return Object.keys(element)[0] == Object.keys(item)[0]})
-                  .forEach((element)=>{element[Object.keys(element)[0]](item)});
+    set(key, value){
+        this.data[key] = value;
+       this.emit(key, value);
     }
     get(key){
-        if(this.contains(key)){
-            return this.data.filter((element)=>{return Object.keys(element)[0] == key})[0];
-        }else {
-            return null;
-        }
-    }
-    addEvent(item){
-        this.event.push(item);
+        return this.data[key]
     }
 }
 
-const UserStore = new Store();
-Object.freeze(UserStore);
-export default UserStore;
+export default Store;

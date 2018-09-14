@@ -2,10 +2,10 @@ import React, {
     Component
 } from 'react';
 import './Logout.css';
-import UserStore from '../../Store';
+import UserStore from '../../UserStore';
 class ManageStudents extends Component {
     componentDidMount(){
-        UserStore.add({authToken:null});
+        UserStore.set('authToken', null);
     }
     render() {
         return (<div>Logging Out</div>);

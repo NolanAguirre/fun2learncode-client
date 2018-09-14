@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import './Registration.css';
 import Login from '../login/Login';
-import axios from 'axios';
+import StudentSelect from '../studentSelect/StudentSelect';
 class Registration extends Component{
     render(){
         if(this.props.user){
-            return (<div className="registration-container"></div>);
+            return (
+                <div className="registration-container">
+                    <StudentSelect user={this.props.user}></StudentSelect>
+                </div>);
         }else{
-            console.log(this.props);
             return (<Login history={this.props.history} redirectUrl={this.props.location.pathname}></Login>)
         }
     }
