@@ -2,73 +2,73 @@ import React from 'react';
 import './NavBar.css';
 import Item from './item/Item';
 import Logo from '../drawing.svg';
-const routeNames = [
-    {
-        name: 'Home',
-        route: 'Home',
-        test: (prop) => {
-            return !prop.user
-        }
-    }, {
-        name: 'About Us',
-        route: 'About Us',
-        test: (prop) => {
-            return !prop.user
-        }
-    }, {
-        name: 'Manage Students',
-        route: 'User/Manage Students',
-        test: (prop) => {
-            return prop.user && prop.user.role === "FTLC_USER"
-        }
-    }, {
-        name: 'Account',
-        route: 'User/Account',
-        test: (prop) => {
-            return prop.user && prop.user.role === "FTLC_USER"
-        }
-    }, {
-        name: 'Summer Camps',
-        route: 'Activity/Summer Camps',
-        test: (prop) => {
-            return !prop.user || prop.user.role === "FTLC_USER"
-        }
-    }, {
-        name: 'Classes',
-        route: 'Activity/Classes',
-        test: (prop) => {
-            return !prop.user || prop.user.role === "FTLC_USER"
-        }
-    }, {
-        name: 'Labs',
-        route: 'Activity/Labs',
-        test: (prop) => {
-            return !prop.user || prop.user.role === "FTLC_USER"
-        }
-    }, {
-        name: 'Workshops',
-        route: 'Activity/Workshops',
-        test: (prop) => {
-            return !prop.user || prop.user.role === "FTLC_USER"
-        }
-    }, {
-        name: 'Login',
-        route: 'Login',
-        test: (prop) => {
-            return !prop.user
-        }
-    }, {
-        name: 'Logout',
-        route: 'Logout',
-        test: (prop) => {
-            return prop.user
-        }
-    }
 
-];
 function NavBar(props) {
+    const routeNames = [
+        {
+            name: 'Home',
+            route: 'Home',
+            test: () => {
+                return !props.user
+            }
+        }, {
+            name: 'About Us',
+            route: 'About Us',
+            test: () => {
+                return !props.user
+            }
+        }, {
+            name: 'Manage Students',
+            route: 'User/Manage Students',
+            test: () => {
+                return props.user && props.user.role === "FTLC_USER"
+            }
+        }, {
+            name: 'Account',
+            route: 'User/Account',
+            test: () => {
+                return props.user && props.user.role === "FTLC_USER"
+            }
+        }, {
+            name: 'Summer Camps',
+            route: 'Activity/Summer Camps',
+            test: () => {
+                return !props.user || props.user.role === "FTLC_USER"
+            }
+        }, {
+            name: 'Classes',
+            route: 'Activity/Classes',
+            test: () => {
+                return !props.user || props.user.role === "FTLC_USER"
+            }
+        }, {
+            name: 'Labs',
+            route: 'Activity/Labs',
+            test: () => {
+                return !props.user || props.user.role === "FTLC_USER"
+            }
+        }, {
+            name: 'Workshops',
+            route: 'Activity/Workshops',
+            test: () => {
+                return !props.user || props.user.role === "FTLC_USER"
+            }
+        }, {
+            name: 'Login',
+            route: 'Login',
+            test: () => {
+                return !props.user
+            }
+        }, {
+            name: 'Logout',
+            route: 'Logout',
+            test: () => {
+                return props.user
+            }
+        }
+    ];
     const routesNameList = routeNames.filter((routeObj) => {
-        return routeObj.test(props)
+        return routeObj.test()
     }).map((routeObj) => {
         return <Item key={routeObj.route} route={routeObj.route} name={routeObj.name}></Item>;
     })
