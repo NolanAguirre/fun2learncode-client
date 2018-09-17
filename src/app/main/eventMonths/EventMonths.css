@@ -1,5 +1,4 @@
 .student-events-container{
-    border: 2px solid blue;
     max-height: 500px;
     overflow: auto;
 }
