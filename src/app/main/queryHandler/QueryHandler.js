@@ -19,11 +19,15 @@ class QueryHandler extends Component{
                     }
                     return `Error! ${error.message}`;
                 }
+                if(this.props.formatData){
+                    data = this.props.formatData(data);
+                }
                 return(
                     <div>{
                         Object.values(data)[0].edges.map((element) => {
                             return this.props.inner(element);
-                        })}
+                        })
+                    }
                     </div>
                 );
             }}
