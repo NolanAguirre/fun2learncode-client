@@ -4,12 +4,3 @@
     border: 2px solid  #41a62a;
     justify-content: space-between;
 }
-.add-student-container{
-    background-color: gray;
-    width: 200px;
-    font-size: 120px;
-    display: flex;
-    text-align: center;
-    flex-direction: column;
-    justify-content: center;
-}

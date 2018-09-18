@@ -19,17 +19,14 @@ const GET_STUDENTS = (parentId) =>{
         }
       }
     }
-`
-}
+`}
 class StudentSelect extends Component{
     render(){
         if(this.props.user){
             return (
                 <div className="student-select-container">
-                <QueryHandler query={GET_STUDENTS(this.props.user.id)} inner={(element)=>{return<StudentPreview click={this.props.click}id={element.node.id} key={element.node.id} student={element.node.userByStudent}></StudentPreview>}}></QueryHandler>
-                <div className="add-student-container">
-                    <div>+</div>
-                </div>
+                    Select A Student
+                    <QueryHandler query={GET_STUDENTS(this.props.user.id)} inner={(element)=>{return<StudentPreview click={this.props.click}id={element.node.id} key={element.node.id} student={element.node.userByStudent}></StudentPreview>}}></QueryHandler>
                 </div>);
         }else{
             console.log(this.props);
