@@ -33,7 +33,7 @@ class EventMonths extends Component{
     render(){
         return(
             <div className="student-events-container">
-                <QueryHandler query={GET_EVENTS(this.props.id)} inner={(element)=>{return (<EventMonth key={element.node.id} studentId={this.props.id} month={element.node.month} events={element.node.eventMonthsByMonth}></EventMonth>)}}></QueryHandler>
+                <QueryHandler query={GET_EVENTS(this.props.studentId)} inner={(element)=>{return (<EventMonth key={element.node.id} studentId={this.props.studentId} month={element.node.month} events={element.node.eventMonthsByMonth}></EventMonth>)}}></QueryHandler>
             </div>
     );
     }

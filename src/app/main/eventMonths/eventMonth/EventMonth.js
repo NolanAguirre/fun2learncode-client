@@ -10,8 +10,8 @@ function StudentEvent(props){
     return (
     <div className="event-month-container">
         <h4>{props.name}</h4>
-        <div className="event-month-link"><Link to={`/Event Logs/${props.eventId}`}>View Details</Link></div>
-        <div className="event-month-link"><Link to={`/Event Logs/${props.eventId}`}>View Logs</Link></div>
+        <div className="event-month-link"><Link to={`/Event Logs/${props.eventId}/${props.studentId}`}>View Details</Link></div>
+        <div className="event-month-link"><Link to={`/Event Logs/${props.eventId}/${props.studentId}`}>View Logs</Link></div>
     </div>)
 }
 class EventMonth extends Component {
@@ -27,7 +27,8 @@ class EventMonth extends Component {
                             return <StudentEvent
                                  key={element.node.event}
                                  eventId={element.node.event}
-                                 name={element.node.eventByEvent.activityByEventType.name}></StudentEvent>
+                                 name={element.node.eventByEvent.activityByEventType.name}
+                                 studentId={this.props.studentId}></StudentEvent>
                         })
                     }
                 </div>

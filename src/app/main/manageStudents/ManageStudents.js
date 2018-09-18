@@ -9,17 +9,17 @@ import {Query} from 'react-apollo';
 class ManageStudents extends Component {
     constructor(props){
         super(props)
-        this.state = {currentStudent:null}
+        this.state = {studentId:null}
         this.handleStudentChange = this.handleStudentChange.bind(this);
     }
     handleStudentChange(studentId){
-        this.setState({currentStudent:studentId});
+        this.setState({studentId:studentId});
     }
     render() {
         return (this.props.user && this.props.user.role === 'FTLC_USER') ?
         ( <div className="manage-students-container"> ManageStudents
             <StudentSelect click={this.handleStudentChange} user={this.props.user}></StudentSelect>
-            {(this.state.currentStudent)?<EventMonths id={this.state.currentStudent}></EventMonths>:""}
+            {(this.state.studentId)?<EventMonths studentId={this.state.studentId}></EventMonths>:""}
         </div>):
         (<div>please login</div> )
     }

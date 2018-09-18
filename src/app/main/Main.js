@@ -24,7 +24,7 @@ class Main extends Component {
                         <Route path="/Events/:name/:id" component={Events}/>
                         <Route path="/Registration/:id" render={(props)=><Registration {...this.props}{...props}></Registration>}/>
                         <Route path="/User/Manage Students" render={(props)=><ManageStudents {...this.props}{...props}></ManageStudents>}/>
-                        <Route path="/Event Logs/:id" render={(props)=><EventLogs {...this.props}{...props}></EventLogs>} />
+                        <Route path="/Event Logs/:eventId/:studentId" render={(props)=><EventLogs {...this.props}{...props}></EventLogs>} />
                         <Route path="/Logout" component={Logout}></Route>
             </Switch>
             </div>
