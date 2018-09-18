@@ -22,11 +22,11 @@ class EventMonth extends Component {
                 </div>
                 <div className="month-body">
                     {
-                        this.props.events.edges.map((element)=>{
+                        this.props.events.map((element)=>{
                             return <StudentEvent
-                                 key={element.node.event}
-                                 eventId={element.node.event}
-                                 name={element.node.eventByEvent.activityByEventType.name}
+                                 key={element.node.id}
+                                 eventId={element.node.id}
+                                 name={element.node.activityByEventType.name}
                                  studentId={this.props.studentId}></StudentEvent>
                         })
                     }
