@@ -1,5 +1,6 @@
 import React from 'react';
 import './Event.css'
+import {Location} from '../../common/Common'
 import { Link } from "react-router-dom";
 function EventComponent(props) {
     return (
@@ -12,14 +13,10 @@ function EventComponent(props) {
                     </tbody>
                 </table>
             </div>
-            <div className="event-location">
-                <div>
-                    <h3>{props.node.location.alias}</h3>
-                    <div>{props.node.location.street}, {props.node.location.city} {props.node.location.state}</div>
-                </div>
-                <div><iframe width="400" height="300" id={props.node.id} src="https://maps.google.com/maps?q=fun2learncode&t=&z=13&ie=UTF8&iwloc=&output=embed" frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0"></iframe>
-                </div>
-            </div>
+            <Location street={props.node.location.street}
+                      city={props.node.location.city}
+                      state={props.node.location.state}
+                      alias={props.node.location.alias}></Location>
             <div className="event-register-container">
                 <div className="event-capacity">Seats Left: {props.node.capacity}</div>
                 <div className="event-register">
