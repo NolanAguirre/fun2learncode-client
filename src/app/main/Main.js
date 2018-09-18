@@ -9,6 +9,7 @@ import Registration from './registration/Registration';
 import ManageStudents from './manageStudents/ManageStudents';
 import Logout from './logout/Logout';
 import EventLogs from './eventLogs/EventLogs';
+import ManageEvents from './manageEvents/ManageEvents';
 class Main extends Component {
     constructor(props){
         super(props);
@@ -29,9 +30,10 @@ class Main extends Component {
                         <Route path="/Events/:name/:id" render={(props)=><Events click={this.handleRegistrationEvent}{...props}></Events>}/>
                         <Route path="/Registration/:id" render={(props)=><Registration event={this.state.registrationEvent} {...this.props}{...props}></Registration>}/>
                         <Route path="/User/Manage Students" render={(props)=><ManageStudents {...this.props}{...props}></ManageStudents>}/>
-                        <Route path="/Event Logs/:eventId/:studentId" render={(props)=><EventLogs {...this.props}{...props}></EventLogs>} />
-                        <Route path="/Logout" component={Logout}></Route>
-            </Switch>
+                        <Route path="/Event Logs/:eventId/:studentId" render={(props)=><EventLogs {...this.props}{...props}></EventLogs>}/>
+                        <Route exact path="/Admin/Manage Events" render={(props)=><ManageEvents {...this.props} {...props}></ManageEvents>}/>
+                        <Route exact path="/Logout" component={Logout}/>
+                    </Switch>
             </div>
         </div>);
     }

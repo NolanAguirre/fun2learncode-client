@@ -60,6 +60,12 @@ function NavBar(props) {
                 return !props.user
             }
         }, {
+            name: 'Manage Events',
+            route: 'Admin/Manage Events',
+            test: () =>{
+                return props.user && props.user.role === "FTLC_INSTRUCTOR"
+            }
+        }, {
             name: 'Logout',
             route: 'Logout',
             test: () => {
