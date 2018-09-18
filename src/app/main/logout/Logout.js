@@ -6,6 +6,7 @@ import UserStore from '../../UserStore';
 class ManageStudents extends Component {
     componentDidMount(){
         UserStore.set('authToken', null);
+        window.location.reload();
     }
     render() {
         return (<div>Logging Out</div>);
