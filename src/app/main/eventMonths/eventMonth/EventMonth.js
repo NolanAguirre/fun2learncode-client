@@ -10,8 +10,7 @@ function StudentEvent(props){
     return (
     <div className="event-month-container">
         <h4>{props.name}</h4>
-        <div className="event-month-link"><Link to={`/Event Logs/${props.eventId}/${props.studentId}`}>View Details</Link></div>
-        <div className="event-month-link"><Link to={`/Event Logs/${props.eventId}/${props.studentId}`}>View Logs</Link></div>
+        <div className="event-month-link"><Link to={`/Event Logs/${props.eventId}/${props.studentId}`}>View Details <br/> & <br/> Logs</Link></div>
     </div>)
 }
 class EventMonth extends Component {
