@@ -16,12 +16,8 @@ const GET_EVENTS= (studentId) =>{
                 node {
                   event
                   eventByEvent{
-                    id
                     activityByEventType {
                       name
-                    }
-                    addressByAddress {
-                      alias
                     }
                   }
                 }

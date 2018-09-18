@@ -7,7 +7,8 @@ import Events from './events/Events';
 import Login from './login/Login';
 import Registration from './registration/Registration';
 import ManageStudents from './manageStudents/ManageStudents';
-import Logout from './logout/Logout'
+import Logout from './logout/Logout';
+import EventLogs from './eventLogs/EventLogs';
 class Main extends Component {
     constructor(props){
         super(props);
@@ -23,6 +24,7 @@ class Main extends Component {
                         <Route path="/Events/:name/:id" component={Events}/>
                         <Route path="/Registration/:id" render={(props)=><Registration {...this.props}{...props}></Registration>}/>
                         <Route path="/User/Manage Students" render={(props)=><ManageStudents {...this.props}{...props}></ManageStudents>}/>
+                        <Route path="/Event Logs/:id" render={(props)=><EventLogs {...this.props}{...props}></EventLogs>} />
                         <Route path="/Logout" component={Logout}></Route>
             </Switch>
             </div>
