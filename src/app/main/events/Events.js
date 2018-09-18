@@ -14,8 +14,10 @@ const GET_EVENTS = (id) => {
                     id
                     price
                   addressByAddress {
+                    id
                     city
                     street
+                    state
                     alias
                     url
                   }
