@@ -11,3 +11,14 @@ function Location(props){
     </div>);
 }
 export {Location};
+
+function DropDown(props){
+    return(
+        <select name={props.name} value={props.value} onChange={props.onChange}>
+            <option value={null}>None</option>
+            {props.options.map((element)=>{
+                return <option key={element.value} value={element.value}>{element.name}</option>
+            })}
+        </select>)
+}
+export {DropDown};
