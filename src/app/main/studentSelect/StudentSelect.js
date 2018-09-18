@@ -26,7 +26,9 @@ class StudentSelect extends Component{
             return (
                 <div className="student-select-container">
                     Select A Student
-                    <QueryHandler query={GET_STUDENTS(this.props.user.id)} inner={(element)=>{return<StudentPreview click={this.props.click}id={element.node.id} key={element.node.id} student={element.node.userByStudent}></StudentPreview>}}></QueryHandler>
+                    <div className="students-container">
+                        <QueryHandler query={GET_STUDENTS(this.props.user.id)} inner={(element)=>{return<StudentPreview click={this.props.click}id={element.node.id} key={element.node.id} student={element.node.userByStudent}></StudentPreview>}}></QueryHandler>
+                    </div>
                 </div>);
         }else{
             console.log(this.props);

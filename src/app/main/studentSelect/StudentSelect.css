@@ -4,3 +4,6 @@
     border: 2px solid  #41a62a;
     justify-content: space-between;
 }
+.students-container >:first-child{
+    display: flex;
+}
