@@ -1,7 +1,7 @@
 import React from 'react';
 import './NavBar.css';
 import Item from './item/Item';
-import Logo from '../drawing.svg';
+import Logo from '../logos/drawing.svg';
 
 function NavBar(props) {
     const routeNames = [

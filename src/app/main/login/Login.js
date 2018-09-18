@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './Login.css';
 import axios from 'axios';
 import UserStore from '../../UserStore'
-import Logo from '../../drawing.svg';
+import Logo from '../../logos/drawing.svg';
 class Login extends Component{
     constructor(props){
         super(props);
