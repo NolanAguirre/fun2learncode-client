@@ -12,6 +12,11 @@ import EventLogs from './eventLogs/EventLogs';
 class Main extends Component {
     constructor(props){
         super(props);
+        this.state = {registrationEvent:null}
+        this.handleRegistrationEvent = this.handleRegistrationEvent.bind(this);
+    }
+    handleRegistrationEvent(event){
+        this.setState({registrationEvent:event});
     }
     render() {
         return (
@@ -21,8 +26,8 @@ class Main extends Component {
                         <Route exact path='/Home' component={Home}/>
                         <Route exact path='/Activity/:type' component={Activities}/>
                         <Route exact path='/Login' component={Login}/>
-                        <Route path="/Events/:name/:id" component={Events}/>
-                        <Route path="/Registration/:id" render={(props)=><Registration {...this.props}{...props}></Registration>}/>
+                        <Route path="/Events/:name/:id" render={(props)=><Events click={this.handleRegistrationEvent}{...props}></Events>}/>
+                        <Route path="/Registration/:id" render={(props)=><Registration event={this.state.registrationEvent} {...this.props}{...props}></Registration>}/>
                         <Route path="/User/Manage Students" render={(props)=><ManageStudents {...this.props}{...props}></ManageStudents>}/>
                         <Route path="/Event Logs/:eventId/:studentId" render={(props)=><EventLogs {...this.props}{...props}></EventLogs>} />
                         <Route path="/Logout" component={Logout}></Route>

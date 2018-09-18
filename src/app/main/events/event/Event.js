@@ -1,6 +1,7 @@
 import React from 'react';
 import './Event.css'
 import {Location} from '../../common/Common'
+import TimeTableRow from '../timeTableRow/TimeTableRow';
 import { Link } from "react-router-dom";
 function EventComponent(props) {
     return (
@@ -9,19 +10,30 @@ function EventComponent(props) {
                 <h3>Dates</h3>
                 <table>
                     <tbody>
-                        {props.node.date}
+                        {props.date.map((date, index) => {
+                            return <TimeTableRow data={date.node} key={index}></TimeTableRow>
+                        })}
                     </tbody>
                 </table>
             </div>
-            <Location street={props.node.location.street}
-                      city={props.node.location.city}
-                      state={props.node.location.state}
-                      alias={props.node.location.alias}></Location>
+            <Location street={props.location.street}
+                      city={props.location.city}
+                      state={props.location.state}
+                      alias={props.location.alias}></Location>
             <div className="event-register-container">
-                <div className="event-capacity">Seats Left: {props.node.capacity}</div>
+                <div className="event-capacity">Seats Left: {props.capacity}</div>
                 <div className="event-register">
-                    <div className="event-register-price">${props.node.price}</div>
-                    <Link to={`/Registration/${props.node.id}`}><div className="event-register-btn">Register Now</div></Link>
+                    <div className="event-register-price">${props.price}</div>
+                    <Link to={`/Registration/${props.id}`}>
+                        <div onClick={()=>(props.click({
+                                eventId:props.id,
+                                price:props.price,
+                                date:props.date,
+                                location: props.location,
+                                activityName: props.activityName,
+                                activityId: props.activityId
+                            }))} className="event-register-btn">Register Now</div>
+                    </Link>
                 </div>
             </div>
         </div>

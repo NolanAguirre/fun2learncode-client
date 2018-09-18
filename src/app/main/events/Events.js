@@ -41,18 +41,19 @@ class Events extends Component {
         return (<div className="events">
             <h1 className="events-title">{this.props.match.params.name}</h1>
             <QueryHandler query={GET_EVENTS(this.props.match.params.id)} inner={(element) => {
-                    let dates = element.node.eventDatesByEvent.edges.map((date, index) => {
-                        return <TimeTableRow data={date.node} key={index}></TimeTableRow>
-                    })
-                    return <EventComponent node={{
-                            name: this.props.name,
-                            description: this.props.description,
-                            location: element.node.addressByAddress,
-                            capacity: element.node.capacity,
-                            date: dates,
-                            id: element.node.id,
-                            price: element.node.price
-                        }} key={element.node.id}></EventComponent>
+                    let dates = element.node.eventDatesByEvent.edges;
+                    return <EventComponent
+                            activityName={this.props.match.params.name}
+                            activityId={this.props.match.params.id}
+                            name={this.props.name}
+                            description={this.props.description}
+                            location={element.node.addressByAddress}
+                            capacity={element.node.capacity}
+                            date={dates}
+                            id={element.node.id}
+                            price={element.node.price}
+                            click={this.props.click}
+                            key={element.node.id}></EventComponent>
                 }}></QueryHandler>
         </div>);
     }
