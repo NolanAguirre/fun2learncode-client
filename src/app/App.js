@@ -25,12 +25,12 @@ class App extends Component {
         UserStore.on('authToken', (authToken)=>{this.handleAuthToken(authToken)})
     }
     handleAuthToken(authToken) {
-        this.setState({authToken})
         if (authToken) {
             localStorage.setItem('authToken', authToken);
         } else {
             localStorage.removeItem('authToken');
         }
+        this.setState({authToken:authToken})
     }
     render() {
         return (<div className="app-container">
@@ -42,6 +42,9 @@ class App extends Component {
                                     return 'Loading...';
                                 }
                                 if (error) {
+                                    if(error.message.includes("401")){
+                                        this.handleAuthToken(null);
+                                    }
                                     return `Error! ${error.message}`;
                                 }
                                 return (<div className="app-inner">
