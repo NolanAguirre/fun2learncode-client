@@ -8,10 +8,10 @@ function TimeTableRow(props){
         temp += (date.getHours() > 12)? " pm" : " am"
         return temp;
     }
-    let startDate = new Date(props.data.startTime)
+    let startDate = new Date(props.data.start)
     return (<tr>
         <td>{startDate.toDateString()}</td>
-        <td>{formatHours(startDate)}-{formatHours(new Date(props.data.endTime))}</td>
+        <td>{formatHours(startDate)}-{formatHours(new Date(props.data.end))}</td>
     </tr>);
 }
 
