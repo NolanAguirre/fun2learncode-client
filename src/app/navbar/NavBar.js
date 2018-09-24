@@ -66,6 +66,18 @@ function NavBar(props) {
                 return props.user && props.user.role === "FTLC_INSTRUCTOR"
             }
         }, {
+            name: 'Manage Addresses',
+            route: 'Admin/Manage Addresses',
+            test: () =>{
+                return props.user && props.user.role === "FTLC_INSTRUCTOR"
+            }
+        }, {
+            name: 'Manage Users',
+            route: 'Admin/Manage Users',
+            test: () =>{
+                return props.user && props.user.role === "FTLC_INSTRUCTOR"
+            }
+        }, {
             name: 'Logout',
             route: 'Logout',
             test: () => {
