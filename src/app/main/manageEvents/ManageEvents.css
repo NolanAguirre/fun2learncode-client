@@ -1,0 +1,20 @@
+.manage-events-container{
+    display:flex;
+    flex-direction: column;
+    flex:1;
+}
+.manage-event-header-item{
+    padding: 30px;
+    background-color: blue;
+}
+.manage-events-info{
+    display: flex;
+    justify-content: space-around;
+}
+.manage-events-info >div{
+    display: flex;
+    flex-direction: column;
+}
+.manage-events-calander{
+    flex:1;
+}
