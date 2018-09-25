@@ -52,11 +52,13 @@ function DragAndDropCalendar(props){
     return (
       <BigCalendar
         selectable
+        className={props.className}
         localizer={localizer}
         events={props.events}
         onSelectSlot={props.newEvent}
         onSelectEvent={props.selectEvent}
         onDoubleClickEvent={props.removeEvent}
+        eventPropGetter={(event,start,end,isSelected: boolean) => {return{style:event.resources.buttonStyle}}}
         selected={props.selected}
         resizable
         views={['month']}
