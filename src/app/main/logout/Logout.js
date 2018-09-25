@@ -7,6 +7,7 @@ class ManageStudents extends Component {
     componentDidMount(){
         UserStore.set('authToken', null);
         window.location.reload();
+        window.location.href = '/Home';
     }
     render() {
         return (<div>Logging Out</div>);
