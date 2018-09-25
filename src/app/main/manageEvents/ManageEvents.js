@@ -70,57 +70,66 @@ const GET_ACTIVITIES = gql `
   }
 }
 `;
-// function DateGroupRow(props){
-//     return(
-//         <tr>
-//             <td>add date</td>
-//             <td><DateTime/></td>
-//             <td>Duration: <input type="number"></input></td>
-//         </tr>);
-// }
-//
-// class DateGroupTable extends Component{
-//     constructor(props){
-//         super(props);
-//         this.state = {events:[<DateGroupRow></DateGroupRow>]};
-//         this.createRow = this.createRow.bind(this);
-//         this.removeRow = this.removeRow.bind(this);
-//     }
-//     createRow(){
-//         this.setState({
-//             events:[...this.state.events, <DateGroupRow></DateGroupRow>]
-//         })
-//     }
-//     removeRow(){
-//         if(this.state.events.lenght > 0){
-//             let end = this.state.events.lengt -1;
-//             this.setState({
-//                 events:this.state.events.slice(0, end)
-//             })
-//         }
-//     }
-//     render(){
-//     return(
-//         <table>
-//             <tbody>
-//                 {this.state.events}
-//                 <tr>
-//                     <td><button onClick={this.createRow}>Add a Date</button></td>
-//                     <td><button onClick={this.removeRow}>Remove a Date</button></td>
-//                 </tr>
-//             </tbody>
-//         </table>);
-//     }
-// }
-//
-
 class ManageEvents extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            route: null
-        };
+            selected: {id:null},
+            events: [],
+        }
+        this.eventTypes = [];
+        this.newEvent = this.newEvent.bind(this);
+        this.removeEvent = this.removeEvent.bind(this);
+        this.selectEvent = this.selectEvent.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+    }
+    newEvent(event) {  //slot select
+        if(this.state.eventType){
+            let eventName = this.eventTypes.filter((element)=>{
+                return element.value === this.state.eventType;
+            })[0].name
+            if(event.action === 'doubleClick'){
+                let newId = '_' + Math.random().toString(36).substr(2, 9);
+                let hour = {
+                  id: newId,
+                  title: eventName || "Name Needed",
+                  start: event.start,
+                  end: event.end,
+                  resources:{
+                      times:[]
+                  }
+                }
+                this.setState({
+                  events: this.state.events.concat([hour]),
+                })
+                return;
+            }
+        }
+        let selectedId = this.state.selected.id;
+        if(selectedId != null){
+          const newEvents = this.state.events.filter((element)=>{return element.id != selectedId});
+          let newEvent = Object.assign({},this.state.selected);
+          newEvent.start = event.start;
+          newEvent.end = new Date(+event.start + 86400000 * event.slots.length);
+          this.setState({
+              events: [...newEvents, newEvent],
+              selected: newEvent,
+          });
+        }
+        this.setState({selected:{id:null}})
+      }
+    removeEvent(event){
+        const newEvents = this.state.events.filter((element)=>{return element.id != event.id});
+        this.setState({
+            events: newEvents
+        })
+    }
+    selectEvent(event){
+        if(this.state.selected.id === event.id){
+            this.setState({selected:{id:null}})
+        }else{
+            this.setState({selected:event})
+      }
     }
     handleInputChange(event) {
         const target = event.target;
@@ -143,7 +152,7 @@ class ManageEvents extends Component {
                     let catagories = data.allActivityCatagories.edges.map((element) => {
                         return {name: element.node.name, value: element.node.id};
                     })
-                    let eventTypes = data.allActivities.edges.map((element) => {
+                    this.eventTypes = data.allActivities.edges.map((element) => {
                         return {
                             name: element.node.name + " (" + element.node.activityCatagoryByType.name + ")",
                             value: element.node.id
@@ -154,7 +163,6 @@ class ManageEvents extends Component {
                         return {name: element.node.alias, value: element.node.id};
                     })
                     let events = data.allEvents.edges;
-                    if (this.state.route === "activity") {} else if (this.state.route === "event") {} else if (this.state.route === "adress") {} else {}
                     return (
                         <div className="manage-events-container">
                         <div className="manage-events-info">
@@ -162,14 +170,14 @@ class ManageEvents extends Component {
                                 <tbody>
                                     <tr>
                                         <td>Type:</td>
-                                        <td><DropDown name="eventType" options={eventTypes} value={this.state.eventType} onChange={this.handleInputChange}></DropDown></td>
+                                        <td><DropDown name="eventType" options={this.eventTypes} value={this.state.eventType} onChange={this.handleInputChange}></DropDown></td>
                                     </tr>
                                     <tr>
                                         <td>Location:</td>
                                         <td><DropDown name="adress" options={addresses} value={this.state.address} onChange={this.handleInputChange}></DropDown></td>
                                     </tr>
                                     <tr>
-                                        <td>price:</td>
+                                        <td>Price:</td>
                                         <td><input type="number"></input></td>
                                     </tr>
                                     <tr>
@@ -184,10 +192,19 @@ class ManageEvents extends Component {
                                         <td>Close Registation On:</td>
                                         <td><DateTime /></td>
                                     </tr>
+                                    <tr>
+                                        <td><button>schedual event</button></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <DragAndDropCalendar events={this.state.events} className="manage-events-calander"/>
+                        <DragAndDropCalendar
+                            selected={this.state.selected}
+                            removeEvent={this.removeEvent}
+                            selectEvent={this.selectEvent}
+                            newEvent={this.newEvent}
+                            events={this.state.events}
+                            className="manage-events-calander"/>
                     </div>);
                 }
             }
