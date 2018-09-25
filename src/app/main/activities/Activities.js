@@ -30,8 +30,12 @@ class Activities extends Component {
             <h1 className="activities-header">{this.props.type}</h1>
             <QueryHandler query={GET_ACTIVITIES(this.props.match.params.type)} inner={(temp) => {
                     return temp.node.activitiesByType.edges.map((element) => {
-                        return <Activity name={element.node.name} description={element.node.description} id={element.node.id} key={element.node.id}></Activity>
-                    })[0];
+                        return <Activity
+                                    name={element.node.name}
+                                    description={element.node.description}
+                                    id={element.node.id}
+                                    key={element.node.id}></Activity>
+                            });
                 }}></QueryHandler>
         </div>)
     }
