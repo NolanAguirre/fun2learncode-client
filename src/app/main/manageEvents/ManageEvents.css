@@ -2,6 +2,10 @@
     display:flex;
     flex-direction: column;
     flex:1;
+    background-color: white;
+    padding: 30px;
+    box-sizing: border-box;
+    max-width: inherit;
 }
 .manage-event-header-item{
     padding: 30px;
@@ -10,11 +14,14 @@
 .manage-events-info{
     display: flex;
     justify-content: space-around;
+    max-width: inherit;
 }
 .manage-events-info >div{
     display: flex;
     flex-direction: column;
 }
 .manage-events-calander{
+    max-width: inherit;
     flex:1;
+    padding-top:20px;
 }

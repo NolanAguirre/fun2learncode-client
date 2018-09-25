@@ -6,6 +6,7 @@ import {Query} from 'react-apollo';
 import DateTime from 'react-datetime';
 import '../../../react-datetime.css'
 import {Calender, DragAndDropCalendar} from '../calender/Calender';
+import Colors from '../calender/Colors'
 const GET_ACTIVITIES = gql `
 {
   allActivityCatagories{
@@ -70,18 +71,73 @@ const GET_ACTIVITIES = gql `
   }
 }
 `;
+
+function EventOptions(props){
+    const isGroupOptions=[
+        {
+            name:"Group",
+            value:true
+        },{
+            name:"Singleton",
+            value: false
+        }
+    ]
+ return(<table>
+     <tbody>
+         <tr>
+             <td>Type:</td>
+             <td><DropDown name="eventType" options={props.eventTypes} value={props.eventType} onChange={props.onChange}></DropDown></td>
+             <td>Location:</td>
+             <td><DropDown name="address" options={props.addresses} value={props.address} onChange={props.onChange}></DropDown></td>
+         </tr>
+         <tr>
+             <td>Treat Dates as:</td>
+             <td><DropDown name="isGroup" options={isGroupOptions} value={props.isGroup} onChange={props.onChange}/></td>
+             {
+                  (props.isGroup === "true")?(<td><button onClick={props.genNewGroup}>Create New group</button></td>):<td></td>
+              }
+         </tr>
+         <tr>
+             <td>Price:</td>
+             <td><input type="number"></input></td>
+             <td>Capacity:</td>
+             <td><input type="number"></input></td>
+         </tr>
+         <tr>
+             <td>Start Time:</td>
+             <td><DateTime /></td>
+             <td>End Time:</td>
+             <td><DateTime /></td>
+         </tr>
+         <tr>
+             <td>Open Registation On:</td>
+             <td><DateTime /></td>
+             <td>Close Registation On:</td>
+             <td><DateTime /></td>
+         </tr>
+     </tbody>
+ </table>)
+}
 class ManageEvents extends Component {
     constructor(props) {
         super(props);
         this.state = {
             selected: {id:null},
             events: [],
+            isGroup: "false",
+            groupId: '_' + Math.random().toString(36).substr(2, 9)
         }
         this.eventTypes = [];
+        this.addresses = [];
+        this.isGroup = false;
         this.newEvent = this.newEvent.bind(this);
         this.removeEvent = this.removeEvent.bind(this);
         this.selectEvent = this.selectEvent.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.genNewGroup = this.genNewGroup.bind(this);
+    }
+    genNewGroup(){
+        this.setState({groupId: '_' + Math.random().toString(36).substr(2, 9)})
     }
     newEvent(event) {  //slot select
         if(this.state.eventType){
@@ -89,15 +145,23 @@ class ManageEvents extends Component {
                 return element.value === this.state.eventType;
             })[0].name
             if(event.action === 'doubleClick'){
-                let newId = '_' + Math.random().toString(36).substr(2, 9);
+                let groupId;
+                if(this.state.isGroup === "false"){
+                    groupId = '_' + Math.random().toString(36).substr(2, 9);
+                    this.setState({groupId: groupId})
+                }else{
+                    groupId = this.state.groupId
+                }
                 let hour = {
-                  id: newId,
-                  title: eventName || "Name Needed",
-                  start: event.start,
-                  end: event.end,
-                  resources:{
-                      times:[]
-                  }
+                    id: '_' + Math.random().toString(36).substr(2, 9),
+                    title: eventName + groupId || "Name Needed",
+                    start: event.start,
+                    end: event.end,
+                    resources:{
+                        groupId: groupId,
+                        isGroup: this.state.isGroup,
+                        buttonStyle:{backgroundColor:Colors.get(groupId)}
+                    }
                 }
                 this.setState({
                   events: this.state.events.concat([hour]),
@@ -105,17 +169,19 @@ class ManageEvents extends Component {
                 return;
             }
         }
-        let selectedId = this.state.selected.id;
-        if(selectedId != null){
-          const newEvents = this.state.events.filter((element)=>{return element.id != selectedId});
-          let newEvent = Object.assign({},this.state.selected);
-          newEvent.start = event.start;
-          newEvent.end = new Date(+event.start + 86400000 * event.slots.length);
-          this.setState({
-              events: [...newEvents, newEvent],
-              selected: newEvent,
-          });
-        }
+        if(event.action==='select'){
+            let selectedId = this.state.selected.id;
+            if(selectedId != null){
+              const newEvents = this.state.events.filter((element)=>{return element.id != selectedId});
+              let newEvent = Object.assign({},this.state.selected);
+              newEvent.start = event.start;
+              newEvent.end = new Date(+event.start + 86400000 * event.slots.length);
+              this.setState({
+                  events: [...newEvents, newEvent],
+                  selected: newEvent,
+              });
+          }
+      }
         this.setState({selected:{id:null}})
       }
     removeEvent(event){
@@ -125,10 +191,11 @@ class ManageEvents extends Component {
         })
     }
     selectEvent(event){
+        console.log(event);
         if(this.state.selected.id === event.id){
             this.setState({selected:{id:null}})
         }else{
-            this.setState({selected:event})
+            this.setState({selected:event, isGroup:event.resources.isGroup, groupId:event.resources.groupId})
       }
     }
     handleInputChange(event) {
@@ -137,6 +204,7 @@ class ManageEvents extends Component {
             ? target.checked
             : target.value;
         const name = target.name;
+        this.genNewGroup();
         this.setState({[name]: value});
     }
     render() {
@@ -159,44 +227,22 @@ class ManageEvents extends Component {
                         };
 
                     })
-                    let addresses = data.allAddresses.edges.map((element) => {
+                    this.addresses = data.allAddresses.edges.map((element) => {
                         return {name: element.node.alias, value: element.node.id};
                     })
                     let events = data.allEvents.edges;
                     return (
-                        <div className="manage-events-container">
+                    <div className="manage-events-container">
                         <div className="manage-events-info">
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td>Type:</td>
-                                        <td><DropDown name="eventType" options={this.eventTypes} value={this.state.eventType} onChange={this.handleInputChange}></DropDown></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Location:</td>
-                                        <td><DropDown name="adress" options={addresses} value={this.state.address} onChange={this.handleInputChange}></DropDown></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Price:</td>
-                                        <td><input type="number"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Capacity:</td>
-                                        <td><input type="number"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Open Registation On:</td>
-                                        <td><DateTime /></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Close Registation On:</td>
-                                        <td><DateTime /></td>
-                                    </tr>
-                                    <tr>
-                                        <td><button>schedual event</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <EventOptions
+                                onChange={this.handleInputChange}
+                                address={this.state.address}
+                                eventType={this.state.eventType}
+                                isGroup={this.state.isGroup}
+                                addresses={this.addresses}
+                                eventTypes={this.eventTypes}
+                                genNewGroup={this.genNewGroup}
+                                />
                         </div>
                         <DragAndDropCalendar
                             selected={this.state.selected}
