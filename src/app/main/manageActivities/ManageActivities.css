@@ -1,0 +1,19 @@
+.manage-activities-container{
+    display: flex;
+    flex-direction: column;
+    flex:1;
+    background-color: white;
+    padding: 30px 40px;
+    box-sizing: border-box;
+}
+.manage-activities-form-container{
+    display: flex;
+    justify-content: space-between;
+}
+.manage-activities-preview{
+
+}
+.manage-activity-textarea{
+    min-width: 300px;
+    min-height: 75px;
+}

@@ -10,6 +10,8 @@ import ManageStudents from './manageStudents/ManageStudents';
 import Logout from './logout/Logout';
 import EventLogs from './eventLogs/EventLogs';
 import ManageEvents from './manageEvents/ManageEvents';
+import ManageAddresses from './manageAddresses/ManageAddresses';
+import ManageActivities from './manageActivities/ManageActivities';
 class Main extends Component {
     constructor(props){
         super(props);
@@ -32,6 +34,8 @@ class Main extends Component {
                         <Route path="/User/Manage Students" render={(props)=><ManageStudents {...this.props}{...props}></ManageStudents>}/>
                         <Route path="/Event Logs/:eventId/:studentId" render={(props)=><EventLogs {...this.props}{...props}></EventLogs>}/>
                         <Route exact path="/Admin/Manage Events" render={(props)=><ManageEvents {...this.props} {...props}></ManageEvents>}/>
+                        <Route exact path="/Admin/Manage Addresses" render={(props)=><ManageAddresses{...this.props} {...props}></ManageAddresses>}/>
+                        <Route exact path="/Admin/Manage Activities" render={(props)=><ManageActivities{...this.props} {...props}></ManageActivities>}/>
                         <Route exact path="/Logout" component={Logout}/>
                     </Switch>
             </div>

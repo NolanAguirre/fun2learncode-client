@@ -59,6 +59,12 @@ function NavBar(props) {
             test: () => {
                 return !props.user
             }
+        },{
+            name: 'Manage Activities',
+            route: 'Admin/Manage Activities',
+            test: () =>{
+                return props.user && props.user.role === "FTLC_INSTRUCTOR"
+            }
         }, {
             name: 'Manage Events',
             route: 'Admin/Manage Events',
