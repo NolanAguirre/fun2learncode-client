@@ -1,38 +1,33 @@
 const colors = [
-    "#ff2d00",
-    "#df2700",
-    "#bf2200",
-    "#9f1c00",
-    "#801600",
-    "#601100",
-    "#400b00",
-    "#00df7b",
-    "#00bf6a",
-    "#009f58",
-    "#008047",
-    "#006035",
-    "#004023",
-    "#000eff",
-    "#000cdf",
-    "#000abf",
-    "#00099f",
-    "#000780",
-    "#000560",
-    "#000340",
-    "#ff00f3",
-    "#df00d5",
-    "#bf00b6",
-    "#9f0098",
-    "#800079",
-    "#60005b",
-    "#40003d"
+    {
+        regular:"#FF0000",
+        hover: "#BF0000",
+    },{
+        regular:"#FF00CC",
+        hover: "#BF0099",
+    },{
+        regular:"#7100FF",
+        hover: "#5500BF",
+    },{
+        regular:"#0021FF",
+        hover: "#0019BF",
+    },{
+        regular:"#00B0FF",
+        hover: "#0084BF",
+    },{
+        regular:"#00FF7E",
+        hover: "#00BF5F",
+    },{
+        regular:"#FF7700",
+        hover: "#BF5900",
+    }
 ];
 class Colors{
     constructor(){
         this.index = 0;
     }
     register(key){
-        this[key] = colors[this.index++];
+        this[key] = colors[this.index++%colors.length];
     }
     get(key){
         if(!this[key]){
