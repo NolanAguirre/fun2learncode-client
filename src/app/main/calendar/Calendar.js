@@ -8,7 +8,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 
 const localizer = BigCalendar.momentLocalizer(moment);
-function Calender(props){
+function Calendar(props){
     let colors = ['blue', 'red', 'green', 'purple']
     function flattenDeep(arr1) {
         return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
@@ -70,4 +70,4 @@ function DragAndDropCalendar(props){
 }
 export {DragAndDropCalendar};
 
-export {Calender};
+export {Calendar};

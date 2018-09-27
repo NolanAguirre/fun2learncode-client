@@ -5,8 +5,8 @@ import gql from 'graphql-tag';
 import {Query} from 'react-apollo';
 import DateTime from 'react-datetime';
 import '../../../react-datetime.css'
-import {Calender, DragAndDropCalendar} from '../calender/Calender';
-import Colors from '../calender/Colors'
+import {Calendar, DragAndDropCalendar} from '../calendar/Calendar';
+import Colors from '../calendar/Colors'
 import moment from 'moment';
 const GET_ACTIVITIES = gql `
 {
