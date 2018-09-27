@@ -54,6 +54,7 @@ function DragAndDropCalendar(props){
         selectable
         popup
         className={props.className}
+        tooltipAccessor={props.tooltipAccessor}
         localizer={localizer}
         events={props.events}
         onSelectSlot={props.newEvent}
