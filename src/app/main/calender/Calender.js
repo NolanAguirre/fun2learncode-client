@@ -42,7 +42,7 @@ function Calender(props){
       showMultiDayTimes={true}
       localizer={localizer}
       events={events}
-      eventPropGetter={(event,start,end,isSelected: boolean ) => {return{style:event.resource.buttonStyle}}}
+      eventPropGetter={(event,start,end,isSelected: boolean ) => {return{style:event.buttonStyle}}}
       tooltipAccessor={(event)=>{return moment(event.start).format("HH:MM") + " - " + moment(event.end).format("HH:MM")}}
     />
   </div>);
@@ -52,13 +52,14 @@ function DragAndDropCalendar(props){
     return (
       <BigCalendar
         selectable
+        popup
         className={props.className}
         localizer={localizer}
         events={props.events}
         onSelectSlot={props.newEvent}
         onSelectEvent={props.selectEvent}
         onDoubleClickEvent={props.removeEvent}
-        eventPropGetter={(event,start,end,isSelected: boolean) => {return{style:event.resources.buttonStyle}}}
+        eventPropGetter={(event,start,end,isSelected: boolean) => {return{style:event.buttonStyle}}}
         selected={props.selected}
         resizable
         views={['month']}

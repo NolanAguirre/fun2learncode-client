@@ -157,10 +157,10 @@ class ManageEvents extends Component {
                     title: eventName + groupId || "Name Needed",
                     start: event.start,
                     end: event.end,
+                    buttonStyle:{backgroundColor:Colors.get(groupId).regular},
                     resources:{
                         groupId: groupId,
                         isGroup: this.state.isGroup,
-                        buttonStyle:{backgroundColor:Colors.get(groupId)}
                     }
                 }
                 this.setState({
@@ -177,26 +177,32 @@ class ManageEvents extends Component {
               newEvent.start = event.start;
               newEvent.end = new Date(+event.start + 86400000 * event.slots.length);
               this.setState({
-                  events: [...newEvents, newEvent],
-                  selected: newEvent,
+                  events: [...newEvents, newEvent]
               });
           }
       }
-        this.setState({selected:{id:null}})
+        this.resetSelectedEvent();
       }
     removeEvent(event){
+        console.log(event);
         const newEvents = this.state.events.filter((element)=>{return element.id != event.id});
         this.setState({
             events: newEvents
         })
     }
     selectEvent(event){
-        console.log(event);
         if(this.state.selected.id === event.id){
-            this.setState({selected:{id:null}})
+            this.resetSelectedEvent();
         }else{
+            event.buttonStyle = {backgroundColor:Colors.get(event.resources.groupId).hover}
             this.setState({selected:event, isGroup:event.resources.isGroup, groupId:event.resources.groupId})
       }
+    }
+    resetSelectedEvent(){
+        this.setState({selected:{id:null},events:this.state.events.map((element)=>{
+            element.buttonStyle = {backgroundColor:Colors.get(element.resources.groupId).regular}
+            return element;
+        })});
     }
     handleInputChange(event) {
         const target = event.target;
