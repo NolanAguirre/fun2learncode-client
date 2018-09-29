@@ -42,99 +42,144 @@ const GET_ACTIVITIES = gql `
   }
 }
 `;
-
-function EventOptions(props){
-    const isGroupOptions=[
-        {
-            name:"Group",
-            value:true
-        },{
-            name:"Singleton",
-            value: false
+class EventOptions extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            price:100,
+            capacity:8,
+            open: new Date(),
+            close: new Date(+new Date() + 86400000)
         }
-    ]
- return(<table>
-     <tbody>
-         <tr>
-             <td>Type:</td>
-             <td><DropDown name="eventType" options={props.eventTypes} value={props.eventType} onChange={props.onChange}></DropDown></td>
-             <td>Location:</td>
-             <td><DropDown name="address" options={props.addresses} value={props.address} onChange={props.onChange}></DropDown></td>
-         </tr>
-         <tr>
-             <td>Treat Dates as:</td>
-             <td><DropDown name="isGroup" options={isGroupOptions} value={props.isGroup} onChange={props.onChange}/></td>
-             {
-                  (props.isGroup === "true")?(<td><button onClick={props.genNewGroup}>Create New group</button></td>):<td></td>
-              }
-         </tr>
-         <tr>
-             <td>Price:</td>
-             <td><input name="price" value={props.price} onChange={props.onChange} type="number"></input></td>
-             <td>Capacity:</td>
-             <td><input name="capacity" value={props.capacity} onChange={props.onChange} type="number"></input></td>
-         </tr>
-         <tr>
-             <td>Start Time:</td>
-             <td><DateTime dateFormat={false} value={props.start} onChange={(time)=>{props.onTimeChange(time, "start", false)}}/></td>
-             <td>End Time:</td>
-             <td><DateTime dateFormat={false} value={props.end} onChange={(time)=>{props.onTimeChange(time, "end", false)}}/></td>
-         </tr>
-         <tr>
-             <td>Open Registation On:</td>
-             <td><DateTime dateFormat="YYYY-MM-DD" value={props.open} onChange={(time)=>{props.onTimeChange(time, "open", true)}}/></td>
-             <td>Close Registation On:</td>
-             <td><DateTime dateFormat="YYYY-MM-DD" value={props.close} onChange={(time)=>{props.onTimeChange(time, "close", true)}}/></td>
-         </tr>
-     </tbody>
- </table>)
+        this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(event, refresh) {
+        const target = event.target;
+        const value = target.type === 'checkbox'
+            ? target.checked
+            : target.value;
+        const name = target.name;
+        this.setState({[name]: value});
+    }
+    handleTimeChange(movement, name){
+        this.setState({[name]:movement})
+    }
+    render(){
+     return(<table>
+         <tbody>
+             <tr>
+                 <td>Type:</td>
+                 <td><DropDown name="eventType" options={this.props.eventTypes} value={this.state.eventType} onChange={this.handleChange}></DropDown></td>
+                 <td>Location:</td>
+                 <td><DropDown name="address" options={this.props.addresses} value={this.state.address} onChange={this.handleChange}></DropDown></td>
+             </tr>
+             <tr>
+                 <td>Price:</td>
+                 <td><input name="price" value={this.state.price} onChange={this.handleChange} type="number"></input></td>
+                 <td>Capacity:</td>
+                 <td><input name="capacity" value={this.state.capacity} onChange={this.handleChange} type="number"></input></td>
+             </tr>
+             <tr>
+                <td>Open Registation On:</td>
+                <td><DateTime dateFormat="YYYY-MM-DD" value={this.state.open} onChange={(time)=>{this.onTimeChange(time, "open")}}/></td>
+                <td>Close Registation On:</td>
+                <td><DateTime dateFormat="YYYY-MM-DD" value={this.state.close} onChange={(time)=>{this.onTimeChange(time, "close")}}/></td>
+            </tr>
+             <tr>
+                 <td><button onClick={()=>{this.props.createEvent(this.state)}}>Create event</button></td>
+             </tr>
+         </tbody>
+     </table>)
+    }
 }
 
+
+
+class DateGroups{
+    constructor(){
+        this.genId = this.genId.bind(this);
+        this.newEvent = this.newEvent.bind(this);
+        this.newDateGroup = this.newDateGroup.bind(this);
+        this.removeDateGroup = this.removeDateGroup.bind(this);
+        this.selectEvent = this.selectEvent.bind(this);
+    }
+    genId(){
+        return '_' + Math.random().toString(36).substr(2, 12);
+    }
+    newEvent(p, c, a, o, cl, t){
+        this.currentEvent = '_' + Math.random().toString(36).substr(2, 12);;
+        this[this.currentEvent] = {
+            price:p,
+            capacity:c,
+            address:a,
+            open:o,
+            close:cl,
+            type:t,
+            dateGroups:[]
+        }
+        return this.currentEvent
+    }
+    newDateGroup(){
+        let groupId = this.genId();
+        this[this.currentEvent].dateGroups.push(groupId);
+        return groupId;
+    }
+    removeDateGroup(id){
+        for(let key in this){
+            this[key].dateGroups = this[key].dateGroups.filter((el)=>{return el != id})
+            if(this[key].dateGroups.length == 0){
+                delete this[key];
+            }
+        }
+    }
+    selectEvent(id){
+        this.currentEvent=id;
+        return this[id];
+    }
+}
 class ManageEvents extends Component {
     constructor(props) {
         super(props);
         this.state = {
             selected: {id:null},
             events: [],
-            isGroup: "false",
-            price:100,
-            capacity:8,
-            start: new Date(),
-            end: new Date(),
-            open: new Date(),
-            close: new Date(+new Date() + 86400000),
+            calendarEvents: [],
             groupId: '_' + Math.random().toString(36).substr(2, 9)
         }
+        this.dateGroups = new DateGroups();
         this.eventTypes = [];
         this.addresses = [];
-        this.isGroup = false;
         this.newEvent = this.newEvent.bind(this);
         this.removeEvent = this.removeEvent.bind(this);
         this.selectEvent = this.selectEvent.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleTimeChange = this.handleTimeChange.bind(this);
         this.genNewGroup = this.genNewGroup.bind(this);
+        this.createEvent = this.createEvent.bind(this);
         this.tooltipAccessor = this.tooltipAccessor.bind(this);
     }
     genNewGroup(){
         this.setState({groupId: '_' + Math.random().toString(36).substr(2, 9)})
     }
-    hasRequiredValues(state){
-        return state.address && state.eventType ;
+    createEvent({price, capacity, address, open, close, eventType}){
+        let eventId = this.dateGroups.newEvent(price, capacity, address, open,close,eventType);
+        this.setState({
+            events: [...this.state.events, eventId]
+        })
     }
     newEvent(event) {  //slot select
-        if(this.hasRequiredValues(this.state)){
+        if(true){
             let eventName = this.eventTypes.filter((element)=>{
                 return element.value === this.state.eventType;
             })[0].name
             if(event.action === 'doubleClick'){
-                let groupId;
                 if(this.state.isGroup === "false"){
-                    groupId = '_' + Math.random().toString(36).substr(2, 9);
-                    this.setState({groupId: groupId})
-                }else{
-                    groupId = this.state.groupId
+                    this.dateGroup.newEvent(this.state.price,
+                        this.state.capacity,
+                        this.state.open,
+                        this.state.close,
+                        this.state.address,
+                        this.state.eventType)
                 }
+                let groupId = this.genNewGroup();
                 let hour = {
                     id: '_' + Math.random().toString(36).substr(2, 9),
                     title: eventName,
@@ -145,20 +190,14 @@ class ManageEvents extends Component {
                         start: this.state.start,
                         end: this.state.end,
                         groupId: groupId,
-                        isGroup: this.state.isGroup,
+                        isGroup: this.state.isGroup
                     }
                 }
+                this.dateGroups[groupId] =
                 this.setState({
-                  events: this.state.events.concat([hour]),
-                  [groupId]: {
-                      price:this.state.price,
-                      capacity:this.state.capacity,
-                      open: this.state.open,
-                      close: this.state.close,
-                      address: this.state.address,
-                      eventType: this.state.eventType
-                  }
+                    events: this.state.events.concat([hour])
                 })
+                console.log(this.dateGroups)
                 return;
             }
         }
@@ -178,9 +217,13 @@ class ManageEvents extends Component {
       }
     removeEvent(event){
         const newEvents = this.state.events.filter((element)=>{return element.id != event.id});
+        let removeGroup = newEvents.filter((element)=>{return element.resources.groupId == event.resources.groupId}).length == 0;
         this.setState({
-            events: newEvents
+            events: newEvents,
         })
+        if(removeGroup){
+            delete this.dateGroups[event.resources.groupId]
+        }
     }
     selectEvent(event){
         if(this.state.selected.id === event.id){
@@ -196,23 +239,8 @@ class ManageEvents extends Component {
             return element;
         })});
     }
-    handleChange(event) {
-        const target = event.target;
-        const value = target.type === 'checkbox'
-            ? target.checked
-            : target.value;
-        const name = target.name;
-        this.genNewGroup();
-        this.setState({[name]: value});
-    }
-    handleTimeChange(movement, name, refresh){
-        if(refresh){
-            this.genNewGroup();
-        }
-        this.setState({[name]:movement})
-    }
     tooltipAccessor(event){
-        let group = this.state[event.resources.groupId];
+        let group = this.dateGroups[event.resources.groupId];
         let address = this.addresses.filter((element)=>{
             return element.value === group.address;
         })[0].name
@@ -252,30 +280,22 @@ Registartion
                     <div className="manage-events-container">
                         <div className="manage-events-info">
                             <EventOptions
-                                onChange={this.handleChange}
-                                onTimeChange={this.handleTimeChange}
-                                address={this.state.address}
-                                eventType={this.state.eventType}
-                                isGroup={this.state.isGroup}
-                                price={this.state.price}
-                                capacity={this.state.capacity}
-                                start={this.state.start}
-                                end={this.state.end}
-                                open={this.state.open}
-                                close={this.state.close}
                                 addresses={this.addresses}
                                 eventTypes={this.eventTypes}
-                                genNewGroup={this.genNewGroup}
+                                createEvent={this.createEvent}
                                 />
                         </div>
+                        {
+                            (this.state.events.length > 0)?
                         <DragAndDropCalendar
                             tooltipAccessor={this.tooltipAccessor}
                             selected={this.state.selected}
                             removeEvent={this.removeEvent}
                             selectEvent={this.selectEvent}
                             newEvent={this.newEvent}
-                            events={this.state.events}
-                            className="manage-events-calander"/>
+                            events={this.state.calendarEvents}
+                            className="manage-events-calander"/>: <div></div>
+                    }
                     </div>);
                 }
             }
