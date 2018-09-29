@@ -5,5 +5,12 @@
     justify-content: space-between;
 }
 .students-container >:first-child{
+    overflow-y: auto;
+    max-height: 100px;
     display: flex;
+    flex-direction: column;
+}
+.selected-student{
+    padding-left: 15px;
+    padding-top: 10px;
 }

@@ -9,7 +9,6 @@ const GET_STUDENTS = (parentId) =>{
       allStudents(condition: {parent: "${parentId}"}) {
         edges {
           node {
-            id
             userByStudent {
               id
               firstName
@@ -25,9 +24,17 @@ class StudentSelect extends Component{
         if(this.props.user){
             return (
                 <div className="student-select-container">
-                    Select A Student
+                    <div>
+                        Select A Student
+                    {(this.props.student)?
+                        <div className="selected-student">
+                            Current Student is:
+                            <StudentPreview student={this.props.student} />
+                        </div>
+                        :<div></div>}
+                    </div>
                     <div className="students-container">
-                        <QueryHandler query={GET_STUDENTS(this.props.user.id)} inner={(element)=>{return<StudentPreview click={this.props.click}id={element.node.id} key={element.node.id} student={element.node.userByStudent}></StudentPreview>}}></QueryHandler>
+                        <QueryHandler query={GET_STUDENTS(this.props.user.id)} inner={(element)=>{return<StudentPreview click={this.props.click} key={element.node.userByStudent.id} student={element.node.userByStudent}></StudentPreview>}}></QueryHandler>
                     </div>
                 </div>);
         }else{
