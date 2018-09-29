@@ -25,8 +25,9 @@ class Login extends Component{
           }
         }`}).then((res)=>{
             if(res.data.data.authenticate.jwtToken){
-                this.props.history.push(this.props.redirectUrl || '/');
                 UserStore.set('authToken', res.data.data.authenticate.jwtToken);
+                window.location.reload();
+                this.props.history.push(this.props.redirectUrl || '/');
             }
             // TODO handle failed login
         })
