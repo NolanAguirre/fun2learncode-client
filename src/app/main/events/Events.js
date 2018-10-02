@@ -24,6 +24,7 @@ const GET_EVENTS = (id) => {
         eventDatesByEvent{
           edges{
             node{
+              id
               dateGroupByDateGroup{
                 datesJoinsByDateGroup{
                   edges{
@@ -44,30 +45,31 @@ const GET_EVENTS = (id) => {
   }
 }`
 }
-class Events extends Component {
-    render() {
-        return (<div className="events">
-            <h1 className="events-title">{this.props.match.params.name}</h1>
-            <QueryHandler query={GET_EVENTS(this.props.match.params.id)} inner={(element) => { // if the event has no dates, it is not displayed
-                    let sessions = element.node.eventDatesByEvent.edges;
-                    return sessions.map((el)=>{
-                        let dates = el.node.dateGroupByDateGroup.datesJoinsByDateGroup.edges
-                        return <EventComponent
-                                activityName={this.props.match.params.name}
-                                activityId={this.props.match.params.id}
-                                name={this.props.name}
-                                description={this.props.description}
-                                location={element.node.addressByAddress}
-                                capacity={element.node.capacity}
+function Events(props) {
+    return (<QueryHandler query={GET_EVENTS(props.match.params.id)} child={(data) => {
+            return (<div className="events">
+                <h1 className="events-title">{props.match.params.name}</h1>
+                {
+                    data.allEvents.edges.map((event)=>{ // this creates event
+                        return event.node.eventDatesByEvent.edges.map((dateGroups) => { // if the event has no dates, it is not displayed
+                            let dates = dateGroups.node.dateGroupByDateGroup.datesJoinsByDateGroup.edges;
+                            return <EventComponent
+                                activityName={props.match.params.name}
+                                activityId={props.match.params.id}
+                                name={props.name}
+                                description={props.description}
+                                location={event.node.addressByAddress}
+                                capacity={event.node.capacity}
                                 date={dates}
-                                id={element.node.id}
-                                price={element.node.price}
-                                click={this.props.click}
-                                key={element.node.id}></EventComponent>
+                                id={event.node.id}
+                                price={event.node.price}
+                                click={props.click}
+                                key={dateGroups.node.id} />
+                        })
                     })
-                }}></QueryHandler>
-        </div>);
-    }
+                }
+            </div>);
+        }}></QueryHandler>);
 }
 
 export default Events;
