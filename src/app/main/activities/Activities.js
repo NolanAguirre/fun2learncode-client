@@ -24,20 +24,16 @@ const GET_ACTIVITIES = (name) => {
     }
     `;
 }
-class Activities extends Component {
-    render() {
-        return (<div className="home">
-            <h1 className="activities-header">{this.props.type}</h1>
-            <QueryHandler query={GET_ACTIVITIES(this.props.match.params.type)} inner={(temp) => {
-                    return temp.node.activitiesByType.edges.map((element) => {
-                        return <Activity
-                                    name={element.node.name}
-                                    description={element.node.description}
-                                    id={element.node.id}
-                                    key={element.node.id}></Activity>
-                            });
-                }}></QueryHandler>
-        </div>)
-    }
+function Activities(props) {
+    return (<QueryHandler query={GET_ACTIVITIES(props.match.params.type)} child={(data) => {
+            return (<div className="home">
+                <h1 className="activities-header">{props.type}</h1>
+                {
+                    data.allActivityCatagories.edges[0].node.activitiesByType.edges.map((element) => {
+                        return <Activity name={element.node.name} description={element.node.description} id={element.node.id} key={element.node.id}/>
+                    })
+                }
+            </div>)
+        }}></QueryHandler>);
 }
 export default Activities;
