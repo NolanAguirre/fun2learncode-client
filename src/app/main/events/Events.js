@@ -5,9 +5,9 @@ import EventComponent from './event/Event'
 import gql from 'graphql-tag';
 import QueryHandler from '../queryHandler/QueryHandler';
 
-const GET_EVENTS = (id) => {
+const GET_EVENTS = (id) => { // TODO group this by address so i dont have to load multiple maps
     return gql `{
-  allEvents(condition: {eventType: "${id}"}) {
+  allEvents(orderBy:ADDRESS_ASC, condition: {eventType: "${id}"}) {
     edges {
       node {
         capacity
