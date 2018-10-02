@@ -42,6 +42,66 @@ const GET_ACTIVITIES = gql `
   }
 }
 `;
+function CreateEvent(props){
+    return(<table>
+        <tbody>
+            <tr>
+                <td>Type:</td>
+                <td><DropDown name="eventType" options={props.eventTypes} value={props.eventType} onChange={props.handleChange}></DropDown></td>
+                <td>Location:</td>
+                <td><DropDown name="address" options={props.addresses} value={props.address} onChange={props.handleChange}></DropDown></td>
+            </tr>
+            <tr>
+                <td>Price:</td>
+                <td><input name="price" value={props.price} onChange={props.handleChange} type="number"></input></td>
+                <td>Capacity:</td>
+                <td><input name="capacity" value={props.capacity} onChange={props.handleChange} type="number"></input></td>
+            </tr>
+            <tr>
+               <td>Open Registation On:</td>
+               <td><DateTime dateFormat="YYYY-MM-DD" value={props.open} onChange={(time)=>{props.onTimeChange(time, "open")}}/></td>
+               <td>Close Registation On:</td>
+               <td><DateTime dateFormat="YYYY-MM-DD" value={props.close} onChange={(time)=>{this.onTimeChange(time, "close")}}/></td>
+           </tr>
+            <tr>
+                <td><button onClick={()=>{props.createEvent()}}>Plan Event Dates</button></td>
+            </tr>
+        </tbody>
+    </table>)
+}
+function CreateDates(props){
+    return(<table>
+        <tbody>
+            <tr>
+                <td>Type:</td>
+                <td>{props.eventType}</td>
+                <td>Location:</td>
+                <td>{props.address}</td>
+            </tr>
+            <tr>
+                <td>Price:</td>
+                <td>{props.price}</td>
+                <td>Capacity:</td>
+                <td>{props.capacity}</td>
+            </tr>
+            <tr>
+               <td>Open Registation On:</td>
+               <td>{props.open}</td>
+               <td>Close Registation On:</td>
+               <td>{props.close}</td>
+           </tr>
+           <tr>
+              <td>Start Time:</td>
+              <td><DateTime dateFormat="YYYY-MM-DD" value={props.start} onChange={(time)=>{props.onTimeChange(time, "open")}}/></td>
+              <td>End Time:</td>
+              <td><DateTime dateFormat="YYYY-MM-DD" value={props.end} onChange={(time)=>{props.onTimeChange(time, "close")}}/></td>
+          </tr>
+            <tr>
+                <td><button onClick={()=>{props.createDateGroup(props)}}>Begin new group</button></td>
+            </tr>
+        </tbody>
+    </table>)
+}
 class EventOptions extends Component{
     constructor(props){
         super(props);
@@ -49,9 +109,11 @@ class EventOptions extends Component{
             price:100,
             capacity:8,
             open: new Date(),
-            close: new Date(+new Date() + 86400000)
+            close: new Date(+new Date() + 86400000),
+            creatingEvent: true
         }
         this.handleChange = this.handleChange.bind(this);
+        this.createEvent = this.createEvent.bind(this);
     }
     handleChange(event, refresh) {
         const target = event.target;
@@ -64,39 +126,39 @@ class EventOptions extends Component{
     handleTimeChange(movement, name){
         this.setState({[name]:movement})
     }
+    createEvent(){
+        this.props.createEvent(this.state);
+        this.setState({
+            creatingEvent:false
+        })
+    }
     render(){
-     return(<table>
-         <tbody>
-             <tr>
-                 <td>Type:</td>
-                 <td><DropDown name="eventType" options={this.props.eventTypes} value={this.state.eventType} onChange={this.handleChange}></DropDown></td>
-                 <td>Location:</td>
-                 <td><DropDown name="address" options={this.props.addresses} value={this.state.address} onChange={this.handleChange}></DropDown></td>
-             </tr>
-             <tr>
-                 <td>Price:</td>
-                 <td><input name="price" value={this.state.price} onChange={this.handleChange} type="number"></input></td>
-                 <td>Capacity:</td>
-                 <td><input name="capacity" value={this.state.capacity} onChange={this.handleChange} type="number"></input></td>
-             </tr>
-             <tr>
-                <td>Open Registation On:</td>
-                <td><DateTime dateFormat="YYYY-MM-DD" value={this.state.open} onChange={(time)=>{this.onTimeChange(time, "open")}}/></td>
-                <td>Close Registation On:</td>
-                <td><DateTime dateFormat="YYYY-MM-DD" value={this.state.close} onChange={(time)=>{this.onTimeChange(time, "close")}}/></td>
-            </tr>
-             <tr>
-                 <td><button onClick={()=>{this.props.createEvent(this.state)}}>Create event</button></td>
-             </tr>
-         </tbody>
-     </table>)
+        return(<div>
+                {
+                    (this.state.creatingEvent)?
+                <CreateEvent
+                    eventTypes={this.props.eventTypes}
+                    addresses={this.props.addresses}
+                    price={this.state.price}
+                    capacity={this.state.capacity}
+                    open={this.state.open}
+                    close={this.state.close}
+                    handleChange={this.handleChange}
+                    handleTimeChange={this.handleTimeChange}
+                    createEvent={this.createEvent}/>:
+                    <div></div>
+            }
+            </div>
+
+        )
     }
 }
 
 
 
 class DateGroups{
-    constructor(){
+    constructor(eventNames){
+        this.eventNames = eventNames;
         this.genId = this.genId.bind(this);
         this.newEvent = this.newEvent.bind(this);
         this.newDateGroup = this.newDateGroup.bind(this);
@@ -115,6 +177,7 @@ class DateGroups{
             open:o,
             close:cl,
             type:t,
+            name: this.eventNames.filter((element)=>{return element.value === t;})[0].name,
             dateGroups:[]
         }
         return this.currentEvent
@@ -132,6 +195,9 @@ class DateGroups{
             }
         }
     }
+    getName(id){
+        return this[id].name;
+    }
     selectEvent(id){
         this.currentEvent=id;
         return this[id];
@@ -144,11 +210,8 @@ class ManageEvents extends Component {
             selected: {id:null},
             events: [],
             calendarEvents: [],
-            groupId: '_' + Math.random().toString(36).substr(2, 9)
+            currentGroup: '_' + Math.random().toString(36).substr(2, 9)
         }
-        this.dateGroups = new DateGroups();
-        this.eventTypes = [];
-        this.addresses = [];
         this.newEvent = this.newEvent.bind(this);
         this.removeEvent = this.removeEvent.bind(this);
         this.selectEvent = this.selectEvent.bind(this);
@@ -162,30 +225,20 @@ class ManageEvents extends Component {
     createEvent({price, capacity, address, open, close, eventType}){
         let eventId = this.dateGroups.newEvent(price, capacity, address, open,close,eventType);
         this.setState({
-            events: [...this.state.events, eventId]
+            events: [...this.state.events, eventId],
+            currentGroup: eventId
         })
     }
     newEvent(event) {  //slot select
         if(true){
-            let eventName = this.eventTypes.filter((element)=>{
-                return element.value === this.state.eventType;
-            })[0].name
             if(event.action === 'doubleClick'){
-                if(this.state.isGroup === "false"){
-                    this.dateGroup.newEvent(this.state.price,
-                        this.state.capacity,
-                        this.state.open,
-                        this.state.close,
-                        this.state.address,
-                        this.state.eventType)
-                }
                 let groupId = this.genNewGroup();
                 let hour = {
                     id: '_' + Math.random().toString(36).substr(2, 9),
-                    title: eventName,
+                    title: this.dateGroups.getName(this.state.currentId),
                     start: event.start,
                     end: event.end,
-                    buttonStyle:{backgroundColor:Colors.get(groupId).regular},
+                    buttonStyle:{backgroundColor:Colors.get(this.state.currentGroup).regular},
                     resources:{
                         start: this.state.start,
                         end: this.state.end,
@@ -193,11 +246,9 @@ class ManageEvents extends Component {
                         isGroup: this.state.isGroup
                     }
                 }
-                this.dateGroups[groupId] =
                 this.setState({
-                    events: this.state.events.concat([hour])
+                    calaendarEvents: [...this.state.calendarEvents, hour]
                 })
-                console.log(this.dateGroups)
                 return;
             }
         }
@@ -266,7 +317,7 @@ Registartion
                     let catagories = data.allActivityCatagories.edges.map((element) => {
                         return {name: element.node.name, value: element.node.id};
                     })
-                    this.eventTypes = data.allActivities.edges.map((element) => {
+                    let eventTypes = data.allActivities.edges.map((element) => {
                         return {
                             name: element.node.name + " (" + element.node.activityCatagoryByType.name + ")",
                             value: element.node.id
@@ -276,12 +327,13 @@ Registartion
                     this.addresses = data.allAddresses.edges.map((element) => {
                         return {name: element.node.alias, value: element.node.id};
                     })
+                    this.dateGroups = new DateGroups(eventTypes);
                     return (
                     <div className="manage-events-container">
                         <div className="manage-events-info">
                             <EventOptions
                                 addresses={this.addresses}
-                                eventTypes={this.eventTypes}
+                                eventTypes={eventTypes}
                                 createEvent={this.createEvent}
                                 />
                         </div>
