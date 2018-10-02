@@ -2,38 +2,26 @@ import React, {Component} from 'react';
 import gql from 'graphql-tag';
 import {Query} from 'react-apollo';
 
-class QueryHandler extends Component{
-    render(){
-        return(
-            <Query query={this.props.query}>
-            {({loading,error,data}) => {
-                if (loading) {
-                    if(this.props.loading){
-                        return this.props.loading;
-                    }
-                    return 'Loading...';
+function QueryHandler(props){
+    return(
+        <Query query={props.query}>
+        {({loading,error,data}) => {
+            if (loading) {
+                if(props.loading){
+                    return props.loading(loading);
                 }
-                if (error) {
-                    if(this.props.error){
-                        return this.props.error;
-                    }
-                    return `Error! ${error.message}`;
+                return 'Loading...';
+            }
+            if (error) {
+                if(props.error){
+                    return props.error(error);
                 }
-                if(this.props.formatData){
-                    data = this.props.formatData(data);
-                }
-                return(
-                    <div>{
-                        Object.values(data)[0].edges.map((element) => {
-                            return this.props.inner(element);
-                        })
-                    }
-                    </div>
-                );
-            }}
-            </Query>
-        )
-    }
+                return `Error! ${error.message}`;
+            }
+            return(props.child(data));
+        }}
+        </Query>
+    );
 }
 
 export default QueryHandler;
