@@ -45,11 +45,10 @@ const GET_EVENTS = (id) => {
 }`
 }
 class Events extends Component {
-
     render() {
         return (<div className="events">
             <h1 className="events-title">{this.props.match.params.name}</h1>
-            <QueryHandler query={GET_EVENTS(this.props.match.params.id)} inner={(element) => {
+            <QueryHandler query={GET_EVENTS(this.props.match.params.id)} inner={(element) => { // if the event has no dates, it is not displayed
                     let sessions = element.node.eventDatesByEvent.edges;
                     return sessions.map((el)=>{
                         let dates = el.node.dateGroupByDateGroup.datesJoinsByDateGroup.edges
