@@ -414,21 +414,6 @@ class ManageEventsClass extends Component {
             })
         });
     }
-
-//     price: p,
-//     capacity: c,
-//     address: a,
-//     open: o,
-//     close: cl,
-//     type: t,
-//     name: this.eventNames.filter((element) => {
-//         return element.value === t;
-//     })[0].name,
-//     addressName: this.addresses.filter((element) => {
-//         return element.value === a;
-//     })[0].name,
-//     dateGroups: []
-// }
     submitEvents = () =>{
         function spreadDates (eventStart, eventEnd, dayStart, dayEnd){
             let dates = []
