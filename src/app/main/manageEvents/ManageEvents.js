@@ -334,9 +334,9 @@ class ManageEventsClass extends Component {
         this.groupClose = close;
     }
     newCalendarEvent = (event) => { //slot select
-        if(!this.state.currentDateGroup){
+        if(!this.state.currentDateGroup && !this.state.selected.id){
             alert("Create a date group to begin");
-        }else if(!this.state.currentEvent){
+        }else if(!this.state.currentEvent && !this.state.selected.id){
             alert("Create an event to begin");
         }
             if (event.action === 'doubleClick') {
