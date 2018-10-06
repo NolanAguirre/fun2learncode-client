@@ -1,0 +1,16 @@
+.full-date-input > input{
+    max-width: 120px;
+}
+.time-input > input{
+    max-width: 60px;
+}
+.manage-events-event-preview{
+    display: flex;
+    flex-direction: column;
+}
+.event-preview-event-button{
+    text-align: center;
+    background-color: red;
+    padding: 10px;
+    margin: 0 30px;
+}
