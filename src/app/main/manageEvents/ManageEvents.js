@@ -4,12 +4,16 @@ import './ManageEvents.css';
 import gql from 'graphql-tag';
 import {Query} from 'react-apollo';
 import DateTime from 'react-datetime';
-import '../../../react-datetime.css'
+import '../../../react-datetime.css';
 import {Calendar, DragAndDropCalendar} from '../calendar/Calendar';
 import QueryHandler from '../queryHandler/QueryHandler';
 import memoize from "memoize-one";
-import Colors from '../calendar/Colors'
+import Colors from '../calendar/Colors';
 import moment from 'moment';
+import EventForm from './EventForm';
+import DateGroupForm from './DateGroupForm';
+import DateForm from './DateForm';
+import {Event, DateGroup, EventsPreview} from './EventsPreview';
 const GET_ACTIVITIES = gql `
 {
   allActivityCatagories{
@@ -44,242 +48,6 @@ const GET_ACTIVITIES = gql `
   }
 }
 `;
-function CreateEvent(props) {
-    return (<table>
-        <tbody>
-            <tr>
-                <td>Type:</td>
-                <td>
-                    <DropDown name="eventType" options={props.eventTypes} value={props.eventType} onChange={props.handleChange}></DropDown>
-                </td>
-                <td>Location:</td>
-                <td>
-                    <DropDown name="address" options={props.addresses} value={props.address} onChange={props.handleChange}></DropDown>
-                </td>
-            </tr>
-            <tr>
-                <td>Price:</td>
-                <td>
-                    <input name="price" value={props.price} onChange={props.handleChange} type="number"></input>
-                </td>
-                <td>Capacity:</td>
-                <td>
-                    <input name="capacity" value={props.capacity} onChange={props.handleChange} type="number"></input>
-                </td>
-            </tr>
-            <tr>
-                <td>Open Event Registation On:</td>
-                <td><DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) => {
-            props.handleTimeChange(time, "open")
-        }}/></td>
-                <td>Close Event Registation On:</td>
-                <td><DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close} onChange={(time) => {
-            props.handleTimeChange(time, "close")
-        }}/></td>
-            </tr>
-            <tr>
-                <td>
-                    <button onClick={() => {
-                            props.createEvent()
-                        }}>Plan Event Dates</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>)
-}
-function CreateDates(props) {
-    return (<table>
-        <tbody>
-            <tr>
-                <td>Type:</td>
-                <td>{props.eventType}</td>
-                <td>Location:</td>
-                <td>{props.address}</td>
-            </tr>
-            <tr>
-                <td>Price:</td>
-                <td>{props.price}</td>
-                <td>Capacity:</td>
-                <td>{props.capacity}</td>
-            </tr>
-            <tr>
-                <td>Open Event Registation On:</td>
-                <td>{moment(props.open).format("MMMM Do YYYY")}</td>
-                <td>Close Event Registation On:</td>
-                <td>{moment(props.close).format("MMMM Do YYYY")}</td>
-            </tr>
-            <tr>
-                <td>Open Group Registation On:</td>
-                <td><DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.groupOpen} onChange={(time) => {
-            props.handleTimeChange(time, "groupOpen")
-        }}/></td>
-            <td>Close Group Registation On:</td>
-                <td><DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.groupClose}  onChange={(time) => {
-            props.handleTimeChange(time, "groupClose")
-        }}/></td>
-            </tr>
-            <tr>
-                <td>Event Start Time:</td>
-                <td><DateTime dateFormat={false} value={props.start} onChange={(time) => {
-            props.handleTimeChange(time, "start")
-        }}/></td>
-                <td>Event End Time:</td>
-                <td><DateTime value={props.end} dateFormat={false} onChange={(time) => {
-            props.handleTimeChange(time, "end")
-        }}/></td>
-            </tr>
-            <tr>
-                <td>
-                    <button onClick={() => {
-                            props.createDateGroup(props)
-                        }}>Create new group</button>
-                </td>
-                <td>
-                    <button onClick={() => {
-                            props.createDateGroup(props)
-                        }}>Edit Event</button>
-                </td>
-                <td>
-                    <button onClick={
-                            props.displayEventOptions
-                        }>Plan Another Event</button>
-                </td>
-                <td>
-                    <button>Help</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>)
-}
-class EventOptions extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            price: 100,
-            capacity: 8,
-            eventType:undefined,
-            address:undefined,
-            groupOpen: new Date(),
-            groupClose: new Date(),
-            open: new Date(),
-            close: new Date(+ new Date() + 86400000),
-            start: new Date().setHours(12,0,0),
-            end: new Date().setHours(13,0,0),
-            creatingEvent: true
-        }
-        this.createEvent = this.createEvent.bind(this);
-    }
-    handleChange = (event, refresh) => {
-        const target = event.target;
-        const value = target.type === 'checkbox'
-            ? target.checked
-            : target.value;
-        const name = target.name;
-        this.setState({[name]: value});
-    }
-    handleTimeChange = (movement, name)=> {
-        this.setState({[name]: movement})
-    }
-    createEvent() {
-        if (this.state.address && this.state.eventType) {
-            this.props.createEvent(this.state);
-            this.setState({creatingEvent: false})
-        }
-    }
-    displayEventOptions = () => {
-        this.setState({creatingEvent: true})
-        this.props.reset();
-    }
-    createDateGroup = (props) => {
-        this.props.createDateGroup(this.state.start, this.state.end, this.state.groupOpen, this.state.groupClose);
-    }
-    render() {
-        return (<div>
-            {
-                (this.state.creatingEvent)
-                    ? <CreateEvent
-                    eventTypes={this.props.eventTypes}
-                    addresses={this.props.addresses}
-                    address={this.state.address}
-                    eventType={this.state.eventType}
-                    price={this.state.price}
-                    capacity={this.state.capacity}
-                    open={this.state.open}
-                    close={this.state.close}
-                    handleChange={this.handleChange}
-                    handleTimeChange={this.handleTimeChange}
-                    createEvent={this.createEvent}/>
-                    : <CreateDates
-                    price={this.state.price}
-                    groupOpen={this.state.groupOpen}
-                    groupClose={this.state.groupClose}
-                    eventType={this.props.eventTypes.filter((element)=>{return element.value == this.state.eventType})[0].name}
-                    address={this.props.addresses.filter((element)=>{return element.value == this.state.address})[0].name}
-                    capacity={this.state.capacity}
-                    open={this.state.open}
-                    close={this.state.close}
-                    start={this.state.start}
-                    end={this.state.end}
-                    handleChange={this.handleChange}
-                    handleTimeChange={this.handleTimeChange}
-                    displayEventOptions={this.displayEventOptions}
-                    createDateGroup={this.createDateGroup}/>
-            }
-        </div>)
-    }
-}
-
-class DateGroups {
-    constructor() {
-        this.idCount = 0;
-        this.data = {};
-    }
-    setEventTypes = (eventNames)=>{
-        this.eventNames = eventNames;
-    }
-    setAddresses = (addresses)=>{
-        this.addresses = addresses;
-    }
-    genId = () => {
-        return "_" +this.idCount++;
-    }
-    newEvent = (p, c, a, o, cl, t) => {
-        this.currentEvent = this.genId();
-        this.data[this.currentEvent] = {
-            price: p,
-            capacity: c,
-            address: a,
-            open: o,
-            close: cl,
-            type: t,
-            name: this.eventNames.filter((element) => {
-                return element.value === t;
-            })[0].name,
-            addressName: this.addresses.filter((element) => {
-                return element.value === a;
-            })[0].name,
-            dateGroups: []
-        }
-        return this.currentEvent;
-    }
-    newDateGroup = () => {
-        let groupId = this.genId();
-        this.data[this.currentEvent].dateGroups.push(groupId);
-        return groupId;
-    }
-    removeDateGroup = (id) => {
-        this.data[this.currentEvent].dateGroups = this.data[this.currentEvent].dateGroups.filter((el) => {
-            return el != id
-        })
-    }
-    getName = (id) => {
-        return this.data[id].name;
-    }
-    selectEvent(id) {
-        this.currentEvent = id;
-        return this.data[id];
-    }
-}
 class ManageEventsClass extends Component {
     constructor(props) {
         super(props);
@@ -292,46 +60,43 @@ class ManageEventsClass extends Component {
             currentEvent: null,
             currentDateGroup: null
         }
-        this.dateGroups = new DateGroups();
+        this.events = [];
     }
-    mapCatagories = memoize(
-        (data) => data.edges.map((element) => {return {name: element.node.name, value: element.node.id}})
-    );
-    mapAddresses = memoize(
-        (data) => {
-            let filtered = data.edges.map((element) => {return {name: element.node.alias, value: element.node.id}})
-            this.dateGroups.setAddresses(filtered);
-            return filtered;
-        }
-    );
-    mapEventTypes = memoize(
-        (data) =>{
-            let filtered = data.edges.map((element) => {return {name: element.node.name + " (" + element.node.activityCatagoryByType.name + ")",value: element.node.id}})
-            this.dateGroups.setEventTypes(filtered);
-            return filtered;
-        }
-    );
     reset = () =>{
         this.setState({currentEvent:null, currentDateGroup:null});
     }
-    createEvent = ({price, capacity, address, open, close, eventType}) => {
-        let eventId = this.dateGroups.newEvent(price, capacity, address, open, close, eventType);
+    createEvent = (event) => {
+        event.dateGroups = [];
+        this.events.push(event);
         this.setState({
-            events: [
-                ...this.state.events,
-                eventId
-            ],
-            currentEvent: eventId
-        });
+            foo:0
+        })
     }
-    createDateGroup = (start, end, open, close) => {
-        this.setState({
-            currentDateGroup: this.dateGroups.newDateGroup()
+    createDateGroup = (dateGroup) => {
+        this.events = this.events.map((element) => {
+            if (element.id === dateGroup.event) {
+                element.dateGroups.push(dateGroup);
+            }
+            return element;
         });
-        this.start = start;
-        this.end = end;
-        this.groupOpen = open;
-        this.groupClose = close;
+        this.setState({
+            foo:0
+        })
+        console.log(this.events);
+    }
+    createDate = (date, groupId) => {
+        this.events = this.events.map((element) => {
+            element.dateGroups = element.dateGroups.map((dateGroup)=>{
+                if(dateGroup.id === groupId){
+                    dateGroup.dates.push(date);
+                }
+                return dateGroup;
+            });
+            return element;
+        });
+        this.setState({
+            foo:0
+        })
     }
     newCalendarEvent = (event) => { //slot select
         if(!this.state.currentDateGroup && !this.state.selected.id){
@@ -392,14 +157,11 @@ class ManageEventsClass extends Component {
         }
     }
     selectEvent = (event) => {
-        if (this.state.selected.id === event.id) {
-            this.resetSelectedEvent();
-        } else {
-            event.buttonStyle = {
-                backgroundColor: Colors.get(event.resources.groupId).hover
-            }
-            this.setState({selected: event})
+        this.resetSelectedEvent();
+        event.buttonStyle = {
+            backgroundColor: Colors.get(event.resources.groupId).hover
         }
+        this.setState({selected: event})
     }
     resetSelectedEvent = () => {
         this.setState({
@@ -462,7 +224,7 @@ class ManageEventsClass extends Component {
                 address: this.dateGroups.data[key].address,
                 capacity: this.dateGroups.data[key].capacity
             };
-        })
+        });
         console.log(events);
     }
     tooltipAccessor = (event) => {
@@ -481,27 +243,28 @@ Event Id:${event.resources.eventId}
 `;
     }
     render() {
-        const catagories = this.mapCatagories(this.props.queryResult.allActivityCatagories);
-        const addresses = this.mapAddresses(this.props.queryResult.allAddresses);
-        const eventTypes = this.mapEventTypes(this.props.queryResult.allActivities);
-        return (<div className="manage-events-container">
-            <div className="manage-events-info">
-                <button onClick={this.submitEvents}>Create Events</button>
-                <EventOptions reset={this.reset} addresses={addresses} eventTypes={eventTypes} createEvent={this.createEvent} createDateGroup={this.createDateGroup}/>
-            </div>
-            {
-                (this.state.events.length > 0)
-                    ? <DragAndDropCalendar
-                    tooltipAccessor={this.tooltipAccessor}
-                    selected={this.state.selected}
-                    removeEvent={this.removeCalendarEvent}
-                    selectEvent={this.selectEvent}
-                    newEvent={this.newCalendarEvent}
-                    events={this.state.calendarEvents}
-                    className="manage-events-calander"/>
-                    : <div></div>
-            }
-        </div>);
+        const dateForm = groupId => <DateForm groupId={groupId} createDate={this.createDate} />
+        const dateGroupForm = eventId => <DateGroupForm dateForm={dateForm} eventId={eventId} createDateGroup={this.createDateGroup} events={this.events}/>
+        const dateGroup = (dates, key) => <DateGroup dateForm={this.createDate} key={key} dates={dates} />
+        const event = (event, key) => <Event key={key} child={dateGroup} dateGroupForm={dateGroupForm} event={event} />
+        return (
+            <div className="manage-events-container">
+                <EventsPreview child={event} events={this.events}/>
+                <div className="manage-events-main">
+                    <div className="manage-events-event-form">
+                        <EventForm createEvent={this.createEvent}/>
+                    </div>
+                        <DragAndDropCalendar
+                        tooltipAccessor={this.tooltipAccessor}
+                        selected={this.state.selected}
+                        removeEvent={this.removeCalendarEvent}
+                        selectEvent={this.selectEvent}
+                        newEvent={this.newCalendarEvent}
+                        events={this.state.calendarEvents}
+                        className="manage-events-calander"/>
+                </div>
+        </div>
+    );
     }
 }
 
