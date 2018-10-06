@@ -1,0 +1,48 @@
+.event-preview-container-container {
+    flex-basis: 0;
+    flex-grow: 250;
+    position: relative;
+    margin-right: 10px;
+}
+.event-preview-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow-y: auto;
+}
+.event-preview-container::-webkit-scrollbar{
+    display:none;
+}
+.event-preview-header{
+    display: flex;
+}
+
+.event-preview-header h3{
+    margin: 0;
+}
+.event-preview-header a{
+    margin-top: 10px;
+    padding-left: 10px;
+    font-size: 12px;
+}
+.event-preview-event-container{
+    border: 2px solid black;
+    background-color: rgb(168, 168, 168);
+    padding: 10px;
+}
+.event-preview-event-button{
+    text-align: center;
+    background-color: red;
+    padding: 10px;
+    margin: 0 30px;
+}
+.event-preview-date-container{
+    background-color: blue;
+    padding:10px;
+    border: 2px solid black;
+}
+.event-preview-date-container h4{
+    margin: 0;
+}
