@@ -7,7 +7,7 @@ import QueryHandler from '../queryHandler/QueryHandler';
 
 const GET_EVENTS = (id) => { // TODO group this by address so i dont have to load multiple maps
     return gql `{
-  allEvents(orderBy:ADDRESS_ASC, condition: {eventType: "${id}"}) {
+  allEvents(orderBy: ADDRESS_ASC, condition: {eventType: "${id}"}) {
     edges {
       node {
         capacity
@@ -21,18 +21,19 @@ const GET_EVENTS = (id) => { // TODO group this by address so i dont have to loa
           alias
           url
         }
-        eventDatesByEvent{
-          edges{
-            node{
+        dateGroupsByEvent(filter:{openRegistration:{greaterThanOrEqualTo:"${new Date().toISOString()}"},closeRegistration:{lessThanOrEqualTo:"${new Date().toISOString()}"}}){
+          edges {
+            node {
+              openRegistration
+              closeRegistration
               id
-              dateGroupByDateGroup{
-                datesJoinsByDateGroup{
-                  edges{
-                    node{
-                      dateIntervalByDateInterval{
-                        start
-                        end
-                      }
+              datesJoinsByDateGroup {
+                edges {
+                  node {
+                    dateIntervalByDateInterval {
+                      id
+                      end
+                      start
                     }
                   }
                 }
@@ -43,16 +44,19 @@ const GET_EVENTS = (id) => { // TODO group this by address so i dont have to loa
       }
     }
   }
-}`
 }
+`}
 function Events(props) {
-    return (<QueryHandler query={GET_EVENTS(props.match.params.id)} child={(data) => {
-            return (<div className="events">
-                <h1 className="events-title">{props.match.params.name}</h1>
-                {
+    return (
+        <div className="events">
+            <h1 className="events-title">{props.match.params.name}</h1><QueryHandler query={GET_EVENTS(props.match.params.id)} child={(data) =>
                     data.allEvents.edges.map((event)=>{ // this creates event
-                        return event.node.eventDatesByEvent.edges.map((dateGroups) => { // if the event has no dates, it is not displayed
-                            let dates = dateGroups.node.dateGroupByDateGroup.datesJoinsByDateGroup.edges;
+                        return event.node.dateGroupsByEvent.edges.map((dateGroups) => { // if the event has no dates, it is not displayed
+                            let dates = dateGroups.node.datesJoinsByDateGroup.edges;
+                            if(dates.length === 0) {
+                                return undefined;
+                            }
+                            console.log(dates);
                             return <EventComponent
                                 activityName={props.match.params.name}
                                 activityId={props.match.params.id}
@@ -67,9 +71,10 @@ function Events(props) {
                                 key={dateGroups.node.id} />
                         })
                     })
-                }
-            </div>);
-        }}></QueryHandler>);
+
+
+        }></QueryHandler>
+    </div>);
 }
 
 export default Events;
