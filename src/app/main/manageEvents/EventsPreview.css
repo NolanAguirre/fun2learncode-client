@@ -29,17 +29,17 @@
 }
 .event-preview-event-container{
     border: 2px solid black;
-    background-color: rgb(168, 168, 168);
+    background-color: rgb(240, 240, 240);
     padding: 10px;
 }
 .event-preview-event-button{
     text-align: center;
-    background-color: red;
+    background-color: rgb(67, 221, 54);
     padding: 10px;
-    margin: 0 30px;
+    margin: 10px 30px;
 }
 .event-preview-date-container{
-    background-color: blue;
+    background-color: white;
     padding:10px;
     border: 2px solid black;
 }
