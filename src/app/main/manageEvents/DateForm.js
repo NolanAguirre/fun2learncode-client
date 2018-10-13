@@ -10,49 +10,28 @@ import Colors from '../calendar/Colors'
 import EventsPreview from './EventsPreview';
 import moment from 'moment';
 
-const CREATE_DATE = gql`
-mutation($dateGroup:DateGroupInput!){
-	createDateGroup(input:{dateGroup:$dateGroup}){
-    dateGroup{
-      id
-      openRegistration
-      closeRegistration
-      event
-    }
-  }
-}`;
 function CreateDate(props) {
     return (
         <div className="date-form">
-        <Mutation onCompleted={props.createDateGroup} mutation={CREATE_DATE}>
-            {
-                (createDate, {loading, error, data}) => {
-                    if (loading) {
-                        return 'Loading...';
-                    }
-                    if (error) {
-                        return `Error! ${error.message}`;
-                    }
-                    return(<form onSubmit={(e) => {props.handleSubmit(e, createDate)}}>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Event Start Time:</td>
-                                <td><DateTime className="time-input" dateFormat={false} value={props.start} onChange={(time) => {props.handleTimeChange(time, "start")}}/></td>
-                            </tr>
-                            <tr>
-                                <td>Event End Time:</td>
-                                <td><DateTime className="time-input" value={props.end} dateFormat={false} onChange={(time) => {props.handleTimeChange(time, "end")}}/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    </form>)
-                }
-            }
-        </Mutation>
-</div>
-);
+			<form onSubmit={(e) => {props.handleSubmit(e)}}>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Event Start Time:</td>
+                            <td><DateTime className="time-input" dateFormat={false} value={props.start} onChange={(time) => {props.handleTimeChange(time, "start")}}/></td>
+                        </tr>
+                        <tr>
+                            <td>Event End Time:</td>
+                            <td><DateTime className="time-input" value={props.end} dateFormat={false} onChange={(time) => {props.handleTimeChange(time, "end")}}/></td>
+                        </tr>
+						<tr>
+							<td><button type="submit">Create</button></td>
+						</tr>
+                    </tbody>
+                </table>
+            </form>
+		</div>
+	);
 }
 
 class DateForm extends Component{
@@ -67,19 +46,14 @@ class DateForm extends Component{
     handleTimeChange = (movement, name)=> {
         this.setState({[name]: movement})
     }
-    handleSubmit = (date, mutation) => {
+    handleSubmit = (event) => {
         event.preventDefault();
         let dateGroup={
             start: this.state.start,
             end: this.state.end
         }
-        mutation({
-            variables: {"dateGroup":dateGroup}
-        });
-    }
-    createDate= (data) => {
-        this.props.createDate(data, this.props.groupId);
-        this.setState({displayForm:false});
+		this.props.setDateGroupStart(this.props.groupId, this.state.start, this.state.end);
+		this.setState({displayForm:false});
     }
     displayForm = () =>{
         this.setState({displayForm:true});
@@ -93,9 +67,8 @@ class DateForm extends Component{
                     start={this.state.start}
                     end={this.state.end}
                     handleTimeChange={this.handleTimeChange}
-                    createDateGroup={this.createDateGroup}
                     handleSubmit={this.handleSubmit}/>:
-                    <div className="event-preview-event-button" onClick={this.displayForm}>New Date Group</div>
+                    <div className="event-preview-event-button" onClick={this.displayForm}>Set Start and End time</div>
             }
         </div>)
     }

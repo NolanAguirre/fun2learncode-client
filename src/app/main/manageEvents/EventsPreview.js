@@ -13,6 +13,7 @@ function DateGroup(props){
         return<div>not working</div>
     }
     const dates = props.dateGroup.dates.map((element)=>{return <div>{element}</div>})
+        console.log(props);
     return(
         <div onClick={props.setActiveDateGroup} className="event-preview-date-container">
             <h4>open: {moment(props.dateGroup.open).format("MMMM do YYYY")}</h4>
@@ -20,6 +21,7 @@ function DateGroup(props){
             <div>
                 {dates}
             </div>
+            {props.dateForm(props.dateGroup.id)}
         </div>
     );
 }
@@ -27,7 +29,7 @@ function Event(props){
     if(!props.event.dateGroups){
         return<div>not working</div>
     }
-    const dateGroups = props.event.dateGroups.map((element)=>{return <DateGroup key={element.id}  dateGroup={element}/>});
+    const dateGroups = props.event.dateGroups.map((element)=>{return props.child(element, element.id)});
     return(
         <div className="event-preview-event-container" >
             <div className='event-preview-header'><h3>{props.event.name}</h3><a>edit</a></div>

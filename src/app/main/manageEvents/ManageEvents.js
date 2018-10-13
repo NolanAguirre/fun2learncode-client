@@ -82,7 +82,9 @@ class ManageEventsClass extends Component {
         this.setState({
             foo:0
         })
-        console.log(this.events);
+    }
+    setDateGroupStart = (groupId, start, end) =>{
+        console.log(groupId, start, end);
     }
     createDate = (date, groupId) => {
         this.events = this.events.map((element) => {
@@ -243,9 +245,9 @@ Event Id:${event.resources.eventId}
 `;
     }
     render() {
-        const dateForm = groupId => <DateForm groupId={groupId} createDate={this.createDate} />
-        const dateGroupForm = eventId => <DateGroupForm dateForm={dateForm} eventId={eventId} createDateGroup={this.createDateGroup} events={this.events}/>
-        const dateGroup = (dates, key) => <DateGroup dateForm={this.createDate} key={key} dates={dates} />
+        const dateForm = groupId => <DateForm groupId={groupId} setDateGroupStart={this.setDateGroupStart} />
+        const dateGroupForm = eventId => <DateGroupForm eventId={eventId} createDateGroup={this.createDateGroup} events={this.events}/>
+        const dateGroup = (dateGroup, key) => <DateGroup dateForm={dateForm} key={key} dateGroup={dateGroup} />
         const event = (event, key) => <Event key={key} child={dateGroup} dateGroupForm={dateGroupForm} event={event} />
         return (
             <div className="manage-events-container">
