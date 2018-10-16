@@ -13,6 +13,7 @@ import ManageEvents from './manageEvents/ManageEvents';
 import ManageAddresses from './manageAddresses/ManageAddresses';
 import ManageActivities from './manageActivities/ManageActivities';
 class Main extends Component {
+    // TODO graphql caches everything, so use the queries and dont pass in the props, just requery the data each time it is needed.
     constructor(props){
         super(props);
         this.state = {registrationEvent:null}
@@ -38,8 +39,9 @@ class Main extends Component {
                         <Route exact path="/Admin/Manage Activities" render={(props)=><ManageActivities{...this.props} {...props}></ManageActivities>}/>
                         <Route exact path="/Logout" component={Logout}/>
                     </Switch>
+                </div>
             </div>
-        </div>);
+        );
     }
 }
 

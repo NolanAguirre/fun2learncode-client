@@ -25,7 +25,7 @@ function CreateDate(props) {
                             <td><DateTime className="time-input" value={props.end} dateFormat={false} onChange={(time) => {props.handleTimeChange(time, "end")}}/></td>
                         </tr>
 						<tr>
-							<td><button type="submit">Create</button></td>
+							<td><button type="submit">Set</button></td>
 						</tr>
                     </tbody>
                 </table>
