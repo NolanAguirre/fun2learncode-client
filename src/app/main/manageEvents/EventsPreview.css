@@ -1,15 +1,10 @@
 .event-preview-container-container {
     flex-basis: 0;
     flex-grow: 250;
-    position: relative;
     margin-right: 10px;
 }
 .event-preview-container {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    height:78vh;
     overflow-y: auto;
 }
 .event-preview-container::-webkit-scrollbar{
