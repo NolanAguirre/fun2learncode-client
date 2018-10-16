@@ -9,7 +9,7 @@ import memoize from "memoize-one";
 import Colors from '../calendar/Colors'
 import EventsPreview from './EventsPreview';
 import moment from 'moment';
-
+import MutationHandler from '../queryHandler/MutationHandler';
 const CREATE_DATE_GROUP = gql`
 mutation($dateGroup:DateGroupInput!){
 	createDateGroup(input:{dateGroup:$dateGroup}){
@@ -22,40 +22,26 @@ mutation($dateGroup:DateGroupInput!){
   }
 }`;
 function CreateDates(props) {
+	const form = <table>
+					<tbody>
+						<tr>
+							<td>Open Group On:</td>
+							<td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) => {props.handleTimeChange(time, "groupOpen")}}/></td>
+						</tr>
+						<tr>
+							<td>Close Group On:</td>
+							<td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close}  onChange={(time) => {props.handleTimeChange(time, "groupClose")}}/></td>
+						</tr>
+						<tr>
+							<td><button type="submit">Create</button></td>
+						</tr>
+					</tbody>
+				</table>
     return (
         <div className="date-form">
-        <Mutation onCompleted={props.createDateGroup} mutation={CREATE_DATE_GROUP}>
-            {
-                (createDateGroup, {loading, error, data}) => {
-                    if (loading) {
-                        return 'Loading...';
-                    }
-                    if (error) {
-                        return `Error! ${error.message}`;
-                    }
-                    return(<form onSubmit={(e) => {props.handleSubmit(e, createDateGroup)}}>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Open Group On:</td>
-                                <td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) => {props.handleTimeChange(time, "groupOpen")}}/></td>
-                            </tr>
-                            <tr>
-                                <td>Close Group On:</td>
-                                <td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close}  onChange={(time) => {props.handleTimeChange(time, "groupClose")}}/></td>
-                            </tr>
-                            <tr>
-                                <td><button type="submit">Create</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    </form>)
-                }
-            }
-        </Mutation>
-</div>
-);
+			<MutationHandler onMutationCompleted={props.createDateGroup} handleMutation={props.handleSubmit} mutation={CREATE_DATE_GROUP} form={form}/>
+		</div>
+	);
 }
 
 class DateGroupForm extends Component{

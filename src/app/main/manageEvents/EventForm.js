@@ -6,6 +6,7 @@ import {Query, Mutation} from 'react-apollo';
 import DateTime from 'react-datetime';
 import '../../../react-datetime.css'
 import QueryHandler from '../queryHandler/QueryHandler';
+import MutationHandler from '../queryHandler/MutationHandler';
 import memoize from "memoize-one";
 import Colors from '../calendar/Colors'
 import moment from 'moment';
@@ -50,67 +51,52 @@ mutation($event:EventInput!){
   }
 }`;
 function MutableForm(props){
-    return(
-        <Mutation onCompleted={props.handleMutationData}mutation={CREATE_EVENT }>
-            {
-                (createEvent, {loading, error, data}) => {
-                    if (loading) {
-                        return 'Loading...';
-                    }
-                    if (error) {
-                        return `Error! ${error.message}`;
-                    }
-                    return(<form onSubmit={(e) => {props.handleSubmit(e, createEvent)}}>
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td>Type:</td>
-                                    <td>
-                                        <DropDown name="eventType" options={props.eventTypes} value={props.eventType} onChange={props.handleChange}></DropDown>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Location:</td>
-                                    <td>
-                                        <DropDown name="address" options={props.addresses} value={props.address} onChange={props.handleChange}></DropDown>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Price:</td>
-                                    <td>
-                                        <input name="price" value={props.price} onChange={props.handleChange} type="number"></input>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Capacity:</td>
-                                    <td>
-                                        <input name="capacity" value={props.capacity} onChange={props.handleChange} type="number"></input>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Open Event On:</td>
-                                    <td>
-                                        <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) =>{props.handleTimeChange(time, "open")}}/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Close Event On:</td>
-                                    <td>
-                                        <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close} onChange={(time)=>{props.handleTimeChange(time, "close")}}/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <button type="submit">Plan Event Dates</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </form>)
-                }
-            }
-        </Mutation>
-);
+    const form = <table>
+                    <tbody>
+                        <tr>
+                            <td>Type:</td>
+                            <td>
+                                <DropDown name="eventType" options={props.eventTypes} value={props.eventType} onChange={props.handleChange}></DropDown>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Location:</td>
+                            <td>
+                                <DropDown name="address" options={props.addresses} value={props.address} onChange={props.handleChange}></DropDown>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Price:</td>
+                            <td>
+                                <input name="price" value={props.price} onChange={props.handleChange} type="number"></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Capacity:</td>
+                            <td>
+                                <input name="capacity" value={props.capacity} onChange={props.handleChange} type="number"></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Open Event On:</td>
+                            <td>
+                                <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) =>{props.handleTimeChange(time, "open")}}/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Close Event On:</td>
+                            <td>
+                                <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close} onChange={(time)=>{props.handleTimeChange(time, "close")}}/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="submit">Plan Event Dates</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+    return(<MutationHandler onMutationCompleted={props.handleMutationData} handleMutation={props.handleSubmit} mutation={CREATE_EVENT} form={form} />);
 }
 
 class EventFormClass extends Component {
