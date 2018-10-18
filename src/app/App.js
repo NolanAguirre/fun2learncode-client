@@ -7,15 +7,7 @@ import axios from 'axios';
 import UserStore from './UserStore'
 import gql from 'graphql-tag';
 import {Query} from 'react-apollo';
-const GET_USER = gql `
-    {
-      getUserData{
-        firstName
-        lastName
-        role
-        id
-      }
-  }`
+import {GET_USER_DATA} from './Queries'
 class App extends Component {
     constructor(props) {
         super(props);
@@ -36,7 +28,7 @@ class App extends Component {
         return (<div className="app-container">
             {
                 (this.state.authToken)
-                    ? (<Query query={GET_USER}>{
+                    ? (<Query query={GET_USER_DATA}>{
                             ({loading, error, data}) => {
                                 if (loading) {
                                     return 'Loading...';

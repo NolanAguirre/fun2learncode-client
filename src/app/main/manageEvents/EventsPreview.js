@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {DropDown} from '../common/Common';
 import './EventsPreview.css';
-import gql from 'graphql-tag';
+import {GET_EVENTS} from '../../Queries';
 import QueryHandler from '../queryHandler/QueryHandler';
 import DateTime from 'react-datetime';
 import '../../../react-datetime.css'
@@ -58,51 +58,7 @@ function EventsPreviewChild(props) {
 }
 
 function EventsPreview(props){
-    const query = gql`{
-  allEvents {
-    edges {
-      node {
-        eventType
-        address
-        activityByEventType{
-          name
-        }
-        id
-        addressByAddress {
-          alias
-          id
-        }
-        openRegistration
-        closeRegistration
-        price
-        capacity
-        dateGroupsByEvent {
-          edges {
-            node {
-              openRegistration
-              closeRegistration
-              id
-              datesJoinsByDateGroup {
-                edges {
-                  node {
-                    id
-                    dateIntervalByDateInterval {
-                      start
-                      end
-                      id
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-`;
-    return <QueryHandler query={query} child={(data) => {
+    return <QueryHandler query={GET_EVENTS} child={(data) => {
             return <EventsPreviewChild queryResult={data} {...props}/>
         }}/>
 }

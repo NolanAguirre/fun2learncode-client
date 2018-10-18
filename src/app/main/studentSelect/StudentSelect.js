@@ -2,24 +2,8 @@ import React, {Component} from 'react';
 import './StudentSelect.css';
 import StudentPreview from './studentPreview/StudentPreview';
 import QueryHandler from '../queryHandler/QueryHandler';
-import gql from 'graphql-tag';
-const GET_STUDENTS = (parentId) => {
-    return gql `
-    {
-      allStudents(condition: {parent: "${parentId}"}) {
-        edges {
-          node {
-            userByStudent {
-              id
-              firstName
-              lastName
-            }
-          }
-        }
-      }
-    }
-`
-}
+import {GET_STUDENTS_BY_PARENT} from '../../Queries';
+
 function StudentSelect(props) {
     function formatData(data){
         return data.allStudents.edges.map((element)=>{
@@ -39,7 +23,7 @@ function StudentSelect(props) {
                 }
             </div>
             <div className="students-container">
-                <QueryHandler query={GET_STUDENTS(props.user.id)} child={formatData}/>
+                <QueryHandler query={GET_STUDENTS_BY_PARENT(props.user.id)} child={formatData}/>
             </div>
         </div>);
     } else {
