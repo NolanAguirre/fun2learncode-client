@@ -18,8 +18,8 @@ function DateGroup(props){
         return <div key={element.node.id}>{element.node.dateIntervalByDateInterval.start}</div>})
     return(
         <div onClick={()=>{props.setActiveDateGroup(props.dateGroup)}} style={{backgroundColor:Colors.get(props.dateGroup.id).regular}} className="event-preview-date-container">
-            <h4>open: {moment(props.dateGroup.openRegistration).format("MMM do YYYY")}</h4>
-            <h4>close: {moment(props.dateGroup.closeRegistration).format("MMM do YYYY")}</h4>
+            <h4>open: {moment(props.dateGroup.openRegistration).format("MMM Do YYYY")}</h4>
+            <h4>close: {moment(props.dateGroup.closeRegistration).format("MMM Do YYYY")}</h4>
             <h4> Show on Calander <input onChange={()=>{DateStore.set("toggleDateDisplay", props.dateGroup.id)}} type="checkbox" defaultChecked="true"/> </h4>
             <div>
                 {dates}

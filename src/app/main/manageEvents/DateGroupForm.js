@@ -26,11 +26,11 @@ function CreateDates(props) {
 					<tbody>
 						<tr>
 							<td>Open Group On:</td>
-							<td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) => {props.handleTimeChange(time, "groupOpen")}}/></td>
+							<td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) => {props.handleTimeChange(time, "open")}}/></td>
 						</tr>
 						<tr>
 							<td>Close Group On:</td>
-							<td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close}  onChange={(time) => {props.handleTimeChange(time, "groupClose")}}/></td>
+							<td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close}  onChange={(time) => {props.handleTimeChange(time, "close")}}/></td>
 						</tr>
 						<tr>
 							<td><button type="submit">Create</button></td>
