@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function Activity(props) {
     return(<div className="activity-container">
             <div className="activity-header">
-                <img src="https://via.placeholder.com/350x150"></img>
+                <img className="activity-image" src="https://via.placeholder.com/350x150"></img>
                 <div className="activity-header-text">
                     <h2 className="activity-title">
                         {props.name}
