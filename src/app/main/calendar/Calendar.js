@@ -77,8 +77,14 @@ class DragAndDropMutation extends Component{
             hiddenEvents:[],
             selected:{id:null}
         };
+    }
+    componentDidMount = () =>{
         DateStore.on("toggleDateDisplay",(id)=>{this.toggleDisplay(id)});
     }
+    componentWillUnmount = () =>{
+        DateStore.removeAllListeners("toggleDateDisplay");
+    }
+    
     post = (requestData) => {
         return axios({
             method:"post",
