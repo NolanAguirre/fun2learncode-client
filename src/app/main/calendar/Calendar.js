@@ -6,7 +6,7 @@ import Colors from './Colors';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import axios from 'axios';
-import UserStore from '../../UserStore';
+import DateStore from '../../DateStore';
 
 const localizer = BigCalendar.momentLocalizer(moment);
 function Calendar(props){
@@ -74,8 +74,10 @@ class DragAndDropMutation extends Component{
         super(props);
         this.state = {
             events:[],
+            hiddenEvents:[],
             selected:{id:null}
         };
+        DateStore.on("toggleDateDisplay",(id)=>{this.toggleDisplay(id)});
     }
     post = (requestData) => {
         return axios({
@@ -187,6 +189,16 @@ class DragAndDropMutation extends Component{
 //         Open: ${moment(event.resources.open).format("MMMM Do YYYY")} Close: ${moment(event.resources.close).format("MMMM Do YYYY")}
 // Event Id:${event.resources.eventId}
 // `;
+    }
+    toggleDisplay = (id) =>{
+        const newEvents = this.state.events.filter((event)=>{return event.resources.groupId != id});
+        const removed = this.state.events.filter((event)=>{return event.resources.groupId == id});
+        const newHiddenEvents = this.state.hiddenEvents.filter((event)=>{return event.resources.groupId != id});
+        const add = this.state.hiddenEvents.filter((event)=>{return event.resources.groupId == id});
+        this.setState({
+            events:[...newEvents, ...add],
+            hiddenEvents: [...newHiddenEvents, ...removed],
+        })
     }
     render(){
         return(<DragAndDropCalendar

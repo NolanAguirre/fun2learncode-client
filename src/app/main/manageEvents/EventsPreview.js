@@ -8,6 +8,7 @@ import '../../../react-datetime.css'
 import memoize from "memoize-one";
 import Colors from '../calendar/Colors';
 import moment from 'moment';
+import DateStore from '../../DateStore';
 
 function DateGroup(props){
     if(false){
@@ -16,9 +17,10 @@ function DateGroup(props){
     const dates = props.dateGroup.datesJoinsByDateGroup.edges.map((element)=>{
         return <div key={element.node.id}>{element.node.dateIntervalByDateInterval.start}</div>})
     return(
-        <div style={{backgroundColor:Colors.get(props.dateGroup.id).regular}} onClick={()=>{props.setActiveDateGroup(props.dateGroup)}} className="event-preview-date-container">
+        <div onClick={()=>{props.setActiveDateGroup(props.dateGroup)}} style={{backgroundColor:Colors.get(props.dateGroup.id).regular}} className="event-preview-date-container">
             <h4>open: {moment(props.dateGroup.openRegistration).format("MMM do YYYY")}</h4>
             <h4>close: {moment(props.dateGroup.closeRegistration).format("MMM do YYYY")}</h4>
+            <h4> Show on Calander <input onChange={()=>{DateStore.set("toggleDateDisplay", props.dateGroup.id)}} type="checkbox" defaultChecked="true"/> </h4>
             <div>
                 {dates}
             </div>
@@ -36,7 +38,7 @@ function Event(props){
             <div className='event-preview-header'><h3>{props.event.activityByEventType.name}</h3><a>edit</a></div>
             <div>
                 {dateGroups}
-                {React.cloneElement(props.form, {id:props.event.id})}
+                {React.cloneElement(props.form, {eventId:props.event.id})}
             </div>
         </div>
     );
