@@ -4,7 +4,7 @@ import {Mutation} from 'react-apollo';
 
 function MutationHandler(props){
     return(
-    <Mutation onCompleted={props.onMutationCompleted} mutation={props.mutation}>
+    <Mutation onCompleted={props.onMutationCompleted} refetchQueries={props.refetchQueries} mutation={props.mutation}>
         {
             (mutation, {loading, error, data}) => {
                 if (loading) {

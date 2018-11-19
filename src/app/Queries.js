@@ -27,7 +27,7 @@ const GET_USER_DATA = gql `
         }
       }`}
 // event Queries
-const GET_EVENTS = gql`{
+const GET_EVENTS = gql`query eventsQuery{
 allEvents {
     edges {
       node {

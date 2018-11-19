@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {DropDown} from '../common/Common';
+import {GET_DROPDOWN_OPTIONS} from '../../Queries';
 import './ManageEvents.css';
 import gql from 'graphql-tag';
 import {Query, Mutation} from 'react-apollo';
@@ -10,32 +11,7 @@ import MutationHandler from '../queryHandler/MutationHandler';
 import memoize from "memoize-one";
 import Colors from '../calendar/Colors'
 import moment from 'moment';
-const GET_ACTIVITIES = gql `
-{
-  allActivities{
-    edges{
-      node{
-        name
-        id
-        activityCatagoryByType{
-          name
-        }
-      }
-    }
-  }
-  allAddresses{
-    edges{
-      node{
-        id
-        street
-        city
-        state
-        alias
-      }
-    }
-  }
-}
-`;
+
 const CREATE_EVENT = gql`
 mutation($event:EventInput!){
   createEvent(input:{event:$event}){
@@ -50,6 +26,7 @@ mutation($event:EventInput!){
     }
   }
 }`;
+
 function MutableForm(props){
     const form = <table>
                     <tbody>
@@ -60,7 +37,7 @@ function MutableForm(props){
                             </td>
                         </tr>
                         <tr>
-                            <td>Location:</td>
+                            <td>Loformcation:</td>
                             <td>
                                 <DropDown name="address" options={props.addresses} value={props.address} onChange={props.handleChange}></DropDown>
                             </td>
@@ -96,7 +73,7 @@ function MutableForm(props){
                         </tr>
                     </tbody>
                 </table>
-    return(<MutationHandler onMutationCompleted={props.handleMutationData} handleMutation={props.handleSubmit} mutation={CREATE_EVENT} form={form} />);
+    return(<MutationHandler refetchQueries={["eventsQuery"]} handleMutation={props.handleSubmit} mutation={CREATE_EVENT} form={form} />);
 }
 
 class EventFormClass extends Component {
@@ -114,14 +91,14 @@ class EventFormClass extends Component {
     }
     mapEventTypes = memoize(
         (data) =>{
-            let filtered = data.edges.map((element) => {return {name: element.node.name + " (" + element.node.activityCatagoryByType.name + ")",value: element.node.id}});
-            return filtered;
+            let mapped = data.edges.map((element) => {return {name: element.node.name + " (" + element.node.activityCatagoryByType.name + ")",value: element.node.id}});
+            return mapped;
         }
     );
     mapAddresses = memoize(
         (data) => {
-            let filtered = data.edges.map((element) => {return {name: element.node.alias, value: element.node.id}})
-            return filtered;
+            let mapped = data.edges.map((element) => {return {name: element.node.alias, value: element.node.id}})
+            return mapped;
         }
     );
     handleChange = (event, refresh) => {
@@ -150,11 +127,6 @@ class EventFormClass extends Component {
             });
         }
     }
-    handleMutationData = (data) => {
-        let event = data.createEvent.event;
-        event.name = this.mapEventTypes(this.props.queryResult.allActivities).filter((element)=>element.value === event.eventType)[0].name
-        this.props.createEvent(event);
-    }
     render = () => {
         const eventTypes = this.mapEventTypes(this.props.queryResult.allActivities);
         const addresses = this.mapAddresses(this.props.queryResult.allAddresses);
@@ -169,13 +141,12 @@ class EventFormClass extends Component {
                 close={this.state.close}
                 handleChange={this.handleChange}
                 handleTimeChange={this.handleTimeChange}
-                handleSubmit={this.handleSubmit}
-                handleMutationData={this.handleMutationData}/>)
+                handleSubmit={this.handleSubmit}/>)
     }
 }
 
 function EventForm(props) {
-    return <QueryHandler query={GET_ACTIVITIES} child={(data) => {
+    return <QueryHandler query={GET_DROPDOWN_OPTIONS} child={(data) => {
             return <EventFormClass queryResult={data} {...props}/>
         }}/>
 }
