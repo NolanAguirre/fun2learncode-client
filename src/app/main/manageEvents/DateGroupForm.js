@@ -39,7 +39,7 @@ function CreateDates(props) {
 				</table>
     return (
         <div className="date-form">
-			<MutationHandler onMutationCompleted={props.createDateGroup} handleMutation={props.handleSubmit} mutation={CREATE_DATE_GROUP} form={form}/>
+			<MutationHandler refetchQueries={["eventsQuery"]} handleMutation={props.handleSubmit} mutation={CREATE_DATE_GROUP} form={form}/>
 		</div>
 	);
 }
@@ -66,14 +66,7 @@ class DateGroupForm extends Component{
         mutation({
             variables: {"dateGroup":dateGroup}
         });
-    }
-    createDateGroup = (data) => {
-        let dateGroup = {
-            ...data.createDateGroup.dateGroup,
-            dates:[]
-        }
-        this.props.createDateGroup(dateGroup);
-        this.setState({displayForm:false});
+		this.setState({displayForm:false});
     }
     displayForm = () =>{
         this.setState({displayForm:true});
@@ -94,15 +87,4 @@ class DateGroupForm extends Component{
         </div>)
     }
 }
-
-// <tr>
-//     <td>Event Start Time:</td>
-//     <td><DateTime className="time-input" dateFormat={false} value={props.start} onChange={(time) => {props.handleTimeChange(time, "start")}}/></td>
-// </tr>
-// <tr>
-//     <td>Event End Time:</td>
-//     <td><DateTime className="time-input" value={props.end} dateFormat={false} onChange={(time) => {props.handleTimeChange(time, "end")}}/></td>
-// </tr>
-// start: new Date().setHours(12,0,0),
-// end: new Date().setHours(13,0,0),
 export default DateGroupForm;

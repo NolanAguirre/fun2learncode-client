@@ -10,18 +10,15 @@ import Colors from '../calendar/Colors';
 import moment from 'moment';
 
 function DateGroup(props){
-    //console.log(props);
     if(false){
         return<div>not working</div>
     }
     const dates = props.dateGroup.datesJoinsByDateGroup.edges.map((element)=>{
         return <div key={element.node.id}>{element.node.dateIntervalByDateInterval.start}</div>})
     return(
-        <div onClick={()=>{props.setActiveDateGroup(props.dateGroup, props.event)}} className="event-preview-date-container">
-            <h4>open: {moment(props.dateGroup.openRegistration).format("MMMM do YYYY")}</h4>
-            <h4>close: {moment(props.dateGroup.closeRegistration).format("MMMM do YYYY")}</h4>
-            <h4>Start: {moment(props.dateGroup.start).format("h:mm a")}</h4>
-            <h4>End: {moment(props.dateGroup.end).format("h:mm a")}</h4>
+        <div style={{backgroundColor:Colors.get(props.dateGroup.id).regular}} onClick={()=>{props.setActiveDateGroup(props.dateGroup)}} className="event-preview-date-container">
+            <h4>open: {moment(props.dateGroup.openRegistration).format("MMM do YYYY")}</h4>
+            <h4>close: {moment(props.dateGroup.closeRegistration).format("MMM do YYYY")}</h4>
             <div>
                 {dates}
             </div>
@@ -33,21 +30,24 @@ function Event(props){
     if(false){
         return<div>not working</div>
     }
-    const dateGroups = props.event.dateGroupsByEvent.edges.map((element)=>{return <DateGroup key={element.node.id} dateGroup={element.node}/>});
+    const dateGroups = props.event.dateGroupsByEvent.edges.map((element)=>{return React.cloneElement(props.children, {key:element.node.id, dateGroup:element.node})});
     return(
-        <div onClick={()=>{props.setActiveEvent(props.event)}} className="event-preview-event-container" >
+        <div className="event-preview-event-container">
             <div className='event-preview-header'><h3>{props.event.activityByEventType.name}</h3><a>edit</a></div>
             <div>
                 {dateGroups}
-
+                {React.cloneElement(props.form, {id:props.event.id})}
             </div>
         </div>
     );
 }
-//{props.dateGroupForm(props.event.id)}
+//
 function EventsPreviewChild(props) {
-    console.log(props.queryResult);
-    const events = props.queryResult.allEvents.edges.map((element)=>{return <Event key={element.node.id} event={element.node}/>});
+    //console.log(props.queryResult);
+    if(!props.queryResult.allEvents){
+        return <div>is broken</div>
+    }
+    const events = props.queryResult.allEvents.edges.map((element)=>{return React.cloneElement(props.children, {key:element.node.id, event:element.node})});
     return (
         <div className="event-preview-container-container">
             <div className="event-preview-container">

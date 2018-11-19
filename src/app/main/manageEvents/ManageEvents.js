@@ -14,7 +14,7 @@ import DateGroupForm from './DateGroupForm';
 import DateForm from './DateForm';
 import {Event, DateGroup, EventsPreview} from './EventsPreview';
 
-class ManageEventsClass extends Component {
+class ManageEvents extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -40,25 +40,20 @@ class ManageEventsClass extends Component {
     }
 
     render() {
+        const dateGroup = <DateGroup setActiveDateGroup={this.setActiveDateGroup}/>
+        const event = <Event form={<DateGroupForm />} children={dateGroup}/>
         return (
-            <React.Fragment>
-                <EventsPreview/>
+            <div className="manage-events-container">
+                <EventsPreview children={event}/>
                 <div className="manage-events-main">
                     <div className="manage-events-event-form">
                         <EventForm/>
-                        {JSON.stringify(this.state.activeDateGroup)}
                     </div>
                         <DragAndDropMutation
                             createDate={this.state.createDate}
                             activeDateGroup={this.state.activeDateGroup}/>
                 </div>
-            </React.Fragment>
+            </div>
     );}
-}
-
-function ManageEvents(props) {
-    return <div className="manage-events-container">
-             <ManageEventsClass/>
-        </div>
 }
 export default ManageEvents;
