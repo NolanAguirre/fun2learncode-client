@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {DropDown} from '../common/Common';
-import {GET_DROPDOWN_OPTIONS} from '../../Queries';
+import {GET_DROPDOWN_OPTIONS, GET_EVENTS} from '../../Queries';
 import './ManageEvents.css';
 import gql from 'graphql-tag';
 import {Query, Mutation} from 'react-apollo';
@@ -16,6 +16,7 @@ const CREATE_EVENT = gql`
 mutation($event:EventInput!){
   createEvent(input:{event:$event}){
     event{
+        __typename
       id
       eventType
       price
@@ -23,6 +24,35 @@ mutation($event:EventInput!){
       capacity
       closeRegistration
       openRegistration
+      activityByEventType{
+        id
+        name
+      }
+      addressByAddress {
+        alias
+        id
+      }
+      dateGroupsByEvent {
+        edges {
+          node {
+            openRegistration
+            closeRegistration
+            id
+            datesJoinsByDateGroup {
+              edges {
+                node {
+                  id
+                  dateIntervalByDateInterval {
+                    start
+                    end
+                    id
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }`;
@@ -37,7 +67,7 @@ function MutableForm(props){
                             </td>
                         </tr>
                         <tr>
-                            <td>Loformcation:</td>
+                            <td>Location:</td>
                             <td>
                                 <DropDown name="address" options={props.addresses} value={props.address} onChange={props.handleChange}></DropDown>
                             </td>
@@ -73,7 +103,13 @@ function MutableForm(props){
                         </tr>
                     </tbody>
                 </table>
-    return(<MutationHandler refetchQueries={["eventsQuery"]} handleMutation={props.handleSubmit} mutation={CREATE_EVENT} form={form} />);
+    return(<MutationHandler  update={(cache, { data: { createEvent } }) => {
+        const { allEvents } = cache.readQuery({ query: GET_EVENTS });
+        cache.writeQuery({
+          query: GET_EVENTS,
+          data: { allEvents: {...allEvents, edges: allEvents.edges.concat([{"__typename": "EventsEdge", node:createEvent.event}])} }
+        });
+      }} handleMutation={props.handleSubmit} mutation={CREATE_EVENT} form={form} />);
 }
 
 class EventFormClass extends Component {
