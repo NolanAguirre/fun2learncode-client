@@ -7,14 +7,8 @@
     padding: 30px 40px;
     box-sizing: border-box;
 }
-.manage-activities-form-container{
-    display: flex;
-    justify-content: space-between;
-}
-.manage-activities-preview{
-
-}
 .manage-activity-textarea{
-    min-width: 300px;
-    min-height: 75px;
+    flex:1;
+    border: 1px solid rgb(214, 214, 214);
+    color: gray;
 }
