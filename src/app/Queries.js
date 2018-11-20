@@ -1,8 +1,10 @@
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
 // user queries
 const GET_USER_DATA = gql `
     {
+        __typename
       getUserData{
+          __typename
         firstName
         lastName
         role
@@ -10,13 +12,14 @@ const GET_USER_DATA = gql `
       }
   }`
 
-//student queries
-  const GET_STUDENTS_BY_PARENT = (parentId) => {
-      return gql `
+// student queries
+const GET_STUDENTS_BY_PARENT = (parentId) => {
+    return gql `
       {
         allStudents(condition: {parent: "${parentId}"}) {
           edges {
             node {
+              id
               userByStudent {
                 id
                 firstName
@@ -25,26 +28,28 @@ const GET_USER_DATA = gql `
             }
           }
         }
-      }`}
+      }`
+}
 // event Queries
-const GET_EVENTS = gql`query eventsQuery{
+const GET_EVENTS = gql `query eventsQuery{
 allEvents {
     edges {
       node {
+        id
         eventType
         address
-        activityByEventType{
-          name
-        }
-        id
-        addressByAddress {
-          alias
-          id
-        }
         openRegistration
         closeRegistration
         price
         capacity
+        activityByEventType{
+          id
+          name
+        }
+        addressByAddress {
+          alias
+          id
+        }
         dateGroupsByEvent {
           edges {
             node {
@@ -70,8 +75,7 @@ allEvents {
     }
   }
 }
-`;
-
+`
 
 // other
 const GET_DROPDOWN_OPTIONS = gql `
@@ -106,6 +110,39 @@ const GET_DROPDOWN_OPTIONS = gql `
       }
     }
   }
-}`;
+}`
+const Query = {
+  fragments: {
+    activityCatagories: gql `
+        fragment activityCatagories on Query{
+        allActivityCatagories{
+            __typename
+          edges{
+              __typename
+            node{
+                __typename
+              id
+              name
+            }
+          }
+        }
+    }`,
+    userData:gql`
+    fragment userData on Query{
+        getUserData{
+          firstName
+          lastName
+          role
+          id
+        }
+    }`
+    }
+}
 
-export {GET_DROPDOWN_OPTIONS, GET_EVENTS, GET_STUDENTS_BY_PARENT, GET_USER_DATA}
+export {
+    GET_DROPDOWN_OPTIONS,
+    GET_EVENTS,
+    GET_STUDENTS_BY_PARENT,
+    GET_USER_DATA,
+    Query
+}
