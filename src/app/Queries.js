@@ -5,6 +5,7 @@ const GET_USER_DATA = gql `
         __typename
       getUserData{
           __typename
+          nodeId
         firstName
         lastName
         role
@@ -33,8 +34,8 @@ const GET_STUDENTS_BY_PARENT = (parentId) => {
 // event Queries
 const GET_EVENTS = gql `query eventsQuery{
 allEvents {
-    edges {
-      node {
+      nodes {
+          nodeId
         id
         eventType
         address
@@ -51,8 +52,8 @@ allEvents {
           id
         }
         dateGroupsByEvent {
-          edges {
-            node {
+            nodes {
+                nodeId
               openRegistration
               closeRegistration
               id
@@ -65,13 +66,12 @@ allEvents {
                       end
                       id
                     }
-                  }
+
                 }
               }
             }
           }
         }
-      }
     }
   }
 }
@@ -94,6 +94,7 @@ const GET_DROPDOWN_OPTIONS = gql `
         name
         id
         activityCatagoryByType{
+          id
           name
         }
       }
@@ -116,32 +117,76 @@ const Query = {
     activityCatagories: gql `
         fragment activityCatagories on Query{
         allActivityCatagories{
-            __typename
-          edges{
-              __typename
-            node{
-                __typename
+            nodes{
               id
               name
-            }
+
           }
         }
     }`,
     userData:gql`
     fragment userData on Query{
+        __typename
         getUserData{
+            __typename
+            nodeId
           firstName
           lastName
           role
           id
         }
+    }`,
+    activities: gql`
+    fragment activities on Query{
+    allActivities(orderBy:TYPE_ASC){
+        nodes{
+            name
+            description
+            id
+            eventPrerequisitesByPrerequisite{
+               nodes{
+                 activityByEvent{
+                   name
+                   id
+                 }
+
+             }
+           }
+            activityCatagoryByType{
+              name
+              id
+            }
+        }
+      }
     }`
     }
 }
+const GET_ACTIVITIES_IN_CATAGORY = (name) => {
+  return gql`
+    {
+        allActivityCatagories(condition:{name:"${name}"}){
+          nodes{
+              nodeId
+              id
+              name
+            activitiesByType{
+                nodes{
+                    nodeId
+                  name
+                  description
+                  id
+                }
+              }
+            }
+          }
 
+
+    }
+    `}
 export {
     GET_DROPDOWN_OPTIONS,
     GET_EVENTS,
+    GET_ACTIVITIES_IN_CATAGORY,
     GET_STUDENTS_BY_PARENT,
     GET_USER_DATA,
     Query
