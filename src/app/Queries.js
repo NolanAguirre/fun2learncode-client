@@ -260,7 +260,7 @@ const GET_EVENT_LOGS_FOR_STUDENT = (eventId, studentId) => {
                       }
 
                   }
-                
+
               }
             }
           }
@@ -269,6 +269,16 @@ const GET_EVENT_LOGS_FOR_STUDENT = (eventId, studentId) => {
     }
     `
     }
+    const GET_ACTIVITIES = gql`
+    {
+        allActivityCatagories{
+                nodes{
+                    name
+                    description
+                    id
+                }
+        }
+    }`
 export {
     GET_DROPDOWN_OPTIONS,
     GET_EVENTS,
@@ -277,5 +287,6 @@ export {
     GET_EVENT_LOGS_FOR_STUDENT,
     GET_USER_DATA,
     GET_EVENTS_OF_TYPE,
+     GET_ACTIVITIES,
     Query
 }
