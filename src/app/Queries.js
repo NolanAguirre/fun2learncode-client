@@ -183,11 +183,56 @@ const GET_ACTIVITIES_IN_CATAGORY = (name) => {
 
     }
     `}
+const GET_EVENT_LOGS_FOR_STUDENT = (eventId, studentId) => {
+      return gql`
+        {
+          eventById(id:"${eventId}"){
+              activityByEventType{
+                 name
+               }
+               price
+               addressByAddress{
+                 id
+                 alias
+                 city
+                 street
+                 state
+                 url
+             }
+            eventDatesByEvent{
+              edges{
+                node{
+                id
+                startTime
+                eventRegistrationsByEventDate(condition:{student:"${studentId}"}){
+                      node{
+                        registeredOn
+                        attendance
+                      
+                    }
+                  }
+                  eventLogsByEventDate(condition:{student:"${studentId}"}){
+                      nodes{
+                        comment
+                        userByInstructor{
+                          firstName
+                          lastName
+                        }
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }`
+    }
 export {
     GET_DROPDOWN_OPTIONS,
     GET_EVENTS,
     GET_ACTIVITIES_IN_CATAGORY,
     GET_STUDENTS_BY_PARENT,
+    GET_EVENT_LOGS_FOR_STUDENT,
     GET_USER_DATA,
     Query
 }
