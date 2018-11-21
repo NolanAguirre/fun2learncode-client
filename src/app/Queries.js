@@ -208,7 +208,7 @@ const GET_EVENT_LOGS_FOR_STUDENT = (eventId, studentId) => {
                       node{
                         registeredOn
                         attendance
-                      
+
                     }
                   }
                   eventLogsByEventDate(condition:{student:"${studentId}"}){
@@ -227,6 +227,48 @@ const GET_EVENT_LOGS_FOR_STUDENT = (eventId, studentId) => {
           }
         }`
     }
+    const GET_EVENTS_OF_TYPE = (id) => { // TODO group this by address so i dont have to load multiple maps
+      return gql`{
+      allEvents(orderBy: ADDRESS_ASC, condition: {eventType: "${id}"}) {
+
+          nodes {
+            capacity
+            id
+            price
+            addressByAddress {
+              id
+              city
+              street
+              state
+              alias
+              url
+            }
+            dateGroupsByEvent(filter:{openRegistration:{greaterThanOrEqualTo:"${new Date().toISOString()}"},closeRegistration:{lessThanOrEqualTo:"${new Date().toISOString()}"}}){
+
+                nodes {
+                  openRegistration
+                  closeRegistration
+                  id
+                  datesJoinsByDateGroup {
+
+                      nodes {
+                        dateIntervalByDateInterval {
+                          id
+                          end
+                          start
+
+                      }
+
+                  }
+                
+              }
+            }
+          }
+        }
+      }
+    }
+    `
+    }
 export {
     GET_DROPDOWN_OPTIONS,
     GET_EVENTS,
@@ -234,5 +276,6 @@ export {
     GET_STUDENTS_BY_PARENT,
     GET_EVENT_LOGS_FOR_STUDENT,
     GET_USER_DATA,
+    GET_EVENTS_OF_TYPE,
     Query
 }

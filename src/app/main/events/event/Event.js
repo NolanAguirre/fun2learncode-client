@@ -11,7 +11,7 @@ function EventComponent (props) {
         <table>
           <tbody>
             {props.date.map((date, index) => {
-              return <TimeTableRow data={date.node.dateIntervalByDateInterval} key={index} />
+              return <TimeTableRow data={date.dateIntervalByDateInterval} key={index} />
             })}
           </tbody>
         </table>
