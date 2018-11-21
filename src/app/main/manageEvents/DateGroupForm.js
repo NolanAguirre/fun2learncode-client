@@ -18,6 +18,7 @@ mutation($dateGroup:DateGroupInput!){
       openRegistration
       closeRegistration
       event
+	  name
     }
   }
 }`;
@@ -25,15 +26,19 @@ function CreateDates(props) {
 	const form = <table>
 					<tbody>
 						<tr>
-							<td>Open Group On:</td>
+							<td>Set Name:</td>
+							<td><input className="full-date-input" name={"name"} value={props.name} onChange={props.handleChange}/></td>
+						</tr>
+						<tr>
+							<td>Set Start:</td>
 							<td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) => {props.handleTimeChange(time, "open")}}/></td>
 						</tr>
 						<tr>
-							<td>Close Group On:</td>
+							<td>Set End:</td>
 							<td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close}  onChange={(time) => {props.handleTimeChange(time, "close")}}/></td>
 						</tr>
 						<tr>
-							<td><button type="submit">Create</button></td>
+							<td><button type="submit">Set</button></td>
 						</tr>
 					</tbody>
 				</table>
@@ -48,21 +53,32 @@ class DateGroupForm extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            open: new Date(),
-            close: new Date(+ new Date() + 86400000),
+			name:"",
+            open: new Date() || this.props.open,
+            close: new Date(+ new Date() + 86400000) || this.props.close,
             displayForm: false
         }
     }
     handleTimeChange = (movement, name)=> {
         this.setState({[name]: movement})
     }
+	handleChange = (event) => {
+        const target = event.target;
+        const value = target.type === 'checkbox'
+            ? target.checked
+            : target.value;
+        const name = target.name;
+        this.setState({[name]: value});
+    }
     handleSubmit = (event, mutation) => {
         event.preventDefault();
         let dateGroup={
             event: this.props.eventId,
             openRegistration: this.state.open,
-            closeRegistration: this.state.close
+            closeRegistration: this.state.close,
+			name: this.state.name
         }
+		console.log(dateGroup);
         mutation({
             variables: {"dateGroup":dateGroup}
         });
@@ -79,7 +95,9 @@ class DateGroupForm extends Component{
                     <CreateDates
                     open={this.state.open}
                     close={this.state.close}
+					name={this.state.name}
                     handleTimeChange={this.handleTimeChange}
+					handleChange={this.handleChange}
                     createDateGroup={this.createDateGroup}
                     handleSubmit={this.handleSubmit}/>:
                     <div className="event-preview-event-button" onClick={this.displayForm}>New Date Group</div>

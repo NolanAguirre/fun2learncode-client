@@ -57,6 +57,7 @@ const GET_EVENTS = gql `query eventsQuery {
       dateGroupsByEvent {
         nodes {
           nodeId
+          name
           openRegistration
           closeRegistration
           id
@@ -260,6 +261,7 @@ const GET_EVENT_LOGS_FOR_STUDENT = (eventId, studentId) => {
             dateGroupsByEvent(filter:{openRegistration:{greaterThanOrEqualTo:"${new Date().toISOString()}"},closeRegistration:{lessThanOrEqualTo:"${new Date().toISOString()}"}}){
 
                 nodes {
+                    name
                     nodeId
                   openRegistration
                   closeRegistration
@@ -303,6 +305,7 @@ const GET_DATE_GROUP_INFO_BY_ID = (id)=>{
   dateGroupById(id:"${id}"){
     nodeId
     id
+    name
     openRegistration
     closeRegistration
     datesJoinsByDateGroup{

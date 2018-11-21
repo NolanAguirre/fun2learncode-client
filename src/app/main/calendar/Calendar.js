@@ -110,9 +110,10 @@ class DragAndDropMutation extends Component{
             return;
         }
         if (event.action === 'doubleClick') {
+
                 let hour = {
                     id: '_' + Math.random().toString(36).substr(2, 9),
-                    title: "yo",
+                    title: this.props.activeDateGroup.name,
                     start: event.start,
                     end:  new Date(+event.start + 86400000),
                     buttonStyle: {
