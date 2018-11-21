@@ -16,108 +16,109 @@ const GET_USER_DATA = gql `
 // student queries
 const GET_STUDENTS_BY_PARENT = (parentId) => {
     return gql `
-      {
-        allStudents(condition: {parent: "${parentId}"}) {
-          edges {
-            node {
-              id
-              userByStudent {
-                id
-                firstName
-                lastName
-              }
-            }
-          }
-        }
-      }`
-}
-// event Queries
-const GET_EVENTS = gql `query eventsQuery{
-allEvents {
-      nodes {
-          nodeId
-        id
-        eventType
-        address
-        openRegistration
-        closeRegistration
-        price
-        capacity
-        activityByEventType{
-          id
-          name
-        }
-        addressByAddress {
-          alias
-          id
-        }
-        dateGroupsByEvent {
-            nodes {
-                nodeId
-              openRegistration
-              closeRegistration
-              id
-              datesJoinsByDateGroup {
-                edges {
-                  node {
-                    id
-                    dateIntervalByDateInterval {
-                      start
-                      end
-                      id
-                    }
-
-                }
-              }
-            }
-          }
-        }
+    {
+allStudents(condition: {parent: "${parentId}"}) {
+  nodes {
+    nodeId
+    id
+    userByStudent {
+      nodeId
+      id
+      firstName
+      lastName
     }
   }
+}
 }
 `
-
-// other
-const GET_DROPDOWN_OPTIONS = gql `
-{
-  allActivityCatagories{
-    edges{
-      node{
+}
+// event Queries
+const GET_EVENTS = gql `query eventsQuery {
+  allEvents {
+    nodes {
+      nodeId
+      id
+      eventType
+      address
+      openRegistration
+      closeRegistration
+      price
+      capacity
+      activityByEventType {
+        nodeId
         id
         name
       }
-    }
-  }
-  allActivities{
-    edges{
-      node{
-        name
-        id
-        activityCatagoryByType{
-          id
-          name
-        }
-      }
-    }
-  }
-  allAddresses{
-    edges{
-      node{
-        id
-        street
-        city
-        state
+      addressByAddress {
+        nodeId
         alias
+        id
+      }
+      dateGroupsByEvent {
+        nodes {
+          nodeId
+          openRegistration
+          closeRegistration
+          id
+          datesJoinsByDateGroup {
+            nodes {
+              id
+              dateIntervalByDateInterval {
+                nodeId
+                start
+                end
+                id
+              }
+            }
+          }
+        }
       }
     }
   }
 }`
+
+// other
+const GET_DROPDOWN_OPTIONS = gql `
+{
+  allAddresses {
+    nodes {
+      nodeId
+      id
+      city
+      street
+      state
+      alias
+      url
+    }
+  }
+  allActivityCatagories {
+    nodes {
+      nodeId
+      id
+      name
+    }
+  }
+  allActivities {
+    nodes {
+      nodeId
+      name
+      id
+      activityCatagoryByType {
+        nodeId
+        id
+        name
+      }
+    }
+  }
+}
+`
 const Query = {
   fragments: {
     activityCatagories: gql `
         fragment activityCatagories on Query{
         allActivityCatagories{
             nodes{
+                 nodeId
               id
               name
 
@@ -140,12 +141,15 @@ const Query = {
     fragment activities on Query{
     allActivities(orderBy:TYPE_ASC){
         nodes{
+             nodeId
             name
             description
             id
             eventPrerequisitesByPrerequisite{
                nodes{
+                    nodeId
                  activityByEvent{
+                      nodeId
                    name
                    id
                  }
@@ -153,6 +157,7 @@ const Query = {
              }
            }
             activityCatagoryByType{
+                 nodeId
               name
               id
             }
@@ -188,10 +193,12 @@ const GET_EVENT_LOGS_FOR_STUDENT = (eventId, studentId) => {
         {
           eventById(id:"${eventId}"){
               activityByEventType{
+                  nodeId
                  name
                }
                price
                addressByAddress{
+                   nodeId
                  id
                  alias
                  city
@@ -200,12 +207,15 @@ const GET_EVENT_LOGS_FOR_STUDENT = (eventId, studentId) => {
                  url
              }
             eventDatesByEvent{
-              edges{
-                node{
+
+                nodes{
+                    nodeId
                 id
                 startTime
                 eventRegistrationsByEventDate(condition:{student:"${studentId}"}){
                       node{
+                          nodeId
+
                         registeredOn
                         attendance
 
@@ -214,13 +224,15 @@ const GET_EVENT_LOGS_FOR_STUDENT = (eventId, studentId) => {
                   eventLogsByEventDate(condition:{student:"${studentId}"}){
                       nodes{
                         comment
+                        nodeId
                         userByInstructor{
+                            nodeId
                           firstName
                           lastName
                         }
 
                     }
-                  }
+
                 }
               }
             }
@@ -235,7 +247,9 @@ const GET_EVENT_LOGS_FOR_STUDENT = (eventId, studentId) => {
             capacity
             id
             price
+            nodeId
             addressByAddress {
+                nodeId
               id
               city
               street
@@ -246,13 +260,16 @@ const GET_EVENT_LOGS_FOR_STUDENT = (eventId, studentId) => {
             dateGroupsByEvent(filter:{openRegistration:{greaterThanOrEqualTo:"${new Date().toISOString()}"},closeRegistration:{lessThanOrEqualTo:"${new Date().toISOString()}"}}){
 
                 nodes {
+                    nodeId
                   openRegistration
                   closeRegistration
                   id
                   datesJoinsByDateGroup {
 
                       nodes {
+                          nodeId
                         dateIntervalByDateInterval {
+                            nodeId
                           id
                           end
                           start
@@ -273,6 +290,7 @@ const GET_EVENT_LOGS_FOR_STUDENT = (eventId, studentId) => {
     {
         allActivityCatagories{
                 nodes{
+                    nodeId
                     name
                     description
                     id

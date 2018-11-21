@@ -17,6 +17,7 @@ mutation($event:EventInput!){
   createEvent(input:{event:$event}){
     event{
         __typename
+        nodeId
       id
       eventType
       price
@@ -33,14 +34,12 @@ mutation($event:EventInput!){
         id
       }
       dateGroupsByEvent {
-        edges {
-          node {
+          nodes {
             openRegistration
             closeRegistration
             id
             datesJoinsByDateGroup {
-              edges {
-                node {
+                nodes {
                   id
                   dateIntervalByDateInterval {
                     start
@@ -49,8 +48,8 @@ mutation($event:EventInput!){
                   }
                 }
               }
-            }
-          }
+
+
         }
       }
     }
@@ -105,9 +104,10 @@ function MutableForm(props){
                 </table>
     return(<MutationHandler  update={(cache, { data: { createEvent } }) => {
         const { allEvents } = cache.readQuery({ query: GET_EVENTS });
+        console.log(allEvents);
         cache.writeQuery({
           query: GET_EVENTS,
-          data: { allEvents: {...allEvents, edges: allEvents.edges.concat([{"__typename": "EventsEdge", node:createEvent.event}])} }
+          data: { allEvents: {...allEvents, nodes: allEvents.nodes.concat([createEvent.event])} }
         });
       }} handleMutation={props.handleSubmit} mutation={CREATE_EVENT} form={form} />);
 }
@@ -127,13 +127,13 @@ class EventFormClass extends Component {
     }
     mapEventTypes = memoize(
         (data) =>{
-            let mapped = data.edges.map((element) => {return {name: element.node.name + " (" + element.node.activityCatagoryByType.name + ")",value: element.node.id}});
+            let mapped = data.nodes.map((element) => {return {name: element.name + " (" + element.activityCatagoryByType.name + ")",value: element.id}});
             return mapped;
         }
     );
     mapAddresses = memoize(
         (data) => {
-            let mapped = data.edges.map((element) => {return {name: element.node.alias, value: element.node.id}})
+            let mapped = data.nodes.map((element) => {return {name: element.alias, value: element.id}})
             return mapped;
         }
     );
@@ -164,6 +164,7 @@ class EventFormClass extends Component {
         }
     }
     render = () => {
+        console.log(this.props.queryResult.allActivityCatagories)
         const eventTypes = this.mapEventTypes(this.props.queryResult.allActivities);
         const addresses = this.mapAddresses(this.props.queryResult.allAddresses);
         return (<MutableForm

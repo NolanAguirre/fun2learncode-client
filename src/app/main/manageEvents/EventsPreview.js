@@ -14,8 +14,8 @@ function DateGroup (props) {
   if (false) {
     return <div>not working</div>
   }
-  const dates = props.dateGroup.datesJoinsByDateGroup.edges.map((element) => {
-    return <div key={element.node.id}>{element.node.dateIntervalByDateInterval.start}</div>
+  const dates = props.dateGroup.datesJoinsByDateGroup.nodes.map((element) => {
+    return <div key={element.id}>{element.dateIntervalByDateInterval.start}</div>
   })
   return (
     <div onClick={() => { props.setActiveDateGroup(props.dateGroup) }} style={{ backgroundColor: Colors.get(props.dateGroup.id).regular }} className='event-preview-date-container'>
@@ -33,7 +33,7 @@ function Event (props) {
   if (false) {
     return <div>not working</div>
   }
-  const dateGroups = props.event.dateGroupsByEvent.edges.map((element) => { return React.cloneElement(props.children, { key: element.node.id, dateGroup: element.node }) })
+  const dateGroups = props.event.dateGroupsByEvent.nodes.map((element) => { return React.cloneElement(props.children, { key: element.id, dateGroup: element }) })
   return (
     <div className='event-preview-event-container'>
       <div className='event-preview-header'><h3>{props.event.activityByEventType.name}</h3><a>edit</a></div>
@@ -50,7 +50,7 @@ function EventsPreviewChild (props) {
   if (!props.queryResult.allEvents) {
     return <div>is broken</div>
   }
-  const events = props.queryResult.allEvents.edges.map((element) => { return React.cloneElement(props.children, { key: element.node.id, event: element.node }) })
+  const events = props.queryResult.allEvents.nodes.map((element) => { return React.cloneElement(props.children, { key: element.id, event: element }) })
   return (
     <div className='event-preview-container-container'>
       <div className='event-preview-container'>

@@ -136,19 +136,19 @@ class ManageActivitiesClass extends Component {
         super(props);
     }
     mapTypes = memoize(
-        (data) =>  data.edges.map((element) =>  {return{name: element.node.name, value: element.node.id}})
+        (data) =>  data.nodes.map((element) =>  {return{name: element.name, value: element.id}})
     );
     mapPrerequisites = memoize(
-        (data) => data.edges.map((element) => {return {name: element.node.name + " (" + element.node.activityCatagoryByType.name + ")",value: element.node.id}})
+        (data) => data.nodes.map((element) => {return {name: element.name + " (" + element.activityCatagoryByType.name + ")",value: element.id}})
     );
     mapActivities = memoize(
-        (data) => data.edges.map((element) => {
-            let temp = element.node.eventPrerequisitesByPrerequisite.edges.map((el) => {return el.node.activityByEvent});
+        (data) => data.nodes.map((element) => {
+            let temp = element.eventPrerequisitesByPrerequisite.nodes.map((el) => {return el.activityByEvent});
             return {
-                name: element.node.name,
-                type: element.node.activityCatagoryByType.id,
-                description: element.node.description,
-                value: element.node.id, // this is named value so it can be used by the dropdown box
+                name: element.name,
+                type: element.activityCatagoryByType.id,
+                description: element.description,
+                value: element.id, // this is named value so it can be used by the dropdown box
                 prerequisite: temp
             }
         })
