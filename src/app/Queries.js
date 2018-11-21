@@ -297,6 +297,41 @@ const GET_EVENT_LOGS_FOR_STUDENT = (eventId, studentId) => {
                 }
         }
     }`
+const GET_DATE_GROUP_INFO_BY_ID = (id)=>{
+    return gql`
+    {
+  dateGroupById(id:"${id}"){
+    nodeId
+    id
+    openRegistration
+    closeRegistration
+    datesJoinsByDateGroup{
+      nodes{
+        nodeId
+        id
+        dateInterval
+        dateIntervalByDateInterval{
+          id
+          nodeId
+          start
+          end
+        }
+      }
+    }
+    eventByEvent{
+      openRegistration
+      closeRegistration
+      nodeId
+    	id
+      activityByEventType{
+        name
+        id
+        nodeId
+      }
+    }
+  }
+}`
+}
 export {
     GET_DROPDOWN_OPTIONS,
     GET_EVENTS,
@@ -306,5 +341,6 @@ export {
     GET_USER_DATA,
     GET_EVENTS_OF_TYPE,
      GET_ACTIVITIES,
+     GET_DATE_GROUP_INFO_BY_ID,
     Query
 }

@@ -12,24 +12,21 @@ import moment from 'moment';
 import EventForm from './EventForm';
 import DateGroupForm from './DateGroupForm';
 import DateForm from './DateForm';
-import {Event, DateGroup, EventsPreview} from './EventsPreview';
+import {Event, DateGroup, EventsPreview, DateGroupInfo} from './EventsPreview';
 
 class ManageEvents extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            events: [],
             activeEvent: null,
             activeDateGroup: null
         }
-        this.events = [];
     }
     reset = () =>{
         this.setState({currentEvent:null, currentDateGroup:null});
     }
-    setActiveDateGroup = (dateGroup, event) =>{
+    setActiveDateGroup = (dateGroup) =>{
         this.setState({
-            activeEvent:event,
             activeDateGroup:dateGroup
         });
     }
@@ -48,6 +45,7 @@ class ManageEvents extends Component {
                 <div className="manage-events-main">
                     <div className="manage-events-event-form">
                         <EventForm/>
+                        <DateGroupInfo activeDateGroup={this.state.activeDateGroup} />
                     </div>
                         <DragAndDropMutation
                             createDate={this.state.createDate}

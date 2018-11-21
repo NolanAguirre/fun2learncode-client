@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { DropDown } from '../common/Common'
 import './EventsPreview.css'
-import { GET_EVENTS } from '../../Queries'
+import { GET_EVENTS, GET_DATE_GROUP_INFO_BY_ID } from '../../Queries'
 import QueryHandler from '../queryHandler/QueryHandler'
 import DateTime from 'react-datetime'
 import '../../../react-datetime.css'
@@ -18,7 +18,7 @@ function DateGroup (props) {
     return <div key={element.id}>{element.dateIntervalByDateInterval.start}</div>
   })
   return (
-    <div onClick={() => { props.setActiveDateGroup(props.dateGroup) }} style={{ backgroundColor: Colors.get(props.dateGroup.id).regular }} className='event-preview-date-container'>
+    <div onClick={() => { props.setActiveDateGroup(props.dateGroup)}} style={{ backgroundColor: Colors.get(props.dateGroup.id).regular }} className='event-preview-date-container'>
       <h4>open: {moment(props.dateGroup.openRegistration).format('MMM Do YYYY')}</h4>
       <h4>close: {moment(props.dateGroup.closeRegistration).format('MMM Do YYYY')}</h4>
       <h4> Show on Calander <input onChange={() => { DateStore.set('toggleDateDisplay', props.dateGroup.id) }} type='checkbox' defaultChecked='true' /> </h4>
@@ -60,10 +60,49 @@ function EventsPreviewChild (props) {
   )
 }
 
+function DateGroupInfo(props){
+    if(props.activeDateGroup === null){
+        return <div></div>
+    }
+    const child  = (dateGroup)=> { console.log(dateGroup)
+        let event = dateGroup.eventByEvent;
+        return <React.Fragment>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>EVENT NAME</td>
+                        <td>{event.activityByEventType.name}</td>
+                    </tr>
+                    <tr>
+                        <td>ER OPEN</td>
+                        <td>{new Date(event.openRegistration).toUTCString()}</td>
+                    </tr>
+                    <tr>
+                        <td>ER CLOSE</td>
+                        <td>{new Date(event.closeRegistration).toUTCString()}</td>
+                    </tr>
+                    <tr>
+                        <td>DG OPEN</td>
+                        <td>{new Date(dateGroup.openRegistration).toUTCString()}</td>
+                    </tr>
+                    <tr>
+                        <td>DG CLOSE</td>
+                        <td>{new Date(dateGroup.closeRegistration).toUTCString()}</td>
+                    </tr>
+                </tbody>
+            </table>
+    </React.Fragment>}
+    return(
+        <div>
+            <QueryHandler query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)} child={(data) => {return child(data.dateGroupById)}} />
+        </div>
+    )
+}
+
 function EventsPreview (props) {
   return <QueryHandler query={GET_EVENTS} child={(data) => {
     return <EventsPreviewChild queryResult={data} {...props} />
   }} />
 }
 
-export { Event, DateGroup, EventsPreview }
+export { Event, DateGroup, EventsPreview, DateGroupInfo}
