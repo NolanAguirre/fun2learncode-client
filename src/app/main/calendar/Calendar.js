@@ -7,6 +7,10 @@ import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import axios from 'axios';
 import DateStore from '../../DateStore';
+import QueryHandler from '../queryHandler/QueryHandler';
+import Popup from "reactjs-popup";
+import DateTime from 'react-datetime';
+import { GET_EVENTS } from '../../Queries'
 
 const localizer = BigCalendar.momentLocalizer(moment);
 function Calendar(props){
@@ -69,14 +73,22 @@ function DragAndDropCalendar(props){
     )
 }
 
-class DragAndDropMutation extends Component{
+class DragAndDropMutationInner extends Component{
     constructor(props){
         super(props);
         this.state = {
             events:[],
             hiddenEvents:[],
-            selected:{id:null}
+            selected:{id:null},
+            showPopup: false,
+            startTime: new Date(),
+            endTime : new Date()
         };
+        this.makeTemplate = (name, hour) => {
+            return `${name}:makeDateInterval(input: {arg0: "${hour.start.toISOString()}", arg1: "${hour.end.toISOString()}", arg2: "${this.props.activeDateGroup.id}"}) {
+                clientMutationId
+            }`
+        }
     }
     componentDidMount = () =>{
         DateStore.on("toggleDateDisplay",(id)=>{this.toggleDisplay(id)});
@@ -84,7 +96,6 @@ class DragAndDropMutation extends Component{
     componentWillUnmount = () =>{
         DateStore.removeAllListeners("toggleDateDisplay");
     }
-    
     post = (requestData) => {
         return axios({
             method:"post",
@@ -93,16 +104,20 @@ class DragAndDropMutation extends Component{
             data: requestData
         })
     }
-    makeBatch = (rangeStart, rangeEnd) =>{
+    makeBatch = (eventObject) =>{
+        let rangeStart= eventObject.start;
+        let rangeEnd = eventObject.end;
+        let startTime = moment(eventObject.resources.start);
+        let endTime = moment(eventObject.resources.end);
         let dates = [];
         while(rangeStart < rangeEnd){
             dates.push({
-                start: moment(rangeStart).set(this.props.startTime),
-                end: moment(rangeStart).set(this.props.endTime)
+                start: moment(rangeStart).set({'hour':startTime.get('hour'),'minute':startTime.get('minute')}),
+                end: moment(rangeStart).set({'hour':endTime.get('hour'),'minute':endTime.get('minute')})
             })
             rangeStart = moment(rangeStart).add(1, "days");
         }
-        console.log(dates);
+        console.log(dates.map((date,index)=>{return this.makeTemplate('a' + index, date)}))
         return dates;
     }
     newEvent = (event) => { //slot select
@@ -110,35 +125,20 @@ class DragAndDropMutation extends Component{
             return;
         }
         if (event.action === 'doubleClick') {
-
-                let hour = {
-                    id: '_' + Math.random().toString(36).substr(2, 9),
-                    title: this.props.activeDateGroup.name,
-                    start: event.start,
-                    end:  new Date(+event.start + 86400000),
-                    buttonStyle: {
-                        backgroundColor: Colors.get(this.props.activeDateGroup.id).regular
-                    },
-                    resources: {
-                        groupId: this.props.activeDateGroup.id
-                    }
+            this.tempEvent = {
+                id: '_' + Math.random().toString(36).substr(2, 9),
+                title: this.props.activeDateGroup.name,
+                start: event.start,
+                end:  new Date(+event.start + 86400000),
+                buttonStyle: {
+                    backgroundColor: Colors.get(this.props.activeDateGroup.id).regular
+                },
+                resources: {
+                    groupId: this.props.activeDateGroup.id
                 }
-                //makeBatch(hour.start, hour.end, )
-                //this.props.createDate
-                // let data = {
-                //     query:`mutation{
-                //                 makeDateInterval(input:{arg0:"${hour.start.toISOString()}" ,arg1:"${hour.end.toISOString()}" ,arg2:"${this.props.activeDateGroup.id}"}){
-                //                 clientMutationId
-                //               }
-                //             }`
-                // }
-                this.setState({
-                    events: [
-                        ...this.state.events,
-                        hour
-                    ]
-                })
-                return;
+            }
+            this.setState({showPopup:true});
+            return;
             }
           if(event.action === 'select'){
               let selectedId = this.state.selected.id;
@@ -147,6 +147,7 @@ class DragAndDropMutation extends Component{
                 let newEvent = Object.assign({}, this.state.selected);
                 newEvent.start = event.start;
                 newEvent.end = new Date(+event.start + 86400000 * event.slots.length);
+                this.makeBatch(newEvent)
                 this.setState({
                     events: [...newEvents, newEvent],
                 });
@@ -158,7 +159,13 @@ class DragAndDropMutation extends Component{
         const newEvents = this.state.events.filter((element) => {
             return element.id != event.id;
         });
-        this.setState({events: newEvents})
+        const newHiddenEvents = this.state.hiddenEvents.filter((element) => {
+            return element.id != event.id;
+        });
+        this.setState({
+            events: newEvents,
+            hiddenEvents: newHiddenEvents,
+        })
     }
     selectEvent = (event) => {
         this.resetSelectedEvent();
@@ -207,15 +214,62 @@ class DragAndDropMutation extends Component{
             hiddenEvents: [...newHiddenEvents, ...removed],
         })
     }
+    handleTimeChange = (movement, name)=> {
+        this.setState({[name]: movement})
+    }
+    closePopup = () => {
+        this.tempEvent.resources.start = this.state.startTime
+        this.tempEvent.resources.end = this.state.endTime
+        this.makeBatch(this.tempEvent);
+        let data = {
+            query:`mutation{
+
+                    }`
+        }
+        this.setState({
+            showPopup:false,
+            events: [
+                ...this.state.events,
+                this.tempEvent
+            ]
+        })
+        this.tempEvent = null;
+    }
     render(){
-        return(<DragAndDropCalendar
+        return(
+            <React.Fragment>
+            <Popup
+          open={this.state.showPopup}>
+          <div className="date-form">
+                  <table>
+                      <tbody>
+                          <tr>
+                              <td>Event Start Time:</td>
+                              <td><DateTime className="time-input" dateFormat={false} value={this.state.startTime} onChange={(time) => {this.handleTimeChange(time, "startTime")}}/></td>
+                          </tr>
+                          <tr>
+                              <td>Event End Time:</td>
+                              <td><DateTime className="time-input" value={this.state.endTime} dateFormat={false} onChange={(time) => {this.handleTimeChange(time, "endTime")}}/></td>
+                          </tr>
+  						<tr>
+  							<td><button onClick={this.closePopup} type="submit">Set</button></td>
+  						</tr>
+                      </tbody>
+                  </table>
+  		</div>
+        </Popup>
+            <DragAndDropCalendar
         tooltipAccessor={this.tooltipAccessor}
         removeEvent={this.removeEvent}
         selectEvent={this.selectEvent}
         newEvent={this.newEvent}
         events={this.state.events}
-        className="manage-events-calander"/>)
+        className="manage-events-calander"/>
+    </React.Fragment>)
     }
+}
+function DragAndDropMutation(props){
+    return <QueryHandler query={GET_EVENTS} child={(data)=><DragAndDropMutationInner {...props} queryResult={data} />}/>
 }
 export {DragAndDropMutation};
 
