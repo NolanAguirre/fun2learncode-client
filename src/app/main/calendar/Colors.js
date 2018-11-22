@@ -3,22 +3,22 @@ const colors = [
     regular: '#f4afaf',
     hover: '#ff8787'
   }, {
-    regular: '#FF00CC',
+    regular: '#f595e2',
     hover: '#BF0099'
   }, {
-    regular: '#7100FF',
+    regular: '#c59df7',
     hover: '#5500BF'
   }, {
-    regular: '#0021FF',
+    regular: '#8493fb',
     hover: '#0019BF'
   }, {
-    regular: '#00B0FF',
+    regular: '#87daff',
     hover: '#0084BF'
   }, {
-    regular: '#00FF7E',
+    regular: '#87fcc1',
     hover: '#00BF5F'
   }, {
-    regular: '#FF7700',
+    regular: '#febd84',
     hover: '#BF5900'
   }
 ]
