@@ -27,7 +27,7 @@ const authLink = setContext((_, { headers }) => {
 
 const client = new ApolloClient({
   link: authLink.concat(new HttpLink({ uri: 'http://localhost:3005/graphql' })),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache({dataIdFromObject: object => object.nodeId})
 })
 
 ReactDOM.render(<Router>

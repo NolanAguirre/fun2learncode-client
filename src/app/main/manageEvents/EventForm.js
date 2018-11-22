@@ -26,22 +26,28 @@ mutation($event:EventInput!){
       closeRegistration
       openRegistration
       activityByEventType{
+          nodeId
         id
         name
       }
       addressByAddress {
+          nodeId
         alias
         id
       }
       dateGroupsByEvent {
           nodes {
+              nodeId
+              name
             openRegistration
             closeRegistration
             id
             datesJoinsByDateGroup {
                 nodes {
+                    nodeId
                   id
                   dateIntervalByDateInterval {
+                      nodeId
                     start
                     end
                     id
@@ -164,7 +170,7 @@ class EventFormClass extends Component {
         }
     }
     render = () => {
-        console.log(this.props.queryResult.allActivityCatagories)
+        //console.log(this.props.queryResult.allActivityCatagories)
         const eventTypes = this.mapEventTypes(this.props.queryResult.allActivities);
         const addresses = this.mapAddresses(this.props.queryResult.allAddresses);
         return (<MutableForm

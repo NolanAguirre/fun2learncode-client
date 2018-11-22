@@ -10,32 +10,11 @@ import MutationHandler from '../queryHandler/MutationHandler';
 const GET_ADDRESSES = gql `query tempname{
 ...userData
 ...activityCatagories
-allActivities(orderBy:TYPE_ASC){
-  edges{
-    node{
-        name
-        description
-        id
-        eventPrerequisitesByPrerequisite{
-         edges{
-           node{
-             activityByEvent{
-               name
-               id
-             }
-           }
-         }
-       }
-        activityCatagoryByType{
-          name
-          id
-        }
-      }
-    }
-  }
+...activities
 }
 ${Query.fragments.activityCatagories}
 ${Query.fragments.userData}
+${Query.fragments.activities}
 `
 const CREATE_ACTIVITY = gql `
 mutation($name:String!, $type:UUID!, $description:String!){
