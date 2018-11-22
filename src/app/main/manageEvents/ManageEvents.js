@@ -4,7 +4,7 @@ import './ManageEvents.css';
 import {Query} from 'react-apollo';
 import DateTime from 'react-datetime';
 import '../../../react-datetime.css';
-import {Calendar, DragAndDropMutation} from '../calendar/Calendar';
+import DragAndDropMutation from '../calendar/Calendar';
 import QueryHandler from '../queryHandler/QueryHandler';
 import memoize from "memoize-one";
 import Colors from '../calendar/Colors';
@@ -19,16 +19,18 @@ class ManageEvents extends Component {
         super(props);
         this.state = {
             activeEvent: null,
-            activeDateGroup: null
+            activeDateGroup: {id:null}
         }
     }
     reset = () =>{
         this.setState({currentEvent:null, currentDateGroup:null});
     }
     setActiveDateGroup = (dateGroup) =>{
-        this.setState({
-            activeDateGroup:dateGroup
-        });
+        if(dateGroup.id != this.state.activeDateGroup.id){
+            this.setState({
+                activeDateGroup:dateGroup
+            });
+        }
     }
     setActiveEvent = (event) => {
         this.setState({
@@ -48,6 +50,7 @@ class ManageEvents extends Component {
                         <DateGroupInfo activeDateGroup={this.state.activeDateGroup} />
                     </div>
                         <DragAndDropMutation
+                            setActiveDateGroup={this.setActiveDateGroup}
                             createDate={this.state.createDate}
                             activeDateGroup={this.state.activeDateGroup}/>
                 </div>

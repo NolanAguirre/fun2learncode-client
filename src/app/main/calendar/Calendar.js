@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
 import BigCalendar from 'react-big-calendar';
-import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import moment from 'moment';
 import Colors from './Colors';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import axios from 'axios';
 import DateStore from '../../DateStore';
+import gql from 'graphql-tag';
 import QueryHandler from '../queryHandler/QueryHandler';
 import Popup from "reactjs-popup";
 import DateTime from 'react-datetime';
 import { GET_EVENTS } from '../../Queries'
+import { withApollo } from 'react-apollo';
 
 const localizer = BigCalendar.momentLocalizer(moment);
 function Calendar(props){
@@ -77,59 +77,129 @@ class DragAndDropMutationInner extends Component{
     constructor(props){
         super(props);
         this.state = {
-            events:[],
+            events:this.formatQueryResults(),
             hiddenEvents:[],
             selected:{id:null},
             showPopup: false,
-            startTime: new Date(),
-            endTime : new Date()
+            startTime: moment(),
+            endTime : moment().add(1, 'hour')
         };
-        this.makeTemplate = (name, hour) => {
-            return `${name}:makeDateInterval(input: {arg0: "${hour.start.toISOString()}", arg1: "${hour.end.toISOString()}", arg2: "${this.props.activeDateGroup.id}"}) {
-                clientMutationId
-            }`
-        }
     }
-    componentDidMount = () =>{
+
+    componentDidMount = () => {
         DateStore.on("toggleDateDisplay",(id)=>{this.toggleDisplay(id)});
     }
-    componentWillUnmount = () =>{
+
+    componentWillUnmount = () => {
         DateStore.removeAllListeners("toggleDateDisplay");
     }
-    post = (requestData) => {
-        return axios({
-            method:"post",
-            url:"http://localhost:3005/graphql",
-            headers:{'Authorization': "bearer " + localStorage.getItem("authToken")},
-            data: requestData
-        })
+
+    genRandomId = () =>{
+        return '_' + Math.random().toString(36).substr(2, 9);
     }
-    makeBatch = (eventObject) =>{
-        let rangeStart= eventObject.start;
-        let rangeEnd = eventObject.end;
-        let startTime = moment(eventObject.resources.start);
-        let endTime = moment(eventObject.resources.end);
+
+    localizeUTCTimestamp = (timestamp) =>{
+        return moment(moment.utc(timestamp)).local().toString()
+    }
+    // used for constructing queries
+    makeTemplate = (name, dateInterval) => {
+        return `${name}:makeDateInterval(input: {arg0: "${dateInterval.start}", arg1: "${dateInterval.end}", arg2: "${this.props.activeDateGroup.id}"}) {
+            clientMutationId
+        }`
+    }
+
+    deleteTemplate = (name, dateInterval) =>{
+        return `${name}:removeDateInterval(input: {arg0: "${dateInterval.start}", arg1: "${dateInterval.end}", arg2: "${this.props.activeDateGroup.id}"}) {
+            clientMutationId
+        }`
+    }
+
+    handleTimeChange = (movement, name)=> {
+        this.setState({[name]: movement})
+    }
+
+    setTime = (day, time) =>{
+        let temp = moment(day).local()
+        temp = moment(temp.hour(moment(time).hour()))
+        temp = moment(temp.minute(moment(time).minute()))
+        return temp
+    }
+
+    makeBatch = (eventObject, template) =>{
+        let rangeStart = moment(eventObject.start);
+        let rangeEnd = moment(eventObject.end);
         let dates = [];
-        while(rangeStart < rangeEnd){
+        let mutation = "";
+        while(rangeStart.unix() < rangeEnd.unix()){
             dates.push({
-                start: moment(rangeStart).set({'hour':startTime.get('hour'),'minute':startTime.get('minute')}),
-                end: moment(rangeStart).set({'hour':endTime.get('hour'),'minute':endTime.get('minute')})
+                start: rangeStart.toISOString(),
+                end: this.setTime(rangeStart,rangeEnd).toISOString()
             })
-            rangeStart = moment(rangeStart).add(1, "days");
+            rangeStart = moment(rangeStart.add(1, "days"))
         }
-        console.log(dates.map((date,index)=>{return this.makeTemplate('a' + index, date)}))
-        return dates;
+        dates.map((date,index) => template(this.genRandomId(), date))
+             .forEach((date) => {mutation += date + '\n'})
+        return mutation;
     }
-    newEvent = (event) => { //slot select
-        if(!this.props.activeDateGroup){
-            return;
+
+    formatQueryResults = () => {
+        function isDayApart(dateOne, dateTwo) {
+            let startTimeMatch = moment(dateOne.start).hour() == moment(dateTwo.start).hour() && moment(dateOne.start).minutes() == moment(dateTwo.start).minutes()
+            let endTimeMatch = moment(dateOne.end).add(1, 'days').unix() == moment(dateTwo.end).unix();
+            return startTimeMatch && endTimeMatch;
         }
-        if (event.action === 'doubleClick') {
-            this.tempEvent = {
-                id: '_' + Math.random().toString(36).substr(2, 9),
+
+        let dateGroups = this.props.queryResult.allEvents.nodes.map((event) => {
+            return event.dateGroupsByEvent.nodes.map((dateGroup) => dateGroup)
+        }).reduce((acc, val) => acc.concat(val), []) //reduce flattens array
+        .map((dateGroup) => {
+            let calendarEvents = dateGroup.datesJoinsByDateGroup.nodes.map((dateJoin) => {
+                let dateInterval = dateJoin.dateIntervalByDateInterval
+                return {
+                    id: this.genRandomId(),
+                    start: this.localizeUTCTimestamp(dateInterval.start),
+                    end: this.localizeUTCTimestamp(dateInterval.end),
+                    title: dateGroup.name,
+                    buttonStyle: {
+                        backgroundColor: Colors.get(dateGroup.id).regular
+                    },
+                    resources: {
+                        groupId: dateGroup.id
+                    }
+                }
+            });
+            calendarEvents.sort((a, b) => moment(a.start).unix() - moment(b.start).unix())
+            for(var x = 0; x < calendarEvents.length; x++){
+                for(var y = x+1; y < calendarEvents.length; y++){
+                    if (isDayApart(calendarEvents[x], calendarEvents[y])) {
+                        calendarEvents[x].end = calendarEvents[y].end
+                        calendarEvents.splice(y,1)
+                        y--
+                    }
+                }
+            }
+            return calendarEvents;
+        }).reduce((acc, val) => acc.concat(val), []);
+        return dateGroups;
+    }
+
+    post = (mutation) => {
+        //TODO update cache, handle errors
+        let options = {
+            mutation: gql`mutation{
+                    ${mutation}
+                    }`
+        }
+        this.props.client.mutate(options).then((res)=>{});
+    }
+
+    newEvent = (event) => { //event that files on slot select
+        if (this.props.activeDateGroup.id && event.action === 'doubleClick') {
+            this.popupEvent = {
+                id: this.genRandomId(),
                 title: this.props.activeDateGroup.name,
                 start: event.start,
-                end:  new Date(+event.start + 86400000),
+                end: event.start,
                 buttonStyle: {
                     backgroundColor: Colors.get(this.props.activeDateGroup.id).regular
                 },
@@ -137,31 +207,31 @@ class DragAndDropMutationInner extends Component{
                     groupId: this.props.activeDateGroup.id
                 }
             }
-            this.setState({showPopup:true});
-            return;
-            }
-          if(event.action === 'select'){
-              let selectedId = this.state.selected.id;
-              if(selectedId != null){
-                const newEvents = this.state.events.filter((element)=>{return element.id != selectedId});
+            this.setState({showPopup: true});
+        }else if (event.action === 'select') {
+            let selectedId = this.state.selected.id;
+            if (selectedId != null) {
+                const newEvents = this.state.events.filter((element) => element.id != selectedId)
+                const removedEvent = this.state.events.find((element) =>element.id == selectedId);
                 let newEvent = Object.assign({}, this.state.selected);
-                newEvent.start = event.start;
-                newEvent.end = new Date(+event.start + 86400000 * event.slots.length);
-                this.makeBatch(newEvent)
+                newEvent.start = this.setTime(moment(event.start).toString(), removedEvent.start)
+                newEvent.end = this.setTime(moment(event.start).add(event.slots.length - 1, 'days').toString(), removedEvent.end)
+                this.post(this.makeBatch(removedEvent, this.deleteTemplate) + "\n" + this.makeBatch(newEvent, this.makeTemplate))
                 this.setState({
-                    events: [...newEvents, newEvent],
+                    events: [
+                        ...newEvents,
+                        newEvent
+                    ]
                 });
             }
         }
         this.resetSelectedEvent();
     }
     removeEvent = (event) => {
-        const newEvents = this.state.events.filter((element) => {
-            return element.id != event.id;
-        });
-        const newHiddenEvents = this.state.hiddenEvents.filter((element) => {
-            return element.id != event.id;
-        });
+        const removedEvent = this.state.events.find((element) => element.id == event.id)
+        this.post(this.makeBatch(removedEvent, this.deleteTemplate))
+        const newEvents = this.state.events.filter((element) => element.id != event.id)
+        const newHiddenEvents = this.state.hiddenEvents.filter((element) => element.id != event.id)
         this.setState({
             events: newEvents,
             hiddenEvents: newHiddenEvents,
@@ -172,6 +242,7 @@ class DragAndDropMutationInner extends Component{
         event.buttonStyle = {
             backgroundColor: Colors.get(event.resources.groupId).hover
         }
+        this.props.setActiveDateGroup({id:event.resources.groupId, name:event.title});
         this.setState({selected: event})
     }
     resetSelectedEvent = () => {
@@ -182,64 +253,51 @@ class DragAndDropMutationInner extends Component{
             return element;
         });
         this.setState({
-            selected: {
-                id: null
-            },
+            selected: {id: null},
             events: newEvents
         });
     }
     tooltipAccessor = (event) => {
+        //TODO make this better somehow
         return "Tool Tip";
-//         let group = this.dateGroups.data[event.resources.eventId];
-//         return `From: ${moment(event.resources.start).format("h:mm a")}
-// To: ${moment(event.resources.end).format("h:mm a")}
-// Price: ${group.price}
-// Location: ${group.addressName}
-// Capacity: ${group.capacity}
-// Registartion
-//     Event
-//         Open: ${moment(group.open).format("MMMM Do YYYY")} Close: ${moment(group.close).format("MMMM Do YYYY")}
-//     Group:
-//         Open: ${moment(event.resources.open).format("MMMM Do YYYY")} Close: ${moment(event.resources.close).format("MMMM Do YYYY")}
-// Event Id:${event.resources.eventId}
-// `;
     }
     toggleDisplay = (id) =>{
-        const newEvents = this.state.events.filter((event)=>{return event.resources.groupId != id});
-        const removed = this.state.events.filter((event)=>{return event.resources.groupId == id});
-        const newHiddenEvents = this.state.hiddenEvents.filter((event)=>{return event.resources.groupId != id});
-        const add = this.state.hiddenEvents.filter((event)=>{return event.resources.groupId == id});
+        const newEvents = this.state.events.filter((event) => event.resources.groupId != id);
+        const removed = this.state.events.filter((event) => event.resources.groupId == id);
+        const newHiddenEvents = this.state.hiddenEvents.filter((event) => event.resources.groupId != id);
+        const add = this.state.hiddenEvents.filter((event) => event.resources.groupId == id);
         this.setState({
             events:[...newEvents, ...add],
             hiddenEvents: [...newHiddenEvents, ...removed],
         })
     }
-    handleTimeChange = (movement, name)=> {
-        this.setState({[name]: movement})
-    }
     closePopup = () => {
-        this.tempEvent.resources.start = this.state.startTime
-        this.tempEvent.resources.end = this.state.endTime
-        this.makeBatch(this.tempEvent);
-        let data = {
-            query:`mutation{
-
-                    }`
-        }
+        this.popupEvent.start = this.setTime(this.popupEvent.start, this.state.startTime)
+        this.popupEvent.end = this.setTime(this.popupEvent.end, this.state.endTime)
+        this.post(this.makeBatch(this.popupEvent, this.makeTemplate));
         this.setState({
             showPopup:false,
             events: [
                 ...this.state.events,
-                this.tempEvent
+                this.popupEvent
             ]
         })
-        this.tempEvent = null;
+        this.popupEvent = null;
+    }
+    clearPopupState = () => {
+        this.popupEvent = null;
+        if(this.state.showPopup){
+            this.setState({showPopup:false});
+        }
     }
     render(){
+        //TODO make this popup pretty
         return(
             <React.Fragment>
             <Popup
-          open={this.state.showPopup}>
+          open={this.state.showPopup}
+          closeOnDocumentClick
+          onClose={this.clearPopupState}>
           <div className="date-form">
                   <table>
                       <tbody>
@@ -269,10 +327,6 @@ class DragAndDropMutationInner extends Component{
     }
 }
 function DragAndDropMutation(props){
-    return <QueryHandler query={GET_EVENTS} child={(data)=><DragAndDropMutationInner {...props} queryResult={data} />}/>
+    return <QueryHandler query={GET_EVENTS} child={(data)=> <DragAndDropMutationInner {...props} queryResult={data} />}/>
 }
-export {DragAndDropMutation};
-
-export {DragAndDropCalendar};
-
-export {Calendar};
+export default withApollo(DragAndDropMutation)
