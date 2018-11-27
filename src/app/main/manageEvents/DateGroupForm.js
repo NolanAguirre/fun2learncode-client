@@ -31,11 +31,11 @@ function CreateDates(props) {
 						</tr>
 						<tr>
 							<td>Set Start:</td>
-							<td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) => {props.handleTimeChange(time, "open")}}/></td>
+							<td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) => {props.handleTimeChange("open", time)}}/></td>
 						</tr>
 						<tr>
 							<td>Set End:</td>
-							<td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close}  onChange={(time) => {props.handleTimeChange(time, "close")}}/></td>
+							<td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close}  onChange={(time) => {props.handleTimeChange("close", time)}}/></td>
 						</tr>
 						<tr>
 							<td><button type="submit">Set</button></td>
@@ -59,8 +59,8 @@ class DateGroupForm extends Component{
             displayForm: false
         }
     }
-    handleTimeChange = (movement, name)=> {
-        this.setState({[name]: movement})
+	handleTimeChange = (key, value) => {
+        this.setState({[key]: value})
     }
 	handleChange = (event) => {
         const target = event.target;

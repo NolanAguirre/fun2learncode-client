@@ -43,13 +43,13 @@ function MutableForm(props){
                         <tr>
                             <td>Open Event On:</td>
                             <td>
-                                <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) =>{props.handleTimeChange(time, "open")}}/>
+                                <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) =>{props.handleTimeChange("open", time)}}/>
                             </td>
                         </tr>
                         <tr>
                             <td>Close Event On:</td>
                             <td>
-                                <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close} onChange={(time)=>{props.handleTimeChange(time, "close")}}/>
+                                <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close} onChange={(time)=>{props.handleTimeChange("close", time)}}/>
                             </td>
                         </tr>
                         <tr>
@@ -95,7 +95,7 @@ class EventFormClass extends Component {
             return mapped;
         }
     );
-    localizeUTCTimestamp = (timestamp) => { 
+    localizeUTCTimestamp = (timestamp) => {
         if(!timestamp){return null}
         return new Date(moment(moment.utc(timestamp)).local().toString())
     }
@@ -107,8 +107,8 @@ class EventFormClass extends Component {
         const name = target.name;
         this.setState({[name]: value});
     }
-    handleTimeChange = (date, name)=> {
-        this.setState({[name]: date})
+    handleTimeChange = (key, value) => {
+        this.setState({[key]: value})
     }
     handleSubmit = (event, mutation) => {
         event.preventDefault();

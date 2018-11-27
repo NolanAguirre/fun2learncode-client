@@ -18,11 +18,11 @@ function CreateDate(props) {
                     <tbody>
                         <tr>
                             <td>Event Start Time:</td>
-                            <td><DateTime className="time-input" dateFormat={false} value={props.start} onChange={(time) => {props.handleTimeChange(time, "start")}}/></td>
+                            <td><DateTime className="time-input" dateFormat={false} value={props.start} onChange={(time) => {props.handleTimeChange("start", time)}}/></td>
                         </tr>
                         <tr>
                             <td>Event End Time:</td>
-                            <td><DateTime className="time-input" value={props.end} dateFormat={false} onChange={(time) => {props.handleTimeChange(time, "end")}}/></td>
+                            <td><DateTime className="time-input" value={props.end} dateFormat={false} onChange={(time) => {props.handleTimeChange("end", time)}}/></td>
                         </tr>
 						<tr>
 							<td><button type="submit">Set</button></td>
@@ -43,8 +43,8 @@ class DateForm extends Component{
             displayForm: false
         }
     }
-    handleTimeChange = (movement, name)=> {
-        this.setState({[name]: movement})
+    handleTimeChange = (key, value) => {
+        this.setState({[key]: value})
     }
     handleSubmit = (event) => {
         event.preventDefault();

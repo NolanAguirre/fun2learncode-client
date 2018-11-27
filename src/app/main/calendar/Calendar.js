@@ -114,8 +114,8 @@ class DragAndDropMutationInner extends Component{
         }`
     }
 
-    handleTimeChange = (movement, name)=> {
-        this.setState({[name]: movement})
+    handleTimeChange = (key, value)=> {
+        this.setState({[key]:value})
     }
 
     setTime = (day, time) =>{
@@ -303,11 +303,11 @@ class DragAndDropMutationInner extends Component{
                       <tbody>
                           <tr>
                               <td>Event Start Time:</td>
-                              <td><DateTime className="time-input" dateFormat={false} value={this.state.startTime} onChange={(time) => {this.handleTimeChange(time, "startTime")}}/></td>
+                              <td><DateTime className="time-input" dateFormat={false} value={this.state.startTime} onChange={(time) => {this.handleTimeChange("startTime", time)}}/></td>
                           </tr>
                           <tr>
                               <td>Event End Time:</td>
-                              <td><DateTime className="time-input" value={this.state.endTime} dateFormat={false} onChange={(time) => {this.handleTimeChange(time, "endTime")}}/></td>
+                              <td><DateTime className="time-input" dateFormat={false} value={this.state.endTime}  onChange={(time) => {this.handleTimeChange("endTime", time)}}/></td>
                           </tr>
   						<tr>
   							<td><button onClick={this.closePopup} type="submit">Set</button></td>
