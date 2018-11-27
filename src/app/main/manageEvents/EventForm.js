@@ -78,8 +78,8 @@ class EventFormClass extends Component {
             capacity: props.capacity || 8,
             eventType:props.eventType,
             address:props.address,
-            open: new Date(this.localizeUTCTimestamp(props.openRegistration)) || new Date(+ new Date() + 86400000),
-            close: new Date(this.localizeUTCTimestamp(props.closeRegistration)) || new Date(+ new Date() + 166400000),
+            open: this.localizeUTCTimestamp(props.openRegistration) || new Date(moment().hour(23).minute(59).toString()),
+            close: this.localizeUTCTimestamp(props.closeRegistration) || new Date(moment().add(1, "days").hour(23).minute(59).toString()),
             creatingEvent: true
         }
     }
@@ -95,8 +95,9 @@ class EventFormClass extends Component {
             return mapped;
         }
     );
-    localizeUTCTimestamp = (timestamp) =>{
-        return moment(moment.utc(timestamp)).local().toString()
+    localizeUTCTimestamp = (timestamp) => { 
+        if(!timestamp){return null}
+        return new Date(moment(moment.utc(timestamp)).local().toString())
     }
     handleChange = (event, refresh) => {
         const target = event.target;

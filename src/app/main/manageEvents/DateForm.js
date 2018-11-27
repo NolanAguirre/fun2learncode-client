@@ -38,8 +38,8 @@ class DateForm extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            start: new Date().setHours(12,0,0),
-            end: new Date().setHours(13,0,0),
+            start: new Date(moment().hour(23).minute(59).toString()),
+            end: new Date(moment().add(1, "days").hour(23).minute(59).toString()),
             displayForm: false
         }
     }
