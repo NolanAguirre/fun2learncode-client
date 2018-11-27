@@ -55,9 +55,6 @@ class DateForm extends Component{
 		this.props.setDateGroupStart(this.props.groupId, this.state.start, this.state.end);
 		this.setState({displayForm:false});
     }
-    displayForm = () =>{
-        this.setState({displayForm:true});
-    }
     render() {
         return (
         <div className="manage-events-event-preview">

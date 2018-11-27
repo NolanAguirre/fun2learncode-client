@@ -1,5 +1,4 @@
 .event-contaier{
-    flex:1;
     display:flex;
     flex-wrap: wrap;
     background-color: white;

@@ -121,7 +121,7 @@ function DateGroupInfo(props){
     </React.Fragment>}
     return(
         <div>
-            <QueryHandler query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)} child={(data) => {return child(data.dateGroupById)}} />
+            {(props.activeDateGroup.id)?<QueryHandler query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)} child={(data) => {return child(data.dateGroupById)}} />:<div></div>}
         </div>
     )
 }

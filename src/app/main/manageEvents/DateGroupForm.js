@@ -74,11 +74,10 @@ class DateGroupForm extends Component{
         event.preventDefault();
         let dateGroup={
             event: this.props.eventId,
-            openRegistration: this.state.open,
-            closeRegistration: this.state.close,
+            openRegistration: this.state.open.toISOString(),
+            closeRegistration: this.state.close.toISOString(),
 			name: this.state.name
         }
-		console.log(dateGroup);
         mutation({
             variables: {"dateGroup":dateGroup}
         });

@@ -13,7 +13,7 @@ import EventForm from './EventForm';
 import DateGroupForm from './DateGroupForm';
 import DateForm from './DateForm';
 import {Event, DateGroup, EventsPreview, DateGroupInfo} from './EventsPreview';
-
+//TODO make sure this page is secure
 class ManageEvents extends Component {
     constructor(props) {
         super(props);
@@ -21,9 +21,6 @@ class ManageEvents extends Component {
             activeEvent: null,
             activeDateGroup: {id:null}
         }
-    }
-    reset = () =>{
-        this.setState({currentEvent:null, currentDateGroup:null});
     }
     setActiveDateGroup = (dateGroup) =>{
         if(dateGroup.id != this.state.activeDateGroup.id){
