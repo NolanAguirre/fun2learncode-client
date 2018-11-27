@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {DropDown} from '../common/Common';
 import {GET_DROPDOWN_OPTIONS, GET_EVENTS} from '../../Queries';
+import {EVENT} from '../../Mutations';
 import './ManageEvents.css';
 import gql from 'graphql-tag';
 import {Query, Mutation} from 'react-apollo';
@@ -11,56 +12,6 @@ import MutationHandler from '../queryHandler/MutationHandler';
 import memoize from "memoize-one";
 import Colors from '../calendar/Colors'
 import moment from 'moment';
-
-const CREATE_EVENT = gql`
-mutation($event:EventInput!){
-  createEvent(input:{event:$event}){
-    event{
-        __typename
-        nodeId
-      id
-      eventType
-      price
-      address
-      capacity
-      closeRegistration
-      openRegistration
-      activityByEventType{
-          nodeId
-        id
-        name
-      }
-      addressByAddress {
-          nodeId
-        alias
-        id
-      }
-      dateGroupsByEvent {
-          nodes {
-              nodeId
-              name
-            openRegistration
-            closeRegistration
-            id
-            datesJoinsByDateGroup {
-                nodes {
-                    nodeId
-                  id
-                  dateIntervalByDateInterval {
-                      nodeId
-                    start
-                    end
-                    id
-                  }
-                }
-              }
-
-
-        }
-      }
-    }
-  }
-}`;
 
 function MutableForm(props){
     const form = <table>
@@ -103,31 +54,32 @@ function MutableForm(props){
                         </tr>
                         <tr>
                             <td>
-                                <button type="submit">Plan Event Dates</button>
+                                <button type="submit">Set Event Values</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+
     return(<MutationHandler  update={(cache, { data: { createEvent } }) => {
+        if(!createEvent){return} // returns when query was update
         const { allEvents } = cache.readQuery({ query: GET_EVENTS });
-        console.log(allEvents);
         cache.writeQuery({
           query: GET_EVENTS,
           data: { allEvents: {...allEvents, nodes: allEvents.nodes.concat([createEvent.event])} }
         });
-      }} handleMutation={props.handleSubmit} mutation={CREATE_EVENT} form={form} />);
+    }} handleMutation={props.handleSubmit} mutation={props.mutation} form={form} />);
 }
 
 class EventFormClass extends Component {
     constructor(props){
         super(props);
         this.state = {
-            price: 100,
-            capacity: 8,
-            eventType:undefined,
-            address:undefined,
-            open: new Date(+ new Date() + 86400000),
-            close: new Date(+ new Date() + 166400000),
+            price: props.price || 100,
+            capacity: props.capacity || 8,
+            eventType:props.eventType,
+            address:props.address,
+            open: new Date(this.localizeUTCTimestamp(props.openRegistration)) || new Date(+ new Date() + 86400000),
+            close: new Date(this.localizeUTCTimestamp(props.closeRegistration)) || new Date(+ new Date() + 166400000),
             creatingEvent: true
         }
     }
@@ -143,6 +95,9 @@ class EventFormClass extends Component {
             return mapped;
         }
     );
+    localizeUTCTimestamp = (timestamp) =>{
+        return moment(moment.utc(timestamp)).local().toString()
+    }
     handleChange = (event, refresh) => {
         const target = event.target;
         const value = target.type === 'checkbox'
@@ -163,9 +118,9 @@ class EventFormClass extends Component {
             newEvent.eventType = this.state.eventType;
             newEvent.address = this.state.address;
             newEvent.openRegistration = this.state.open;
-            newEvent.closeRegistration= this.state.close;
+            newEvent.closeRegistration = this.state.close;
             mutation({
-                variables: {event:newEvent}
+                variables: {id:this.props.id, event:newEvent}
             });
         }
     }
@@ -184,7 +139,8 @@ class EventFormClass extends Component {
                 close={this.state.close}
                 handleChange={this.handleChange}
                 handleTimeChange={this.handleTimeChange}
-                handleSubmit={this.handleSubmit}/>)
+                handleSubmit={this.handleSubmit}
+                mutation={(this.props.id)?EVENT.UPDATE:EVENT.CREATE}/>) //update event : create event
     }
 }
 
