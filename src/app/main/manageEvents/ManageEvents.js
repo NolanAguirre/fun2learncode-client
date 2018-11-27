@@ -39,7 +39,7 @@ class ManageEvents extends Component {
     }
 
     render() {
-        const dateGroup = <DateGroup setActiveDateGroup={this.setActiveDateGroup}/>
+        const dateGroup = <DateGroup activeDateGroup={this.state.activeDateGroup} setActiveDateGroup={this.setActiveDateGroup}/>
         const event = <Event form={<DateGroupForm />} children={dateGroup}/>
         return (
             <div className="manage-events-container">

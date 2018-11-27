@@ -323,6 +323,11 @@ const GET_DATE_GROUP_INFO_BY_ID = (id)=>{
       }
     }
     eventByEvent{
+      addressByAddress{
+        alias
+        nodeId
+        id  
+      }
       openRegistration
       closeRegistration
       nodeId
@@ -336,6 +341,7 @@ const GET_DATE_GROUP_INFO_BY_ID = (id)=>{
   }
 }`
 }
+
 export {
     GET_DROPDOWN_OPTIONS,
     GET_EVENTS,

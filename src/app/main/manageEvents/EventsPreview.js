@@ -16,12 +16,12 @@ function DateGroup (props) {
   if (false) {
     return <div>not working</div>
   }
-  let dates = props.dateGroup.datesJoinsByDateGroup.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()})
-  dates = dates.map((element) => {
+  const dates = props.dateGroup.datesJoinsByDateGroup.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()}).map((element) => {
     return <div key={element.id}>{moment(moment.utc(element.dateIntervalByDateInterval.start)).local().toString()}</div>
   })
+  const backgroundColor = (props.dateGroup.id == props.activeDateGroup.id)? Colors.get(props.dateGroup.id).hover : Colors.get(props.dateGroup.id).regular
   return (
-    <div onClick={() => {props.setActiveDateGroup(props.dateGroup)}} style={{ backgroundColor: Colors.get(props.dateGroup.id).regular }} className='event-preview-date-container'>
+    <div onClick={() => {props.setActiveDateGroup(props.dateGroup)}} style={{ backgroundColor }} className='event-preview-date-container'>
       <h4>{props.dateGroup.name}</h4>
       <h4> Show on Calander <input onChange={() => { DateStore.set('toggleDateDisplay', props.dateGroup.id) }} type='checkbox' defaultChecked='true' /> </h4>
       <div>
@@ -102,24 +102,19 @@ function DateGroupInfo(props){
             <table>
                 <tbody>
                     <tr>
-                        <td>EVENT NAME</td>
+                        <td>Name</td>
                         <td>{event.activityByEventType.name}</td>
+                        <td>@ {event.addressByAddress.alias}</td>
                     </tr>
                     <tr>
-                        <td>ER OPEN</td>
-                        <td>{new Date(event.openRegistration).toUTCString()}</td>
+                        <td>Event registration</td>
+                        <td>{moment(event.openRegistration).format("MMM Do YYYY")}</td>
+                        <td>to {moment(event.closeRegistration).format("MMM Do YYYY")}</td>
                     </tr>
                     <tr>
-                        <td>ER CLOSE</td>
-                        <td>{new Date(event.closeRegistration).toUTCString()}</td>
-                    </tr>
-                    <tr>
-                        <td>DG OPEN</td>
-                        <td>{new Date(dateGroup.openRegistration).toUTCString()}</td>
-                    </tr>
-                    <tr>
-                        <td>DG CLOSE</td>
-                        <td>{new Date(dateGroup.closeRegistration).toUTCString()}</td>
+                        <td>Date group registration</td>
+                        <td>{moment(dateGroup.openRegistration).format("MMM Do YYYY")}</td>
+                        <td>to {moment(dateGroup.closeRegistration).format("MMM Do YYYY")}</td>
                     </tr>
                 </tbody>
             </table>
