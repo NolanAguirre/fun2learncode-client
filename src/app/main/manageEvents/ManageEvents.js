@@ -12,8 +12,8 @@ import moment from 'moment';
 import EventForm from './EventForm';
 import DateGroupForm from './DateGroupForm';
 import DateForm from './DateForm';
+import {SecureRoute} from '../common/Common'
 import {Event, DateGroup, EventsPreview, DateGroupInfo} from './EventsPreview';
-//TODO make sure this page is secure
 class ManageEvents extends Component {
     constructor(props) {
         super(props);
@@ -38,20 +38,22 @@ class ManageEvents extends Component {
     render() {
         const dateGroup = <DateGroup activeDateGroup={this.state.activeDateGroup} setActiveDateGroup={this.setActiveDateGroup}/>
         const event = <Event form={<DateGroupForm />} children={dateGroup}/>
-        return (
-            <div className="manage-events-container">
-                <EventsPreview children={event}/>
-                <div className="manage-events-main">
-                    <div className="manage-events-event-form">
-                        <EventForm/>
-                        <DateGroupInfo activeDateGroup={this.state.activeDateGroup} />
-                    </div>
-                        <DragAndDropMutation
-                            setActiveDateGroup={this.setActiveDateGroup}
-                            createDate={this.state.createDate}
-                            activeDateGroup={this.state.activeDateGroup}/>
-                </div>
-            </div>
-    );}
+        return (<SecureRoute roles={["FTLC_INSTRUCTOR", "FTLC_OWNER"]}>
+                     <div className="manage-events-container">
+                            <EventsPreview children={event}/>
+                            <div className="manage-events-main">
+                                <div className="manage-events-event-form">
+                                    <EventForm/>
+                                    <DateGroupInfo activeDateGroup={this.state.activeDateGroup} />
+                                </div>
+                                    <DragAndDropMutation
+                                        setActiveDateGroup={this.setActiveDateGroup}
+                                        createDate={this.state.createDate}
+                                        activeDateGroup={this.state.activeDateGroup}/>
+                            </div>
+                        </div>
+                </SecureRoute>
+        );
+    }
 }
 export default ManageEvents;

@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import './Common.css'
+import { GET_USER_DATA } from '../../Queries'
+import QueryHandler from '../queryHandler/QueryHandler'
 function Location (props) {
   return (<div className='location'>
     <div>
@@ -22,3 +24,17 @@ function DropDown (props) {
     </select>)
 }
 export { DropDown }
+
+function SecureRoute(props){
+    if(!localStorage.getItem('authToken')){
+        return <div>please login</div>
+    }
+    return (<QueryHandler query={GET_USER_DATA} child={(data) => {
+                if(props.roles.includes(data.getUserData.role)){
+                    return props.children;
+                }
+                return <div>please login</div>
+            }}/>
+    );
+}
+export { SecureRoute }
