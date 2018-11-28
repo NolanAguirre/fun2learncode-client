@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import Colors from './Colors';
+import './Calendar.css'
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import DateStore from '../../DateStore';
@@ -101,6 +102,7 @@ class DragAndDropMutationInner extends Component{
     localizeUTCTimestamp = (timestamp) =>{
         return moment(moment.utc(timestamp)).local().toString()
     }
+
     // used for constructing queries
     makeTemplate = (name, dateInterval) => {
         return `${name}:makeDateInterval(input: {arg0: "${dateInterval.start}", arg1: "${dateInterval.end}", arg2: "${this.props.activeDateGroup.id}"}) {
@@ -116,6 +118,14 @@ class DragAndDropMutationInner extends Component{
 
     handleTimeChange = (key, value)=> {
         this.setState({[key]:value})
+        const start = this.state.startTime
+        const end = this.state.endTime
+        if(start > end){
+            this.setState({
+                startTime:end,
+                endTime:start
+            })
+        }
     }
 
     setTime = (day, time) =>{
@@ -184,13 +194,13 @@ class DragAndDropMutationInner extends Component{
     }
 
     post = (mutation) => {
-        //TODO update cache, handle errors
         let options = {
             mutation: gql`mutation{
                     ${mutation}
-                    }`
+                }`,
+            refetchQueries:['eventsQuery']
         }
-        this.props.client.mutate(options).then((res)=>{});
+        this.props.client.mutate(options).then((res)=>{}).catch((err)=>{console.log(err)});
     }
 
     newEvent = (event) => { //event that files on slot select
@@ -291,31 +301,31 @@ class DragAndDropMutationInner extends Component{
         }
     }
     render(){
-        //TODO make this popup pretty
+        //TODO make this popup pretty, and check to make sure that end is greater than start
         return(
             <React.Fragment>
             <Popup
           open={this.state.showPopup}
           closeOnDocumentClick
           onClose={this.clearPopupState}>
-          <div className="date-form">
-                  <table>
-                      <tbody>
-                          <tr>
-                              <td>Event Start Time:</td>
-                              <td><DateTime className="time-input" dateFormat={false} value={this.state.startTime} onChange={(time) => {this.handleTimeChange("startTime", time)}}/></td>
-                          </tr>
-                          <tr>
-                              <td>Event End Time:</td>
-                              <td><DateTime className="time-input" dateFormat={false} value={this.state.endTime}  onChange={(time) => {this.handleTimeChange("endTime", time)}}/></td>
-                          </tr>
-  						<tr>
-  							<td><button onClick={this.closePopup} type="submit">Set</button></td>
-  						</tr>
-                      </tbody>
-                  </table>
-  		</div>
-        </Popup>
+                <div className="calendar-popup">
+                      <table>
+                          <tbody>
+                              <tr>
+                                  <td>Event Start Time:</td>
+                                  <td><DateTime className="time-input" dateFormat={false} value={this.state.startTime} onChange={(time) => {this.handleTimeChange("startTime", time)}}/></td>
+                              </tr>
+                              <tr>
+                                  <td>Event End Time:</td>
+                                  <td><DateTime className="time-input" dateFormat={false} value={this.state.endTime}  onChange={(time) => {this.handleTimeChange("endTime", time)}}/></td>
+                              </tr>
+      						<tr>
+      							<td><button onClick={this.closePopup} type="submit">Set</button></td>
+      						</tr>
+                          </tbody>
+                      </table>
+  		          </div>
+            </Popup>
             <DragAndDropCalendar
         tooltipAccessor={this.tooltipAccessor}
         removeEvent={this.removeEvent}
