@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { DropDown } from '../common/Common'
 import './EventsPreview.css'
-import { GET_EVENTS, GET_DATE_GROUP_INFO_BY_ID } from '../../Queries'
+import { gql_Event, GET_DATE_GROUP_INFO_BY_ID } from '../../Queries'
 import QueryHandler from '../queryHandler/QueryHandler'
 import DateTime from 'react-datetime'
 import '../../../react-datetime.css'
@@ -17,7 +17,7 @@ function DateGroup (props) {
     return <div>not working</div>
   }
   const dates = props.dateGroup.datesJoinsByDateGroup.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()}).map((element) => {
-    return <div key={element.id}>{moment(moment.utc(element.dateIntervalByDateInterval.start)).local().toString()}</div>
+    return <div key={element.id}>{moment(moment.utc(element.dateIntervalByDateInterval.start)).local().format("MMM Do h:mma") + "-" +moment(moment.utc(element.dateIntervalByDateInterval.end)).local().format("h:mma")}</div>
   })
   const backgroundColor = (props.dateGroup.id == props.activeDateGroup.id)? Colors.get(props.dateGroup.id).hover : Colors.get(props.dateGroup.id).regular
   return (
@@ -93,10 +93,12 @@ function EventsPreviewChild (props) {
 }
 
 function DateGroupInfo(props){
-    if(props.activeDateGroup === null){
-        return <div></div>
-    }
     const child  = (dateGroup)=> {
+        if(!dateGroup){
+            console.log(props)
+            console.log(dateGroup)
+            return <div></div>
+        }
         let event = dateGroup.eventByEvent;
         return <React.Fragment>
             <table>
@@ -121,13 +123,13 @@ function DateGroupInfo(props){
     </React.Fragment>}
     return(
         <div>
-            {(props.activeDateGroup.id)?<QueryHandler query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)} child={(data) => {return child(data.dateGroupById)}} />:<div></div>}
+            {(props.activeDateGroup.id)?<QueryHandler query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)} child={(data) => {console.log(data);return child(data.dateGroupById)}} />:<div></div>}
         </div>
     )
 }
 
 function EventsPreview (props) {
-  return <QueryHandler query={GET_EVENTS} child={(data) => {
+  return <QueryHandler query={gql_Event.queries.GET_EVENTS} child={(data) => {
     return <EventsPreviewChild queryResult={data} {...props} />
   }} />
 }

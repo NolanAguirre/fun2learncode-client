@@ -33,51 +33,112 @@ allStudents(condition: {parent: "${parentId}"}) {
 `
 }
 // event Queries
-const GET_EVENTS = gql `query eventsQuery {
-  allEvents {
+let gql_Event = {
+    queries:{},
+    mutations:{},
+    fragments:{
+        eventNode:gql`fragment eventNode on Event {
+  __typename
+  nodeId
+  id
+  eventType
+  address
+  openRegistration
+  closeRegistration
+  price
+  capacity
+  activityByEventType {
+    nodeId
+    id
+    name
+  }
+  addressByAddress {
+    nodeId
+    alias
+    id
+  }
+  dateGroupsByEvent {
     nodes {
       nodeId
       id
-      eventType
-      address
+      name
       openRegistration
       closeRegistration
-      price
-      capacity
-      activityByEventType {
-        nodeId
-        id
-        name
-      }
-      addressByAddress {
-        nodeId
-        alias
-        id
-      }
-      dateGroupsByEvent {
+      datesJoinsByDateGroup {
         nodes {
           nodeId
-          name
-          openRegistration
-          closeRegistration
           id
-          datesJoinsByDateGroup(orderBy:DATE_INTERVAL_ASC){
-            nodes {
-              id
-              nodeId
-              dateIntervalByDateInterval {
-                nodeId
-                start
-                end
-                id
-              }
-            }
+          dateInterval
+          dateIntervalByDateInterval {
+            id
+            nodeId
+            start
+            end
           }
+        }
+      }
+      eventByEvent {
+        addressByAddress {
+          alias
+          nodeId
+          id
+        }
+        openRegistration
+        closeRegistration
+        nodeId
+        id
+        activityByEventType {
+          name
+          id
+          nodeId
         }
       }
     }
   }
-}`
+}
+`
+    }
+}
+gql_Event.queries.GET_EVENTS = gql `query eventsQuery {
+  allEvents {
+    nodes {
+      ...eventNode
+    }
+  }
+}
+${gql_Event.fragments.eventNode}
+`
+
+gql_Event.queries.EVENT_BY_ID = (id) => {
+    return gql`
+    {
+  eventById(id: "${id}") {
+    ...eventNode
+  }
+}
+${gql_Event.fragments.eventNode}
+`
+}
+gql_Event.mutations = {
+    CREATE: gql`
+mutation ($event: EventInput!) {
+  createEvent(input: {event: $event}) {
+    event {
+        ...eventNode
+    }
+  }
+}
+${gql_Event.fragments.eventNode}`,
+    UPDATE: gql`
+mutation ($id:UUID!, $event: EventPatch!) {
+  updateEventById(input: {id: $id, eventPatch: $event}) {
+    event {
+     ...eventNode
+    }
+  }
+}
+${gql_Event.fragments.eventNode}`
+}
 
 // other
 const GET_DROPDOWN_OPTIONS = gql `
@@ -326,7 +387,7 @@ const GET_DATE_GROUP_INFO_BY_ID = (id)=>{
       addressByAddress{
         alias
         nodeId
-        id  
+        id
       }
       openRegistration
       closeRegistration
@@ -344,7 +405,6 @@ const GET_DATE_GROUP_INFO_BY_ID = (id)=>{
 
 export {
     GET_DROPDOWN_OPTIONS,
-    GET_EVENTS,
     GET_ACTIVITIES_IN_CATAGORY,
     GET_STUDENTS_BY_PARENT,
     GET_EVENT_LOGS_FOR_STUDENT,
@@ -352,5 +412,6 @@ export {
     GET_EVENTS_OF_TYPE,
      GET_ACTIVITIES,
      GET_DATE_GROUP_INFO_BY_ID,
+     gql_Event,
     Query
 }

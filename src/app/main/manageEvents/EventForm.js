@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {DropDown} from '../common/Common';
-import {GET_DROPDOWN_OPTIONS, GET_EVENTS} from '../../Queries';
-import {EVENT} from '../../Mutations';
+import {GET_DROPDOWN_OPTIONS, gql_Event} from '../../Queries';
 import './ManageEvents.css';
 import gql from 'graphql-tag';
 import {Query, Mutation} from 'react-apollo';
@@ -62,9 +61,9 @@ function MutableForm(props){
 
     return(<MutationHandler  update={(cache, { data: { createEvent } }) => {
         if(!createEvent){return} // returns when query was update
-        const { allEvents } = cache.readQuery({ query: GET_EVENTS });
+        const { allEvents } = cache.readQuery({ query: gql_Event.queries.GET_EVENT });
         cache.writeQuery({
-          query: GET_EVENTS,
+          query: gql_Event.queries.GET_EVENT,
           data: { allEvents: {...allEvents, nodes: allEvents.nodes.concat([createEvent.event])} }
         });
     }} handleMutation={props.handleSubmit} mutation={props.mutation} form={form} />);
@@ -141,7 +140,7 @@ class EventFormClass extends Component {
                 handleChange={this.handleChange}
                 handleTimeChange={this.handleTimeChange}
                 handleSubmit={this.handleSubmit}
-                mutation={(this.props.id)?EVENT.UPDATE:EVENT.CREATE}/>) //update event : create event
+                mutation={(this.props.id)?gql_Event.mutations.UPDATE:gql_Event.mutations.CREATE}/>) //update event : create event
     }
 }
 

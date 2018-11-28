@@ -10,7 +10,7 @@ import gql from 'graphql-tag';
 import QueryHandler from '../queryHandler/QueryHandler';
 import Popup from "reactjs-popup";
 import DateTime from 'react-datetime';
-import { GET_EVENTS } from '../../Queries'
+import { gql_Event } from '../../Queries'
 import { withApollo } from 'react-apollo';
 
 const localizer = BigCalendar.momentLocalizer(moment);
@@ -337,6 +337,6 @@ class DragAndDropMutationInner extends Component{
     }
 }
 function DragAndDropMutation(props){
-    return <QueryHandler query={GET_EVENTS} child={(data)=> <DragAndDropMutationInner {...props} queryResult={data} />}/>
+    return <QueryHandler query={gql_Event.queries.GET_EVENTS} child={(data)=> <DragAndDropMutationInner {...props} queryResult={data} />}/>
 }
 export default withApollo(DragAndDropMutation)
