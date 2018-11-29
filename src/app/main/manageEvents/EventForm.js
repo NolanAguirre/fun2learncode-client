@@ -16,9 +16,9 @@ function MutableForm(props){
     return <MutationHandler handleMutation={props.handleSubmit} mutation={props.mutation}
         update={(cache, { data: { createEvent } }) => {
             if(!createEvent){return} // returns when query was update
-            const { allEvents } = cache.readQuery({ query: gql_Event.queries.GET_EVENT });
+            const { allEvents } = cache.readQuery({ query: gql_Event.queries.GET_EVENTS });
             cache.writeQuery({
-              query: gql_Event.queries.GET_EVENT,
+              query: gql_Event.queries.GET_EVENTS,
               data: { allEvents: {...allEvents, nodes: allEvents.nodes.concat([createEvent.event])} }
             });
         }}>        <table>
