@@ -337,6 +337,8 @@ class DragAndDropMutationInner extends Component{
     }
 }
 function DragAndDropMutation(props){
-    return <QueryHandler query={gql_Event.queries.GET_EVENTS} child={(data)=> <DragAndDropMutationInner {...props} queryResult={data} />}/>
+    return <QueryHandler query={gql_Event.queries.GET_EVENTS}>
+        <DragAndDropMutationInner {...props}/>
+    </QueryHandler>
 }
 export default withApollo(DragAndDropMutation)

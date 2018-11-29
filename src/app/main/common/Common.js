@@ -25,16 +25,25 @@ function DropDown (props) {
 }
 export { DropDown }
 
+function SecureRouteInner(props){
+    if(props.roles.includes(props.queryResult.getUserData.role)){
+        return props.children;
+    }else if(props.unauthorized){
+        return React.cloneElement(props.unauthorized,{queryResult:props.queryResult})
+    }
+    return <div>please login</div>
+}
+
 function SecureRoute(props){
     if(!localStorage.getItem('authToken')){
+        if(props.unauthorized){
+            return props.unauthorized
+        }
         return <div>please login</div>
     }
-    return (<QueryHandler query={GET_USER_DATA} child={(data) => {
-                if(props.roles.includes(data.getUserData.role)){
-                    return props.children;
-                }
-                return <div>please login</div>
-            }}/>
-    );
+    return <QueryHandler query={GET_USER_DATA}>
+        <SecureRouteInner roles={props.roles} unauthorized={props.unauthorized}>{props.children}</SecureRouteInner>
+    </QueryHandler>
+
 }
 export { SecureRoute }

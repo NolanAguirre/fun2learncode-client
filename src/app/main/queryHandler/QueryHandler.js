@@ -8,17 +8,17 @@ function QueryHandler (props) {
       {({ loading, error, data }) => {
         if (loading) {
           if (props.loading) {
-            return props.loading(loading)
+            return React.cloneElement(props.loading,{loading})
           }
           return 'Loading...'
         }
         if (error) {
           if (props.error) {
-            return props.error(error)
+            return React.cloneElement(props.error,{error})
           }
           return `Error! ${error.message}`
         }
-        return (props.child(data))
+        return React.cloneElement(props.children ,{queryResult:data})
       }}
     </Query>
   )
