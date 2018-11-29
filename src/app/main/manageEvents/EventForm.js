@@ -21,8 +21,7 @@ function MutableForm(props){
               query: gql_Event.queries.GET_EVENT,
               data: { allEvents: {...allEvents, nodes: allEvents.nodes.concat([createEvent.event])} }
             });
-        }}>
-        <table>
+        }}>        <table>
             <tbody>
                 <tr>
                     <td>Type:</td>
@@ -67,8 +66,7 @@ function MutableForm(props){
                 </tr>
             </tbody>
         </table>
-    </MutationHandler>
-}
+    </MutationHandler>}
 
 class EventFormInner extends Component {
     constructor(props){
