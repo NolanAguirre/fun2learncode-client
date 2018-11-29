@@ -10,6 +10,7 @@ import Colors from '../calendar/Colors'
 import EventsPreview from './EventsPreview';
 import moment from 'moment';
 import MutationHandler from '../queryHandler/MutationHandler';
+//TODO move mutation into mutations, make update feature, update cache
 const CREATE_DATE_GROUP = gql`
 mutation($dateGroup:DateGroupInput!){
 	createDateGroup(input:{dateGroup:$dateGroup}){
@@ -23,7 +24,9 @@ mutation($dateGroup:DateGroupInput!){
   }
 }`;
 function CreateDates(props) {
-	const form = <table>
+    return <div className="date-form">
+			<MutationHandler refetchQueries={["eventsQuery"]} handleMutation={props.handleSubmit} mutation={CREATE_DATE_GROUP}>
+				<table>
 					<tbody>
 						<tr>
 							<td>Set Name:</td>
@@ -42,11 +45,8 @@ function CreateDates(props) {
 						</tr>
 					</tbody>
 				</table>
-    return (
-        <div className="date-form">
-			<MutationHandler refetchQueries={["eventsQuery"]} handleMutation={props.handleSubmit} mutation={CREATE_DATE_GROUP} form={form}/>
+			</MutationHandler>
 		</div>
-	);
 }
 
 class DateGroupForm extends Component{

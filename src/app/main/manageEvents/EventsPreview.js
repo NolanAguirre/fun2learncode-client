@@ -76,62 +76,59 @@ class Event extends Component {
         )
     }
 }
-//
-function EventsPreviewChild (props) {
-  // console.log(props.queryResult);
+
+function DateGroupInfoInner(props) {
+    console.log(props)
+    const dateGroup = props.queryResult.dateGroupById;
+    if(!dateGroup){
+        return <div></div>
+    }
+    const event = dateGroup.eventByEvent;
+    return <table>
+        <tbody>
+            <tr>
+                <td>Name</td>
+                <td>{event.activityByEventType.name}</td>
+                <td>@ {event.addressByAddress.alias}</td>
+            </tr>
+            <tr>
+                <td>Event registration</td>
+                <td>{moment(event.openRegistration).format("MMM Do YYYY")}</td>
+                <td>to {moment(event.closeRegistration).format("MMM Do YYYY")}</td>
+            </tr>
+            <tr>
+                <td>Date group registration</td>
+                <td>{moment(dateGroup.openRegistration).format("MMM Do YYYY")}</td>
+                <td>to {moment(dateGroup.closeRegistration).format("MMM Do YYYY")}</td>
+            </tr>
+        </tbody>
+    </table>
+}
+function DateGroupInfo(props){
+    if(!props.activeDateGroup.id){
+        return <div></div>
+    }
+    return<div>
+            <QueryHandler query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)}>
+                <DateGroupInfoInner />
+            </QueryHandler>
+        </div>
+}
+function EventsPreviewInner (props) {
   if (!props.queryResult.allEvents) {
     return <div>is broken</div>
   }
-  const events = props.queryResult.allEvents.nodes.map((element) => { return React.cloneElement(props.children, { key: element.id, event: element }) })
-  return (
-    <div className='event-preview-container-container'>
-      <div className='event-preview-container'>
-        {events}
-      </div>
-    </div>
-  )
-}
-
-function DateGroupInfo(props){
-    const child  = (dateGroup)=> {
-        if(!dateGroup){
-            console.log(props)
-            console.log(dateGroup)
-            return <div></div>
-        }
-        let event = dateGroup.eventByEvent;
-        return <React.Fragment>
-            <table>
-                <tbody>
-                    <tr>
-                        <td>Name</td>
-                        <td>{event.activityByEventType.name}</td>
-                        <td>@ {event.addressByAddress.alias}</td>
-                    </tr>
-                    <tr>
-                        <td>Event registration</td>
-                        <td>{moment(event.openRegistration).format("MMM Do YYYY")}</td>
-                        <td>to {moment(event.closeRegistration).format("MMM Do YYYY")}</td>
-                    </tr>
-                    <tr>
-                        <td>Date group registration</td>
-                        <td>{moment(dateGroup.openRegistration).format("MMM Do YYYY")}</td>
-                        <td>to {moment(dateGroup.closeRegistration).format("MMM Do YYYY")}</td>
-                    </tr>
-                </tbody>
-            </table>
-    </React.Fragment>}
-    return(
-        <div>
-            {(props.activeDateGroup.id)?<QueryHandler query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)} child={(data) => {console.log(data);return child(data.dateGroupById)}} />:<div></div>}
-        </div>
-    )
+  return props.queryResult.allEvents.nodes.map((element) => { return React.cloneElement(props.children, { key: element.id, event: element }) })
 }
 
 function EventsPreview (props) {
-  return <QueryHandler query={gql_Event.queries.GET_EVENTS} child={(data) => {
-    return <EventsPreviewChild queryResult={data} {...props} />
-  }} />
+    return <div className='event-preview-container-container'>
+        <div className='event-preview-container'>
+            <QueryHandler query={gql_Event.queries.GET_EVENTS}>
+              <EventsPreviewInner>{props.children}</EventsPreviewInner>
+            </QueryHandler>
+        </div>
+    </div>
 }
 
 export { Event, DateGroup, EventsPreview, DateGroupInfo}

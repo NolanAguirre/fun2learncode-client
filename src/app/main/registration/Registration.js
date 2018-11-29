@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import './Registration.css'
 import Login from '../login/Login'
 import StudentSelect from '../studentSelect/StudentSelect'
+import {SecureRoute} from '../common/Common'
+import QueryHandler from '../queryHandler/QueryHandler'
 class Registration extends Component {
   constructor (props) {
     super(props)
@@ -12,15 +14,13 @@ class Registration extends Component {
     this.setState({ studentId: studentId })
   }
   render () {
-    if (this.props.user) {
-      return (
+      const unauthorized = <Login history={this.props.history} redirectUrl={this.props.location.pathname} />
+    return <SecureRoute unauthorized={unauthorized} roles={["FTLC_USER"]}>
         <div className='registration-container'>
           <StudentSelect click={this.handleStudentChange} user={this.props.user} />
-          {JSON.stringify(this.props.event)}
-        </div>)
-    } else {
-      return (<Login history={this.props.history} redirectUrl={this.props.location.pathname} />)
-    }
+        </div>
+    </SecureRoute>
+
   }
 }
 // {(this.state.studentId)?<QueryHandler studentId={this.state.studentId}></QueryHandler>:""}

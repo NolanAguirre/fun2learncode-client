@@ -39,6 +39,7 @@ mutation($id:UUID!, $patch:ActivityPatch!){
     }
   }
 }`;
+
 class ManageActivitiesForm extends Component{
     constructor(props) {
         super(props);
@@ -49,6 +50,10 @@ class ManageActivitiesForm extends Component{
             name:this.props.name,
         };
         this.editableDescription = this.props.description;
+    }
+    handleDescriptionChange = (event) => {
+        event.persist();
+        this.setState({description:event.target.textContent})
     }
     handleInputChange = (event) => {
         const target = event.target;
@@ -82,35 +87,48 @@ class ManageActivitiesForm extends Component{
             alert("Please fill in Type at least");
         }
     }
-render(){
-    const form = <React.Fragment>
-        <div className="activity-header">
-            <img className="activity-image" src="https://via.placeholder.com/350x150"></img>
-            <div className="activity-header-text">
-                <h2 className="activity-title">
-                    {(this.state.edit)?<input name="name" onChange={this.handleInputChange} value={this.state.name} /> : this.props.name}
-                    {(this.state.edit)?<DropDown options={this.props.types} name="type" value={this.state.type} onChange={this.handleInputChange}/>: ""}
-                </h2>
+    render = () => {
+        if(this.state.edit){
+            return <div key={this.props.id }className="activity-container">
+                <MutationHandler refetchQueries={["tempname"]} handleMutation={this.handleSubmit} mutation={this.props.query}>
+                    <div className="activity-header">
+                        <img className="activity-image" src="https://via.placeholder.com/350x150"></img>
+                        <div className="activity-header-text">
+                            <h2 className="activity-title">
+                                <input name="name" onChange={this.handleInputChange} value={this.state.name} />
+                                <DropDown options={this.props.types} name="type" value={this.state.type} onChange={this.handleInputChange}/>
+                            </h2>
+                        </div>
+                        <div className="activity-view-events">
+                            <button type="submit" className="activity-view-events-btn">Finish</button>:
+                        </div>
+                    </div>
+                    <div className="activity-body">
+                        <div onInput={this.handleDescriptionChange}className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
+                    </div>
+               </MutationHandler>
             </div>
-            <div className="activity-view-events">
-                {(this.state.edit)?
-                    <button type="submit" className="activity-view-events-btn">Finish</button>:
-                    <button type="button" onClick={(event)=>{event.preventDefault();this.setState({edit:true})}} className="activity-view-events-btn">Edit Details</button>}
+        }
+        return <div key={this.props.id }className="activity-container">
+            <div className="activity-header">
+                <img className="activity-image" src="https://via.placeholder.com/350x150"></img>
+                <div className="activity-header-text">
+                    <h2 className="activity-title">
+                        {this.props.name}
+                    </h2>
+                </div>
+                <div className="activity-view-events">
+                    <button type="button" onClick={(event)=>{event.preventDefault();this.setState({edit:true})}} className="activity-view-events-btn">Edit Details</button>
+                </div>
+            </div>
+            <div className="activity-body">
+                {this.props.description}
             </div>
         </div>
-        <div className="activity-body">
-                {(this.state.edit)?
-                    <div onInput={(test)=>{test.persist(); this.setState({description:test.target.textContent})}} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>:
-                    this.props.description}
-        </div>
-        </React.Fragment>
-
-        return(<div key={this.props.id}className="activity-container">
-                  <MutationHandler refetchQueries={["tempname"]} handleMutation={this.handleSubmit} mutation={this.props.query} form={form}/>
-              </div>);
     }
 }
-class ManageActivitiesClass extends Component {
+
+class ManageActivitiesInner extends Component {
     constructor(props) {
         super(props);
     }
@@ -132,23 +150,26 @@ class ManageActivitiesClass extends Component {
             }
         })
     );
-    render() {
+    render = () => {
         if(this.props.queryResult.getUserData.role === 'FTLC_INSTRUCTOR'){
             const types = this.mapTypes(this.props.queryResult.allActivityCatagories);
             const prerequisites = this.mapPrerequisites(this.props.queryResult.allActivities);
             const activities = this.mapActivities(this.props.queryResult.allActivities);
-            return (
-            <div className="manage-activities-container">
+            return (<React.Fragment>
                 <ManageActivitiesForm query={CREATE_ACTIVITY} name={"New Activity"}types={types}/>
                 {activities.map((activity)=>{return <ManageActivitiesForm query={UPDATE_ACTIVITY} types={types} key={activity.value} id={activity.value} type={activity.type} description={activity.description} name={activity.name}/>})}
-            </div>);
+                </React.Fragment>
+            );
         }else{
             <div>Not authorized to view this page</div>
         }
     }
 }
 function ManageActivities(props) {
-    return <QueryHandler query={GET_ADDRESSES}
-        child={(data) => {return <ManageActivitiesClass queryResult={data} {...props}/>}} />
+    return <div className="manage-activities-container">
+         <QueryHandler query={GET_ADDRESSES}>
+            <ManageActivitiesInner />
+        </QueryHandler>
+    </div>
 }
 export default ManageActivities;

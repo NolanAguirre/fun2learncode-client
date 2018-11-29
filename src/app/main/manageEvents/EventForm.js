@@ -13,63 +13,64 @@ import Colors from '../calendar/Colors'
 import moment from 'moment';
 
 function MutableForm(props){
-    const form = <table>
-                    <tbody>
-                        <tr>
-                            <td>Type:</td>
-                            <td>
-                                <DropDown name="eventType" options={props.eventTypes} value={props.eventType} onChange={props.handleChange}></DropDown>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Location:</td>
-                            <td>
-                                <DropDown name="address" options={props.addresses} value={props.address} onChange={props.handleChange}></DropDown>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Price:</td>
-                            <td>
-                                <input name="price" value={props.price} onChange={props.handleChange} type="number"></input>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Capacity:</td>
-                            <td>
-                                <input name="capacity" value={props.capacity} onChange={props.handleChange} type="number"></input>
-                            </td>
-                        </tr>
-                        <tr>
+    return <MutationHandler handleMutation={props.handleSubmit} mutation={props.mutation}
+        update={(cache, { data: { createEvent } }) => {
+            if(!createEvent){return} // returns when query was update
+            const { allEvents } = cache.readQuery({ query: gql_Event.queries.GET_EVENT });
+            cache.writeQuery({
+              query: gql_Event.queries.GET_EVENT,
+              data: { allEvents: {...allEvents, nodes: allEvents.nodes.concat([createEvent.event])} }
+            });
+        }}>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Type:</td>
+                    <td>
+                        <DropDown name="eventType" options={props.eventTypes} value={props.eventType} onChange={props.handleChange}></DropDown>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Location:</td>
+                    <td>
+                        <DropDown name="address" options={props.addresses} value={props.address} onChange={props.handleChange}></DropDown>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Price:</td>
+                    <td>
+                        <input name="price" value={props.price} onChange={props.handleChange} type="number"></input>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Capacity:</td>
+                    <td>
+                        <input name="capacity" value={props.capacity} onChange={props.handleChange} type="number"></input>
+                    </td>
+                </tr>
+                <tr>
                             <td>Open Event On:</td>
-                            <td>
-                                <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) =>{props.handleTimeChange("open", time)}}/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Close Event On:</td>
-                            <td>
-                                <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close} onChange={(time)=>{props.handleTimeChange("close", time)}}/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <button type="submit">Set Event Values</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-    return(<MutationHandler  update={(cache, { data: { createEvent } }) => {
-        if(!createEvent){return} // returns when query was update
-        const { allEvents } = cache.readQuery({ query: gql_Event.queries.GET_EVENT });
-        cache.writeQuery({
-          query: gql_Event.queries.GET_EVENT,
-          data: { allEvents: {...allEvents, nodes: allEvents.nodes.concat([createEvent.event])} }
-        });
-    }} handleMutation={props.handleSubmit} mutation={props.mutation} form={form} />);
+                    <td>
+                        <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) =>{props.handleTimeChange("open", time)}}/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Close Event On:</td>
+                    <td>
+                        <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close} onChange={(time)=>{props.handleTimeChange("close", time)}}/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button type="submit">Set Event Values</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </MutationHandler>
 }
 
-class EventFormClass extends Component {
+class EventFormInner extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -145,8 +146,8 @@ class EventFormClass extends Component {
 }
 
 function EventForm(props) {
-    return <QueryHandler query={GET_DROPDOWN_OPTIONS} child={(data) => {
-            return <EventFormClass queryResult={data} {...props}/>
-        }}/>
+    return <QueryHandler query={GET_DROPDOWN_OPTIONS}>
+        <EventFormInner {...props}/>
+    </QueryHandler>
 }
 export default EventForm;

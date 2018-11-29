@@ -18,7 +18,7 @@ function MutationHandler (props) {
           }
           return (
             <form onSubmit={(e) => { props.handleMutation(e, mutation) }}>
-              {props.form}
+            {props.children}
             </form>
           )
         }

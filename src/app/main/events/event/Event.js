@@ -25,14 +25,7 @@ function EventComponent (props) {
         <div className='event-register'>
           <div className='event-register-price'>${props.price}</div>
           <Link to={`/Registration/${props.id}`}>
-            <div onClick={() => (props.click({
-              eventId: props.id,
-              price: props.price,
-              date: props.date,
-              location: props.location,
-              activityName: props.activityName,
-              activityId: props.activityId
-            }))} className='event-register-btn'>Register Now</div>
+            <div className='event-register-btn'>Register Now</div>
           </Link>
         </div>
       </div>
