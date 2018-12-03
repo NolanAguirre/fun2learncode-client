@@ -4,6 +4,13 @@
     border: 2px solid  #41a62a;
     justify-content: space-between;
 }
+.students-container{
+    height:150px;
+    overflow: auto;
+}
+.students-container::-webkit-scrollbar{
+    display:none;
+}
 .students-container >:first-child{
     overflow-y: auto;
     max-height: 100px;

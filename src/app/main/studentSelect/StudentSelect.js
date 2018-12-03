@@ -4,31 +4,36 @@ import StudentPreview from './studentPreview/StudentPreview'
 import QueryHandler from '../queryHandler/QueryHandler'
 import { GET_STUDENTS_BY_PARENT } from '../../Queries'
 
-function StudentSelect (props) {
-  function formatData (data) {
-    return data.allStudents.edges.map((element) => {
-      return <StudentPreview click={props.click} key={element.node.userByStudent.id} student={element.node.userByStudent} />
-    })
-  }
-  if (props.user) {
-    return (<div className='student-select-container'>
-      <div>
-                Select A Student {
-          (props.student)
-            ? <div className='selected-student'>
-                                Current Student is:
-              <StudentPreview student={props.student} />
-            </div>
-            : <div />
+class StudentSelectInner extends Component {
+    constructor(props){
+        super(props)
+        this.state = {students:props.queryResult.allStudents, selectedStudents:[]}
+    }
+    toggleStudent = (id) =>{
+        if(this.state.selectedStudents.includes(id)){
+            const newSelectedStudents = this.state.selectedStudents.filter((student)=>{return student!=id})
+            this.setState({selectedStudents:newSelectedStudents})
+        }else{
+            this.setState({selectedStudents:[...this.state.selectedStudents, id]})
         }
-      </div>
-      <div className='students-container'>
-        <QueryHandler query={GET_STUDENTS_BY_PARENT(props.user.id)} child={formatData} />
-      </div>
-    </div>)
-  } else {
-    return (<div>Please Log In</div>)
-  }
+    }
+    render(){
+      return this.state.students.nodes.map((element) => {
+        const selected = this.state.selectedStudents.includes(element.userByStudent.id);
+        return <StudentPreview key={element.userByStudent.id} selected={selected} onClick={this.toggleStudent} student={element.userByStudent} />
+      })
+    }
+}
+
+function StudentSelect(props) {
+    return <div className='student-select-container'>
+            <h3>Select A Student</h3>
+          <div className='students-container'>
+            <QueryHandler query={GET_STUDENTS_BY_PARENT(props.queryResult.getUserData.id)}>
+                    <StudentSelectInner />
+            </QueryHandler>
+        </div>
+  </div>
 }
 
 export default StudentSelect
