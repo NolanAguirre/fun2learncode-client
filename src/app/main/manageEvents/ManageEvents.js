@@ -29,7 +29,7 @@ class ManageEvents extends Component {
     }
 
     render() {
-        return (<SecureRoute roles={["FTLC_INSTRUCTOR", "FTLC_OWNER"]}>
+        return (<SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
                      <div className="manage-events-container">
                             <EventsPreview>
                                  <Event form={<DateGroupForm />}>

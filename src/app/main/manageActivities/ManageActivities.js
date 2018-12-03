@@ -6,6 +6,7 @@ import {DropDown} from '../common/Common';
 import './ManageActivities.css';
 import QueryHandler from '../queryHandler/QueryHandler';
 import MutationHandler from '../queryHandler/MutationHandler';
+import {SecureRoute} from '../common/Common'
 //TODO make prerequisites work, make description text box keep text on edit, change mutations to update not refetch
 const GET_ADDRESSES = gql `query tempname{
 ...userData
@@ -151,7 +152,6 @@ class ManageActivitiesInner extends Component {
         })
     );
     render = () => {
-        if(this.props.queryResult.getUserData.role === 'FTLC_INSTRUCTOR'){
             const types = this.mapTypes(this.props.queryResult.allActivityCatagories);
             const prerequisites = this.mapPrerequisites(this.props.queryResult.allActivities);
             const activities = this.mapActivities(this.props.queryResult.allActivities);
@@ -160,16 +160,15 @@ class ManageActivitiesInner extends Component {
                 {activities.map((activity)=>{return <ManageActivitiesForm query={UPDATE_ACTIVITY} types={types} key={activity.value} id={activity.value} type={activity.type} description={activity.description} name={activity.name}/>})}
                 </React.Fragment>
             );
-        }else{
-            <div>Not authorized to view this page</div>
-        }
     }
 }
 function ManageActivities(props) {
-    return <div className="manage-activities-container">
-         <QueryHandler query={GET_ADDRESSES}>
-            <ManageActivitiesInner />
-        </QueryHandler>
-    </div>
+    return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
+            <div className="manage-activities-container">
+             <QueryHandler query={GET_ADDRESSES}>
+                <ManageActivitiesInner />
+            </QueryHandler>
+        </div>
+    </SecureRoute>
 }
 export default ManageActivities;

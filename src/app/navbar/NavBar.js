@@ -4,6 +4,7 @@ import Item from './item/Item'
 import Logo from '../logos/drawing.svg'
 
 function NavBar (props) {
+    const admins = ['FTLC_OWNER', 'FTLC_LEAD_INSTRUCTOR', 'FTLC_ADMIN']
   const routeNames = [
     {
       name: 'Home',
@@ -63,25 +64,25 @@ function NavBar (props) {
       name: 'Manage Activities',
       route: 'Admin/Manage Activities',
       test: () => {
-        return props.user && props.user.role === 'FTLC_INSTRUCTOR'
+        return props.user && admins.includes(props.user.role)
       }
     }, {
       name: 'Manage Events',
       route: 'Admin/Manage Events',
       test: () => {
-        return props.user && props.user.role === 'FTLC_INSTRUCTOR'
+        return props.user && admins.includes(props.user.role)
       }
     }, {
       name: 'Manage Addresses',
       route: 'Admin/Manage Addresses',
       test: () => {
-        return props.user && props.user.role === 'FTLC_INSTRUCTOR'
+        return props.user && admins.includes(props.user.role)
       }
     }, {
       name: 'Manage Users',
       route: 'Admin/Manage Users',
       test: () => {
-        return props.user && props.user.role === 'FTLC_INSTRUCTOR'
+        return props.user && admins.includes(props.user.role)
       }
     }, {
       name: 'Logout',
