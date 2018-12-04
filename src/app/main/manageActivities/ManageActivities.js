@@ -6,7 +6,8 @@ import './ManageActivities.css';
 import QueryHandler from '../queryHandler/QueryHandler';
 import MutationHandler from '../queryHandler/MutationHandler';
 import {SecureRoute} from '../common/Common'
-//TODO make prerequisites work, make description text box keep text on edit, change mutations to update not refetch
+
+//TODO be able to remove prerequisites, make description text box keep text on edit
 
 const GET_ACTIVITIES = gql`query manageActivitiesQuery{
   allActivityCatagories {
@@ -66,13 +67,24 @@ class PrerequisiteForm extends Component{
         super(props);
         this.state={prerequisite:undefined,edit:false}
     }
+
+    handleInputChange = (event) => {
+        const target = event.target;
+        const value = target.type === 'checkbox'
+            ? target.checked
+            : target.value;
+        const name = target.name;
+        this.setState({[name]: value});
+    }
+
     toggleEdit = () =>{
         this.setState({edit: !this.state.edit })
     }
+
     handleSubmit = (event, mutation) => {
         event.preventDefault();
         if (this.state.prerequisite != undefined) {
-            let activity = {
+            let eventPrerequisite = {
                 event: this.props.id,
                 prerequisite:this.state.prerequisite
             }
@@ -80,24 +92,18 @@ class PrerequisiteForm extends Component{
                 edit:false,
                 prerequisite:undefined
             });
-            if(this.props.id){
-                mutation({
-                    variables: activity
-                });
-            }else{
-                mutation({
-                    variables: activity
-                });
-            }
+            mutation({
+                variables: {eventPrerequisite: {eventPrerequisite}}
+            });
         }
     }
+
     render = () =>{
-        //<DropDown options={this.props.types} name="type" value={this.state.type} onChange={this.handleInputChange}/>
         if(this.state.edit){
             return <div>
                 <MutationHandler handleMutation={this.handleSubmit} mutation={CREATE_PREREQUISITE}>
-
-                    <button onClick={this.toggleEdit}>Finish</button>
+                    <DropDown options={this.props.prerequisites} name="prerequisite" value={this.state.type} onChange={this.handleInputChange}/>
+                    <button type="submit">Finish</button>
                 </MutationHandler>
             </div>
         }else{
@@ -119,10 +125,12 @@ class ManageActivitiesForm extends Component{
         };
         this.editableDescription = this.props.description;
     }
+
     handleDescriptionChange = (event) => {
         event.persist();
         this.setState({description:event.target.textContent})
     }
+
     handleInputChange = (event) => {
         const target = event.target;
         const value = target.type === 'checkbox'
@@ -131,17 +139,12 @@ class ManageActivitiesForm extends Component{
         const name = target.name;
         this.setState({[name]: value});
     }
+
     handleSubmit = (event, mutation) => {
         event.preventDefault();
-        if (this.state.type != undefined) {
+        if (this.state.type && this.state.name !='New Activity' && this.description) {
             let temp = Object.assign({}, this.state);
             delete temp.edit;
-            this.setState({
-                edit:false,
-                type: this.props.type,
-                description:this.props.description,
-                name:this.props.name
-            });
             if(this.props.id){
                 mutation({
                     variables: {"id":this.props.id, "patch": temp}
@@ -151,10 +154,15 @@ class ManageActivitiesForm extends Component{
                     variables: temp
                 });
             }
-        } else {
-            alert("Please fill in Type at least");
         }
+        this.setState({
+            edit:false,
+            type: this.props.type,
+            description:this.props.description,
+            name:this.props.name
+        });
     }
+
     render = () => {
         if(this.state.edit){
             return <div key={this.props.id} className="activity-container">
@@ -184,7 +192,8 @@ class ManageActivitiesForm extends Component{
                     <h2 className="activity-title">
                         {this.props.name}
                     </h2>
-                    <PrerequisiteForm id={this.props.id} />
+                    {(this.props.prerequisites)?this.props.prerequisites.map((prerequisite)=>prerequisite.name):""}
+                    {this.props.children}
                 </div>
                 <div className="activity-view-events">
                     <button type="button" onClick={(event)=>{event.preventDefault();this.setState({edit:true})}} className="activity-view-events-btn">Edit Details</button>
@@ -201,9 +210,11 @@ class ManageActivitiesInner extends Component {
     constructor(props) {
         super(props);
     }
+
     mapTypes = memoize(
         (data) =>  data.nodes.map((element) =>  {return{name: element.name, value: element.id}})
     );
+
     mapActivities = memoize(
         (data) => data.nodes.map((element) => {
             let temp = element.eventPrerequisitesByPrerequisite.nodes.map((el) => {return el.activityByEvent});
@@ -212,20 +223,25 @@ class ManageActivitiesInner extends Component {
                 type: element.activityCatagoryByType.id,
                 description: element.description,
                 value: element.id, // this is named value so it can be used by the dropdown box
-                prerequisite: temp
+                prerequisites: temp
             }
         })
     );
+
     render = () => {
             const types = this.mapTypes(this.props.queryResult.allActivityCatagories);
             const activities = this.mapActivities(this.props.queryResult.allActivities);
-            return (<React.Fragment>
-                <ManageActivitiesForm query={CREATE_ACTIVITY} name={"New Activity"}types={types}/>
-                {activities.map((activity)=>{return <ManageActivitiesForm query={UPDATE_ACTIVITY} types={types} key={activity.value} id={activity.value} type={activity.type} description={activity.description} name={activity.name}/>})}
+            return <React.Fragment>
+                <ManageActivitiesForm query={CREATE_ACTIVITY} name={"New Activity"} types={types}/>
+                {activities.map((activity)=>{
+                    return <ManageActivitiesForm query={UPDATE_ACTIVITY} types={types} prerequisites={activity.prerequisites} key={activity.value} id={activity.value} type={activity.type} description={activity.description} name={activity.name}>
+                        <PrerequisiteForm id={activity.value} prerequisites={activities}/>
+                    </ManageActivitiesForm>
+                })}
                 </React.Fragment>
-            );
     }
 }
+
 function ManageActivities(props) {
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
         <div className="manage-activities-container">
