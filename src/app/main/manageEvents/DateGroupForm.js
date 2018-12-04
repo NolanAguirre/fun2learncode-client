@@ -5,27 +5,55 @@ import gql from 'graphql-tag';
 import {Query, Mutation} from 'react-apollo';
 import DateTime from 'react-datetime';
 import '../../../react-datetime.css'
-import memoize from "memoize-one";
 import Colors from '../calendar/Colors'
 import EventsPreview from './EventsPreview';
 import moment from 'moment';
 import MutationHandler from '../queryHandler/MutationHandler';
 //TODO move mutation into mutations, make update feature, update cache
-const CREATE_DATE_GROUP = gql`
-mutation($dateGroup:DateGroupInput!){
-	createDateGroup(input:{dateGroup:$dateGroup}){
+const CREATE_DATE_GROUP = gql`mutation($dateGroup:DateGroupInput!){
+  createDateGroup(input:{dateGroup:$dateGroup}){
     dateGroup{
-      id
-      openRegistration
-      closeRegistration
-      event
-	  name
+		nodeId
+        id
+        name
+        openRegistration
+        closeRegistration
+        datesJoinsByDateGroup {
+          nodes {
+            nodeId
+            id
+            dateInterval
+            dateIntervalByDateInterval {
+              id
+              nodeId
+              start
+              end
+            }
+          }
+        }
+        eventByEvent {
+          addressByAddress {
+            alias
+            nodeId
+            id
+          }
+          openRegistration
+          closeRegistration
+          nodeId
+          id
+          activityByEventType {
+            name
+            id
+            nodeId
+          }
+        }
     }
   }
 }`;
+
 function CreateDates(props) {
     return <div className="date-form">
-			<MutationHandler refetchQueries={["eventsQuery"]} handleMutation={props.handleSubmit} mutation={CREATE_DATE_GROUP}>
+			<MutationHandler refetchQueries={["adminEvents"]} handleMutation={props.handleSubmit} mutation={CREATE_DATE_GROUP}>
 				<table>
 					<tbody>
 						<tr>
@@ -104,4 +132,12 @@ class DateGroupForm extends Component{
         </div>)
     }
 }
+
 export default DateGroupForm;
+
+
+// delete from ftlc.date_group;
+//
+// delete from ftlc.events;
+//
+// delete from ftlc.activities;

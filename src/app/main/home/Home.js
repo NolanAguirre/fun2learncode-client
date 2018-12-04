@@ -2,7 +2,19 @@ import React from 'react'
 import './Home.css'
 import Section from './section/Section'
 import QueryHandler from '../queryHandler/QueryHandler'
-import {GET_ACTIVITIES} from '../../Queries'
+import gql from 'graphql-tag'
+
+const GET_ACTIVITIES = gql`{
+  allActivityCatagories {
+    nodes {
+      nodeId
+      name
+      description
+      id
+    }
+  }
+}`
+
 function HomeInner(props){
     return props.queryResult.allActivityCatagories.nodes.map((element) => {
       return <Section name={element.name} description={element.description} key={element.id} />

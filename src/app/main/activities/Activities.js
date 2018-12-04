@@ -3,7 +3,26 @@ import './Activities.css'
 import Activity from './activity/Activity'
 import gql from 'graphql-tag'
 import QueryHandler from '../queryHandler/QueryHandler'
-import {GET_ACTIVITIES_IN_CATAGORY} from '../../Queries.js'
+
+const GET_ACTIVITIES_IN_CATAGORY = (name) => {
+  return gql`{
+  allActivityCatagories(condition: {name: "${name}"}) {
+    nodes {
+      nodeId
+      id
+      name
+      activitiesByType {
+        nodes {
+          nodeId
+          name
+          description
+          id
+        }
+      }
+    }
+  }
+}`}
+
 function ActivitiesInner(props){
     return props.queryResult.allActivityCatagories.nodes[0].activitiesByType.nodes.map((element) => {
         return <Activity name={element.name} description={element.description} id={element.id} key={element.id} />

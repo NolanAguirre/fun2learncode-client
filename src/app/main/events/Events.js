@@ -4,9 +4,49 @@ import TimeTableRow from './timeTableRow/TimeTableRow'
 import EventComponent from './event/Event'
 import gql from 'graphql-tag'
 import QueryHandler from '../queryHandler/QueryHandler'
-import {GET_EVENTS_OF_TYPE} from '../../Queries'
 
-function EventsInner(props) {
+const GET_EVENTS_OF_TYPE = (id) => {
+  return gql`{
+  allEvents(orderBy: ADDRESS_ASC, condition: {eventType: "${id}"}) {
+    nodes {
+      capacity
+      id
+      price
+      nodeId
+      addressByAddress {
+        nodeId
+        id
+        city
+        street
+        state
+        alias
+        url
+      }
+      dateGroupsByEvent(filter: {openRegistration: {lessThanOrEqualTo: "${new Date().toISOString()}"}, closeRegistration: {greaterThanOrEqualTo: "${new Date().toISOString()}"}}) {
+        nodes {
+          name
+          nodeId
+          openRegistration
+          closeRegistration
+          id
+          datesJoinsByDateGroup {
+            nodes {
+              nodeId
+              dateIntervalByDateInterval {
+                nodeId
+                id
+                end
+                start
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}`}
+
+function EventsInner(props) { // TODO group this by address so i dont have to load multiple maps
     return props.queryResult.allEvents.nodes.map((event) => { // this creates event
       return event.dateGroupsByEvent.nodes.map((dateGroups) => { // if the event has no dates, it is not displayed
         let dates = dateGroups.datesJoinsByDateGroup.nodes
@@ -14,14 +54,11 @@ function EventsInner(props) {
           return undefined
         }
         return <EventComponent
-          activityName={props.activityName}
           activityId={props.activityId}
-          name={props.name}
-          description={props.description}
           location={event.addressByAddress}
           capacity={event.capacity}
           date={dates}
-          id={event.id}
+          id={dateGroups.id}
           price={event.price}
           key={dateGroups.id} />
       })

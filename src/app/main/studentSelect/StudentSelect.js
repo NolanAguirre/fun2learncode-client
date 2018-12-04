@@ -2,7 +2,23 @@ import React, { Component } from 'react'
 import './StudentSelect.css'
 import StudentPreview from './studentPreview/StudentPreview'
 import QueryHandler from '../queryHandler/QueryHandler'
-import { GET_STUDENTS_BY_PARENT } from '../../Queries'
+import gql from 'graphql-tag'
+
+const GET_STUDENTS_BY_PARENT = (parentId) => {
+    return gql `{
+  allStudents(condition: {parent: "${parentId}"}) {
+    nodes {
+      nodeId
+      id
+      userByStudent {
+        nodeId
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}`}
 
 class StudentSelectInner extends Component {
     constructor(props){

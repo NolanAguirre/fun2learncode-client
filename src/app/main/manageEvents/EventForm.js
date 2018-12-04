@@ -1,27 +1,55 @@
 import React, {Component} from 'react';
 import {DropDown} from '../common/Common';
-import {GET_DROPDOWN_OPTIONS, gql_Event} from '../../Queries';
 import './ManageEvents.css';
 import gql from 'graphql-tag';
-import {Query, Mutation} from 'react-apollo';
 import DateTime from 'react-datetime';
 import '../../../react-datetime.css'
 import QueryHandler from '../queryHandler/QueryHandler';
 import MutationHandler from '../queryHandler/MutationHandler';
 import memoize from "memoize-one";
-import Colors from '../calendar/Colors'
 import moment from 'moment';
 
+const CREATE_EVENT = gql`mutation ($event: EventInput!) {
+  createEvent(input: {event: $event}) {
+    event {
+      nodeId
+    }
+  }
+}`
+
+const UPDATE_EVENT = gql`mutation ($id:UUID!, $event: EventPatch!) {
+ updateEventById(input: {id: $id, eventPatch: $event}) {
+   event {
+    nodeId
+   }
+ }
+}`
+
+const GET_DROPDOWN_OPTIONS = gql`{
+  allAddresses {
+    nodes {
+      nodeId
+      id
+      alias
+    }
+  }
+  allActivities {
+   nodes {
+     id
+     nodeId
+     name
+     activityCatagoryByType{
+       name
+       id
+       nodeId
+     }
+   }
+ }
+}`;
+
 function MutableForm(props){
-    return <MutationHandler handleMutation={props.handleSubmit} mutation={props.mutation}
-        update={(cache, { data: { createEvent } }) => {
-            if(!createEvent){return} // returns when query was update
-            const { allEvents } = cache.readQuery({ query: gql_Event.queries.GET_EVENTS });
-            cache.writeQuery({
-              query: gql_Event.queries.GET_EVENTS,
-              data: { allEvents: {...allEvents, nodes: allEvents.nodes.concat([createEvent.event])} }
-            });
-        }}>        <table>
+    return <MutationHandler handleMutation={props.handleSubmit} mutation={props.mutation} refetchQueries={['adminEvents']}>
+        <table>
             <tbody>
                 <tr>
                     <td>Type:</td>
@@ -81,22 +109,26 @@ class EventFormInner extends Component {
             creatingEvent: true
         }
     }
+
     mapEventTypes = memoize(
         (data) =>{
             let mapped = data.nodes.map((element) => {return {name: element.name + " (" + element.activityCatagoryByType.name + ")",value: element.id}});
             return mapped;
         }
-    );
+    )
+
     mapAddresses = memoize(
         (data) => {
             let mapped = data.nodes.map((element) => {return {name: element.alias, value: element.id}})
             return mapped;
         }
-    );
+    )
+
     localizeUTCTimestamp = (timestamp) => {
         if(!timestamp){return null}
         return new Date(moment(moment.utc(timestamp)).local().toString())
     }
+
     handleChange = (event, refresh) => {
         const target = event.target;
         const value = target.type === 'checkbox'
@@ -105,9 +137,11 @@ class EventFormInner extends Component {
         const name = target.name;
         this.setState({[name]: value});
     }
+
     handleTimeChange = (key, value) => {
         this.setState({[key]: value})
     }
+
     handleSubmit = (event, mutation) => {
         event.preventDefault();
         if (this.state.address && this.state.eventType) {
@@ -123,6 +157,7 @@ class EventFormInner extends Component {
             });
         }
     }
+
     render = () => {
         //console.log(this.props.queryResult.allActivityCatagories)
         const eventTypes = this.mapEventTypes(this.props.queryResult.allActivities);
@@ -139,7 +174,7 @@ class EventFormInner extends Component {
                 handleChange={this.handleChange}
                 handleTimeChange={this.handleTimeChange}
                 handleSubmit={this.handleSubmit}
-                mutation={(this.props.id)?gql_Event.mutations.UPDATE:gql_Event.mutations.CREATE}/>) //update event : create event
+                mutation={(this.props.id)?UPDATE_EVENT:CREATE_EVENT}/>) //update event : create event
     }
 }
 

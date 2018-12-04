@@ -1,7 +1,17 @@
 import React, { Component } from 'react'
 import './Common.css'
-import { GET_USER_DATA } from '../../Queries'
 import QueryHandler from '../queryHandler/QueryHandler'
+import gql from 'graphql-tag'
+
+const GET_USER_DATA = gql`{
+    getUserData{
+        id
+        firstName
+        lastName
+        role
+    }
+}`
+
 function Location (props) {
   return (<div className='location'>
     <div>

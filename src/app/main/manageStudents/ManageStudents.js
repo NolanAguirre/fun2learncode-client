@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { GET_USER_DATA } from '../../Queries'
 import './ManageStudents.css'
 import StudentSelect from '../studentSelect/StudentSelect'
 import EventMonths from '../eventMonths/EventMonths'
@@ -15,16 +14,17 @@ class ManageStudents extends Component {
     this.setState({ student: student })
   }
   render () {
-    return <QueryHandler query={GET_USER_DATA} child={(data) => {
-      if (data.getUserData.role === 'FTLC_USER') {
-        return (<div className='manage-students-container'>
-                        ManageStudents
-          <StudentSelect student={this.state.student} click={this.handleStudentChange} user={data.getUserData} />
-        </div>)
-      } else {
-        return (<div>please login</div>)
-      }
-    }} />
+      return <div></div> // TODO: fix this 
+    // return <QueryHandler query={GET_USER_DATA} child={(data) => {
+    //   if (data.getUserData.role === 'FTLC_USER') {
+    //     return (<div className='manage-students-container'>
+    //                     ManageStudents
+    //       <StudentSelect student={this.state.student} click={this.handleStudentChange} user={data.getUserData} />
+    //     </div>)
+    //   } else {
+    //     return (<div>please login</div>)
+    //   }
+    // }} />
   }
 }
 

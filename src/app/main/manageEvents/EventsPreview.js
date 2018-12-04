@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { DropDown } from '../common/Common'
 import './EventsPreview.css'
-import { gql_Event, GET_DATE_GROUP_INFO_BY_ID } from '../../Queries'
+import gql from 'graphql-tag';
 import QueryHandler from '../queryHandler/QueryHandler'
 import DateTime from 'react-datetime'
 import '../../../react-datetime.css'
@@ -12,10 +12,94 @@ import moment from 'moment'
 import DateStore from '../../DateStore'
 import EventForm from './EventForm';
 
-function DateGroup (props) {
-  if (false) {
-    return <div>not working</div>
+const GET_DATE_GROUP_INFO_BY_ID = (id) => {
+    return gql`{
+  dateGroupById(id: "${id}") {
+    nodeId
+    id
+    name
+    openRegistration
+    closeRegistration
+    datesJoinsByDateGroup {
+      nodes {
+        nodeId
+        id
+        dateInterval
+        dateIntervalByDateInterval {
+          id
+          nodeId
+          start
+          end
+        }
+      }
+    }
+    eventByEvent {
+      addressByAddress {
+        alias
+        nodeId
+        id
+      }
+      openRegistration
+      closeRegistration
+      nodeId
+      id
+      activityByEventType {
+        name
+        id
+        nodeId
+      }
+    }
   }
+}`}
+
+const GET_EVENTS = gql`query adminEvents{
+  allEvents {
+    nodes {
+      nodeId
+      id
+      eventType
+      address
+      openRegistration
+      closeRegistration
+      price
+      capacity
+      activityByEventType {
+        nodeId
+        id
+        name
+      }
+      addressByAddress {
+        nodeId
+        alias
+        id
+      }
+      dateGroupsByEvent {
+        nodes {
+          nodeId
+          id
+          name
+          openRegistration
+          closeRegistration
+          datesJoinsByDateGroup {
+            nodes {
+              nodeId
+              id
+              dateInterval
+              dateIntervalByDateInterval {
+                id
+                nodeId
+                start
+                end
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}`
+
+function DateGroup (props) {
   const dates = props.dateGroup.datesJoinsByDateGroup.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()}).map((element) => {
     return <div key={element.id}>{moment(moment.utc(element.dateIntervalByDateInterval.start)).local().format("MMM Do h:mma") + "-" +moment(moment.utc(element.dateIntervalByDateInterval.end)).local().format("h:mma")}</div>
   })
@@ -30,7 +114,7 @@ function DateGroup (props) {
     </div>
   )
 }
-// {props.dateForm(props.dateGroup.id)}
+
 class Event extends Component {
     constructor(props){
         super(props);
@@ -78,12 +162,17 @@ class Event extends Component {
 }
 
 function DateGroupInfoInner(props) {
-    console.log(props)
     const dateGroup = props.queryResult.dateGroupById;
     if(!dateGroup){
         return <div></div>
     }
     const event = dateGroup.eventByEvent;
+
+    function localizeUTCTimestamp (timestamp){
+        if(!timestamp){return null}
+        return moment(moment.utc(timestamp)).local().format("MMM Do YYYY")
+    }
+
     return <table>
         <tbody>
             <tr>
@@ -93,17 +182,18 @@ function DateGroupInfoInner(props) {
             </tr>
             <tr>
                 <td>Event registration</td>
-                <td>{moment(event.openRegistration).format("MMM Do YYYY")}</td>
-                <td>to {moment(event.closeRegistration).format("MMM Do YYYY")}</td>
+                <td>{localizeUTCTimestamp(event.openRegistration)}</td>
+                <td>to {localizeUTCTimestamp(event.closeRegistration)}</td>
             </tr>
             <tr>
                 <td>Date group registration</td>
-                <td>{moment(dateGroup.openRegistration).format("MMM Do YYYY")}</td>
-                <td>to {moment(dateGroup.closeRegistration).format("MMM Do YYYY")}</td>
+                <td>{localizeUTCTimestamp(dateGroup.openRegistration)}</td>
+                <td>to {localizeUTCTimestamp(dateGroup.closeRegistration)}</td>
             </tr>
         </tbody>
     </table>
 }
+
 function DateGroupInfo(props){
     if(!props.activeDateGroup.id){
         return <div></div>
@@ -114,6 +204,7 @@ function DateGroupInfo(props){
             </QueryHandler>
         </div>
 }
+
 function EventsPreviewInner (props) {
   if (!props.queryResult.allEvents) {
     return <div>is broken</div>
@@ -124,11 +215,11 @@ function EventsPreviewInner (props) {
 function EventsPreview (props) {
     return <div className='event-preview-container-container'>
         <div className='event-preview-container'>
-            <QueryHandler query={gql_Event.queries.GET_EVENTS}>
+            <QueryHandler query={GET_EVENTS}>
               <EventsPreviewInner>{props.children}</EventsPreviewInner>
             </QueryHandler>
         </div>
     </div>
 }
 
-export { Event, DateGroup, EventsPreview, DateGroupInfo}
+export {Event, DateGroup, EventsPreview, DateGroupInfo}

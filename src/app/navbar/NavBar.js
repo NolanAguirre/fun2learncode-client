@@ -1,108 +1,127 @@
 import React from 'react'
 import './NavBar.css'
-import Item from './item/Item'
+import { Link } from 'react-router-dom'
 import Logo from '../logos/drawing.svg'
+import gql from 'graphql-tag'
+import QueryHandler from '../main/queryHandler/QueryHandler'
 
-function NavBar (props) {
+const GET_USER_DATA = gql`{
+    getUserData{
+        id
+        firstName
+        lastName
+        role
+    }
+}`
+
+function NavBarInner(props){
     const admins = ['FTLC_OWNER', 'FTLC_LEAD_INSTRUCTOR', 'FTLC_ADMIN']
+    const user = props.queryResult.getUserData
   const routeNames = [
     {
       name: 'Home',
       route: 'Home',
       test: () => {
-        return !props.user
+        return !user
       }
     }, {
       name: 'About Us',
       route: 'About Us',
       test: () => {
-        return !props.user
+        return !user
       }
     }, {
       name: 'Manage Students',
       route: 'User/Manage Students',
       test: () => {
-        return props.user && props.user.role === 'FTLC_USER'
+        return user && user.role === 'FTLC_USER'
       }
     }, {
       name: 'Account',
       route: 'User/Account',
       test: () => {
-        return props.user && props.user.role === 'FTLC_USER'
+        return user && user.role === 'FTLC_USER'
       }
     }, {
       name: 'Summer Camps',
       route: 'Activity/Summer Camps',
       test: () => {
-        return !props.user || props.user.role === 'FTLC_USER'
+        return !user || user.role === 'FTLC_USER'
       }
     }, {
       name: 'Classes',
       route: 'Activity/Classes',
       test: () => {
-        return !props.user || props.user.role === 'FTLC_USER'
+        return !user || user.role === 'FTLC_USER'
       }
     }, {
       name: 'Labs',
       route: 'Activity/Labs',
       test: () => {
-        return !props.user || props.user.role === 'FTLC_USER'
+        return !user || user.role === 'FTLC_USER'
       }
     }, {
       name: 'Workshops',
       route: 'Activity/Workshops',
       test: () => {
-        return !props.user || props.user.role === 'FTLC_USER'
+        return !user || user.role === 'FTLC_USER'
       }
     }, {
       name: 'Login',
       route: 'Login',
       test: () => {
-        return !props.user
+        return !user
       }
     }, {
       name: 'Manage Activities',
       route: 'Admin/Manage Activities',
       test: () => {
-        return props.user && admins.includes(props.user.role)
+        return user && admins.includes(user.role)
       }
     }, {
       name: 'Manage Events',
       route: 'Admin/Manage Events',
       test: () => {
-        return props.user && admins.includes(props.user.role)
+        return user && admins.includes(user.role)
       }
     }, {
       name: 'Manage Addresses',
       route: 'Admin/Manage Addresses',
       test: () => {
-        return props.user && admins.includes(props.user.role)
+        return user && admins.includes(user.role)
       }
     }, {
       name: 'Manage Users',
       route: 'Admin/Manage Users',
       test: () => {
-        return props.user && admins.includes(props.user.role)
+        return user && admins.includes(user.role)
       }
     }, {
       name: 'Logout',
       route: 'Logout',
       test: () => {
-        return props.user
+        return user
       }
     }
   ]
   const routesNameList = routeNames.filter((routeObj) => {
     return routeObj.test()
   }).map((routeObj) => {
-    return <Item key={routeObj.route} route={routeObj.route} name={routeObj.name} />
+    return <Link key={routeObj.route} to={`/${routeObj.route}`}><div className='nav-bar-item'>{routeObj.name}</div></Link>
   })
-  return (<header className='navbar'>
-    <img alt='Fun 2 Learn Code logo' src={Logo} />
-    <div className='nav-item-container'>
-      {routesNameList}
-    </div>
-  </header>)
+
+    return (<header className='navbar'>
+      <img alt='Fun 2 Learn Code logo' src={Logo} />
+      <div className='nav-item-container'>
+        {routesNameList}
+      </div>
+    </header>)
+}
+
+function NavBar (props) {
+  return<QueryHandler query={GET_USER_DATA}>
+      <NavBarInner />
+  </QueryHandler>
 }
 
 export default NavBar

@@ -10,8 +10,54 @@ import gql from 'graphql-tag';
 import QueryHandler from '../queryHandler/QueryHandler';
 import Popup from "reactjs-popup";
 import DateTime from 'react-datetime';
-import { gql_Event } from '../../Queries'
 import { withApollo } from 'react-apollo';
+
+const GET_EVENTS = gql`query adminEvents{
+  allEvents {
+    nodes {
+      nodeId
+      id
+      eventType
+      address
+      openRegistration
+      closeRegistration
+      price
+      capacity
+      activityByEventType {
+        nodeId
+        id
+        name
+      }
+      addressByAddress {
+        nodeId
+        alias
+        id
+      }
+      dateGroupsByEvent {
+        nodes {
+          nodeId
+          id
+          name
+          openRegistration
+          closeRegistration
+          datesJoinsByDateGroup {
+            nodes {
+              nodeId
+              id
+              dateInterval
+              dateIntervalByDateInterval {
+                id
+                nodeId
+                start
+                end
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}`
 
 const localizer = BigCalendar.momentLocalizer(moment);
 function Calendar(props){
@@ -53,6 +99,7 @@ function Calendar(props){
     />
   </div>);
 }
+
 function DragAndDropCalendar(props){
     return (
       <BigCalendar
@@ -198,7 +245,7 @@ class DragAndDropMutationInner extends Component{
             mutation: gql`mutation{
                     ${mutation}
                 }`,
-            refetchQueries:['eventsQuery']
+            refetchQueries:['adminEvents']
         }
         this.props.client.mutate(options).then((res)=>{}).catch((err)=>{console.log(err)});
     }
@@ -237,6 +284,7 @@ class DragAndDropMutationInner extends Component{
         }
         this.resetSelectedEvent();
     }
+
     removeEvent = (event) => {
         const removedEvent = this.state.events.find((element) => element.id == event.id)
         this.post(this.makeBatch(removedEvent, this.deleteTemplate))
@@ -247,6 +295,7 @@ class DragAndDropMutationInner extends Component{
             hiddenEvents: newHiddenEvents,
         })
     }
+
     selectEvent = (event) => {
         this.resetSelectedEvent();
         event.buttonStyle = {
@@ -255,6 +304,7 @@ class DragAndDropMutationInner extends Component{
         this.props.setActiveDateGroup({id:event.resources.groupId, name:event.title});
         this.setState({selected: event})
     }
+
     resetSelectedEvent = () => {
         let newEvents = this.state.events.map((element) => {
             element.buttonStyle = {
@@ -267,10 +317,12 @@ class DragAndDropMutationInner extends Component{
             events: newEvents
         });
     }
+
     tooltipAccessor = (event) => {
         //TODO make this better somehow
         return "Tool Tip";
     }
+
     toggleDisplay = (id) =>{
         const newEvents = this.state.events.filter((event) => event.resources.groupId != id);
         const removed = this.state.events.filter((event) => event.resources.groupId == id);
@@ -281,6 +333,7 @@ class DragAndDropMutationInner extends Component{
             hiddenEvents: [...newHiddenEvents, ...removed],
         })
     }
+
     closePopup = () => {
         this.popupEvent.start = this.setTime(this.popupEvent.start, this.state.startTime)
         this.popupEvent.end = this.setTime(this.popupEvent.end, this.state.endTime)
@@ -294,16 +347,17 @@ class DragAndDropMutationInner extends Component{
         })
         this.popupEvent = null;
     }
+
     clearPopupState = () => {
         this.popupEvent = null;
         if(this.state.showPopup){
             this.setState({showPopup:false});
         }
     }
-    render(){
+
+    render = () => {
         //TODO make this popup pretty, and check to make sure that end is greater than start
-        return(
-            <React.Fragment>
+        return <React.Fragment>
             <Popup
           open={this.state.showPopup}
           closeOnDocumentClick
@@ -333,12 +387,14 @@ class DragAndDropMutationInner extends Component{
         newEvent={this.newEvent}
         events={this.state.events}
         className="manage-events-calander"/>
-    </React.Fragment>)
+    </React.Fragment>
     }
 }
+
 function DragAndDropMutation(props){
-    return <QueryHandler query={gql_Event.queries.GET_EVENTS}>
+    return <QueryHandler query={GET_EVENTS}>
         <DragAndDropMutationInner {...props}/>
     </QueryHandler>
 }
+
 export default withApollo(DragAndDropMutation)
