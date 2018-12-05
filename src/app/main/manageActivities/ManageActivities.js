@@ -28,11 +28,11 @@ const GET_ACTIVITIES = gql`query manageActivitiesQuery{
         id
         nodeId
       }
-      eventPrerequisitesByPrerequisite {
+      activityPrerequisitesByActivity{
         nodes {
           id
           nodeId
-          activityByEvent {
+          activityByPrerequisite {
             name
             id
             nodeId
@@ -59,15 +59,15 @@ const UPDATE_ACTIVITY = gql`mutation($id:UUID!, $patch:ActivityPatch!){
   }
 }`
 
-const CREATE_PREREQUISITE = gql`mutation($eventPrerequisite:CreateEventPrerequisiteInput!){
-  createEventPrerequisite(input:$eventPrerequisite){
+const CREATE_PREREQUISITE = gql`mutation($activityPrerequisite:CreateActivityPrerequisiteInput!){
+  createActivityPrerequisite(input:$activityPrerequisite){
     clientMutationId
   }
 }`;
 
 const REMOVE_PREREQUISITE = gql`mutation($id:UUID!){
-  deleteEventPrerequisiteById(input:{id:$id}){
-    eventPrerequisite{
+  deleteActivityPrerequisiteById(input:{id:$id}){
+    activityPrerequisite{
       nodeId
     }
   }
@@ -79,7 +79,7 @@ function Prerequisites(props){ // this can use caching
             mutation({variables: {id: prerequisite.id}});
         }} mutation={REMOVE_PREREQUISITE}>
             <div className="prerequisite-container">
-                {prerequisite.activityByEvent.name}
+                {prerequisite.activityByPrerequisite.name}
                 <div className="prerequisite-x-container">
                     <button className="no-style-button" type="submit">
                         <img className="x-icon" alt='x-icon' src={Logo} />
@@ -111,12 +111,12 @@ class PrerequisiteForm extends Component{
     handleSubmit = (event, mutation) => { // TODO implement hasRequiredValues
         event.preventDefault();
         if (this.state.prerequisite != undefined) {
-            let eventPrerequisite = {
-                event: this.props.id,
+            let activityPrerequisite = {
+                activity: this.props.activityId,
                 prerequisite:this.state.prerequisite
             }
             mutation({
-                variables: {eventPrerequisite: {eventPrerequisite}}
+                variables: {activityPrerequisite: {activityPrerequisite}}
             });
         }
         this.setState({
@@ -129,7 +129,7 @@ class PrerequisiteForm extends Component{
         if(this.state.edit){ // this can use caching
             return <div>
                 <MutationHandler refetchQueries={['manageActivitiesQuery']} handleMutation={this.handleSubmit} mutation={CREATE_PREREQUISITE}>
-                    <DropDown options={this.props.prerequisites} name="prerequisite" value={this.state.type} onChange={this.handleInputChange}/>
+                    <DropDown options={this.props.activities} name="prerequisite" value={this.state.type} onChange={this.handleInputChange}/>
                     <button type="submit">Confirm</button>
                 </MutationHandler>
             </div>
@@ -252,12 +252,12 @@ class ManageActivitiesInner extends Component {
 
     mapActivities = memoize(
         (data) => data.nodes.map((element) => {
-            let temp = element.eventPrerequisitesByPrerequisite.nodes.map((el) => el);
+            let temp = element.activityPrerequisitesByActivity.nodes.map((el) => el);
             return {
                 name: element.name,
+                value: element.id, // this is named value so it can be used by the dropdown box
                 type: element.activityCatagoryByType.id,
                 description: element.description,
-                value: element.id, // this is named value so it can be used by the dropdown box
                 prerequisites: temp
             }
         })
@@ -269,8 +269,15 @@ class ManageActivitiesInner extends Component {
             return <React.Fragment>
                 <ManageActivitiesForm query={CREATE_ACTIVITY} name={"New Activity"} types={types}/>
                 {activities.map((activity)=>{
-                    return <ManageActivitiesForm query={UPDATE_ACTIVITY} types={types} prerequisites={activity.prerequisites} key={activity.value} id={activity.value} type={activity.type} description={activity.description} name={activity.name}>
-                        <PrerequisiteForm id={activity.value} prerequisites={activities}/>
+                    return <ManageActivitiesForm
+                        query={UPDATE_ACTIVITY}
+                        types={types}
+                        prerequisites={activity.prerequisites}
+                        key={activity.value} id={activity.value}
+                        type={activity.type}
+                        description={activity.description}
+                        name={activity.name}>
+                        <PrerequisiteForm activityId={activity.value} activities={activities}/>
                     </ManageActivitiesForm>
                 })}
                 </React.Fragment>
