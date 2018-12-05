@@ -25,7 +25,7 @@ const UPDATE_EVENT = gql`mutation ($id:UUID!, $event: EventPatch!) {
  }
 }`
 
-const GET_DROPDOWN_OPTIONS = gql`{
+const GET_DROPDOWN_OPTIONS = gql`query dropdownOptions{
   allAddresses {
     nodes {
       nodeId
