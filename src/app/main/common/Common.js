@@ -36,7 +36,7 @@ function DropDown (props) {
 export { DropDown }
 
 function SecureRouteInner(props){
-    if(props.roles.includes(props.queryResult.getUserData.role)){
+    if(props.queryResult.getUserData && props.roles.includes(props.queryResult.getUserData.role)){
         if(props.ignoreResult){
             return props.children
         }
