@@ -9,15 +9,16 @@
 }
 .manage-addresses-body{
     display:flex;
+    flex-direction: column;
 }
 .manage-address-forms-container{
     display:flex;
     flex:1;
 }
 .manage-address-form-container{
-    flex:1;
     padding: 40px;
     background-color: white;
+    flex:1;
     margin:10px;
     display:flex;
     flex-direction: column;
