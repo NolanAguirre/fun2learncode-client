@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import gql from 'graphql-tag';
 import memoize from "memoize-one";
+import Logo from '../../logos/x-icon.svg'
 import {DropDown} from '../common/Common';
 import './ManageActivities.css';
 import QueryHandler from '../queryHandler/QueryHandler';
@@ -29,6 +30,8 @@ const GET_ACTIVITIES = gql`query manageActivitiesQuery{
       }
       eventPrerequisitesByPrerequisite {
         nodes {
+          id
+          nodeId
           activityByEvent {
             name
             id
@@ -62,6 +65,30 @@ const CREATE_PREREQUISITE = gql`mutation($eventPrerequisite:CreateEventPrerequis
   }
 }`;
 
+const REMOVE_PREREQUISITE = gql`mutation($id:UUID!){
+  deleteEventPrerequisiteById(input:{id:$id}){
+    eventPrerequisite{
+      nodeId
+    }
+  }
+}`
+
+function Prerequisites(props){ // this can use caching
+    return props.prerequisites.map((prerequisite)=>{
+        return <MutationHandler refetchQueries={['manageActivitiesQuery']} key={prerequisite.id} handleMutation={(event, mutation) => {event.preventDefault();
+            mutation({variables: {id: prerequisite.id}});
+        }} mutation={REMOVE_PREREQUISITE}>
+            <div className="prerequisite-container">
+                {prerequisite.activityByEvent.name}
+                <div className="prerequisite-x-container">
+                    <button className="no-style-button" type="submit">
+                        <img className="x-icon" alt='x-icon' src={Logo} />
+                    </button>
+                </div>
+            </div>
+        </MutationHandler>})
+}
+
 class PrerequisiteForm extends Component{
     constructor(props){
         super(props);
@@ -81,34 +108,34 @@ class PrerequisiteForm extends Component{
         this.setState({edit: !this.state.edit })
     }
 
-    handleSubmit = (event, mutation) => {
+    handleSubmit = (event, mutation) => { // TODO implement hasRequiredValues
         event.preventDefault();
         if (this.state.prerequisite != undefined) {
             let eventPrerequisite = {
                 event: this.props.id,
                 prerequisite:this.state.prerequisite
             }
-            this.setState({
-                edit:false,
-                prerequisite:undefined
-            });
             mutation({
                 variables: {eventPrerequisite: {eventPrerequisite}}
             });
         }
+        this.setState({
+            edit:false,
+            prerequisite:undefined
+        });
     }
 
     render = () =>{
-        if(this.state.edit){
+        if(this.state.edit){ // this can use caching
             return <div>
-                <MutationHandler handleMutation={this.handleSubmit} mutation={CREATE_PREREQUISITE}>
+                <MutationHandler refetchQueries={['manageActivitiesQuery']} handleMutation={this.handleSubmit} mutation={CREATE_PREREQUISITE}>
                     <DropDown options={this.props.prerequisites} name="prerequisite" value={this.state.type} onChange={this.handleInputChange}/>
-                    <button type="submit">Finish</button>
+                    <button type="submit">Confirm</button>
                 </MutationHandler>
             </div>
         }else{
             return <div>
-                <button onClick={this.toggleEdit}>edit</button>
+                <button onClick={this.toggleEdit}>Add Prerequisite</button>
             </div>
         }
     }
@@ -140,9 +167,17 @@ class ManageActivitiesForm extends Component{
         this.setState({[name]: value});
     }
 
+    hasRequiredValues = () =>{
+        let haveValues =  this.state.type && this.state.name != 'New Activity' && this.state.description
+        let changedValues = this.state.type != this.props.type ||
+               this.state.name != this.props.name ||
+               this.state.description != this.props.description
+         return haveValues && changedValues
+    }
+
     handleSubmit = (event, mutation) => {
         event.preventDefault();
-        if (this.state.type && this.state.name !='New Activity' && this.description) {
+        if (this.hasRequiredValues()) {
             let temp = Object.assign({}, this.state);
             delete temp.edit;
             if(this.props.id){
@@ -166,7 +201,7 @@ class ManageActivitiesForm extends Component{
     render = () => {
         if(this.state.edit){
             return <div key={this.props.id} className="activity-container">
-                <MutationHandler handleMutation={this.handleSubmit} mutation={this.props.query} refetchQueries={['manageActivitiesQuery', 'calanderQuery']}>
+                <MutationHandler handleMutation={this.handleSubmit} mutation={this.props.query} refetchQueries={['manageActivitiesQuery', 'adminEvents']}>
                     <div className="activity-header">
                         <img className="activity-image" src="https://via.placeholder.com/350x150"></img>
                         <div className="activity-header-text">
@@ -192,7 +227,7 @@ class ManageActivitiesForm extends Component{
                     <h2 className="activity-title">
                         {this.props.name}
                     </h2>
-                    {(this.props.prerequisites)?this.props.prerequisites.map((prerequisite)=>prerequisite.name):""}
+                    {(this.props.prerequisites)?<Prerequisites prerequisites={this.props.prerequisites} />:""}
                     {this.props.children}
                 </div>
                 <div className="activity-view-events">
@@ -217,7 +252,7 @@ class ManageActivitiesInner extends Component {
 
     mapActivities = memoize(
         (data) => data.nodes.map((element) => {
-            let temp = element.eventPrerequisitesByPrerequisite.nodes.map((el) => {return el.activityByEvent});
+            let temp = element.eventPrerequisitesByPrerequisite.nodes.map((el) => el);
             return {
                 name: element.name,
                 type: element.activityCatagoryByType.id,
