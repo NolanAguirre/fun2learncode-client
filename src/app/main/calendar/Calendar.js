@@ -12,34 +12,16 @@ import Popup from "reactjs-popup";
 import DateTime from 'react-datetime';
 import { withApollo } from 'react-apollo';
 
-const GET_EVENTS = gql`query adminEvents{
+const GET_EVENTS = gql`{
   allEvents {
     nodes {
       nodeId
       id
-      eventType
-      address
-      openRegistration
-      closeRegistration
-      price
-      capacity
-      activityByEventType {
-        nodeId
-        id
-        name
-      }
-      addressByAddress {
-        nodeId
-        alias
-        id
-      }
       dateGroupsByEvent {
         nodes {
           nodeId
           id
           name
-          openRegistration
-          closeRegistration
           datesJoinsByDateGroup {
             nodes {
               nodeId
@@ -57,7 +39,8 @@ const GET_EVENTS = gql`query adminEvents{
       }
     }
   }
-}`
+}
+`
 
 const localizer = BigCalendar.momentLocalizer(moment);
 function Calendar(props){
@@ -135,11 +118,11 @@ class DragAndDropMutationInner extends Component{
     }
 
     componentDidMount = () => {
-        DateStore.on("toggleDateDisplay",(id)=>{this.toggleDisplay(id)});
+        DateStore.on('hidden',(id)=>{this.toggleDisplay(id)});
     }
 
     componentWillUnmount = () => {
-        DateStore.removeAllListeners("toggleDateDisplay");
+        DateStore.removeAllListeners('hidden');
     }
 
     genRandomId = () =>{
@@ -251,17 +234,18 @@ class DragAndDropMutationInner extends Component{
     }
 
     newEvent = (event) => { //event that files on slot select
-        if (this.props.activeDateGroup.id && event.action === 'doubleClick') {
+        const dateGroupId = this.props.activeDateGroup.id;
+        if (dateGroupId && event.action === 'doubleClick' && !DateStore.get('hidden').includes(dateGroupId)) {
             this.popupEvent = {
                 id: this.genRandomId(),
                 title: this.props.activeDateGroup.name,
                 start: event.start,
                 end: event.start,
                 buttonStyle: {
-                    backgroundColor: Colors.get(this.props.activeDateGroup.id).regular
+                    backgroundColor: Colors.get(dateGroupId).regular
                 },
                 resources: {
-                    groupId: this.props.activeDateGroup.id
+                    groupId: dateGroupId
                 }
             }
             this.setState({showPopup: true});
@@ -323,11 +307,11 @@ class DragAndDropMutationInner extends Component{
         return "Tool Tip";
     }
 
-    toggleDisplay = (id) =>{
-        const newEvents = this.state.events.filter((event) => event.resources.groupId != id);
-        const removed = this.state.events.filter((event) => event.resources.groupId == id);
-        const newHiddenEvents = this.state.hiddenEvents.filter((event) => event.resources.groupId != id);
-        const add = this.state.hiddenEvents.filter((event) => event.resources.groupId == id);
+    toggleDisplay = (ids) =>{
+        const newEvents = this.state.events.filter((event) => !ids.includes(event.resources.groupId)); // if hidden includes something on events
+        const removed = this.state.events.filter((event) => ids.includes(event.resources.groupId));
+        const newHiddenEvents = this.state.hiddenEvents.filter((event) => ids.includes(event.resources.groupId));
+        const add = this.state.hiddenEvents.filter((event) => !ids.includes(event.resources.groupId));
         this.setState({
             events:[...newEvents, ...add],
             hiddenEvents: [...newHiddenEvents, ...removed],
