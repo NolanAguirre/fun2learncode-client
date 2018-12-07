@@ -11,6 +11,7 @@
 }
 .event-contaier > div{
     padding: 20px 30px;
+    flex: 0 1 auto;
 }
 .event-dates{
 
