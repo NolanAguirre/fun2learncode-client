@@ -150,7 +150,6 @@ class ManageActivitiesForm extends Component{
             description:this.props.description,
             name:this.props.name,
         };
-        this.editableDescription = this.props.description;
     }
 
     handleDescriptionChange = (event) => {
@@ -173,6 +172,13 @@ class ManageActivitiesForm extends Component{
                this.state.name != this.props.name ||
                this.state.description != this.props.description
          return haveValues && changedValues
+    }
+
+    toggleEdit = () =>{
+        this.setState({edit:true});
+        if(this.props.id){
+            setTimeout(()=>document.getElementById(`${this.props.id}`).innerHTML = this.props.description, 0); // super hacky way to make contentEditable work
+        }
     }
 
     handleSubmit = (event, mutation) => {
@@ -215,7 +221,7 @@ class ManageActivitiesForm extends Component{
                         </div>
                     </div>
                     <div className="activity-body">
-                        <div onInput={this.handleDescriptionChange}className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
+                        <div id={this.props.id} onInput={this.handleDescriptionChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
                     </div>
                </MutationHandler>
             </div>
@@ -231,7 +237,7 @@ class ManageActivitiesForm extends Component{
                     {this.props.children}
                 </div>
                 <div className="activity-view-events">
-                    <button type="button" onClick={(event)=>{event.preventDefault();this.setState({edit:true})}} className="activity-view-events-btn">Edit Details</button>
+                    <button type="button" onClick={this.toggleEdit} className="activity-view-events-btn">Edit Details</button>
                 </div>
             </div>
             <div className="activity-body">
