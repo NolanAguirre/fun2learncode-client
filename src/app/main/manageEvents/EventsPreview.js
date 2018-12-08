@@ -101,36 +101,48 @@ const GET_EVENTS = gql`query adminEvents {
   }
 }`
 
-function DateGroup (props) {
-    function toggleHide(){
+class DateGroup extends Component {
+    constructor(props){
+        super(props);
+        this.state = {hide:true}
+    }
+    toggleCalendarHide = () => {
+        // date store has a list of hidden date groups, this will remove or add this date group.
+        const id = this.props.dateGroup.id
         if(DateStore.get('hidden') == undefined){
             DateStore.set('hidden', [])
         }
-        if(DateStore.get('hidden').includes(props.dateGroup.id)){
-            const newHide = DateStore.get('hidden').filter((id)=>id!=props.dateGroup.id);
+        if(DateStore.get('hidden').includes(id)){
+            const newHide = DateStore.get('hidden').filter((i)=>i!=id);
             DateStore.set('hidden',newHide)
         }else{
-            DateStore.set('hidden',[...DateStore.get('hidden'), props.dateGroup.id])
+            DateStore.set('hidden',[...DateStore.get('hidden'), id])
         }
     }
-  const dates = props.dateGroup.datesJoinsByDateGroup.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()}).map((element) => {
-    return <div key={element.id}>{moment(moment.utc(element.dateIntervalByDateInterval.start)).local().format("MMM Do h:mma") + "-" +moment(moment.utc(element.dateIntervalByDateInterval.end)).local().format("h:mma")}</div>
-  })
-  const backgroundColor = (props.dateGroup.id == props.activeDateGroup.id)? Colors.get(props.dateGroup.id).hover : Colors.get(props.dateGroup.id).regular
-  return (
-    <div onClick={() => {props.setActiveDateGroup(props.dateGroup)}} style={{ backgroundColor }} className='event-preview-date-container'>
-        <div className='event-preview-header'>
-            <h4>{props.dateGroup.name}</h4>
-            <DateGroupForm {...props.dateGroup}>
-                <a>edit</a>
-            </DateGroupForm>
-        </div>
-        <h4> Show on Calander <input onChange={toggleHide} type='checkbox' defaultChecked='true' /> </h4>
-      <div>
-        {dates}
-      </div>
-    </div>
-  )
+    toggleDates = () => {
+        this.setState({hide: !this.state.hide})
+    }
+    render = () => {
+        const dates = this.props.dateGroup.datesJoinsByDateGroup.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()}).map((element) => {
+            return <div key={element.id}>{moment(moment.utc(element.dateIntervalByDateInterval.start)).local().format("MMM Do h:mma") + "-" +moment(moment.utc(element.dateIntervalByDateInterval.end)).local().format("h:mma")}</div>
+        })
+        const backgroundColor = (this.props.dateGroup.id == this.props.activeDateGroup.id)? Colors.get(this.props.dateGroup.id).hover : Colors.get(this.props.dateGroup.id).regular
+        return <div onClick={() => {this.props.setActiveDateGroup(this.props.dateGroup)}} style={{ backgroundColor }} className='event-preview-date-container'>
+                <div className='event-preview-header'>
+                    <h4>{this.props.dateGroup.name}</h4>
+                    <DateGroupForm {...this.props.dateGroup}>
+                        <a>edit</a>
+                    </DateGroupForm>
+                </div>
+                <span> Show on Calander <input onChange={this.toggleCalendarHide} type='checkbox' defaultChecked='true' /> </span>
+                <div>
+                    {(this.state.hide)?'':dates}
+                </div>
+                <div onClick={this.toggleDates} className="dropdown-div">
+                    {(this.state.hide)?'Show ':'Hide '} Dates
+                </div>
+            </div>
+    }
 }
 
 class Event extends Component {
