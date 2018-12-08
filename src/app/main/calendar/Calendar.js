@@ -235,7 +235,7 @@ class DragAndDropMutationInner extends Component{
 
     newEvent = (event) => { //event that files on slot select
         const dateGroupId = this.props.activeDateGroup.id;
-        if (dateGroupId && event.action === 'doubleClick' && !DateStore.get('hidden').includes(dateGroupId)) {
+        if (dateGroupId && event.action === 'doubleClick' && (!DateStore.get('hidden') || !DateStore.get('hidden').includes(dateGroupId))) {
             this.popupEvent = {
                 id: this.genRandomId(),
                 title: this.props.activeDateGroup.name,
