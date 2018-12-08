@@ -302,11 +302,6 @@ class DragAndDropMutationInner extends Component{
         });
     }
 
-    tooltipAccessor = (event) => {
-        //TODO make this better somehow
-        return "Tool Tip";
-    }
-
     toggleDisplay = (ids) =>{
         const newEvents = this.state.events.filter((event) => !ids.includes(event.resources.groupId)); // if hidden includes something on events
         const removed = this.state.events.filter((event) => ids.includes(event.resources.groupId));
@@ -365,7 +360,6 @@ class DragAndDropMutationInner extends Component{
   		          </div>
             </Popup>
             <DragAndDropCalendar
-        tooltipAccessor={this.tooltipAccessor}
         removeEvent={this.removeEvent}
         selectEvent={this.selectEvent}
         newEvent={this.newEvent}
