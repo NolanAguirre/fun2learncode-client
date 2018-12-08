@@ -16,6 +16,10 @@ function QueryHandler (props) {
           if (props.error) {
             return React.cloneElement(props.error,{error})
           }
+          if(error.networkError.result.errors[0].message == 'jwt expired'){
+              window.location.href = '/logout';
+              return <div>Session Expired</div>;
+          }
           return `Error! ${error.message}`
         }
         return React.cloneElement(props.children ,{queryResult:data})
