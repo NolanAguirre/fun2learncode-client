@@ -17,7 +17,7 @@ function MutationHandler (props) {
             return `Error! ${error.message}`
           }
           return (
-            <form onSubmit={(e) => { props.handleMutation(e, mutation) }}>
+            <form className={props.className} onSubmit={(e) => { props.handleMutation(e, mutation) }}>
             {props.children}
             </form>
           )
