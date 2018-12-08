@@ -156,10 +156,10 @@ class Event extends Component {
                 closeOnDocumentClick
                 onClose={this.clearPopupState}>
                     <EventForm id={event.id}
-                        nodeId={event.nodeId}
                         openRegistration={event.openRegistration}
                         closeRegistration={event.closeRegistration}
-                        eventType={event.activityByEventType.id}/>
+                        eventType={event.activityByEventType.id}
+                        handleSubmit={this.clearPopupState}/>
                 </Popup>
                 <div className='event-preview-event-container'>
                     <div className='event-preview-header'><h3>{event.activityByEventType.name}</h3><a onClick={this.showPopup}>edit</a></div>

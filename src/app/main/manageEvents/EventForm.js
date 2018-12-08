@@ -70,7 +70,8 @@ function MutableForm(props){
                 </tr>
             </tbody>
         </table>
-    </MutationHandler>}
+    </MutationHandler>
+}
 
 class EventFormInner extends Component {
     constructor(props){
@@ -107,16 +108,32 @@ class EventFormInner extends Component {
     handleTimeChange = (key, value) => {
         this.setState({[key]: value})
     }
+    normalizeDate = (date) =>{
+        return new Date(this.localizeUTCTimestamp(date)).toISOString()
+    }
+    hasRequiredValues = () =>{
+        let haveValues =  this.state.eventType
 
+        let changedValues = this.state.eventType != this.props.eventType ||
+               this.normalizeDate(this.state.open) != this.normalizeDate(this.props.openRegistration) ||
+               this.normalizeDate(this.state.close) != this.normalizeDate(this.props.closeRegistration)
+
+         return haveValues && changedValues
+    }
     handleSubmit = (event, mutation) => {
         event.preventDefault();
-        let newEvent = {};
-        newEvent.eventType = this.state.eventType;
-        newEvent.openRegistration = this.state.open;
-        newEvent.closeRegistration = this.state.close;
-        mutation({
-            variables: {id:this.props.id, event:newEvent}
-        });
+        if(this.hasRequiredValues()){
+            let newEvent = {};
+            newEvent.eventType = this.state.eventType;
+            newEvent.openRegistration = this.state.open;
+            newEvent.closeRegistration = this.state.close;
+            mutation({
+                variables: {id:this.props.id, event:newEvent}
+            });
+        }
+        if(this.props.handleSubmit){
+            this.props.handleSubmit()
+        }
     }
 
     render = () => {
