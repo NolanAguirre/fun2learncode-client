@@ -138,8 +138,8 @@ class DateGroup extends Component {
                 <div>
                     {(this.state.hide)?'':dates}
                 </div>
-                <div onClick={this.toggleDates} className="dropdown-div">
-                    {(this.state.hide)?'Show ':'Hide '} Dates
+                <div className="dropdown-div">
+                    <span onClick={this.toggleDates} >{(this.state.hide)?'Show ':'Hide '} Dates</span>
                 </div>
             </div>
     }
@@ -196,6 +196,9 @@ function DateGroupInfoInner(props) {
         if(!timestamp){return null}
         return moment(moment.utc(timestamp)).local().format("MMM Do YYYY")
     }
+
+    const openConflict = dateGroup.openRegistration < event.openRegistration
+    const closeConflict = dateGroup.closeRegistration > event.closeRegistration //TODO alert for conflicts
 
     return <table>
         <tbody>

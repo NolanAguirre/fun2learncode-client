@@ -116,9 +116,8 @@ class DateGroupFormInner extends Component{
 
     render() {
         const addresses = this.mapAddresses(this.props.queryResult.allAddresses);
-        return <div className="manage-events-event-preview">
-            <div className="date-form">
-                <h4>Create new Group</h4>
+        return <div className="date-form">
+                <h4>Create/Edit Date Group</h4>
         			<MutationHandler refetchQueries={["adminEvents"]} handleMutation={this.handleSubmit} mutation={this.props.mutation}>
         				<table>
         					<tbody>
@@ -152,14 +151,11 @@ class DateGroupFormInner extends Component{
                                         <input name="capacity" value={this.state.capacity} onChange={this.handleChange} type="number"></input>
                                     </td>
                                 </tr>
-        						<tr>
-        							<td><button type="submit">Set</button></td>
-        						</tr>
         					</tbody>
         				</table>
+                        <button className='date-form-btn' type="submit">Set</button>
         			</MutationHandler>
         		</div>
-        </div>
     }
 }
 

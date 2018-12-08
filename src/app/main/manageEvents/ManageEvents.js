@@ -36,7 +36,7 @@ class ManageEvents extends Component {
                                  <Event>
                                      <DateGroup activeDateGroup={this.state.activeDateGroup} setActiveDateGroup={this.setActiveDateGroup}/>
                                      <DateGroupForm>
-                                         <button>new group</button>
+                                         <button className='create-date-group-btn' >New Group</button>
                                      </DateGroupForm>
                                  </Event>
                             </EventsPreview>

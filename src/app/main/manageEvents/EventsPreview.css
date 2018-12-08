@@ -4,7 +4,6 @@
     margin-right: 10px;
 }
 .event-preview-container {
-    height:78vh;
     overflow-y: auto;
 }
 .event-preview-container::-webkit-scrollbar{
@@ -24,14 +23,9 @@
 }
 .event-preview-event-container{
     border: 2px solid black;
+    margin-bottom: 5px;
     background-color: rgb(240, 240, 240);
     padding: 10px;
-}
-.event-preview-event-button{
-    text-align: center;
-    background-color: rgb(67, 221, 54);
-    padding: 10px;
-    margin: 10px 30px;
 }
 .event-preview-date-container{
     padding:10px;
