@@ -11,6 +11,21 @@
     margin: auto;
     box-sizing: border-box;
 }
+.login-headers{
+    display: flex;
+    justify-content: center;
+    border-bottom: 2px solid gray; /* Change this color */
+}
+.login-error-container{
+    padding-top: 10px;
+    height:18px;
+
+}
+.login-error{
+    color:red;
+    display:none;
+}
+
 .login-form input {
     margin-top: 40px;
     display: block;
@@ -26,11 +41,7 @@
     background-clip: padding-box;
 }
 
-.login-form button {
+.login-form-btn{
     margin-top: 60px;
     padding: 10px 40px;
-}
-.login-headers{
-    display: flex;
-    justify-content: center;
 }
