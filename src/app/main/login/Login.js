@@ -4,7 +4,6 @@ import axios from 'axios'
 import UserStore from '../../UserStore'
 import Logo from '../../logos/drawing.svg'
 
-//TODO update to use mutation tag from apollo?
 class Login extends Component {
   constructor (props) {
     super(props)
@@ -18,22 +17,21 @@ class Login extends Component {
       [name]: value
     })
   }
-  handleSubmit = (event) => {
-    axios.post('http://localhost:3005/graphql', { query: `mutation{
-          authenticate(input:{arg0:"${this.state.email}"password:"${this.state.password}"}){
-        		jwtToken
-          }
+  handleSubmit = (event) => { // dont want to handle loading state, use axios
+    axios.post('http://localhost:3005/graphql', { query: `{
+          authenticate(arg0:"${this.state.email}", password:"${this.state.password}")
         }` }).then((res) => {
-      if (res.data.data.authenticate.jwtToken) {
-        UserStore.set('authToken', res.data.data.authenticate.jwtToken)
+      if (res.data.data.authenticate) {
+        UserStore.set('authToken', res.data.data.authenticate)
         window.location.reload()
         this.props.history.push(this.props.redirectUrl || '/')
-      }
-      // TODO handle failed login
+    }else{
+        this.setState({errors:true})
+    }
     })
     event.preventDefault()
   }
-  
+
   render () {
     return (<div className='login'>
       <div className='login-container'>
@@ -42,7 +40,7 @@ class Login extends Component {
             <a><img className='nav-logo' src={Logo} /></a>
           </div>
           <div className='login-error-container'>
-              <span className='login-error'>Incorrect email or password.</span> <a href='/'>Forgot password?</a>
+             {(this.state.errors)?<React.Fragment><span className='login-error'>Incorrect email or password.</span> <a href='/'>Forgot password?</a></React.Fragment>:""}
           </div>
           <form onSubmit={this.handleSubmit} className='login-form'>
             <input name='email' type='email' onChange={this.handleChange}placeholder='email' />
