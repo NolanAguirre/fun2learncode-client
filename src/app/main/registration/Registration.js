@@ -6,6 +6,7 @@ import {SecureRoute} from '../common/Common'
 import QueryHandler from '../queryHandler/QueryHandler'
 import TimeTableRow from '../events/timeTableRow/TimeTableRow'
 import gql from 'graphql-tag'
+import { withApollo } from 'react-apollo';
 
 const GET_DATE_GROUP_INFO_BY_ID = (id)=>{
     return gql`
@@ -90,22 +91,68 @@ class RegistrationEventInfo extends Component{
         </div>
     }
 }
+
 class RegistrationInner extends Component{
     constructor(props){
         super(props)
+        this.state = {
+            selectedStudents:[],
+            error:""
+        }
+        this.template = (name, student) => `${name}:createEventRegistration(input:{eventRegistration:{registeredBy:"${this.props.queryResult.getUserData.id}",student:"${student.id}",dateGroup:"${this.props.match.params.id}"}}){
+            eventRegistration{
+                dateGroup
+            }
+        }`
     }
+
+    checkPrerequisites = (student) => {
+        let options = {
+            query: gql`{
+	               checkPrerequisites(arg0:"${this.props.match.params.id}",arg1:"${student.id}")
+               }`
+        }
+        return this.props.client.query(options).then((res)=>{
+            if(!res.data.checkPrerequisites){
+                this.setState({error:`${student.firstName} ${student.lastName} does not meet the prerequisites.`})
+            }
+            return res.data.checkPrerequisites;
+        }).catch((err)=>{console.log(err)});
+    }
+
+    genRandomId = () =>{
+        return '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    setSelectedStudents = (students) =>{
+        this.setState({selectedStudents:students, error:""});
+    }
+    post = (event) =>{
+        event.preventDefault();
+        let mutation = '';
+        this.state.selectedStudents.forEach((student)=>{ mutation += this.template(this.genRandomId(), student) + `\n`});
+        let options = {
+            mutation: gql`mutation{
+                    ${mutation}
+                }`
+        }
+        console.log(mutation)
+        this.props.client.mutate(options).then((res)=>{console.log(res)}).catch((err)=>{console.log(err)});
+    }
+    
     render = () =>{
         return <div className='registration-container'>
             <h2>Registration</h2>
+            <span>{this.state.error}</span>
             <QueryHandler query={GET_DATE_GROUP_INFO_BY_ID(this.props.match.params.id)}>
                 <RegistrationEventInfo />
             </QueryHandler>
-            <StudentSelect user={this.props.queryResult.getUserData}/>
+            <StudentSelect multiSelect={true} isValidStudent={this.checkPrerequisites} setSelectedStudents={this.setSelectedStudents} user={this.props.queryResult.getUserData}/>
             <div>
                 <h4>Add-ons</h4>
 
             </div>
-            <button>Register</button>
+            <button onClick={this.post}>Register</button>
         </div>
     }
 }
@@ -118,4 +165,4 @@ function Registration(props){
 
 // {(this.state.studentId)?<QueryHandler studentId={this.state.studentId}></QueryHandler>:""}
 
-export default Registration
+export default withApollo(Registration)
