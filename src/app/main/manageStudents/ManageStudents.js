@@ -108,7 +108,7 @@ class ManageStudentsInner extends Component {
       return <div className='manage-students-container'>
           Manage Student
           <StudentSelect setSelectedStudents={this.setSelectedStudents} user={this.props.queryResult.getUserData} />
-          {this.state.selectedStudent?<QueryHandler query={GET_DATES_WITH_STUDENT(this.state.selectedStudent)}>
+          {this.state.selectedStudent?<QueryHandler query={GET_DATES_WITH_STUDENT(this.state.selectedStudent.id)}>
             <EventMonths />
             </QueryHandler>:""}
       </div>

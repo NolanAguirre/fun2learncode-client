@@ -70,24 +70,27 @@ class StudentSelectInner extends Component {
         super(props)
         this.state = {students:props.queryResult.allStudents, selectedStudents:[]}
     }
-    toggleStudent = (id) =>{
-        if(this.state.selectedStudents.includes(id)){
-            const newSelectedStudents = this.state.selectedStudents.filter((student)=>{return student!=id})
-            this.props.setSelectedStudents(newSelectedStudents)
-            this.setState({selectedStudents:newSelectedStudents})
-        }else{
-            if(this.props.multiSelect){
-                this.props.setSelectedStudents([...this.state.selectedStudents, id])
-                this.setState({selectedStudents:[...this.state.selectedStudents, id]})
+
+    toggleStudent = async (newStudent) =>{ // if props selected students returns false or nothing it updates
+        if(!this.props.isValidStudent || await this.props.isValidStudent(newStudent)){
+            if(this.state.selectedStudents.includes(newStudent)){
+                const newSelectedStudents = this.state.selectedStudents.filter((student)=>{return student.id!=newStudent.id})
+                this.props.setSelectedStudents(newSelectedStudents)
+                this.setState({selectedStudents:newSelectedStudents})
             }else{
-                this.props.setSelectedStudents(id)
-                this.setState({selectedStudents:[id], students:this.props.queryResult.allStudents})
+                if(this.props.multiSelect){
+                    this.props.setSelectedStudents([...this.state.selectedStudents, newStudent])
+                    this.setState({selectedStudents:[...this.state.selectedStudents, newStudent]})
+                }else{
+                    this.props.setSelectedStudents(newStudent)
+                    this.setState({selectedStudents:[newStudent], students:this.props.queryResult.allStudents})
+                }
             }
         }
     }
     render(){
       return this.state.students.nodes.map((element) => {
-        const selected = this.state.selectedStudents.includes(element.userByStudent.id);
+        const selected = this.state.selectedStudents.includes(element.userByStudent);
         return <StudentPreview key={element.userByStudent.id} selected={selected} onClick={this.toggleStudent} student={element.userByStudent} />
       })
     }

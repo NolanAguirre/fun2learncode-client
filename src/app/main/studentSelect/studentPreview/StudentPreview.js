@@ -8,7 +8,7 @@ function StudentPreview (props) {
     }else{
         className = 'student-preview-container'
     }
-  return  <div onClick={() => props.onClick(props.student.id)} className={className}>
+  return  <div onClick={() => props.onClick(props.student)} className={className}>
         {props.student.firstName + ' ' + props.student.lastName}
     </div>
 }
