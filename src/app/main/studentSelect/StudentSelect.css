@@ -1,21 +1,14 @@
 .student-select-container{
     display: flex;
-    padding: 20px 40px;
+    max-width: 100%;
+    flex-direction: column;
+    padding: 10px;
     border: 2px solid  #41a62a;
-    justify-content: space-between;
 }
 .students-container{
-    height:150px;
-    overflow: auto;
-}
-.students-container::-webkit-scrollbar{
-    display:none;
-}
-.students-container >:first-child{
-    overflow-y: auto;
-    max-height: 100px;
     display: flex;
-    flex-direction: column;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
 .selected-student{
     padding-left: 15px;
