@@ -97,6 +97,12 @@ function NavBarInner(props){
         return user && admins.includes(user.role)
       }
     }, {
+        name: 'Check In',
+        route: 'Attendant/Check In',
+        test: () => {
+            return user && user.role === 'FTLC_ATTENDANT'
+        }
+    }, {
       name: 'Logout',
       route: 'Logout',
       test: () => {
