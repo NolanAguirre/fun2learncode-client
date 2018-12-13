@@ -4,12 +4,12 @@
   "author": "Nolan Aguirre",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "merge": ">=1.2.1",
     "apollo-boost": "^0.1.15",
     "apollo-link-context": "^1.0.8",
     "axios": "^0.18.0",
     "graphql": "^14.0.2",
     "graphql-tag": "^2.9.2",
+    "merge": ">=1.2.1",
     "moment": "^2.22.2",
     "react": "^16.4.2",
     "react-apollo": "^2.1.11",
