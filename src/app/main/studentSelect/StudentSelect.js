@@ -23,19 +23,21 @@ const GET_STUDENTS_BY_PARENT = (parentId) => {
   }
 }`}
 
-function SignUpAddOn(props, openCalendar, closeCalendar){
-    return<div>
-                <input {...props} />
-                <button onClick={openCalendar}>open calendar</button>
-                <button onClick={closeCalendar}>close calendar</button>
-            </div>
-
-}
 
 class StudentForm extends Component{
     constructor(props){
         super(props);
         this.state = {showPopup:false}
+    }
+
+    handleChange = (event) => {
+      const target = event.target
+      const value = target.value
+      const name = target.name
+      this.setState({
+        [name]: value,
+        error:undefined
+      })
     }
 
     showPopup = () =>{
@@ -49,12 +51,29 @@ class StudentForm extends Component{
     render = () => {
         return <React.Fragment>
             <Popup
+                 contentStyle={{width:"default"}}
                 open={this.state.showPopup}
                 closeOnDocumentClick
                 onClose={this.clearPopupState}>
-            <CreateAccount>
-                 <DateTime inputProps={{className:'sign-up-form-input'}} dateFormat="YYYY-MM-DD" viewMode='years' />
-            </CreateAccount>
+                <div className="create-student-container">
+                    <h1>Add Student</h1>
+                    <div className='login-error-container'>
+                        <span className='login-error'>{this.state.error}</span>
+                    </div>
+                    <form className='sign-up-form'>
+                      <div className='sign-up-input-container'>
+                          <input className='sign-up-form-input-small' name='firstName' onChange={this.handleChange} placeholder='first name' />
+                          <input className='sign-up-form-input-small' name='lastName' onChange={this.handleChange} placeholder='last name' />
+                      </div>
+                      <div className='sign-up-input-container'>
+                          <span className='dob-label'>Date Of Birth:</span>
+                          <DateTime inputProps={{className:'sign-up-form-input-small'}} dateFormat="M/D/YYYY"  timeFormat={false} viewMode='years' />
+                      </div>
+                      <div>
+                          <button type='submit' className='login-form-btn' onClick={this.handleSubmit}>Add student</button>
+                      </div>
+                  </form>
+            </div>
             </Popup>
         <div onClick={this.showPopup} className='student-preview-container'>
 
