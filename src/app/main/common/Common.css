@@ -2,3 +2,8 @@
 .location{
     text-align: center;
 }
+
+.grid-view-row{
+    display:flex;
+    flex:1;
+}

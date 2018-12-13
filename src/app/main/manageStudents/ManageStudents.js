@@ -3,11 +3,16 @@ import './ManageStudents.css'
 import StudentSelect from '../studentSelect/StudentSelect'
 import QueryHandler from '../queryHandler/QueryHandler'
 import gql from 'graphql-tag'
-import {SecureRoute, Location} from '../common/Common'
+import {SecureRoute, Location, GridView, DatesTable} from '../common/Common'
 import moment from 'moment';
 
+// user by id is included to ensure transition from loading state, even if the date intervals are the same
 const GET_DATES_WITH_STUDENT = (studentId) =>{
     return gql`{
+  userById(id:"${studentId}"){
+    nodeId
+    id
+  }
 	dateIntervalByStudent(studentId:"${studentId}"){
     nodes{
       start
@@ -37,8 +42,13 @@ const GET_DATES_WITH_STUDENT = (studentId) =>{
 }
 
 function EventMonthDate(props){
+    function localizeUTCTimestamp(timestamp){
+        return moment(moment.utc(timestamp)).local()
+    }
+    console.log(props.date)
     return <div className='event-month-date-container'>
-        {props.date.datesJoinsByDateInterval.nodes[0].dateGroupByDateGroup.eventByEvent.activityByEventType.name}
+        <h3>{props.date.datesJoinsByDateInterval.nodes[0].dateGroupByDateGroup.eventByEvent.activityByEventType.name}</h3>
+        {localizeUTCTimestamp(props.date.start).format('dddd Do')}
     </div>
 }
 
@@ -52,10 +62,12 @@ class EventMonth extends Component{
     }
     render = () => {
         let dates = this.props.month.slice().sort((a,b)=>{return moment(b.start).unix() - moment(a.start).unix()}).map((date)=>{return<EventMonthDate key={moment(date.start).unix()} date={date}/>})
-        return <div className='event-month'>
-            <h4>{this.props.monthName}</h4>
-            {dates}
-        </div>
+        return <React.Fragment>
+            <h2>{this.props.monthName}</h2>
+                <GridView itemsPerRow={5} className='event-month'>
+                    {dates}
+                </GridView>
+        </React.Fragment>
     }
 }
 

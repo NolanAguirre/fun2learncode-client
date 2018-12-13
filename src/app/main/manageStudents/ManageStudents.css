@@ -7,14 +7,18 @@
 .event-months-container{
     display:flex;
     flex-direction: column;
+    border: 2px solid blue;
 }
 .event-month{
     display: flex;
     flex-direction: column;
 }
-.event-month-row{
-    display: flex;
-}
 .event-month-date-container{
-    background-color: 2px black;
+    border: 2px solid black;
+    padding:10px;
+    margin:10px;
+    flex: 1;
+}
+.event-month-date-container h4{
+    
 }

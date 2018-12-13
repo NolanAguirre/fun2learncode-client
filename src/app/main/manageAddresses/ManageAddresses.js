@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import gql from 'graphql-tag'
 import QueryHandler from '../queryHandler/QueryHandler'
 import MutationHandler from '../queryHandler/MutationHandler'
-import {SecureRoute, Location} from '../common/Common'
+import {SecureRoute, Location, GridView} from '../common/Common'
 import './ManageAddresses.css'
 
 const GET_ADDRESSES = gql`query manageAddresses{allAddresses{
@@ -15,6 +15,9 @@ const GET_ADDRESSES = gql`query manageAddresses{allAddresses{
       alias
       country
       zipcode
+      dateGroupsByAddress{
+        totalCount
+      }
     }
   }
 }`
@@ -109,7 +112,7 @@ class ManageAddressForm extends Component{
         if(this.state.edit){
             return <div className="manage-address-form-container">
                 <h2 className="manage-address-form-header">{this.props.alias}</h2>
-                <MutationHandler refetchQueries={['manageAddresses', 'dropdownOptions', 'adminEvents']} handleMutation={this.handleSubmit} mutation={this.props.mutation}>
+                <MutationHandler refetchQueries={['manageAddresses', 'addressDropdown', 'adminEvents']} handleMutation={this.handleSubmit} mutation={this.props.mutation}>
                     <table>
                         <tbody>
                             <tr>
@@ -185,23 +188,15 @@ class ManageAddressesInner extends Component {
 
   }
   render = () => {
-    let addresses = this.props.queryResult.allAddresses.nodes.map((address)=><ManageAddressForm mutation={UPDATE_ADDRESS} key={address.id} id={address.id} zipcode={address.zipcode} city={address.city} street={address.street} state={address.state} alias={address.alias} />)
-    let formatted = [];
-    while(addresses.length){
-        formatted.push(<div className="manage-address-forms-container" key={addresses.length}>{addresses.splice(0,3)}</div>)
-    }
+    const addresses = this.props.queryResult.allAddresses.nodes.map((address)=><ManageAddressForm mutation={UPDATE_ADDRESS} key={address.id} id={address.id} zipcode={address.zipcode} city={address.city} street={address.street} state={address.state} alias={address.alias} />)
     return <div className="manage-addresses-container">
         <div className="manage-addresses-header">
             <ManageAddressForm mutation={CREATE_ADDRESS} alias={"New Address"} />
         </div>
-        <div className="manage-addresses-body">
-            {formatted}
-        </div>
+        <GridView className="manage-addresses-body" itemsPerRow={3}> {addresses}</GridView>
     </div>
   }
 }
-
-
 
 function ManageAddresses(props){
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
@@ -210,4 +205,5 @@ function ManageAddresses(props){
         </QueryHandler>
     </SecureRoute>
 }
+
 export default ManageAddresses

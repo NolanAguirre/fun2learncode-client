@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import './Events.css'
-import TimeTableRow from './timeTableRow/TimeTableRow'
 import EventComponent from './event/Event'
 import gql from 'graphql-tag'
 import QueryHandler from '../queryHandler/QueryHandler'
@@ -50,21 +49,22 @@ const GET_EVENTS_OF_TYPE = (id) => {
 function EventsInner(props) { // TODO group this by address so i dont have to load multiple maps
     return props.queryResult.allEvents.nodes.map((event) => { // this creates event
       return event.dateGroupsByEvent.nodes.map((dateGroups) => { // if the event has no dates, it is not displayed
-        let dates = dateGroups.datesJoinsByDateGroup.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()})
-        if (dates.length === 0) {
+        let dates = dateGroups.datesJoinsByDateGroup;
+        if (dates.nodes.length === 0) {
           return undefined
         }
         return <EventComponent
           activityId={props.activityId}
           location={dateGroups.addressByAddress}
           capacity={dateGroups.capacity}
-          date={dates}
+          dates={dates}
           id={dateGroups.id}
           price={dateGroups.price}
           key={dateGroups.id} />
       })
     })
 }
+
 function Events (props) {
   return (
     <div className='events'>
