@@ -1,10 +1,9 @@
 import React from 'react'
 import './Home.css'
 import Section from './section/Section'
-import QueryHandler from '../queryHandler/QueryHandler'
-import gql from 'graphql-tag'
+import { Query } from '../../../delv/delv-react'
 
-const GET_ACTIVITIES = gql`{
+const GET_ACTIVITIES = `{
   allActivityCatagories {
     nodes {
       nodeId
@@ -23,9 +22,9 @@ function HomeInner(props){
 function Home (props) {
   return <div className='home'>
     <h2>Home</h2>
-    <QueryHandler query={GET_ACTIVITIES}>
+    <Query query={GET_ACTIVITIES}>
         <HomeInner />
-    </QueryHandler>
+    </Query>
   </div>
 }
 

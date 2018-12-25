@@ -3,9 +3,9 @@ import './NavBar.css'
 import { Link } from 'react-router-dom'
 import Logo from '../logos/drawing.svg'
 import gql from 'graphql-tag'
-import QueryHandler from '../main/queryHandler/QueryHandler'
+import { Query } from '../../delv/delv-react'
 
-const GET_USER_DATA = gql`{
+const GET_USER_DATA = `{
     getUserData{
         id
         firstName
@@ -125,9 +125,9 @@ function NavBarInner(props){
 }
 
 function NavBar (props) {
-  return<QueryHandler query={GET_USER_DATA}>
+  return<Query query={GET_USER_DATA}>
       <NavBarInner />
-  </QueryHandler>
+  </Query>
 }
 
 export default NavBar
