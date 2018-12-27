@@ -4,6 +4,8 @@ import gql from 'graphql-tag'
 import TypeMap from './TypeMap'
 import Delv from './delv'
 import CacheEmitter from './CacheEmitter'
+var _ = require('lodash');
+
 class DelvReact extends Component{
     constructor(props){
         super(props);
@@ -29,34 +31,11 @@ export { DelvReact }
 class Query extends Component{
     constructor(props){
         super(props);
-        this.state = {queryResult:''}
+        this.state = {queryResult:'', listenToCacheUpdates:true,renderCount:0}
+        this.networkPolicy = props.networkPolicy || 'network-once'
         this.id = '_' + Math.random().toString(36).substr(2, 9)
         this.types = [];
         this.mapTypes()
-    }
-
-    mapTypes = () => {
-        const resolver = (fieldName, root, args, context, info) => {
-            if(!info.isLeaf && fieldName != 'nodes'){
-                this.types.push(TypeMap.guessChildType(TypeMap.get(fieldName)))
-            }
-            return {}
-        }
-        graphql(resolver, gql `${this.props.query}`, null)
-
-    }
-
-    query = () => {
-        Delv.query(this.props.query, {resolve:this.resolve, onFetch:this.onFetch, networkPolicy:'network-once'})
-    }
-
-    onCacheUpdate = (types) => {
-        if(this.state.resolved){
-            let includesType = this.types.some(r => types.includes(r))
-            if(includesType){
-                this.query();
-            }
-        }
     }
 
     componentDidMount = () => {
@@ -76,20 +55,55 @@ class Query extends Component{
         }
     }
 
-    resolve = (data) => {
-        this.setState({queryResult:data, resolved:true});
+    query = () => {
+        Delv.query({
+            query: this.props.query,
+            variables: this.props.variables,
+            networkPolicy: this.networkPolicy,
+            onFetch: this.onFetch,
+            onResolve: this.onResolve
+        })
     }
 
     onFetch = () => {
-        this.setState({resolved:false})
+        this.setState({queryResult:'', listenToCacheUpdates:false})
+    }
+
+    onResolve = (data) => {
+        console.log(data)
+        if(!_.isEqual(data, this.state.queryResult)){
+            this.setState({queryResult:data, listenToCacheUpdates:true});
+        }
+    }
+
+    mapTypes = () => {
+        const resolver = (fieldName, root, args, context, info) => {
+            if(!info.isLeaf && fieldName != 'nodes'){
+                this.types.push(TypeMap.guessChildType(TypeMap.get(fieldName)))
+            }
+            return {}
+        }
+        graphql(resolver, gql `${this.props.query}`, null)
+
+    }
+
+    onCacheUpdate = (types) => {
+        if(this.state.listenToCacheUpdates){
+            let includesType = this.types.some(r => types.includes(r))
+            if(includesType){
+                this.query();
+            }
+        }
     }
 
     render = () => {
-        if(this.state.resolved){
-            return React.cloneElement(this.props.children, {queryResult:this.state.queryResult})
-        }else{
-            return 'loading'
+        if(this.state.queryResult === ''){
+            if(this.props.loading){
+                return this.props.loading
+            }
+            return <div>loading</div>
         }
+        return React.cloneElement(this.props.children, {queryResult:this.state.queryResult,renderCount:this.state.renderCount})
     }
 }
 

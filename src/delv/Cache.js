@@ -23,29 +23,28 @@ class Cache {
         if (fieldName === 'nodes') {
             return Object.values(root)
         }
-        if(this.)
         let fieldType = typeMap.get(fieldName);
         if (fieldType) {
             if (fieldType.endsWith('Connection')) {
                 fieldType = typeMap.guessChildType(fieldType);
-            }
-            let connections = root[fieldType]
-            if (connections) {
-                let ids
-                if(connections instanceof Object){
-                    if(Array.isArray(connections)){
-                        ids = connections;
-                    }else{
-                        ids = Object.keys(connections);
+                let connections = root[fieldType]
+                if (connections) {
+                    let ids
+                    if(connections instanceof Object){
+                        if(Array.isArray(connections)){
+                            ids = connections;
+                        }else{
+                            ids = Object.keys(connections);
+                        }
                     }
-                }else{
-                    return this.cache[fieldType][root[fieldType]]
+                    let nextRoot = this.filterCacheById(fieldType, ids)
+                    if(args){
+                        return this.filterCache(nextRoot, args)
+                    }
+                    return nextRoot
                 }
-                let nextRoot = this.filterCacheById(fieldType, ids)
-                if(args){
-                    return this.filterCache(nextRoot, args)
-                }
-                return nextRoot
+            }else if(this.cache[fieldType][root[fieldName]]){
+                return this.cache[fieldType][root[fieldName]]
             } else {
                 throw new Error('Some of the data requested in the query is not in the cache')
             }
@@ -127,8 +126,13 @@ class Cache {
             for(let key in clone){
                 let value = clone[key]
                 if(value instanceof Object){
-                    delete clone[key]
-                    clone[this.getChildType(value)] = this.formatObject(value);
+                    let kValue = this.formatObject(value);
+                    if(Array.isArray(kValue)){
+                        delete clone[key]
+                        clone[typeMap.guessChildType(typeMap.get(key))] = kValue
+                    }else{
+                        clone[key] = kValue;
+                    }
                 }
             }
             this.updateCacheValue(clone)
