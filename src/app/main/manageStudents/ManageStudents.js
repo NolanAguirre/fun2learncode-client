@@ -1,36 +1,41 @@
 import React, { Component } from 'react'
 import './ManageStudents.css'
 import StudentSelect from '../studentSelect/StudentSelect'
-import QueryHandler from '../queryHandler/QueryHandler'
+import { Query } from '../../../delv/delv-react'
 import gql from 'graphql-tag'
 import {SecureRoute, Location, GridView, DatesTable} from '../common/Common'
 import moment from 'moment';
 
 // user by id is included to ensure transition from loading state, even if the date intervals are the same
 const GET_DATES_WITH_STUDENT = (studentId) =>{
-    return gql`{
-  userById(id:"${studentId}"){
-    nodeId
-    id
-  }
-	dateIntervalByStudent(studentId:"${studentId}"){
+    return `{
+        allStudents(condition:{id:"${studentId}"}){
     nodes{
-      start
-      end
-      id
       nodeId
-      datesJoinsByDateInterval{
+      id
+      eventRegistrationsByStudent{
         nodes{
+          nodeId
           dateGroupByDateGroup{
-            id
             nodeId
             eventByEvent{
-              id
               nodeId
+              id
               activityByEventType{
+                nodeId
                 name
                 id
+              }
+            }
+            datesJoinsByDateGroup{
+              nodes{
                 nodeId
+                dateIntervalByDateInterval{
+                  nodeId
+                  id
+                  start
+                  end
+                }
               }
             }
           }
@@ -83,7 +88,12 @@ class EventMonths extends Component{
     }
 
     filterToMonth = () => {
-        const dates = this.props.queryResult.dateIntervalByStudent.nodes;
+        const dates = this.props.queryResult.allStudents.nodes[0].eventRegistrationsByStudent.nodes.map((registration)=>{
+            let activityName = registration.dateGroupByDateGroup.eventByEvent.activityByEventType.name
+            let dates = registration.dateGroupByDateGroup.datesJoinsByDateGroup.nodes.map((date)=>{
+                return {...date.dateIntervalByDateInterval, activityName }
+            })
+        }).reduce((acc, val) => acc.concat(val), []);
         let data = {};
         dates.forEach((date)=>{
             if(data[this.localizeUTCTimestamp(date.start)]){
@@ -120,9 +130,9 @@ class ManageStudentsInner extends Component {
       return <div className='manage-students-container'>
           Manage Student
           <StudentSelect setSelectedStudents={this.setSelectedStudents} user={this.props.queryResult.getUserData} />
-          {this.state.selectedStudent?<QueryHandler query={GET_DATES_WITH_STUDENT(this.state.selectedStudent.id)}>
+          {this.state.selectedStudent?<Query query={GET_DATES_WITH_STUDENT(this.state.selectedStudent.id)}>
             <EventMonths />
-            </QueryHandler>:""}
+            </Query>:""}
       </div>
   }
 }

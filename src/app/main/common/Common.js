@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import './Common.css'
-import QueryHandler from '../queryHandler/QueryHandler'
+import { Query } from '../../../delv/delv-react'
 import gql from 'graphql-tag'
 import moment from 'moment';
 
-const GET_USER_DATA = gql`{
+const GET_USER_DATA = `{
     getUserData{
+        nodeId
         id
         firstName
         lastName
@@ -37,6 +38,7 @@ function DropDown (props) {
 export { DropDown }
 
 function SecureRouteInner(props){
+    console.log(props)
     if(props.queryResult.getUserData && props.roles.includes(props.queryResult.getUserData.role)){
         if(props.ignoreResult){
             return props.children
@@ -55,9 +57,9 @@ function SecureRoute(props){
         }
         return <div>please login</div>
     }
-    return <QueryHandler query={GET_USER_DATA}>
+    return <Query query={GET_USER_DATA}>
         <SecureRouteInner ignoreResult={props.ignoreResult} roles={props.roles} unauthorized={props.unauthorized}>{props.children}</SecureRouteInner>
-    </QueryHandler>
+    </Query>
 
 }
 export { SecureRoute }

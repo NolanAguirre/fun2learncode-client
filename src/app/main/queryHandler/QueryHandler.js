@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import gql from 'graphql-tag'
-import { Query } from 'react-apollo'
+import { Query } from '../../../delv/delv-react'
 
 function QueryHandler (props) {
   return (
-    <Query  query={props.query}>
+    <Query query={props.query}>
       {({ loading, error, data }) => {
         if (loading) {
           if (props.loading) {
@@ -13,10 +13,11 @@ function QueryHandler (props) {
           return 'Loading...'
         }
         if (error) {
+            console.log(error)
           if (props.error) {
             return React.cloneElement(props.error,{error})
           }
-          if(error.networkError.result.errors[0].message == 'jwt expired'){
+          if(error.networkError && error.networkError.result.errors[0].message == 'jwt expired'){
               window.location.href = '/logout';
               return <div>Session Expired</div>;
           }
