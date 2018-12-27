@@ -5,7 +5,7 @@ import './Logout.css'
 import UserStore from '../../UserStore'
 class ManageStudents extends Component {
   componentDidMount () {
-    UserStore.set('authToken', null)
+    localStorage.removeItem('authToken')
     window.location.reload()
     window.location.href = '/Home'
   }

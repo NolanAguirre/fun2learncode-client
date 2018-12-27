@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import './Login.css'
-import axios from 'axios'
-import UserStore from '../../UserStore'
+import Delv from '../../../delv/delv'
 import Logo from '../../logos/drawing.svg'
 
 class Login extends Component {
@@ -9,6 +8,7 @@ class Login extends Component {
     super(props)
     this.state = { email: '', password: '' }
   }
+
   handleChange = (event) => {
     const target = event.target
     const value = target.value
@@ -17,20 +17,21 @@ class Login extends Component {
       [name]: value
     })
   }
-  handleSubmit = (event) => { // dont want to handle loading state, use axios
-    axios.post('http://localhost:3005/graphql', { query: `{
-          authenticate(arg0:"${this.state.email}", password:"${this.state.password}")
-        }` }).then((res) => {
-      if (res.data.data.authenticate) {
-        UserStore.set('authToken', res.data.data.authenticate)
-        window.location.reload()
-        this.props.history.push(this.props.redirectUrl || '/')
-    }else{
-        this.setState({errors:true})
+
+    handleSubmit = (event) => { // dont want to handle loading state, use axios
+        Delv.post(`{
+                authenticate(arg0:"${this.state.email}", password:"${this.state.password}")
+              }`).then((res) => {
+            if (res.data.data.authenticate) {
+                localStorage.setItem('authToken', res.data.data.authenticate)
+                window.location.reload()
+                this.props.history.push(this.props.redirectUrl || '/')
+            } else {
+                this.setState({errors: true})
+            }
+        })
+        event.preventDefault()
     }
-    })
-    event.preventDefault()
-  }
 
   render () {
     return (<div className='login'>
