@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import './SignUp.css'
 import Logo from '../../logos/drawing.svg'
-import MutationHandler from '../queryHandler/MutationHandler';
 import gql from 'graphql-tag';
-import DateTime from 'react-datetime';
 import axios from 'axios'
 import UserStore from '../../UserStore'
 
@@ -24,10 +22,6 @@ function StudentDOB(props){
             If you plan to enroll yourself, create an account as a parent and follow the steps for adding students. Add yourself as a student to enroll
         </div>
         <div onClick={()=>{props.setUI('iAm')}}>back</div>
-    </div>
-    return <div>
-        <h4>Please enter date of birth</h4>
-        <DateTime dateFormat="YYYY-MM-DD" viewMode={'years'} timeFormat={false} />
     </div>
 }
 
@@ -167,9 +161,10 @@ class CreateAccount extends Component{
                 <input className='sign-up-form-input-small' name='lastName' onChange={this.handleChange} placeholder='last name' />
             </div>
             <div className='sign-up-input-container'>
-                <input className='sign-up-form-input-small' name='password' type='password' onChange={this.handleChange}placeholder='password' />
-                <input className='sign-up-form-input-small' name='repeatPassword' type='password' onChange={this.handleChange}placeholder='repeat password' />
+                <input className='sign-up-form-input-small' name='password' type='password' onChange={this.handleChange} placeholder='password' />
+                <input className='sign-up-form-input-small' name='repeatPassword' type='password' onChange={this.handleChange} placeholder='repeat password' />
             </div>
+            {this.props.children?React.cloneElement(this.props.children, {handleChange:this.handleChange}):''}
             <div>
                 <button type='submit' className='login-form-btn' onClick={this.handleSubmit}>Create Account</button>
             </div>
@@ -213,4 +208,4 @@ class SignUp extends Component {
     </div>
   }
 }
-export default SignUp
+export  {SignUp, CreateAccount}

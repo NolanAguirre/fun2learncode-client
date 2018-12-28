@@ -49,9 +49,8 @@ function EventMonthDate(props){
     function localizeUTCTimestamp(timestamp){
         return moment(moment.utc(timestamp)).local()
     }
-    console.log(props.date)
     return <div className='event-month-date-container'>
-        <h3>{props.date.datesJoinsByDateInterval.nodes[0].dateGroupByDateGroup.eventByEvent.activityByEventType.name}</h3>
+        <h3>{props.date.activityName}</h3>
         {localizeUTCTimestamp(props.date.start).format('dddd Do')}
     </div>
 }
@@ -92,6 +91,7 @@ class EventMonths extends Component{
             let dates = registration.dateGroupByDateGroup.datesJoinsByDateGroup.nodes.map((date)=>{
                 return {...date.dateIntervalByDateInterval, activityName }
             })
+            return dates;
         }).reduce((acc, val) => acc.concat(val), []);
         let data = {};
         dates.forEach((date)=>{

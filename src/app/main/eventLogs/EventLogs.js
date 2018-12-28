@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Location } from '../common/Common'
 import './EventLogs.css'
 import gql from 'graphql-tag'
-import QueryHandler from '../queryHandler/QueryHandler'
+import {Query} from '../../../delv/delv-react'
 // THIS IS NOT TESTED YET
 function EventLogTableRow (props) {
   return (

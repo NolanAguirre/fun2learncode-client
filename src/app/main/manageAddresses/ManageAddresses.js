@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import gql from 'graphql-tag'
-import QueryHandler from '../queryHandler/QueryHandler'
-import MutationHandler from '../queryHandler/MutationHandler'
+import Mutation from '../../../delv/Mutation'
+import {Query} from '../../../delv/delv-react'
 import {SecureRoute, Location, GridView} from '../common/Common'
 import './ManageAddresses.css'
 
-const GET_ADDRESSES = gql`query manageAddresses{allAddresses{
-    nodes{
+const GET_ADDRESSES = `{
+    allAddresses{
+        nodes{
       id
       nodeId
       street
@@ -15,14 +16,11 @@ const GET_ADDRESSES = gql`query manageAddresses{allAddresses{
       alias
       country
       zipcode
-      dateGroupsByAddress{
-        totalCount
-      }
     }
   }
 }`
 
-const CREATE_ADDRESS = gql`mutation($address:CreateAddressInput!){
+const CREATE_ADDRESS = `mutation($address:CreateAddressInput!){
   createAddress(input:$address){
     address{
       alias
@@ -35,7 +33,7 @@ const CREATE_ADDRESS = gql`mutation($address:CreateAddressInput!){
   }
 }`
 
-const UPDATE_ADDRESS = gql`mutation($id:UUID!, $address:AddressPatch!){
+const UPDATE_ADDRESS = `mutation($id:UUID!, $address:AddressPatch!){
   updateAddressById(input:{addressPatch:$address, id:$id}){
     address{
       id
@@ -61,6 +59,10 @@ class ManageAddressForm extends Component{
             alias: this.props.alias || "",
             zipcode: this.props.zipcode || 78664
         }
+        this.mutation = new Mutation({
+            mutation:this.props.mutation,
+            onSubmit:this.handleSubmit
+        })
     }
 
     toggleEdit = () => {
@@ -95,24 +97,22 @@ class ManageAddressForm extends Component{
         if(this.hasRequiredValues()){
             let address = Object.assign({}, this.state)
             delete address.edit
+            this.setState({edit:false})
             if (this.props.id) {
-                mutation({
-                    variables: {id:this.props.id, address}
-                });
+                return {id:this.props.id, address}
             }else{
-                mutation({
-                    variables: {address:{address}}
-                });
+                return {address:{address}}
             }
         }
         this.setState({edit:false})
+        return false
     }
 
     render = () => {
         if(this.state.edit){
             return <div className="manage-address-form-container">
                 <h2 className="manage-address-form-header">{this.props.alias}</h2>
-                <MutationHandler refetchQueries={['manageAddresses', 'addressDropdown', 'adminEvents']} handleMutation={this.handleSubmit} mutation={this.props.mutation}>
+                <form onSubmit={this.mutation.onSubmit}>
                     <table>
                         <tbody>
                             <tr>
@@ -138,7 +138,7 @@ class ManageAddressForm extends Component{
                         </tbody>
                     </table>
                     <button type="submit">finish</button>
-                </MutationHandler>
+                </form>
             </div>
         }
         return <div className="manage-address-form-container">
@@ -188,21 +188,22 @@ class ManageAddressesInner extends Component {
 
   }
   render = () => {
-    const addresses = this.props.queryResult.allAddresses.nodes.map((address)=><ManageAddressForm mutation={UPDATE_ADDRESS} key={address.id} id={address.id} zipcode={address.zipcode} city={address.city} street={address.street} state={address.state} alias={address.alias} />)
+    const addresses = this.props.queryResult.allAddresses.nodes.map((address) => <ManageAddressForm mutation={UPDATE_ADDRESS} key={address.id} id={address.id} zipcode={address.zipcode} city={address.city} street={address.street} state={address.state} alias={address.alias} />)
+    console.log(addresses.length)
     return <div className="manage-addresses-container">
         <div className="manage-addresses-header">
             <ManageAddressForm mutation={CREATE_ADDRESS} alias={"New Address"} />
         </div>
-        <GridView className="manage-addresses-body" itemsPerRow={3}> {addresses}</GridView>
+        <GridView className="manage-addresses-body" childStyle={'manage-address-form-container'} itemsPerRow={3}>{addresses}</GridView>
     </div>
   }
 }
 
 function ManageAddresses(props){
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
-        <QueryHandler query={GET_ADDRESSES}>
+        <Query query={GET_ADDRESSES}>
             <ManageAddressesInner />
-        </QueryHandler>
+        </Query>
     </SecureRoute>
 }
 

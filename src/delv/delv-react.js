@@ -92,7 +92,6 @@ class Query extends Component {
         if (this.state.listenToCacheUpdates) {
             let includesType = this.types.some(r => types.includes(r))
             if (includesType) {
-                console.log(types)
                 this.query();
             }
         }

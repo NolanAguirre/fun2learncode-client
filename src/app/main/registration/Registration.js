@@ -2,63 +2,74 @@ import React, { Component } from 'react'
 import './Registration.css'
 import Login from '../login/Login'
 import StudentSelect from '../studentSelect/StudentSelect'
-import {SecureRoute} from '../common/Common'
-import QueryHandler from '../queryHandler/QueryHandler'
-import TimeTableRow from '../events/timeTableRow/TimeTableRow'
-import gql from 'graphql-tag'
-import { withApollo } from 'react-apollo';
+import {SecureRoute, DatesTable} from '../common/Common'
+import {Query} from '../../../delv/delv-react'
+import Mutation from '../../../delv/Mutation'
+import Delv from '../../../delv/delv'
 
 const GET_DATE_GROUP_INFO_BY_ID = (id)=>{
-    return gql`
-    {
-  dateGroupById(id:"${id}"){
-    nodeId
-    id
-    name
-    openRegistration
-    closeRegistration
-    addressByAddress{
-      alias
+    return `{
+  allDateGroups(condition:{id: "${id}"}) {
+    nodes {
       nodeId
       id
-    }
-    price
-    datesJoinsByDateGroup{
-      nodes{
-        nodeId
-        id
-        dateInterval
-        dateIntervalByDateInterval{
-          id
-          nodeId
-          start
-          end
-        }
-      }
-    }
-    eventByEvent{
+      name
       openRegistration
       closeRegistration
-      nodeId
-    	id
-      activityByEventType{
-        name
-        id
+      addressByAddress {
+        alias
         nodeId
+        id
+      }
+      price
+      datesJoinsByDateGroup {
+        nodes {
+          nodeId
+          id
+          dateInterval
+          dateIntervalByDateInterval {
+            id
+            nodeId
+            start
+            end
+          }
+        }
+      }
+      eventByEvent {
+        openRegistration
+        closeRegistration
+        nodeId
+        id
+        activityByEventType {
+          name
+          id
+          nodeId
+        }
       }
     }
   }
 }`}
+
+class AddOns extends Component{
+    constructor(props){
+        super(props);
+        this.state = {selected:[]}
+    }
+
+    render = () => {
+        return <div></div>
+    }
+}
 
 class RegistrationEventInfo extends Component{
     constructor(props){
         super(props);
     }
     render(){
-        const dateGroup = this.props.queryResult.dateGroupById;
+        const dateGroup = this.props.queryResult.allDateGroups.nodes[0];
         const event = dateGroup.eventByEvent;
         const activity = event.activityByEventType;
-        const date = dateGroup.datesJoinsByDateGroup.nodes;
+        const dates = dateGroup.datesJoinsByDateGroup;
         const address = dateGroup.addressByAddress;
         return <div className="registration-form-container">
             <h3>Event Information</h3>
@@ -80,13 +91,7 @@ class RegistrationEventInfo extends Component{
                 </tbody>
             </table>
             Dates:
-            <table>
-              <tbody>
-                {date.map((date, index) => {
-                  return <TimeTableRow data={date.dateIntervalByDateInterval} key={index} />
-                })}
-              </tbody>
-            </table>
+            <DatesTable className="registration-dates-table" dates={dates}/>
             </div>
         </div>
     }
@@ -107,16 +112,14 @@ class RegistrationInner extends Component{
     }
 
     checkPrerequisites = (student) => {
-        let options = {
-            query: gql`{
+        let query = `{
 	               checkPrerequisites(arg0:"${this.props.match.params.id}",arg1:"${student.id}")
                }`
-        }
-        return this.props.client.query(options).then((res)=>{
-            if(!res.data.checkPrerequisites){
+        return Delv.post(query).then((res)=>{
+            if(!res.data.data.checkPrerequisites){
                 this.setState({error:`${student.firstName} ${student.lastName} does not meet the prerequisites.`})
             }
-            return res.data.checkPrerequisites;
+            return res.data.data.checkPrerequisites;
         }).catch((err)=>{console.log(err)});
     }
 
@@ -131,38 +134,40 @@ class RegistrationInner extends Component{
         event.preventDefault();
         let mutation = '';
         this.state.selectedStudents.forEach((student)=>{ mutation += this.template(this.genRandomId(), student) + `\n`});
-        let options = {
-            mutation: gql`mutation{
+        mutation = `mutation{
                     ${mutation}
                 }`
-        }
-        console.log(mutation)
-        this.props.client.mutate(options).then((res)=>{console.log(res)}).catch((err)=>{console.log(err)});
+        new Mutation({
+            mutation:mutation,
+            onSubmit:()=>{return{}}
+        }).onSubmit()
+
     }
-    
+
     render = () =>{
         return <div className='registration-container'>
             <h2>Registration</h2>
-            <span>{this.state.error}</span>
-            <QueryHandler query={GET_DATE_GROUP_INFO_BY_ID(this.props.match.params.id)}>
+            <Query networkPolicy='cache-first' query={GET_DATE_GROUP_INFO_BY_ID(this.props.match.params.id)}>
                 <RegistrationEventInfo />
-            </QueryHandler>
+            </Query>
+            <span className='error'>{this.state.error}</span>
             <StudentSelect multiSelect={true} isValidStudent={this.checkPrerequisites} setSelectedStudents={this.setSelectedStudents} user={this.props.queryResult.getUserData}/>
             <div>
                 <h4>Add-ons</h4>
-
+                <AddOns />
             </div>
             <button onClick={this.post}>Register</button>
         </div>
     }
 }
+
 function Registration(props){
     const login = <Login history={props.history} redirectUrl={props.location.pathname} />
-    return<SecureRoute unauthorized={login} roles={["FTLC_USER"]}>
+    return <SecureRoute unauthorized={login} roles={["FTLC_USER"]}>
             <RegistrationInner {...props}/>
         </SecureRoute>
 }
 
 // {(this.state.studentId)?<QueryHandler studentId={this.state.studentId}></QueryHandler>:""}
 
-export default withApollo(Registration)
+export default Registration

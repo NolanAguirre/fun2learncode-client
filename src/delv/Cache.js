@@ -48,18 +48,30 @@ class Cache {
             } else if(this.cache[fieldType][root[fieldName]]){
                 return this.cache[fieldType][root[fieldName]]
             }else {
-                console.log(root)
-                console.log(fieldName)
                 throw new Error('Some of the data requested in the query is not in the cache')
             }
         }
         return this.cache[fieldType][root[fieldType]]
     }
 
+    checkFilter = (filter, value) => {
+        let match = true;
+        for(let key in filter){
+            let filterValue = filter[key]
+            if(key === 'lessThanOrEqualTo'){
+                match = match && new Date(filterValue).getTime() >= new Date(value).getTime();
+            }else if(key === 'greaterThanOrEqualTo'){
+                match = match && new Date(filterValue).getTime() <= new Date(value).getTime();
+            }
+        }
+        return match
+    }
+
     filterCache = (set, args) => {
         //TODO handle args.filter
+        let returnVal = set;
         if(args.condition){
-            return _.pickBy(set, function(value, key) {
+            returnVal = _.pickBy(returnVal, function(value, key) {
                 let match = true;
                 for(let k in args.condition){
                     if(value[k] !== args.condition[k]){
@@ -68,9 +80,21 @@ class Cache {
                 }
                 return match;
             });
-        }else{
-            return set;
         }
+        if(args.filter){
+            returnVal = _.pickBy(returnVal,function(value,key){
+                let match = true;
+                for(let k in args.filter){
+                    if(value[k]){
+                        if(!this.checkFilter(args.filter[k], value[k])){
+                            match = false;
+                        }
+                    }
+                }
+                return match;
+            })
+        }
+        return returnVal
     }
 
     merge = (oldObj, newObj) => {
@@ -204,7 +228,6 @@ class Cache {
                 this.formatObject(result[key], key)
             }
         }
-        console.log(this.cache)
         CacheEmitter.emitCacheUpdate();
 
     }

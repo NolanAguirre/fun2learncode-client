@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import './CheckIn.css'
 import {SecureRoute} from '../common/Common'
+import {Query} from '../../../delv/delv-react'
 import Logo from '../../logos/drawing.svg'
-import QueryHandler from '../queryHandler/QueryHandler'
-import gql from 'graphql-tag';
 import moment from 'moment'
 
+//TODO test
+
 const GET_STUDENT = (studentName) => {
-    return gql`{
+    return `{
 	allUsers(condition:{role:FTLC_STUDENT, firstName:"${studentName}"}){
     nodes{
       firstName
@@ -20,7 +21,7 @@ const GET_STUDENT = (studentName) => {
 }
 
 const GET_POSSIBLE_EVENTS = (studentId) => {
-    return gql`{
+    return `{
 	dateIntervalByStudent(studentId:"${studentId}", filter:{start:{greaterThan:"${moment().subtract(1,'hours').toISOString()}", lessThan:"${moment().add(1,'hours').toISOString()}"}}){
     nodes{
       start
@@ -136,9 +137,9 @@ class CheckInInner extends Component{
         if(this.state.UI === 'getStudent'){
             inner = <GetStudent setLastName={this.setLastName} />
         }else if(this.state.UI === 'confirm'){
-            inner = <QueryHandler query={GET_STUDENT(this.state.lastName)}>
+            inner = <Query query={GET_STUDENT(this.state.lastName)}>
                 <ConfirmName />
-            </QueryHandler>
+            </Query>
         }
         return<div className='login'>
           <div className='login-container'>
