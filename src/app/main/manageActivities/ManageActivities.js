@@ -4,13 +4,13 @@ import memoize from "memoize-one";
 import Logo from '../../logos/x-icon.svg'
 import {DropDown} from '../common/Common';
 import './ManageActivities.css';
-import QueryHandler from '../queryHandler/QueryHandler';
-import MutationHandler from '../queryHandler/MutationHandler';
+import Mutation from '../../../delv/Mutation'
+import {Query} from '../../../delv/delv-react'
 import {SecureRoute} from '../common/Common'
 
 //TODO be able to remove prerequisites, make description text box keep text on edit
 
-const GET_ACTIVITIES = gql`query manageActivitiesQuery{
+const GET_ACTIVITIES = `{
   allActivityCatagories {
     nodes {
       nodeId
@@ -43,29 +43,69 @@ const GET_ACTIVITIES = gql`query manageActivitiesQuery{
   }
 }`
 
-const CREATE_ACTIVITY = gql `mutation ($name: String!, $type: UUID!, $description: String!) {
+const CREATE_ACTIVITY =  `mutation ($name: String!, $type: UUID!, $description: String!) {
   createActivity(input: {activity: {name: $name, type: $type, description: $description}}) {
     activity {
-      nodeId
+        nodeId
+        id
+        description
+        name
+        activityCatagoryByType {
+          id
+          nodeId
+        }
+        activityPrerequisitesByActivity{
+          nodes {
+            id
+            nodeId
+            activityByPrerequisite {
+              name
+              id
+              nodeId
+            }
+          }
+        }
     }
   }
 }`
 
-const UPDATE_ACTIVITY = gql`mutation($id:UUID!, $patch:ActivityPatch!){
+const UPDATE_ACTIVITY = `mutation($id:UUID!, $patch:ActivityPatch!){
   updateActivityById(input:{id:$id, activityPatch:$patch}){
     activity{
-      nodeId
+        nodeId
+        id
+        description
+        name
+        activityCatagoryByType {
+          id
+          nodeId
+        }
+        activityPrerequisitesByActivity{
+          nodes {
+            id
+            nodeId
+          }
+      }
     }
   }
 }`
 
-const CREATE_PREREQUISITE = gql`mutation($activityPrerequisite:CreateActivityPrerequisiteInput!){
+const CREATE_PREREQUISITE = `mutation($activityPrerequisite:CreateActivityPrerequisiteInput!){
   createActivityPrerequisite(input:$activityPrerequisite){
-    clientMutationId
+  	activityPrerequisite{
+      nodeId
+      id
+      activityByActivity{
+        nodeId
+      }
+      activityByPrerequisite{
+        nodeId
+      }
+    }
   }
 }`;
 
-const REMOVE_PREREQUISITE = gql`mutation($id:UUID!){
+const REMOVE_PREREQUISITE = `mutation($id:UUID!){
   deleteActivityPrerequisiteById(input:{id:$id}){
     activityPrerequisite{
       nodeId
@@ -75,9 +115,14 @@ const REMOVE_PREREQUISITE = gql`mutation($id:UUID!){
 
 function Prerequisites(props){ // this can use caching
     return props.prerequisites.map((prerequisite)=>{
-        return <MutationHandler refetchQueries={['manageActivitiesQuery']} key={prerequisite.id} handleMutation={(event, mutation) => {event.preventDefault();
-            mutation({variables: {id: prerequisite.id}});
-        }} mutation={REMOVE_PREREQUISITE}>
+        const mutation = new Mutation({
+            mutation:REMOVE_PREREQUISITE,
+            onSubmit: (event) => {
+                event.preventDefault();
+                return {id: prerequisite.id}
+            }
+        })
+        return <form onSubmit={mutation.onSubmit} key={prerequisite.id}>
             <div className="prerequisite-container">
                 {prerequisite.activityByPrerequisite.name}
                 <div className="prerequisite-x-container">
@@ -86,13 +131,17 @@ function Prerequisites(props){ // this can use caching
                     </button>
                 </div>
             </div>
-        </MutationHandler>})
+        </form>})
 }
 
 class PrerequisiteForm extends Component{
     constructor(props){
         super(props);
         this.state={prerequisite:undefined,edit:false}
+        this.mutation =  new Mutation({
+            mutation:CREATE_PREREQUISITE,
+            onSubmit: this.handleSubmit
+        })
     }
 
     handleInputChange = (event) => {
@@ -108,30 +157,33 @@ class PrerequisiteForm extends Component{
         this.setState({edit: !this.state.edit })
     }
 
-    handleSubmit = (event, mutation) => { // TODO implement hasRequiredValues
+    handleSubmit = (event) => { // TODO implement hasRequiredValues
         event.preventDefault();
         if (this.state.prerequisite != undefined) {
             let activityPrerequisite = {
                 activity: this.props.activityId,
                 prerequisite:this.state.prerequisite
             }
-            mutation({
-                variables: {activityPrerequisite: {activityPrerequisite}}
+            this.setState({
+                edit:false,
+                prerequisite:undefined
             });
+            return  {activityPrerequisite: {activityPrerequisite}}
         }
         this.setState({
             edit:false,
             prerequisite:undefined
         });
+        return false;
     }
 
     render = () =>{
         if(this.state.edit){ // this can use caching
             return <div>
-                <MutationHandler refetchQueries={['manageActivitiesQuery']} handleMutation={this.handleSubmit} mutation={CREATE_PREREQUISITE}>
+                <form onSubmit={this.mutation.onSubmit}>
                     <DropDown options={this.props.activities} name="prerequisite" value={this.state.type} onChange={this.handleInputChange}/>
                     <button type="submit">Confirm</button>
-                </MutationHandler>
+                </form>
             </div>
         }else{
             return <div>
@@ -150,6 +202,11 @@ class ManageActivitiesForm extends Component{
             description:this.props.description,
             name:this.props.name,
         };
+        this.mutation = new Mutation({
+            mutation:this.props.mutation,
+            onSubmit: this.handleSubmit,
+            onResolve: this.resetState
+        })
     }
 
     handleDescriptionChange = (event) => {
@@ -181,21 +238,7 @@ class ManageActivitiesForm extends Component{
         }
     }
 
-    handleSubmit = (event, mutation) => {
-        event.preventDefault();
-        if (this.hasRequiredValues()) {
-            let temp = Object.assign({}, this.state);
-            delete temp.edit;
-            if(this.props.id){
-                mutation({
-                    variables: {"id":this.props.id, "patch": temp}
-                });
-            }else{
-                mutation({
-                    variables: temp
-                });
-            }
-        }
+    resetState = () => {
         this.setState({
             edit:false,
             type: this.props.type,
@@ -204,10 +247,25 @@ class ManageActivitiesForm extends Component{
         });
     }
 
+    handleSubmit = (event) => {
+        event.preventDefault();
+        if (this.hasRequiredValues()) {
+            let temp = Object.assign({}, this.state);
+            delete temp.edit;
+            if(this.props.id){
+                return {"id":this.props.id, "patch": temp}
+            }else{
+                return temp;
+            }
+        }
+        this.setState({edit:false})
+        return false;
+    }
+
     render = () => {
         if(this.state.edit){
             return <div key={this.props.id} className="activity-container">
-                <MutationHandler handleMutation={this.handleSubmit} mutation={this.props.query} refetchQueries={['manageActivitiesQuery', 'adminEvents']}>
+                <form onSubmit={this.mutation.onSubmit}>
                     <div className="activity-header">
                         <img className="activity-image" src="https://via.placeholder.com/350x150"></img>
                         <div className="activity-header-text">
@@ -217,13 +275,13 @@ class ManageActivitiesForm extends Component{
                             </h2>
                         </div>
                         <div className="activity-view-events">
-                            <button type="submit" className="activity-view-events-btn">Finish</button>:
+                            <button type="submit" className="activity-view-events-btn">Finish</button>
                         </div>
                     </div>
                     <div className="activity-body">
                         <div id={this.props.id} onInput={this.handleDescriptionChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
                     </div>
-               </MutationHandler>
+               </form>
             </div>
         }
         return <div key={this.props.id}className="activity-container">
@@ -270,16 +328,18 @@ class ManageActivitiesInner extends Component {
     );
 
     render = () => {
+        console.log(this.props.queryResult)
             const types = this.mapTypes(this.props.queryResult.allActivityCatagories);
             const activities = this.mapActivities(this.props.queryResult.allActivities);
             return <React.Fragment>
-                <ManageActivitiesForm query={CREATE_ACTIVITY} name={"New Activity"} types={types}/>
+                <ManageActivitiesForm mutation={CREATE_ACTIVITY} name={"New Activity"} types={types}/>
                 {activities.map((activity)=>{
                     return <ManageActivitiesForm
-                        query={UPDATE_ACTIVITY}
+                        mutation={UPDATE_ACTIVITY}
                         types={types}
                         prerequisites={activity.prerequisites}
-                        key={activity.value} id={activity.value}
+                        key={activity.value}
+                        id={activity.value}
                         type={activity.type}
                         description={activity.description}
                         name={activity.name}>
@@ -293,9 +353,9 @@ class ManageActivitiesInner extends Component {
 function ManageActivities(props) {
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
         <div className="manage-activities-container">
-            <QueryHandler query={GET_ACTIVITIES}>
+            <Query query={GET_ACTIVITIES}>
                 <ManageActivitiesInner />
-            </QueryHandler>
+            </Query>
         </div>
     </SecureRoute>
 }

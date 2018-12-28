@@ -1,31 +1,110 @@
 import React, {Component} from 'react';
 import {DropDown} from '../common/Common';
 import './ManageEvents.css';
-import gql from 'graphql-tag';
 import DateTime from 'react-datetime';
 import '../../../react-datetime.css'
-import QueryHandler from '../queryHandler/QueryHandler';
-import MutationHandler from '../queryHandler/MutationHandler';
+import Mutation from '../../../delv/Mutation'
+import {Query} from '../../../delv/delv-react'
 import memoize from "memoize-one";
 import moment from 'moment';
 
-const CREATE_EVENT = gql`mutation ($event: EventInput!) {
+const CREATE_EVENT = `mutation ($event: EventInput!) {
   createEvent(input: {event: $event}) {
     event {
-      nodeId
+        nodeId
+        id
+        eventType
+        openRegistration
+        closeRegistration
+        activityByEventType {
+          nodeId
+          id
+          name
+        }
+        dateGroupsByEvent {
+          nodes {
+            event
+            address
+            addressByAddress {
+              nodeId
+              alias
+              id
+            }
+            price
+            capacity
+            nodeId
+            id
+            name
+            openRegistration
+            closeRegistration
+            datesJoinsByDateGroup {
+              nodes {
+                nodeId
+                id
+                dateInterval
+                dateIntervalByDateInterval {
+                  id
+                  nodeId
+                  start
+                  end
+                }
+              }
+            }
+          }
+        }
     }
   }
 }`
 
-const UPDATE_EVENT = gql`mutation ($id:UUID!, $event: EventPatch!) {
+const UPDATE_EVENT = `mutation ($id:UUID!, $event: EventPatch!) {
  updateEventById(input: {id: $id, eventPatch: $event}) {
    event {
-    nodeId
+       nodeId
+       id
+       eventType
+       openRegistration
+       closeRegistration
+       activityByEventType {
+         nodeId
+         id
+         name
+       }
+       dateGroupsByEvent {
+         nodes {
+           event
+           address
+           addressByAddress {
+             nodeId
+             alias
+             id
+           }
+           price
+           capacity
+           nodeId
+           id
+           name
+           openRegistration
+           closeRegistration
+           datesJoinsByDateGroup {
+             nodes {
+               nodeId
+               id
+               dateInterval
+               dateIntervalByDateInterval {
+                 id
+                 nodeId
+                 start
+                 end
+               }
+             }
+           }
+         }
+       }
    }
  }
 }`
 
-const GET_ACTIVITIES = gql`query activitiesDrowdown{
+const GET_ACTIVITIES = `{
   allActivities {
    nodes {
      id
@@ -40,38 +119,6 @@ const GET_ACTIVITIES = gql`query activitiesDrowdown{
  }
 }`;
 
-function MutableForm(props){
-    return <MutationHandler handleMutation={props.handleSubmit} mutation={props.mutation} refetchQueries={['adminEvents']}>
-
-        <table>
-            <tbody>
-                <tr>
-                    <td>Type:</td>
-                    <td>
-                        <DropDown name="eventType" options={props.eventTypes} value={props.eventType} onChange={props.handleChange}></DropDown>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Open Event On:</td>
-                    <td>
-                        <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.open} onChange={(time) =>{props.handleTimeChange("open", time)}}/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Close Event On:</td>
-                    <td>
-                        <DateTime dateFormat="MMMM Do YYYY" timeFormat={false} value={props.close} onChange={(time)=>{props.handleTimeChange("close", time)}}/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <button type="submit">Set Event Values</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </MutationHandler>
-}
 
 class EventFormInner extends Component {
     constructor(props){
@@ -82,6 +129,10 @@ class EventFormInner extends Component {
             close: this.localizeUTCTimestamp(props.closeRegistration) || new Date(moment().add(1, "days").hour(23).minute(59).toString()),
             creatingEvent: true
         }
+        this.mutation = new Mutation({
+            mutation: (this.props.id)?UPDATE_EVENT:CREATE_EVENT,
+            onSubmit: this.handleSubmit
+        })
     }
 
     mapEventTypes = memoize(
@@ -113,46 +164,64 @@ class EventFormInner extends Component {
     }
     hasRequiredValues = () =>{
         let haveValues =  this.state.eventType
-
         let changedValues = this.state.eventType != this.props.eventType ||
                this.normalizeDate(this.state.open) != this.normalizeDate(this.props.openRegistration) ||
                this.normalizeDate(this.state.close) != this.normalizeDate(this.props.closeRegistration)
 
          return haveValues && changedValues
     }
-    handleSubmit = (event, mutation) => {
+    handleSubmit = (event) => {
         event.preventDefault();
+        if(this.props.handleSubmit){
+            this.props.handleSubmit()
+        }
         if(this.hasRequiredValues()){
             let newEvent = {};
             newEvent.eventType = this.state.eventType;
             newEvent.openRegistration = this.state.open;
             newEvent.closeRegistration = this.state.close;
-            mutation({
-                variables: {id:this.props.id, event:newEvent}
-            });
+            return {id:this.props.id, event:newEvent}
         }
-        if(this.props.handleSubmit){
-            this.props.handleSubmit()
-        }
+        return false;
     }
 
     render = () => {
         const eventTypes = this.mapEventTypes(this.props.queryResult.allActivities);
-        return (<MutableForm
-                eventTypes={eventTypes}
-                eventType={this.state.eventType}
-                open={this.state.open}
-                close={this.state.close}
-                handleChange={this.handleChange}
-                handleTimeChange={this.handleTimeChange}
-                handleSubmit={this.handleSubmit}
-                mutation={(this.props.id)?UPDATE_EVENT:CREATE_EVENT}/>) //update event : create event
+        return <form onSubmit={this.mutation.onSubmit}>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Type:</td>
+                        <td>
+                            <DropDown name="eventType" value={this.state.eventType} options={eventTypes} onChange={this.handleChange}></DropDown>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Open Event On:</td>
+                        <td>
+                            <DateTime dateFormat="MMMM Do YYYY" value={this.state.open} timeFormat={false} onChange={(time) =>{this.handleTimeChange("open", time)}}/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Close Event On:</td>
+                        <td>
+                            <DateTime dateFormat="MMMM Do YYYY" value={this.state.close} timeFormat={false}  onChange={(time)=>{this.handleTimeChange("close", time)}}/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button type="submit">Set Event Values</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form> //update event : create event
     }
 }
 
 function EventForm(props) {
-    return <QueryHandler query={GET_ACTIVITIES}>
+    return <Query query={GET_ACTIVITIES}>
         <EventFormInner {...props}/>
-    </QueryHandler>
+    </Query>
 }
 export default EventForm;

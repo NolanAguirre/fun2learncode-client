@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import './ManageStudents.css'
 import StudentSelect from '../studentSelect/StudentSelect'
 import { Query } from '../../../delv/delv-react'
-import gql from 'graphql-tag'
 import {SecureRoute, Location, GridView, DatesTable} from '../common/Common'
 import moment from 'moment';
 

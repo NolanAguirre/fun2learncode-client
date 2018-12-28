@@ -6,13 +6,13 @@ import './Calendar.css'
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import DateStore from '../../DateStore';
-import gql from 'graphql-tag';
-import QueryHandler from '../queryHandler/QueryHandler';
 import Popup from "reactjs-popup";
 import DateTime from 'react-datetime';
-import { withApollo } from 'react-apollo';
+import Mutation from '../../../delv/Mutation'
+import {Query} from '../../../delv/delv-react'
+import Delv from '../../../delv/delv'
 
-const GET_EVENTS = gql`{
+const GET_EVENTS = `{
   allEvents {
     nodes {
       nodeId
@@ -39,8 +39,7 @@ const GET_EVENTS = gql`{
       }
     }
   }
-}
-`
+}`
 
 const localizer = BigCalendar.momentLocalizer(moment);
 function Calendar(props){
@@ -223,14 +222,14 @@ class DragAndDropMutationInner extends Component{
         return dateGroups;
     }
 
-    post = (mutation) => {
-        let options = {
-            mutation: gql`mutation{
+    post = (mutation) => { //jank way to refetch queries
+        new Mutation({
+            mutation:`mutation foo{
                     ${mutation}
                 }`,
-            refetchQueries:['adminEvents']
-        }
-        this.props.client.mutate(options).then((res)=>{}).catch((err)=>{console.log(err)});
+            onSubmit:()=>{return {}},
+            refetchQueries:[GET_EVENTS]
+        }).onSubmit()
     }
 
     newEvent = (event) => { //event that files on slot select
@@ -370,9 +369,9 @@ class DragAndDropMutationInner extends Component{
 }
 
 function DragAndDropMutation(props){
-    return <QueryHandler query={GET_EVENTS}>
+    return <Query query={GET_EVENTS}>
         <DragAndDropMutationInner {...props}/>
-    </QueryHandler>
+    </Query>
 }
 
-export default withApollo(DragAndDropMutation)
+export default DragAndDropMutation

@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { DropDown } from '../common/Common'
 import './EventsPreview.css'
-import gql from 'graphql-tag';
-import QueryHandler from '../queryHandler/QueryHandler'
+import { Query } from '../../../delv/delv-react'
 import DateTime from 'react-datetime'
 import '../../../react-datetime.css'
 import memoize from 'memoize-one'
@@ -14,51 +13,52 @@ import DateStore from '../../DateStore'
 import EventForm from './EventForm';
 
 const GET_DATE_GROUP_INFO_BY_ID = (id) => {
-    return gql`{
-  dateGroupById(id: "${id}") {
-    nodeId
-    id
-    name
-    openRegistration
-    closeRegistration
-    datesJoinsByDateGroup {
-      nodes {
-        nodeId
-        id
-        dateInterval
-        dateIntervalByDateInterval {
-          id
+    return `{
+  allDateGroups(condition: {id: "${id}"}) {
+    nodes {
+      nodeId
+      id
+      name
+      openRegistration
+      closeRegistration
+      datesJoinsByDateGroup {
+        nodes {
           nodeId
-          start
-          end
+          id
+          dateInterval
+          dateIntervalByDateInterval {
+            id
+            nodeId
+            start
+            end
+          }
         }
       }
-    }
-    addressByAddress {
+      addressByAddress {
         alias
         nodeId
         id
-    }
-    eventByEvent {
-      openRegistration
-      closeRegistration
-      nodeId
-      id
-      activityByEventType {
-        name
-        id
+      }
+      eventByEvent {
+        openRegistration
+        closeRegistration
         nodeId
+        id
+        activityByEventType {
+          name
+          id
+          nodeId
+        }
       }
     }
   }
 }`}
 
-const GET_EVENTS = gql`query adminEvents {
+const GET_EVENTS = `{
   allEvents {
     nodes {
       nodeId
       id
-      eventType
       openRegistration
       closeRegistration
       activityByEventType {
@@ -186,7 +186,8 @@ class Event extends Component {
 }
 
 function DateGroupInfoInner(props) {
-    const dateGroup = props.queryResult.dateGroupById;
+    console.log(props.queryResult)
+    const dateGroup = props.queryResult.allDateGroups.nodes[0];
     if(!dateGroup){
         return <div></div>
     }
@@ -226,13 +227,14 @@ function DateGroupInfo(props){
         return <div></div>
     }
     return<div>
-            <QueryHandler query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)}>
+            <Query query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)}>
                 <DateGroupInfoInner />
-            </QueryHandler>
+            </Query>
         </div>
 }
 
 function EventsPreviewInner (props) {
+    console.log(props.queryResult)
   if (!props.queryResult.allEvents) {
     return <div>is broken</div>
   }
@@ -242,9 +244,9 @@ function EventsPreviewInner (props) {
 function EventsPreview (props) {
     return <div className='event-preview-container-container'>
         <div className='event-preview-container'>
-            <QueryHandler query={GET_EVENTS}>
+            <Query query={GET_EVENTS}>
               <EventsPreviewInner>{props.children}</EventsPreviewInner>
-            </QueryHandler>
+            </Query>
         </div>
     </div>
 }

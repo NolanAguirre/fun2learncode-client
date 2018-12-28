@@ -1,20 +1,17 @@
 import React, {Component} from 'react';
 import {DropDown} from '../common/Common';
 import './DateGroupForm.css';
-import gql from 'graphql-tag';
-import {Query, Mutation} from 'react-apollo';
 import DateTime from 'react-datetime';
 import '../../../react-datetime.css'
 import Colors from '../calendar/Colors'
 import EventsPreview from './EventsPreview';
 import moment from 'moment';
 import Popup from "reactjs-popup"
-import QueryHandler from '../queryHandler/QueryHandler';
 import memoize from "memoize-one";
-import MutationHandler from '../queryHandler/MutationHandler';
-//TODO move mutation into mutations, make update feature, update cache
+import Mutation from '../../../delv/Mutation'
+import {Query} from '../../../delv/delv-react'
 
-const GET_ADDRESSES = gql`query addressDropdown{
+const GET_ADDRESSES = `{
     allAddresses {
         nodes {
             nodeId
@@ -24,23 +21,61 @@ const GET_ADDRESSES = gql`query addressDropdown{
     }
 }`
 
-const CREATE_DATE_GROUP = gql`mutation($dateGroup:DateGroupInput!){
-  createDateGroup(input:{dateGroup:$dateGroup}){
-    dateGroup{
-		nodeId
-        id
-        name
-    }
+const CREATE_DATE_GROUP = `mutation ($dateGroup: DateGroupInput!) {
+  createDateGroup(input: {dateGroup: $dateGroup}) {
+      dateGroup {
+          event
+          eventByEvent{
+        nodeId
+      }
+          address
+          addressByAddress {
+            nodeId
+            alias
+            id
+          }
+          price
+          capacity
+          nodeId
+          id
+          name
+          openRegistration
+          closeRegistration
+          datesJoinsByDateGroup {
+            nodes {
+              nodeId
+          }
+        }
+      }
   }
-}`
+ }`
 
-const UPDATE_DATE_GROUP = gql`mutation ($id: UUID!, $dateGroup: DateGroupPatch!) {
+const UPDATE_DATE_GROUP = `mutation ($id: UUID!, $dateGroup: DateGroupPatch!) {
   updateDateGroupById(input: {id: $id, dateGroupPatch: $dateGroup}) {
-    dateGroup {
-      nodeId
-      id
-      name
-    }
+      dateGroup {
+          event
+          eventByEvent{
+        nodeId
+      }
+          address
+          addressByAddress {
+            nodeId
+            alias
+            id
+          }
+          price
+          capacity
+          nodeId
+          id
+          name
+          openRegistration
+          closeRegistration
+          datesJoinsByDateGroup {
+            nodes {
+              nodeId
+          }
+        }
+      }
   }
 }`
 
@@ -55,6 +90,11 @@ class DateGroupFormInner extends Component{
             openRegistration: this.localizeUTCTimestamp(props.openRegistration) || new Date(moment().hour(23).minute(59).toString()),
             closeRegistration: this.localizeUTCTimestamp(props.closeRegistration) || new Date(moment().add(1, "days").hour(23).minute(59).toString()),
         }
+        this.mutation = new Mutation({
+            mutation:this.props.mutation,
+            onSubmit:this.handleSubmit
+        })
+
     }
     localizeUTCTimestamp = (timestamp) => {
         if(!timestamp){return null}
@@ -88,8 +128,9 @@ class DateGroupFormInner extends Component{
         this.setState({[name]: value});
     }
 
-    handleSubmit = (event, mutation) => {
+    handleSubmit = (event) => {
         event.preventDefault();
+        this.props.handleSubmit()
         if(this.hasRequiredValues()){
             let dateGroup={
                 event: this.props.event,
@@ -100,11 +141,10 @@ class DateGroupFormInner extends Component{
                 address:this.state.address,
     			name: this.state.name
             }
-            mutation({
-                variables: {"id":this.props.id, "dateGroup":dateGroup}
-            });
+
+            return {"id":this.props.id, "dateGroup":dateGroup}
         }
-        this.props.handleSubmit()
+        return false
     }
 
     mapAddresses = memoize(
@@ -118,7 +158,7 @@ class DateGroupFormInner extends Component{
         const addresses = this.mapAddresses(this.props.queryResult.allAddresses);
         return <div className="date-form">
                 <h4>Create/Edit Date Group</h4>
-        			<MutationHandler refetchQueries={["adminEvents"]} handleMutation={this.handleSubmit} mutation={this.props.mutation}>
+        			<form onSubmit={this.mutation.onSubmit}>
         				<table>
         					<tbody>
         						<tr>
@@ -154,7 +194,7 @@ class DateGroupFormInner extends Component{
         					</tbody>
         				</table>
                         <button className='date-form-btn' type="submit">Set</button>
-        			</MutationHandler>
+        			</form>
         		</div>
     }
 }
@@ -176,9 +216,9 @@ class DateGroupForm extends Component{
             open={this.state.showPopup}
             closeOnDocumentClick
             onClose={this.clearPopupState}>
-                <QueryHandler query={GET_ADDRESSES}>
+                <Query query={GET_ADDRESSES}>
                     <DateGroupFormInner {...this.props} handleSubmit={this.clearPopupState}  mutation={(this.props.id)?UPDATE_DATE_GROUP:CREATE_DATE_GROUP}/>
-                </QueryHandler>
+                </Query>
             </Popup>
             <div onClick={this.showPopup}>
                 {this.props.children}
