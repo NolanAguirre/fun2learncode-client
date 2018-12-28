@@ -85,20 +85,17 @@ function Calendar(props){
 function DragAndDropCalendar(props){
     return (
       <BigCalendar
-        selectable
+        selectable={true}
         popup
-        className={props.className}
-        tooltipAccessor={props.tooltipAccessor}
-        localizer={localizer}
         events={props.events}
+        localizer={localizer}
+        className={props.className}
         onSelectSlot={props.newEvent}
         onSelectEvent={props.selectEvent}
         onDoubleClickEvent={props.removeEvent}
         eventPropGetter={(event,start,end,isSelected: boolean) => {return{style:event.buttonStyle}}}
-        selected={props.selected}
-        resizable
         views={['month']}
-        defaultDate={new Date()}
+        resizable
       />
     )
 }
@@ -129,7 +126,7 @@ class DragAndDropMutationInner extends Component{
     }
 
     localizeUTCTimestamp = (timestamp) =>{
-        return moment(moment.utc(timestamp)).local().toString()
+        return new Date(moment(moment.utc(timestamp)).local())
     }
 
     // used for constructing queries
