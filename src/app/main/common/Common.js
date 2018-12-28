@@ -38,7 +38,6 @@ function DropDown (props) {
 export { DropDown }
 
 function SecureRouteInner(props){
-    console.log(props)
     if(props.queryResult.getUserData && props.roles.includes(props.queryResult.getUserData.role)){
         if(props.ignoreResult){
             return props.children
@@ -86,10 +85,15 @@ function DatesTable(props){
 export {DatesTable}
 
 function GridView (props){
+    let itemsPerRow = props.itemsPerRow || 4
     let items = props.children.slice();
     let formatted = [];
     while(items.length){
-        formatted.push(<div className={props.rowStyle || "grid-view-row"} key={items.length}>{items.splice(0,props.itemsPerRow || 4)}</div>)
+        let children = items.splice(0,itemsPerRow)
+        while(children.length < itemsPerRow){
+            children.push(<div className={props.childStyle || 'grid-filler'} key={children.length}></div>)
+        }
+        formatted.push(<div className={props.rowStyle || "grid-view-row"} key={items.length}>{children}</div>)
     }
     return <div className={props.className || ""}>
         {formatted}
