@@ -17,7 +17,7 @@ class Cache {
             if (root.hasOwnProperty(fieldName)) {
                 return root[fieldName];
             } else {
-                throw new Error('Some of the leaf data requested in the query is not in the cache')
+                throw new Error('Some of the leaf data requested in the query is not in the cache ')
             }
         }
         if (fieldName === 'nodes') {
@@ -43,9 +43,13 @@ class Cache {
                     }
                     return nextRoot
                 }
-            }else if(this.cache[fieldType][root[fieldName]]){
+            }else if(this.cache[fieldType][root[fieldType]]){
+                return this.cache[fieldType][root[fieldType]]
+            } else if(this.cache[fieldType][root[fieldName]]){
                 return this.cache[fieldType][root[fieldName]]
-            } else {
+            }else {
+                console.log(root)
+                console.log(fieldName)
                 throw new Error('Some of the data requested in the query is not in the cache')
             }
         }
@@ -97,12 +101,27 @@ class Cache {
         }
     }
 
-    formatObject = (object, isRoot) => {
+    formatObject = (object, isRoot, parentObject) => {
+        if(object['__typename'].endsWith('Payload')){
+            for(let key in object){
+                let value = object[key]
+                if(key !== '__typename'){
+                    if(value instanceof Object){
+                        this.formatObject(value)
+                    }
+                }
+            }
+            return;
+        }
         if(this.isLeaf(object)){
             if(isRoot){
                 this.cache[isRoot] = object[UID]
             }
-            this.updateCacheValue(object)
+            let clone = _.cloneDeep(object)
+            if(parentObject){
+                clone[parentObject.type] = parentObject.uid
+            }
+            this.updateCacheValue(clone)
             return object[UID]
         }else if(Array.isArray(object)){
             return object.map((obj)=>{
@@ -110,33 +129,48 @@ class Cache {
                 return obj[UID]
             })
         }else if(object['__typename'].endsWith('Connection')){
+            if(parentObject){
+                parentObject['uid'] = parentObject['uid'][0]
+            }
             if(object.nodes){
                 return object.nodes.map((obj) => {
-                    this.formatObject(obj)
+                    this.formatObject(obj, false, parentObject)
                     return obj[UID]
                 })
             }else if(object.edges){
                 return object.edges.map((obj) => {
-                    this.formatObject(obj.node)
+                    this.formatObject(obj.node, false, parentObject)
                     return obj.node[UID]
                 })
             }
         }else {
             let clone = _.cloneDeep(object)
-            for(let key in clone){
+            if(parentObject){
+                let temp = clone[parentObject.type]
+                if(temp){
+                    if(Array.isArray(temp)){
+                        clone[parentObject.type] = [...temp, parentObject.uid]
+                    }else{
+                        clone[parentObject.type] = [temp, parentObject.uid]
+                    }
+                }else{
+                    clone[parentObject.type] = parentObject.uid
+                }
+            }
+            for(let key in object){
+                if(key === '__typename'){
+                    continue
+                }
                 let value = clone[key]
                 if(value instanceof Object){
-                    let kValue = this.formatObject(value);
-                    if(Array.isArray(kValue)){
-                        delete clone[key]
-                        clone[typeMap.guessChildType(typeMap.get(key))] = kValue
-                    }else{
-                        clone[key] = kValue;
-                    }
+                    let kValue = this.formatObject(value, false, {type:clone['__typename'], uid:[clone[UID]]});
+                    let childType = typeMap.guessChildType(typeMap.get(key))
+                    delete clone[key]
+                    clone[childType] = kValue;
                 }
             }
             this.updateCacheValue(clone)
-            return clone.nodeId;
+            return clone[UID];
         }
     }
 
@@ -170,7 +204,9 @@ class Cache {
                 this.formatObject(result[key], key)
             }
         }
+        console.log(this.cache)
         CacheEmitter.emitCacheUpdate();
+
     }
 
     loadQuery = (query) => {

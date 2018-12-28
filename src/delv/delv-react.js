@@ -6,32 +6,40 @@ import Delv from './delv'
 import CacheEmitter from './CacheEmitter'
 var _ = require('lodash');
 
-class DelvReact extends Component{
-    constructor(props){
+class DelvReact extends Component {
+    constructor(props) {
         super(props);
-        this.state = {isReady:false}
+        this.state = {
+            isReady: false
+        }
         Delv.registerMount(this);
     }
 
     isReady = () => {
-        this.setState({isReady:true})
+        this.setState({isReady: true})
     }
 
     render = () => {
-        if(this.state.isReady){
+        if (this.state.isReady) {
             return this.props.children
-        }else{
+        } else {
             return <div>'loading...'</div>
         }
     }
 }
 
-export { DelvReact }
+export {
+    DelvReact
+}
 
-class Query extends Component{
-    constructor(props){
+class Query extends Component {
+    constructor(props) {
         super(props);
-        this.state = {queryResult:'', listenToCacheUpdates:true,renderCount:0}
+        this.state = {
+            queryResult: '',
+            listenToCacheUpdates: true,
+            renderCount: 0
+        }
         this.networkPolicy = props.networkPolicy || 'network-once'
         this.id = '_' + Math.random().toString(36).substr(2, 9)
         this.types = [];
@@ -40,7 +48,7 @@ class Query extends Component{
 
     componentDidMount = () => {
         this.query();
-        if(this.networkPolicy != 'network-only'){
+        if (this.networkPolicy != 'network-only') {
             CacheEmitter.on(this.id, this.onCacheUpdate)
         }
     }
@@ -50,35 +58,28 @@ class Query extends Component{
     }
 
     componentDidUpdate = (prevProps, prevState, snapshot) => {
-        if(prevProps.query != this.props.query){
+        if (prevProps.query != this.props.query) {
             this.query()
         }
     }
 
     query = () => {
-        Delv.query({
-            query: this.props.query,
-            variables: this.props.variables,
-            networkPolicy: this.networkPolicy,
-            onFetch: this.onFetch,
-            onResolve: this.onResolve
-        })
+        Delv.query({query: this.props.query, variables: this.props.variables, networkPolicy: this.networkPolicy, onFetch: this.onFetch, onResolve: this.onResolve})
     }
 
     onFetch = () => {
-        this.setState({queryResult:'', listenToCacheUpdates:false})
+        this.setState({queryResult: '', listenToCacheUpdates: false})
     }
 
     onResolve = (data) => {
-        console.log(data)
-        if(!_.isEqual(data, this.state.queryResult)){
-            this.setState({queryResult:data, listenToCacheUpdates:true});
+        if (!_.isEqual(data, this.state.queryResult)) {
+            this.setState({queryResult: data, listenToCacheUpdates: true});
         }
     }
 
     mapTypes = () => {
         const resolver = (fieldName, root, args, context, info) => {
-            if(!info.isLeaf && fieldName != 'nodes'){
+            if (!info.isLeaf && fieldName != 'nodes') {
                 this.types.push(TypeMap.guessChildType(TypeMap.get(fieldName)))
             }
             return {}
@@ -88,23 +89,29 @@ class Query extends Component{
     }
 
     onCacheUpdate = (types) => {
-        if(this.state.listenToCacheUpdates){
+        if (this.state.listenToCacheUpdates) {
             let includesType = this.types.some(r => types.includes(r))
-            if(includesType){
+            if (includesType) {
+                console.log(types)
                 this.query();
             }
         }
     }
 
     render = () => {
-        if(this.state.queryResult === ''){
-            if(this.props.loading){
+        if (this.state.queryResult === '') {
+            if (this.props.loading) {
                 return this.props.loading
             }
             return <div>loading</div>
         }
-        return React.cloneElement(this.props.children, {queryResult:this.state.queryResult,renderCount:this.state.renderCount})
+        return React.cloneElement(this.props.children, {
+            queryResult: this.state.queryResult,
+            renderCount: this.state.renderCount
+        })
     }
 }
 
-export { Query }
+export {
+    Query
+}

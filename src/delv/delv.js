@@ -136,7 +136,6 @@ class Delv {
             this.queryHttp(query, variables, onFetch, onResolve)
         }
     }
-
 }
 
 export default new Delv();
