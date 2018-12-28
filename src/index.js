@@ -3,36 +3,14 @@ import ReactDOM from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
 import './index.css'
 import App from './app/App'
-import { ApolloClient } from 'apollo-client'
-import { HttpLink } from 'apollo-link-http'
-import { setContext } from 'apollo-link-context'
-import { InMemoryCache } from 'apollo-cache-inmemory'
-import { ApolloProvider } from 'react-apollo'
+import Delv from './delv/delv'
+import {DelvReact} from './delv/delv-react'
 
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('authToken')
-  return token
-    ? {
-      headers: {
-        ...headers,
-        authorization: `Bearer ${token}`
-      }
-    }
-    : {
-      headers: {
-        ...headers
-      }
-    }
-})
-
-const client = new ApolloClient({
-  link: authLink.concat(new HttpLink({ uri: 'http://localhost:3005/graphql' })),
-  cache: new InMemoryCache({dataIdFromObject: object => object.nodeId})
-})
+Delv.setURL('http://localhost:3005/graphql')
 
 ReactDOM.render(<Router>
-  <ApolloProvider client={client}>
+  <DelvReact>
     <div className='app'><App />
     </div>
-  </ApolloProvider>
+    </DelvReact>
 </Router>, document.getElementById('root'))

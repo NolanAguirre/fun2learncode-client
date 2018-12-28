@@ -1,20 +1,14 @@
 import React from 'react'
 import './Event.css'
-import { Location } from '../../common/Common'
-import TimeTableRow from '../timeTableRow/TimeTableRow'
+import { Location, DatesTable } from '../../common/Common'
+
 import { Link } from 'react-router-dom'
 function EventComponent (props) {
   return (
     <div className='event-contaier'>
       <div className='event-dates'>
         <h3>Dates</h3>
-        <table>
-          <tbody>
-            {props.date.map((date, index) => {
-              return <TimeTableRow data={date.dateIntervalByDateInterval} key={index} />
-            })}
-          </tbody>
-        </table>
+        <DatesTable dates={props.dates}/>
       </div>
       <Location street={props.location.street}
         city={props.location.city}

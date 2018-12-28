@@ -2,3 +2,11 @@
 .location{
     text-align: center;
 }
+
+.grid-view-row{
+    display:flex;
+    flex:1;
+}
+.grid-filler{
+    flex:1 1 auto;
+}

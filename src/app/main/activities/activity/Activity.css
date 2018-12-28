@@ -1,35 +1,51 @@
-.activity-container{
+.activity-container {
     padding: 20px 40px;
     border-bottom: 2px solid #b0c9ab;
     background-color: white;
     margin: 10px 0;
 }
-.activity-header{
+
+.activity-header {
     display: flex;
+    flex-wrap: wrap;
 }
-.activity-header-text{
+
+.activity-header-text {
     padding-left: 30px;
-    flex:1;
+    flex: 1;
 }
-.activity-title{
+
+.activity-title {
     margin: 0;
     padding-bottom: 10px;
 }
-.activity-body{
+
+.activity-body {
     padding: 10px 0;
-    display:flex;
+    display: flex;
 }
-.activity-view-events{
+
+.activity-view-events {
     margin: auto;
     padding: 20px 30px;
 }
-.activity-view-events-btn{
+
+.activity-view-events-btn {
     min-width: 150px;
     padding: 30px 20px;
     font-size: 20px;
 }
+
+.activity-container h4{
+    margin: 0;
+}
+
+.prerequisites-container{
+    margin-top: 5px;
+}
+
 @media screen and (max-width: 800px) {
-    .activity-image{
+    .activity-image {
         display: none;
     }
 }

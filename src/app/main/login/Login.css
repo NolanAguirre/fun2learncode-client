@@ -8,13 +8,36 @@
 .login-widget{
     padding: 40px;
     background-color:white;
+    min-width: 500px;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
     margin: auto;
     box-sizing: border-box;
 }
+.login-headers{
+    display: flex;
+    justify-content: center;
+    border-bottom: 2px solid gray; /* Change this color */
+}
+.login-error-container{
+    padding-top: 10px;
+    height:18px;
+
+}
+.login-error{
+    color:red;
+}
+.login-form{
+    display:flex;
+    flex:1;
+    flex-direction: column;
+    justify-content: space-between;
+}
 .login-form input {
-    margin-top: 40px;
     display: block;
     height: 40px;
+    margin-top: 5px;
     padding: .65rem 1rem;
     font-size: 2rem;
     line-height: 1.25;
@@ -26,11 +49,9 @@
     background-clip: padding-box;
 }
 
-.login-form button {
-    margin-top: 60px;
+
+.login-form-btn{
+    max-width: 150px;
+    margin-top: 40px;
     padding: 10px 40px;
-}
-.login-headers{
-    display: flex;
-    justify-content: center;
 }

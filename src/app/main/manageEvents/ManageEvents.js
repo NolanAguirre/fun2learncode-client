@@ -6,6 +6,7 @@ import EventForm from './EventForm';
 import DateGroupForm from './DateGroupForm';
 import {SecureRoute} from '../common/Common'
 import {Event, DateGroup, EventsPreview, DateGroupInfo} from './EventsPreview';
+
 class ManageEvents extends Component {
     constructor(props) {
         super(props);
@@ -29,11 +30,14 @@ class ManageEvents extends Component {
     }
 
     render() {
-        return (<SecureRoute roles={["FTLC_INSTRUCTOR", "FTLC_OWNER"]}>
+        return (<SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
                      <div className="manage-events-container">
                             <EventsPreview>
-                                 <Event form={<DateGroupForm />}>
+                                 <Event>
                                      <DateGroup activeDateGroup={this.state.activeDateGroup} setActiveDateGroup={this.setActiveDateGroup}/>
+                                     <DateGroupForm>
+                                         <button className='create-date-group-btn' >New Group</button>
+                                     </DateGroupForm>
                                  </Event>
                             </EventsPreview>
                             <div className="manage-events-main">
@@ -41,10 +45,7 @@ class ManageEvents extends Component {
                                     <EventForm/>
                                     <DateGroupInfo activeDateGroup={this.state.activeDateGroup} />
                                 </div>
-                                    <DragAndDropMutation
-                                        setActiveDateGroup={this.setActiveDateGroup}
-                                        createDate={this.state.createDate}
-                                        activeDateGroup={this.state.activeDateGroup}/>
+                                    <DragAndDropMutation setActiveDateGroup={this.setActiveDateGroup} activeDateGroup={this.state.activeDateGroup}/>
                             </div>
                         </div>
                 </SecureRoute>

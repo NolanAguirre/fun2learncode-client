@@ -2,12 +2,14 @@ import React, { Component } from 'react'
 import './StudentPreview.css'
 
 function StudentPreview (props) {
-  return (
-    <div onClick={() => { if (props.click) { props.click(props.student) } }} className='student-preview-container'>
-      <div className='student-preview-info'>
-
+    let className;
+    if(props.selected){
+        className = 'selected-student-preview-container'
+    }else{
+        className = 'student-preview-container'
+    }
+  return  <div onClick={() => props.onClick(props.student)} className={className}>
         {props.student.firstName + ' ' + props.student.lastName}
-      </div>
-    </div>)
+    </div>
 }
 export default StudentPreview

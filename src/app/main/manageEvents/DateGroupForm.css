@@ -4,9 +4,15 @@
 .time-input > input{
     max-width: 60px;
 }
-.manage-events-event-preview{
+.date-form{
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.date-form-btn{
+    width:100%;
+    margin-bottom: 20px;
 }
 .event-preview-event-button{
     text-align: center;

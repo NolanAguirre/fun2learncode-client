@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { Location } from '../common/Common'
 import './EventLogs.css'
 import gql from 'graphql-tag'
-import QueryHandler from '../queryHandler/QueryHandler'
-import {GET_EVENT_LOGS_FOR_STUDENT} from '../../Queries.js'
+import {Query} from '../../../delv/delv-react'
 // THIS IS NOT TESTED YET
 function EventLogTableRow (props) {
   return (
@@ -21,51 +20,52 @@ class EventLogs extends Component {
     this.studentId = this.props.match.params.studentId
   }
   render () {
-    return (
-        <QueryHandler query={GET_EVENT_LOGS_FOR_STUDENT(this.eventId, this.studentId)} child={(data)=>{
-                let address = data.eventById.addressByAddress
-        return (
-          <div className='event-logs-container'>
-            <div className='event-info-container'>
-              <div className='event-info'>
-                <h2>{data.eventById.activityByEventType.name}</h2>
-              </div>
-              <Location
-                id={address.id}
-                alias={address.alias}
-                street={address.street}
-                city={address.city}
-                state={address.state}
-              />
-            </div>
-            <div className='event-logs-table-container'>
-              <h2>Event Logs</h2>
-              <table className='event-logs-table'>
-                <tbody className='event-logs-table-body'>
-                  <tr>
-                    <th>Date</th>
-                    <th>Attendane</th>
-                    <th>Comment</th>
-                    <th>File</th>
-                  </tr>
-                  {
-                    data.eventById.eventDatesByEvent.edges.map((element) => {
-                      let date = element.startTime
-                      let attendance = element.node.eventRegistrationsByEventDate.node[0].attendance
-                      let comment = element.node.eventLogsByEventDate.nodes[0].comment
-                      return <EventLogTableRow
-                        key={element.id}
-                        date={date}
-                        attendance={attendance}
-                        comment={comment} />
-                    })
-                  }
-                </tbody>
-              </table>
-            </div>
-          </div>
-      )}} />
-    )
+      return<div></div>
+    // return (
+    //     <QueryHandler query={GET_EVENT_LOGS_FOR_STUDENT(this.eventId, this.studentId)} child={(data)=>{
+    //             let address = data.eventById.addressByAddress
+    //     return (
+    //       <div className='event-logs-container'>
+    //         <div className='event-info-container'>
+    //           <div className='event-info'>
+    //             <h2>{data.eventById.activityByEventType.name}</h2>
+    //           </div>
+    //           <Location
+    //             id={address.id}
+    //             alias={address.alias}
+    //             street={address.street}
+    //             city={address.city}
+    //             state={address.state}
+    //           />
+    //         </div>
+    //         <div className='event-logs-table-container'>
+    //           <h2>Event Logs</h2>
+    //           <table className='event-logs-table'>
+    //             <tbody className='event-logs-table-body'>
+    //               <tr>
+    //                 <th>Date</th>
+    //                 <th>Attendane</th>
+    //                 <th>Comment</th>
+    //                 <th>File</th>
+    //               </tr>
+    //               {
+    //                 data.eventById.eventDatesByEvent.edges.map((element) => {
+    //                   let date = element.startTime
+    //                   let attendance = element.node.eventRegistrationsByEventDate.node[0].attendance
+    //                   let comment = element.node.eventLogsByEventDate.nodes[0].comment
+    //                   return <EventLogTableRow
+    //                     key={element.id}
+    //                     date={date}
+    //                     attendance={attendance}
+    //                     comment={comment} />
+    //                 })
+    //               }
+    //             </tbody>
+    //           </table>
+    //         </div>
+    //       </div>
+    //   )}} />
+    //)
   }
 }
 

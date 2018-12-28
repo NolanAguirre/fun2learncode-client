@@ -1,0 +1,29 @@
+.manage-addresses-container{
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+}
+.manage-addresses-header{
+    display: flex;
+    flex-direction: column;
+}
+.manage-addresses-body{
+    display:flex;
+    flex-direction: column;
+}
+.manage-address-forms-container{
+    display:flex;
+    flex:1;
+}
+.manage-address-form-container{
+    padding: 40px;
+    background-color: white;
+    flex:1;
+    margin:10px;
+    display:flex;
+    flex-direction: column;
+}
+.manage-address-form-header{
+    text-align: center;
+    margin: 0 0 5px 0;
+}

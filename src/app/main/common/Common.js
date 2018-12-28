@@ -1,7 +1,19 @@
 import React, { Component } from 'react'
 import './Common.css'
-import { GET_USER_DATA } from '../../Queries'
-import QueryHandler from '../queryHandler/QueryHandler'
+import { Query } from '../../../delv/delv-react'
+import gql from 'graphql-tag'
+import moment from 'moment';
+
+const GET_USER_DATA = `{
+    getUserData{
+        nodeId
+        id
+        firstName
+        lastName
+        role
+    }
+}`
+
 function Location (props) {
   return (<div className='location'>
     <div>
@@ -26,10 +38,13 @@ function DropDown (props) {
 export { DropDown }
 
 function SecureRouteInner(props){
-    if(props.roles.includes(props.queryResult.getUserData.role)){
-        return props.children;
+    if(props.queryResult.getUserData && props.roles.includes(props.queryResult.getUserData.role)){
+        if(props.ignoreResult){
+            return props.children
+        }
+        return React.Children.map(props.children, (child)=>React.cloneElement(child, {queryResult:props.queryResult}))
     }else if(props.unauthorized){
-        return React.cloneElement(props.unauthorized,{queryResult:props.queryResult})
+        return React.cloneElement(props.unauthorized, {queryResult:props.queryResult})
     }
     return <div>please login</div>
 }
@@ -41,9 +56,48 @@ function SecureRoute(props){
         }
         return <div>please login</div>
     }
-    return <QueryHandler query={GET_USER_DATA}>
-        <SecureRouteInner roles={props.roles} unauthorized={props.unauthorized}>{props.children}</SecureRouteInner>
-    </QueryHandler>
+    return <Query query={GET_USER_DATA}>
+        <SecureRouteInner ignoreResult={props.ignoreResult} roles={props.roles} unauthorized={props.unauthorized}>{props.children}</SecureRouteInner>
+    </Query>
 
 }
 export { SecureRoute }
+
+function DatesTable(props){
+    function localizeUTCTimestamp(timestamp){
+        return moment(moment.utc(timestamp)).local()
+    }
+    let dates = props.dates.nodes.map((date) => date.dateIntervalByDateInterval).sort((a,b)=>{return moment(a.start).unix() - moment(b.start).unix()})
+    return<table className={props.className || ""}>
+      <tbody>
+        {dates.map((date, index) => {
+          return <React.Fragment key={index}>
+              <tr>
+            <td>{localizeUTCTimestamp(date.start).format(props.startFormat || "ddd MMM DD")}</td>
+            <td>{localizeUTCTimestamp(date.start).format(props.startFormat || "h:MM a") + "-" + localizeUTCTimestamp(date.end).format(props.startFormat || "h:MM a")}</td>
+          </tr>
+        </React.Fragment>
+        })}
+      </tbody>
+    </table>
+}
+
+export {DatesTable}
+
+function GridView (props){
+    let itemsPerRow = props.itemsPerRow || 4
+    let items = props.children.slice();
+    let formatted = [];
+    while(items.length){
+        let children = items.splice(0,itemsPerRow)
+        while(children.length < itemsPerRow){
+            children.push(<div className={props.childStyle || 'grid-filler'} key={children.length}></div>)
+        }
+        formatted.push(<div className={props.rowStyle || "grid-view-row"} key={items.length}>{children}</div>)
+    }
+    return <div className={props.className || ""}>
+        {formatted}
+    </div>
+}
+
+export {GridView}

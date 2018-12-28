@@ -1,107 +1,136 @@
 import React from 'react'
 import './NavBar.css'
-import Item from './item/Item'
+import {Link} from 'react-router-dom'
 import Logo from '../logos/drawing.svg'
+import gql from 'graphql-tag'
+import {Query} from '../../delv/delv-react'
 
-function NavBar (props) {
-  const routeNames = [
-    {
-      name: 'Home',
-      route: 'Home',
-      test: () => {
-        return !props.user
-      }
-    }, {
-      name: 'About Us',
-      route: 'About Us',
-      test: () => {
-        return !props.user
-      }
-    }, {
-      name: 'Manage Students',
-      route: 'User/Manage Students',
-      test: () => {
-        return props.user && props.user.role === 'FTLC_USER'
-      }
-    }, {
-      name: 'Account',
-      route: 'User/Account',
-      test: () => {
-        return props.user && props.user.role === 'FTLC_USER'
-      }
-    }, {
-      name: 'Summer Camps',
-      route: 'Activity/Summer Camps',
-      test: () => {
-        return !props.user || props.user.role === 'FTLC_USER'
-      }
-    }, {
-      name: 'Classes',
-      route: 'Activity/Classes',
-      test: () => {
-        return !props.user || props.user.role === 'FTLC_USER'
-      }
-    }, {
-      name: 'Labs',
-      route: 'Activity/Labs',
-      test: () => {
-        return !props.user || props.user.role === 'FTLC_USER'
-      }
-    }, {
-      name: 'Workshops',
-      route: 'Activity/Workshops',
-      test: () => {
-        return !props.user || props.user.role === 'FTLC_USER'
-      }
-    }, {
-      name: 'Login',
-      route: 'Login',
-      test: () => {
-        return !props.user
-      }
-    }, {
-      name: 'Manage Activities',
-      route: 'Admin/Manage Activities',
-      test: () => {
-        return props.user && props.user.role === 'FTLC_INSTRUCTOR'
-      }
-    }, {
-      name: 'Manage Events',
-      route: 'Admin/Manage Events',
-      test: () => {
-        return props.user && props.user.role === 'FTLC_INSTRUCTOR'
-      }
-    }, {
-      name: 'Manage Addresses',
-      route: 'Admin/Manage Addresses',
-      test: () => {
-        return props.user && props.user.role === 'FTLC_INSTRUCTOR'
-      }
-    }, {
-      name: 'Manage Users',
-      route: 'Admin/Manage Users',
-      test: () => {
-        return props.user && props.user.role === 'FTLC_INSTRUCTOR'
-      }
-    }, {
-      name: 'Logout',
-      route: 'Logout',
-      test: () => {
-        return props.user
-      }
+const GET_USER_DATA = `{
+    getUserData{
+        nodeId
+        id
+        firstName
+        lastName
+        role
     }
-  ]
-  const routesNameList = routeNames.filter((routeObj) => {
-    return routeObj.test()
-  }).map((routeObj) => {
-    return <Item key={routeObj.route} route={routeObj.route} name={routeObj.name} />
-  })
-  return (<header className='navbar'>
-    <img alt='Fun 2 Learn Code logo' src={Logo} />
-    <div className='nav-item-container'>
-      {routesNameList}
-    </div>
-  </header>)
+}`
+
+function NavBarInner(props) {
+    const admins = ['FTLC_OWNER', 'FTLC_LEAD_INSTRUCTOR', 'FTLC_ADMIN']
+    const user = props.queryResult.getUserData
+    const routeNames = [
+        {
+            name: 'Home',
+            route: 'Home',
+            test: () => {
+                return !user
+            }
+        }, {
+            name: 'About Us',
+            route: 'About Us',
+            test: () => {
+                return !user
+            }
+        }, {
+            name: 'Manage Students',
+            route: 'User/Manage Students',
+            test: () => {
+                return user && user.role === 'FTLC_USER'
+            }
+        }, {
+            name: 'Account',
+            route: 'User/Account',
+            test: () => {
+                return user && user.role === 'FTLC_USER'
+            }
+        }, {
+            name: 'Summer Camps',
+            route: 'Activity/Summer Camps',
+            test: () => {
+                return !user || user.role === 'FTLC_USER'
+            }
+        }, {
+            name: 'Classes',
+            route: 'Activity/Classes',
+            test: () => {
+                return !user || user.role === 'FTLC_USER'
+            }
+        }, {
+            name: 'Labs',
+            route: 'Activity/Labs',
+            test: () => {
+                return !user || user.role === 'FTLC_USER'
+            }
+        }, {
+            name: 'Workshops',
+            route: 'Activity/Workshops',
+            test: () => {
+                return !user || user.role === 'FTLC_USER'
+            }
+        }, {
+            name: 'Login',
+            route: 'Login',
+            test: () => {
+                return !user
+            }
+        }, {
+            name: 'Manage Activities',
+            route: 'Admin/Manage Activities',
+            test: () => {
+                return user && admins.includes(user.role)
+            }
+        }, {
+            name: 'Manage Events',
+            route: 'Admin/Manage Events',
+            test: () => {
+                return user && admins.includes(user.role)
+            }
+        }, {
+            name: 'Manage Addresses',
+            route: 'Admin/Manage Addresses',
+            test: () => {
+                return user && admins.includes(user.role)
+            }
+        }, {
+            name: 'Manage Users',
+            route: 'Admin/Manage Users',
+            test: () => {
+                return user && admins.includes(user.role)
+            }
+        }, {
+            name: 'Check In',
+            route: 'Attendant/Check In',
+            test: () => {
+                return user && user.role === 'FTLC_ATTENDANT'
+            }
+        }, {
+            name: 'Logout',
+            route: 'Logout',
+            test: () => {
+                return user
+            }
+        }
+    ]
+    const routesNameList = routeNames.filter((routeObj) => {
+        return routeObj.test()
+    }).map((routeObj) => {
+        return <Link key={routeObj.route} to={`/${routeObj.route}`}>
+            <div className='nav-bar-item'>{routeObj.name}</div>
+        </Link>
+    })
+
+    return (<header className='navbar'>
+        <img alt='Fun 2 Learn Code logo' src={Logo}/>
+        <div className='nav-item-container'>
+            {routesNameList}
+        </div>
+    </header>)
+}
+
+function NavBar(props) {
+    return <Query query={GET_USER_DATA}>
+        <NavBarInner/>
+    </Query>
 }
 
 export default NavBar

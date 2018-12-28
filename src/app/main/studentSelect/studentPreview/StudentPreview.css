@@ -1,8 +1,16 @@
 .student-preview-container{
-    padding: 5px;
-    margin: 0 5px;
+    padding: 40px;
+    margin: 0 20px;
+    background-color: #41a62a;
+    border-radius: 8px;
+    flex: 0 0 auto;
 }
-.student-preview-info{
-    padding: 10px;
-    border-bottom: 2px solid gray;
+
+.selected-student-preview-container{
+    padding: 40px;
+    margin: 0 20px;
+    background-color: green;
+    color:white;
+    border-radius: 8px;
+    flex: 0 0 auto;
 }

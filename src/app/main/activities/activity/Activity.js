@@ -10,7 +10,8 @@ function Activity (props) {
           {props.name}
         </h2>
         <div>
-                        prerequisites
+            <h4>Prerequisites</h4>
+            <div className="prerequisites-container">{props.prerequisites}</div>
         </div>
       </div>
       <div className='activity-view-events'>

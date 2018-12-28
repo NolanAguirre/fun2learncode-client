@@ -5,12 +5,17 @@
     margin-bottom: 15px;
     padding:0 30px;
 }
+.event-contaier a {
+    text-decoration: none;
+    color: black;
+}
 .event-contaier h3{
     margin-bottom: 0;
     text-align: center;
 }
 .event-contaier > div{
     padding: 20px 30px;
+    flex: 0 1 auto;
 }
 .event-dates{
 

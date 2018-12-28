@@ -1,36 +1,150 @@
 import React, { Component } from 'react'
 import { DropDown } from '../common/Common'
 import './EventsPreview.css'
-import { gql_Event, GET_DATE_GROUP_INFO_BY_ID } from '../../Queries'
-import QueryHandler from '../queryHandler/QueryHandler'
+import { Query } from '../../../delv/delv-react'
 import DateTime from 'react-datetime'
 import '../../../react-datetime.css'
 import memoize from 'memoize-one'
 import Popup from "reactjs-popup"
 import Colors from '../calendar/Colors'
+import DateGroupForm from './DateGroupForm';
 import moment from 'moment'
 import DateStore from '../../DateStore'
 import EventForm from './EventForm';
 
-function DateGroup (props) {
-  if (false) {
-    return <div>not working</div>
+const GET_DATE_GROUP_INFO_BY_ID = (id) => {
+    return `{
+  allDateGroups(condition: {id: "${id}"}) {
+    nodes {
+      nodeId
+      id
+      name
+      openRegistration
+      closeRegistration
+      datesJoinsByDateGroup {
+        nodes {
+          nodeId
+          id
+          dateInterval
+          dateIntervalByDateInterval {
+            id
+            nodeId
+            start
+            end
+          }
+        }
+      }
+      addressByAddress {
+        alias
+        nodeId
+        id
+      }
+      eventByEvent {
+        openRegistration
+        closeRegistration
+        nodeId
+        id
+        activityByEventType {
+          name
+          id
+          nodeId
+        }
+      }
+    }
   }
-  const dates = props.dateGroup.datesJoinsByDateGroup.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()}).map((element) => {
-    return <div key={element.id}>{moment(moment.utc(element.dateIntervalByDateInterval.start)).local().format("MMM Do h:mma") + "-" +moment(moment.utc(element.dateIntervalByDateInterval.end)).local().format("h:mma")}</div>
-  })
-  const backgroundColor = (props.dateGroup.id == props.activeDateGroup.id)? Colors.get(props.dateGroup.id).hover : Colors.get(props.dateGroup.id).regular
-  return (
-    <div onClick={() => {props.setActiveDateGroup(props.dateGroup)}} style={{ backgroundColor }} className='event-preview-date-container'>
-      <h4>{props.dateGroup.name}</h4>
-      <h4> Show on Calander <input onChange={() => { DateStore.set('toggleDateDisplay', props.dateGroup.id) }} type='checkbox' defaultChecked='true' /> </h4>
-      <div>
-        {dates}
-      </div>
-    </div>
-  )
+}`}
+
+const GET_EVENTS = `{
+  allEvents {
+    nodes {
+      nodeId
+      id
+      openRegistration
+      closeRegistration
+      activityByEventType {
+        nodeId
+        id
+        name
+      }
+      dateGroupsByEvent {
+        nodes {
+          event
+          address
+          addressByAddress {
+            nodeId
+            alias
+            id
+          }
+          price
+          capacity
+          nodeId
+          id
+          name
+          openRegistration
+          closeRegistration
+          datesJoinsByDateGroup {
+            nodes {
+              nodeId
+              id
+              dateInterval
+              dateIntervalByDateInterval {
+                id
+                nodeId
+                start
+                end
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}`
+
+class DateGroup extends Component {
+    constructor(props){
+        super(props);
+        this.state = {hide:true}
+    }
+    toggleCalendarHide = () => {
+        // date store has a list of hidden date groups, this will remove or add this date group.
+        const id = this.props.dateGroup.id
+        if(DateStore.get('hidden') == undefined){
+            DateStore.set('hidden', [])
+        }
+        if(DateStore.get('hidden').includes(id)){
+            const newHide = DateStore.get('hidden').filter((i)=>i!=id);
+            DateStore.set('hidden',newHide)
+        }else{
+            DateStore.set('hidden',[...DateStore.get('hidden'), id])
+        }
+    }
+    toggleDates = () => {
+        this.setState({hide: !this.state.hide})
+    }
+    render = () => {
+        const dates = this.props.dateGroup.datesJoinsByDateGroup.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()}).map((element) => {
+            return <div key={element.id}>{moment(moment.utc(element.dateIntervalByDateInterval.start)).local().format("MMM Do h:mma") + "-" +moment(moment.utc(element.dateIntervalByDateInterval.end)).local().format("h:mma")}</div>
+        })
+        const backgroundColor = (this.props.dateGroup.id == this.props.activeDateGroup.id)? Colors.get(this.props.dateGroup.id).hover : Colors.get(this.props.dateGroup.id).regular
+        return <div onClick={() => {this.props.setActiveDateGroup(this.props.dateGroup)}} style={{ backgroundColor }} className='event-preview-date-container'>
+                <div className='event-preview-header'>
+                    <h4>{this.props.dateGroup.name}</h4>
+                    <DateGroupForm {...this.props.dateGroup}>
+                        <a>edit</a>
+                    </DateGroupForm>
+                </div>
+                <span> Show on Calander <input onChange={this.toggleCalendarHide} type='checkbox' defaultChecked='true' /> </span>
+                <div>
+                    {(this.state.hide)?'':dates}
+                </div>
+                <div className="dropdown-div">
+                    <span onClick={this.toggleDates} >{(this.state.hide)?'Show ':'Hide '} Dates</span>
+                </div>
+            </div>
+    }
 }
-// {props.dateForm(props.dateGroup.id)}
+
 class Event extends Component {
     constructor(props){
         super(props);
@@ -45,11 +159,8 @@ class Event extends Component {
         this.setState({showPopup:false});
     }
     render = () => {
-        if (false) {
-            return <div>not working</div>
-        }
         const event = this.props.event;
-        const dateGroups = event.dateGroupsByEvent.nodes.map((element) => { return React.cloneElement(this.props.children, { key: element.id, dateGroup: element }) })
+        const dateGroups = event.dateGroupsByEvent.nodes.map((element) => { return React.cloneElement(this.props.children[0], { key: element.id, dateGroup: element }) })
         return (
             <React.Fragment>
                 <Popup
@@ -57,19 +168,16 @@ class Event extends Component {
                 closeOnDocumentClick
                 onClose={this.clearPopupState}>
                     <EventForm id={event.id}
-                        nodeId={event.nodeId}
                         openRegistration={event.openRegistration}
                         closeRegistration={event.closeRegistration}
-                        price={event.price}
-                        capacity={event.capacity}
-                        address={event.addressByAddress.id}
-                        eventType={event.activityByEventType.id}/>
+                        eventType={event.activityByEventType.id}
+                        handleSubmit={this.clearPopupState}/>
                 </Popup>
                 <div className='event-preview-event-container'>
                     <div className='event-preview-header'><h3>{event.activityByEventType.name}</h3><a onClick={this.showPopup}>edit</a></div>
                     <div>
                         {dateGroups}
-                        {React.cloneElement(this.props.form, { eventId: this.props.event.id })}
+                        {React.cloneElement(this.props.children[1], { event: this.props.event.id })}
                     </div>
                 </div>
             </React.Fragment>
@@ -78,43 +186,54 @@ class Event extends Component {
 }
 
 function DateGroupInfoInner(props) {
-    console.log(props)
-    const dateGroup = props.queryResult.dateGroupById;
+    const dateGroup = props.queryResult.allDateGroups.nodes[0];
     if(!dateGroup){
         return <div></div>
     }
     const event = dateGroup.eventByEvent;
+
+    function localizeUTCTimestamp (timestamp){
+        if(!timestamp){return null}
+        return moment(moment.utc(timestamp)).local().format("MMM Do YYYY")
+    }
+
+    const openConflict = dateGroup.openRegistration < event.openRegistration
+    const closeConflict = dateGroup.closeRegistration > event.closeRegistration //TODO alert for conflicts
+
     return <table>
         <tbody>
             <tr>
                 <td>Name</td>
                 <td>{event.activityByEventType.name}</td>
-                <td>@ {event.addressByAddress.alias}</td>
+                <td>@ {dateGroup.addressByAddress.alias}</td>
             </tr>
             <tr>
                 <td>Event registration</td>
-                <td>{moment(event.openRegistration).format("MMM Do YYYY")}</td>
-                <td>to {moment(event.closeRegistration).format("MMM Do YYYY")}</td>
+                <td>{localizeUTCTimestamp(event.openRegistration)}</td>
+                <td>to {localizeUTCTimestamp(event.closeRegistration)}</td>
             </tr>
             <tr>
                 <td>Date group registration</td>
-                <td>{moment(dateGroup.openRegistration).format("MMM Do YYYY")}</td>
-                <td>to {moment(dateGroup.closeRegistration).format("MMM Do YYYY")}</td>
+                <td>{localizeUTCTimestamp(dateGroup.openRegistration)}</td>
+                <td>to {localizeUTCTimestamp(dateGroup.closeRegistration)}</td>
             </tr>
         </tbody>
     </table>
 }
+
 function DateGroupInfo(props){
     if(!props.activeDateGroup.id){
         return <div></div>
     }
     return<div>
-            <QueryHandler query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)}>
+            <Query query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)}>
                 <DateGroupInfoInner />
-            </QueryHandler>
+            </Query>
         </div>
 }
+
 function EventsPreviewInner (props) {
+    console.log(props.queryResult)
   if (!props.queryResult.allEvents) {
     return <div>is broken</div>
   }
@@ -124,11 +243,11 @@ function EventsPreviewInner (props) {
 function EventsPreview (props) {
     return <div className='event-preview-container-container'>
         <div className='event-preview-container'>
-            <QueryHandler query={gql_Event.queries.GET_EVENTS}>
+            <Query query={GET_EVENTS}>
               <EventsPreviewInner>{props.children}</EventsPreviewInner>
-            </QueryHandler>
+            </Query>
         </div>
     </div>
 }
 
-export { Event, DateGroup, EventsPreview, DateGroupInfo}
+export {Event, DateGroup, EventsPreview, DateGroupInfo}
