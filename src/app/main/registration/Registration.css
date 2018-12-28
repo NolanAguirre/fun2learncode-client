@@ -5,13 +5,16 @@
     max-width: 100%;
     background-color: white;
     padding:20px 40px;
+    margin:10px 0;
     box-sizing: border-box;
 }
 .registration-form-container{
-    border: 2px solid black;
-    padding: 20px 40px;
-
+    padding:10px 10px 20px 10px;
+    border-bottom: 2px solid gray;
 }
 .registration-form-event-info{
         display:flex;
+}
+.registration-dates-table{
+    margin-left: 10px;
 }
