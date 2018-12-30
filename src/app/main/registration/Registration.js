@@ -104,11 +104,17 @@ class RegistrationInner extends Component{
             selectedStudents:[],
             error:""
         }
-        this.template = (name, student) => `${name}:createEventRegistration(input:{eventRegistration:{registeredBy:"${this.props.queryResult.getUserData.id}",student:"${student.id}",dateGroup:"${this.props.match.params.id}"}}){
-            eventRegistration{
-                dateGroup
-            }
-        }`
+        this.template = (name, student) => `${name}:createEventRegistration(input: {eventRegistration: {registeredBy: "${this.props.queryResult.getUserData.id}", student: "${student.id}", dateGroup: "${this.props.match.params.id}"}}) {
+    eventRegistration {
+      nodeId
+      studentByStudent {
+        nodeId
+      }
+      dateGroupByDateGroup {
+        nodeId
+      }
+    }
+  }`
     }
 
     checkPrerequisites = (student) => {
