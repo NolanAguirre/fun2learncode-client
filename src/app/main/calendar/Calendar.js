@@ -12,6 +12,7 @@ import Mutation from '../../../delv/Mutation'
 import {Query} from '../../../delv/delv-react'
 import Delv from '../../../delv/delv'
 
+
 const GET_EVENTS = `{
   allEvents {
     nodes {
@@ -39,7 +40,8 @@ const GET_EVENTS = `{
       }
     }
   }
-}`
+}
+`
 
 const localizer = BigCalendar.momentLocalizer(moment);
 function Calendar(props){
@@ -85,17 +87,20 @@ function Calendar(props){
 function DragAndDropCalendar(props){
     return (
       <BigCalendar
-        selectable={true}
+        selectable
         popup
-        events={props.events}
-        localizer={localizer}
         className={props.className}
+        tooltipAccessor={props.tooltipAccessor}
+        localizer={localizer}
+        events={props.events}
         onSelectSlot={props.newEvent}
         onSelectEvent={props.selectEvent}
         onDoubleClickEvent={props.removeEvent}
         eventPropGetter={(event,start,end,isSelected: boolean) => {return{style:event.buttonStyle}}}
-        views={['month']}
+        selected={props.selected}
         resizable
+        views={['month']}
+        defaultDate={new Date()}
       />
     )
 }
@@ -126,7 +131,7 @@ class DragAndDropMutationInner extends Component{
     }
 
     localizeUTCTimestamp = (timestamp) =>{
-        return new Date(moment(moment.utc(timestamp)).local())
+        return moment(moment.utc(timestamp)).local().toString()
     }
 
     // used for constructing queries
@@ -228,6 +233,7 @@ class DragAndDropMutationInner extends Component{
             refetchQueries:[GET_EVENTS]
         }).onSubmit()
     }
+
 
     newEvent = (event) => { //event that files on slot select
         const dateGroupId = this.props.activeDateGroup.id;
