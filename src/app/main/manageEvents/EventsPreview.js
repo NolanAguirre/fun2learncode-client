@@ -25,7 +25,6 @@ const GET_DATE_GROUP_INFO_BY_ID = (id) => {
         nodes {
           nodeId
           id
-          dateInterval
           dateIntervalByDateInterval {
             id
             nodeId
@@ -86,7 +85,6 @@ const GET_EVENTS = `{
             nodes {
               nodeId
               id
-              dateInterval
               dateIntervalByDateInterval {
                 id
                 nodeId
@@ -233,7 +231,6 @@ function DateGroupInfo(props){
 }
 
 function EventsPreviewInner (props) {
-    console.log(props.queryResult)
   if (!props.queryResult.allEvents) {
     return <div>is broken</div>
   }

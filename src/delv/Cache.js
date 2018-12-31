@@ -126,7 +126,7 @@ class Cache {
     }
 
     formatObject = (object, isRoot, parentObject) => {
-        if(object['__typename'].endsWith('Payload')){
+        if(object['__typename'].endsWith('Payload') || object['__typename'] === 'query'){
             for(let key in object){
                 let value = object[key]
                 if(key !== '__typename'){

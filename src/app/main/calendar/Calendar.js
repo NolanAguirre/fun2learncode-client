@@ -27,7 +27,6 @@ const GET_EVENTS = `{
             nodes {
               nodeId
               id
-              dateInterval
               dateIntervalByDateInterval {
                 id
                 nodeId
@@ -137,8 +136,26 @@ class DragAndDropMutationInner extends Component{
     // used for constructing queries
     makeTemplate = (name, dateInterval) => {
         return `${name}:makeDateInterval(input: {arg0: "${dateInterval.start}", arg1: "${dateInterval.end}", arg2: "${this.props.activeDateGroup.id}"}) {
-            clientMutationId
-        }`
+    query{
+      dateGroupById(id:"${this.props.activeDateGroup.id}"){
+		nodeId
+        id
+        datesJoinsByDateGroup{
+          nodes{
+            nodeId
+            id
+            dateIntervalByDateInterval{
+              start
+              end
+              archive
+              nodeId
+              id
+            }
+          }
+        }
+      }
+    }
+  }`
     }
 
     deleteTemplate = (name, dateInterval) =>{
