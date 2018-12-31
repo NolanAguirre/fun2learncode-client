@@ -12,6 +12,7 @@ import EventLogs from './eventLogs/EventLogs'
 import ManageEvents from './manageEvents/ManageEvents'
 import ManageAddresses from './manageAddresses/ManageAddresses'
 import ManageActivities from './manageActivities/ManageActivities'
+import ManageAddons from './manageAddons/ManageAddons'
 import {SignUp} from './signUp/SignUp'
 import CheckIn from './checkIn/CheckIn'
 class Main extends Component {
@@ -36,6 +37,7 @@ class Main extends Component {
             <Route exact path='/Admin/Manage Events' component={ManageEvents} />
             <Route exact path='/Admin/Manage Addresses' component={ManageAddresses} />
             <Route exact path='/Admin/Manage Activities' component={ManageActivities} />
+            <Route exact path='/Admin/Manage Addons' component={ManageAddons} />
 
             <Route exact path='/Attendant/Check In' component={CheckIn} />
 

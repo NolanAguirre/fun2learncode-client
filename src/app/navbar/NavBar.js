@@ -104,6 +104,12 @@ function NavBarInner(props) {
                 return user && user.role === 'FTLC_ATTENDANT'
             }
         }, {
+            name: 'Manage Addons',
+            route: 'Admin/Manage Addons',
+            test: () => {
+                return user && admins.includes(user.role)
+            }
+        }, {
             name: 'Logout',
             route: 'Logout',
             test: () => {
