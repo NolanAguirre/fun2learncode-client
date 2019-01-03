@@ -16,6 +16,7 @@ import ManageAddons from './manageAddons/ManageAddons'
 import ManageUsers from  './manageUsers/ManageUsers'
 import {SignUp} from './signUp/SignUp'
 import CheckIn from './checkIn/CheckIn'
+import Account from './account/Account'
 class Main extends Component {
   constructor (props) {
     super(props)
@@ -34,6 +35,8 @@ class Main extends Component {
             <Route path='/Registration/:id' component={Registration} />
             <Route path='/User/Manage Students' component={ManageStudents} />
             <Route path='/Event Logs/:eventId/:studentId' component={EventLogs} />
+
+            <Route path='/User/Account' component={Account} />
 
             <Route exact path='/Admin/Manage Events' component={ManageEvents} />
             <Route exact path='/Admin/Manage Addresses' component={ManageAddresses} />

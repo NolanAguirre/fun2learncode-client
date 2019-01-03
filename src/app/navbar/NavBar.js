@@ -73,6 +73,12 @@ function NavBarInner(props) {
             test: () => {
                 return !user
             }
+        },{
+            name: 'Archive',
+            route: 'Admin/Archive',
+            test: () => {
+                return user && admins.includes(user.role)
+            }
         }, {
             name: 'Manage Activities',
             route: 'Admin/Manage Activities',
