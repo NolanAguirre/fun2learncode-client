@@ -64,7 +64,7 @@ class Query extends Component {
     }
 
     query = () => {
-        Delv.query({query: this.props.query, variables: this.props.variables, networkPolicy: this.networkPolicy, onFetch: this.onFetch, onResolve: this.onResolve})
+        Delv.query({query: this.props.query, variables: this.props.variables, networkPolicy: this.networkPolicy, onFetch: this.onFetch, onResolve: this.onResolve, onError:this.onError})
     }
 
     onFetch = () => {
@@ -74,6 +74,14 @@ class Query extends Component {
     onResolve = (data) => {
         if (!_.isEqual(data, this.state.queryResult)) {
             this.setState({queryResult: data, listenToCacheUpdates: true});
+        }
+    }
+
+    onError = (error) => {
+        if(this.props.onError){
+            this.props.onError(error)
+        }else{
+            console.log(error)
         }
     }
 
