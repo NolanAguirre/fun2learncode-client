@@ -4,6 +4,8 @@ import TypeMap from './TypeMap'
 import axios from 'axios'
 import cache from './Cache'
 import QueryManager from './QueryManager'
+axios.defaults.withCredentials = true;
+
 class Delv {
     constructor(){
         this.queries = new QueryManager();
@@ -47,17 +49,10 @@ class Delv {
     }
 
     post = (query, variables) => {
-        let token = this.getAuthToken();
-        let config = {};
-        if(token){
-            config = {
-                headers: {'Authorization': "bearer " + token}
-            };
-        }
         return axios.post(this.url, {
             query: this.queries.addTypename(query),
             variables
-        }, config)
+        })
     }
 
     stripTypenames = (obj) => {

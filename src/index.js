@@ -8,9 +8,6 @@ import {DelvReact} from './delv/delv-react'
 
 Delv.config({
     url: 'http://localhost:3005/graphql',
-    getAuthToken: () => {
-        return localStorage.getItem('authToken')
-    },
     handleError: (error) => {
         if(error.response && error.response.data){
             error.response.data.errors.forEach((err)=>{
