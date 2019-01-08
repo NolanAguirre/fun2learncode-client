@@ -21,6 +21,17 @@ const GET_DATE_GROUP_INFO_BY_ID = (id) => {
       name
       openRegistration
       closeRegistration
+      addOnJoinsByDateGroup{
+        nodes{
+          nodeId
+          id
+          addOnByAddOn{
+            name
+            nodeId
+            id
+          }
+        }
+      }
       datesJoinsByDateGroup {
         nodes {
           nodeId
@@ -51,7 +62,8 @@ const GET_DATE_GROUP_INFO_BY_ID = (id) => {
       }
     }
   }
-}`}
+}
+`}
 
 const GET_EVENTS = `{
   allEvents {
@@ -69,6 +81,17 @@ const GET_EVENTS = `{
         nodes {
           event
           address
+          addOnJoinsByDateGroup{
+            nodes{
+              nodeId
+              id
+              addOnByAddOn{
+                name
+                nodeId
+                id
+              }
+            }
+          }
           addressByAddress {
             nodeId
             alias
@@ -184,6 +207,7 @@ class Event extends Component {
 }
 
 function DateGroupInfoInner(props) {
+    console.log(props.queryResult)
     const dateGroup = props.queryResult.allDateGroups.nodes[0];
     if(!dateGroup){
         return <div></div>
