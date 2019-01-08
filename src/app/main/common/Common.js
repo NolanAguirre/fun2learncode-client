@@ -50,12 +50,6 @@ function SecureRouteInner(props){
 }
 
 function SecureRoute(props){
-    if(!localStorage.getItem('authToken')){
-        if(props.unauthorized){
-            return props.unauthorized
-        }
-        return <div>please login</div>
-    }
     return <Query query={GET_USER_DATA}>
         <SecureRouteInner ignoreResult={props.ignoreResult} roles={props.roles} unauthorized={props.unauthorized}>{props.children}</SecureRouteInner>
     </Query>
