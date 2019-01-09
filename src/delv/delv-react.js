@@ -71,6 +71,7 @@ class ReactQuery extends Component {
                 onResolve: this.onResolve,
                 onError:this.onError
             })
+            this.query.query();
         }
     }
 
@@ -102,7 +103,8 @@ class ReactQuery extends Component {
             return <div>loading</div>
         }
         return React.cloneElement(this.props.children, {
-            queryResult: this.state.queryResult
+            queryResult: this.state.queryResult,
+            delv:this.props
         })
     }
 }

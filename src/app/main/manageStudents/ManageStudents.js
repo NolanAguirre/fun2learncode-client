@@ -127,7 +127,7 @@ class ManageStudentsInner extends Component {
 
   render () {
       return <div className='manage-students-container'>
-          <StudentSelect setSelectedStudents={this.setSelectedStudents} user={this.props.queryResult.getUserData} />
+          <StudentSelect setSelected={this.setSelectedStudents} user={this.props.queryResult.getUserData} />
           {this.state.selectedStudent?<ReactQuery query={GET_DATES_WITH_STUDENT(this.state.selectedStudent.id)}>
             <EventMonths />
             </ReactQuery>:""}

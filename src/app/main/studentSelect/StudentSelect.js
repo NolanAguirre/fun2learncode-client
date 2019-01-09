@@ -8,6 +8,7 @@ import DateTime from 'react-datetime';
 import moment from 'moment'
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
+import {MultiSelect} from '../common/Common'
 
 const GET_STUDENTS_BY_PARENT =  `{
   allStudents(condition:{parent:"3025bed9-fa08-4753-87c2-2a9e2fdb3efd"}){
@@ -122,49 +123,14 @@ class StudentForm extends Component{
 
 }
 
-class StudentSelectInner extends Component {
-    constructor(props){
-        super(props)
-        console.log(props.queryResult)
-        this.state = {selectedStudents:[]}
-    }
-
-    toggleStudent = async (newStudent) =>{ // if props selected students returns false or nothing it updates
-        if(!this.props.isValidStudent || await this.props.isValidStudent(newStudent)){
-            if(this.state.selectedStudents.includes(newStudent)){
-                const newSelectedStudents = this.state.selectedStudents.filter((student)=>{return student.id!=newStudent.id})
-                if(this.props.multiSelect){
-                    this.props.setSelectedStudents(newSelectedStudents)
-                }else{
-                    this.props.setSelectedStudents(null)
-                }
-                this.setState({selectedStudents:newSelectedStudents})
-            }else{
-                if(this.props.multiSelect){
-                    this.props.setSelectedStudents([...this.state.selectedStudents, newStudent])
-                    this.setState({selectedStudents:[...this.state.selectedStudents, newStudent]})
-                }else{
-                    this.props.setSelectedStudents(newStudent)
-                    this.setState({selectedStudents:[newStudent]})
-                }
-            }
-        }
-    }
-
-    render(){
-      return this.props.queryResult.allStudents.nodes.map((element) => {
-        const selected = this.state.selectedStudents.includes(element);
-        return <StudentPreview key={element.id} selected={selected} onClick={this.toggleStudent} student={element} />
-      })
-    }
-}
-
 function StudentSelect(props) {
     return <div className='student-select-container'>
             <h3>{(props.multiSelect)?'Select students':'Select a student'}</h3>
           <div className='students-container'>
             <ReactQuery query={GET_STUDENTS_BY_PARENT}>
-                    <StudentSelectInner {...props}/>
+                    <MultiSelect formatter={(queryResult)=>{return queryResult.allStudents.nodes}} {...props}>
+                        <StudentPreview />
+                    </MultiSelect>
             </ReactQuery>
             <StudentForm client={props.client} parentId={props.user.id}/>
         </div>

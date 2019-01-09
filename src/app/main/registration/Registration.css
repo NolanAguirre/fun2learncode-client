@@ -3,18 +3,61 @@
     flex:1;
     flex-direction: column;
     max-width: 100%;
-    background-color: white;
-    padding:20px 40px;
     margin:10px 0;
     box-sizing: border-box;
 }
-.registration-form-container{
-    padding:10px 10px 20px 10px;
+.registration-container > div{
+    background-color: white;
+    padding:20px 40px;
     border-bottom: 2px solid gray;
 }
+
+.registration-container > div:last-of-type{
+    margin-top: 18px;
+}
+
 .registration-form-event-info{
         display:flex;
 }
 .registration-dates-table{
     margin-left: 10px;
+}
+.registration-addons-container{
+    display: flex;
+    padding: 20px 10px;
+}
+
+.addon-container {
+    display:flex;
+    flex-direction: column;
+    max-width: 150px;
+    text-align:center;
+    padding:10px 20px;
+    margin:0 10px;
+    border-radius: 20px;
+    border: 2px solid green;
+}
+
+.addon-container-selected{
+    color:white;
+    background-color: green;
+    display:flex;
+    flex-direction: column;
+    max-width: 150px;
+    text-align:center;
+    padding:10px 20px;
+    margin:0 10px;
+    border-radius: 20px;
+    border: 2px solid green;
+}
+
+.addon-container-description{
+    flex:1;
+}
+
+.continue-to-payment-btn{
+    font-size: 24px;
+    padding: 30px 40px;
+    margin: 0 auto;
+    margin-top: 10px;
 }

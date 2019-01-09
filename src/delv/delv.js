@@ -94,7 +94,7 @@ class Delv {
     query = (options) => { // query, variables, networkPolicy, onFetch, onResolve, onError
         switch(options.networkPolicy){
             case 'cache-first':
-                this.cacheFirst()
+                this.cacheFirst(options)
                 break
             case 'cache-only':
                 options.onResolve(cache.loadQuery(options.query))

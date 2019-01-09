@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import './Registration.css'
 import Login from '../login/Login'
 import StudentSelect from '../studentSelect/StudentSelect'
-import {SecureRoute, DatesTable} from '../common/Common'
+import {SecureRoute, DatesTable, MultiSelect} from '../common/Common'
 import {ReactQuery} from '../../../delv/delv-react'
 import Mutation from '../../../delv/Mutation'
 import Delv from '../../../delv/delv'
 
-const GET_DATE_GROUP_INFO_BY_ID = (id)=>{
+const GET_DATE_GROUP_INFO_BY_ID = (id) => {
     return `{
   allDateGroups(condition:{id: "${id}"}) {
     nodes {
@@ -16,6 +16,19 @@ const GET_DATE_GROUP_INFO_BY_ID = (id)=>{
       name
       openRegistration
       closeRegistration
+      addOnJoinsByDateGroup{
+        nodes{
+          nodeId
+          id
+          addOnByAddOn{
+            name
+            nodeId
+            id
+            description
+            price
+          }
+        }
+      }
       addressByAddress {
         alias
         nodeId
@@ -50,15 +63,22 @@ const GET_DATE_GROUP_INFO_BY_ID = (id)=>{
   }
 }`}
 
-class AddOns extends Component{
-    constructor(props){
-        super(props);
-        this.state = {selected:[]}
+function Addon(props) {
+    let className;
+    if(props.selected){
+        className = 'addon-container-selected'
+    }else{
+        className = 'addon-container'
     }
-
-    render = () => {
-        return <div></div>
-    }
+  return  <div onClick={() => props.onClick(props.item)} className={className}>
+        <h3>{props.item.name}</h3>
+        <div className='addon-container-description'>
+            {props.item.description}
+        </div>
+        <div>
+            {props.item.price}$
+        </div>
+      </div>
 }
 
 class RegistrationEventInfo extends Component{
@@ -66,7 +86,7 @@ class RegistrationEventInfo extends Component{
         super(props);
     }
     render(){
-        const dateGroup = this.props.queryResult.allDateGroups.nodes[0];
+        const dateGroup = this.props.dateGroup
         const event = dateGroup.eventByEvent;
         const activity = event.activityByEventType;
         const dates = dateGroup.datesJoinsByDateGroup;
@@ -102,6 +122,7 @@ class RegistrationInner extends Component{
         super(props)
         this.state = {
             selectedStudents:[],
+            addons:[],
             error:""
         }
         this.template = (name, student) => `${name}:createEventRegistration(input: {eventRegistration: {registeredBy: "${this.props.queryResult.getUserData.id}", student: "${student.id}", dateGroup: "${this.props.match.params.id}"}}) {
@@ -136,6 +157,11 @@ class RegistrationInner extends Component{
     setSelectedStudents = (students) =>{
         this.setState({selectedStudents:students, error:""});
     }
+
+    setSelectedAddons= (addons) =>{
+        this.setState({addons:addons});
+    }
+
     post = (event) =>{
         event.preventDefault();
         let mutation = '';
@@ -150,19 +176,27 @@ class RegistrationInner extends Component{
 
     }
 
+    formatAddons = (queryResult) =>{
+        return queryResult.nodes.map(element=>element.addOnByAddOn)
+    }
+
     render = () =>{
+        const userData = this.props.delv.queryResult.getUserData
+        const dateGroup = this.props.queryResult.allDateGroups.nodes[0]
         return <div className='registration-container'>
             <h2>Registration</h2>
-            <ReactQuery networkPolicy='cache-first' query={GET_DATE_GROUP_INFO_BY_ID(this.props.match.params.id)}>
-                <RegistrationEventInfo />
-            </ReactQuery>
+            <RegistrationEventInfo dateGroup={dateGroup} />
             <span className='error'>{this.state.error}</span>
-            <StudentSelect multiSelect={true} isValidStudent={this.checkPrerequisites} setSelectedStudents={this.setSelectedStudents} user={this.props.queryResult.getUserData}/>
+            <StudentSelect multiSelect isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} user={userData}/>
             <div>
-                <h4>Add-ons</h4>
-                <AddOns />
+                <h3>Add-ons</h3>
+                <div className='registration-addons-container'>
+                    <MultiSelect multiSelect setSelected={this.setSelectedAddons} formatter={this.formatAddons} queryResult={dateGroup.addOnJoinsByDateGroup}>
+                        <Addon />
+                    </MultiSelect>
+                </div>
             </div>
-            <button onClick={this.post}>Continue to Payment</button>
+            <button className="continue-to-payment-btn" onClick={this.post}>Continue to Payment</button>
         </div>
     }
 }
@@ -170,7 +204,9 @@ class RegistrationInner extends Component{
 function Registration(props){
     const login = <Login history={props.history} redirectUrl={props.location.pathname} />
     return <SecureRoute unauthorized={login} roles={["FTLC_USER"]}>
-            <RegistrationInner {...props}/>
+            <ReactQuery query={GET_DATE_GROUP_INFO_BY_ID(props.match.params.id)}>
+                <RegistrationInner {...props}/>
+            </ReactQuery>
         </SecureRoute>
 }
 

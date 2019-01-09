@@ -95,3 +95,42 @@ function GridView (props){
 }
 
 export {GridView}
+
+
+class MultiSelect extends Component {
+    constructor(props){
+        super(props)
+        this.state = {selected:[]}
+    }
+
+    toggle = async (newItem) =>{ // if props selected students returns false or nothing it updates
+        if(!this.props.isValidChoice || await this.props.isValidChoice(newItem)){
+            if(this.state.selected.includes(newItem)){
+                const newSelected= this.state.selected.filter((item)=>{return item.id!==newItem.id})
+                if(this.props.multiSelect){
+                    this.props.setSelected(newSelected)
+                }else{
+                    this.props.setSelected(null)
+                }
+                this.setState({selected:newSelected})
+            }else{
+                if(this.props.multiSelect){
+                    this.props.setSelected([...this.state.selected, newItem])
+                    this.setState({selected:[...this.state.selected, newItem]})
+                }else{
+                    this.props.setSelected(newItem)
+                    this.setState({selected:[newItem]})
+                }
+            }
+        }
+    }
+
+    render(){
+        return this.props.formatter(this.props.queryResult).map((element) => {
+          const selected = this.state.selected.includes(element);
+          return React.cloneElement(this.props.children, {key:element.id, selected, onClick:this.toggle, item:element})
+        })
+    }
+}
+
+export { MultiSelect }

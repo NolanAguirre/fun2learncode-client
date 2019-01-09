@@ -292,12 +292,13 @@ class ManageActivitiesForm extends Component{
                </form>
             </div>
         }
+        const typeName = this.props.types.filter(obj=>obj.value===this.props.type)[0]
         return <div key={this.props.id}className="activity-container">
             <div className="activity-header">
                 <img className="activity-image" src="https://via.placeholder.com/350x150"></img>
                 <div className="activity-header-text">
                     <h2 className="activity-title">
-                        {this.props.name}
+                        {this.props.name} ({typeName && typeName.name})
                     </h2>
                     {(this.props.prerequisites)?<Prerequisites prerequisites={this.props.prerequisites} />:""}
                     {this.props.children}
