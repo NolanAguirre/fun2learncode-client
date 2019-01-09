@@ -4,7 +4,7 @@ class QueryManager{
     }
 
     addTypename = (query) => {
-        return query.replace(/{(\n)/g,'{\n__typename')
+        return query.replace(/{(\n)/g,'{\n__typename\n')
     }
 
     normalizeQuery = (query, variables)  => {

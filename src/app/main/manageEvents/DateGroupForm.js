@@ -117,13 +117,17 @@ const CREATE_ADDON = `mutation($addon:CreateAddOnJoinInput!){
 }`
 
 function AddonJoins(props) {
+    if(!props.addons){
+        return <div></div>
+    }
     return props.addons.map((addon) => {
         const mutation = new Mutation({
             mutation: REMOVE_ADDON,
             onSubmit: (event) => {
                 event.preventDefault();
                 return {id: addon.id}
-            }
+            },
+            customCache: (cache, data) => {cache.remove(data)}
         })
         return <form onSubmit={mutation.onSubmit} key={addon.id}>
             <div className="prerequisite-container">
@@ -224,8 +228,11 @@ class DateGroupFormInner extends Component {
 
     hasRequiredValues = () => {
         let haveValues = this.state.name != "" && this.state.address
-        let changedValues = this.state.name != this.props.name || this.normalizeDate(this.state.openRegistration) != this.normalizeDate(this.props.openRegistration) || this.normalizeDate(this.state.closeRegistration) != this.normalizeDate(this.props.closeRegistration) || this.state.address != this.props.address || this.state.capacity != this.props.capacity
-
+        let changedValues = this.state.name != this.props.name ||
+        this.normalizeDate(this.state.openRegistration) != this.normalizeDate(this.props.openRegistration) ||
+        this.normalizeDate(this.state.closeRegistration) != this.normalizeDate(this.props.closeRegistration) ||
+        this.state.address != this.props.address ||
+        this.state.capacity != this.props.capacity
         return haveValues && changedValues
     }
 
@@ -268,8 +275,7 @@ class DateGroupFormInner extends Component {
     render() {
         const addresses = this.mapAddresses(this.props.queryResult.allAddresses);
         const addonOptions = this.mapAddons(this.props.queryResult.allAddOns);
-        const addons = this.props.addOnJoinsByDateGroup.nodes.map(addon => addon)
-        console.log(this.props.addOnJoinsByDateGroup)
+        const addons = this.props.addOnJoinsByDateGroup && this.props.addOnJoinsByDateGroup.nodes.map(addon => addon)
         return <div className="date-form">
             <h4>Create/Edit Date Group</h4>
             <div className='date-form-inner'>
@@ -317,7 +323,7 @@ class DateGroupFormInner extends Component {
                         <AddonJoinForm dateGroup={this.props.id} addons={addonOptions}/></div>:""}
 
             </div>
-            <button className='date-form-btn' type="submit">Set</button>
+            <button className='date-form-btn' onClick={this.mutation.onSubmit}>Set</button>
         </div>
     }
 }

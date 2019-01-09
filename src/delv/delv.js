@@ -72,16 +72,17 @@ class Delv {
         let promise = this.post(query, variables).then((res) => {
             try{
                 if(customCache){
-                    customCache(cache, res.data.date)
+                    customCache(cache, res.data.data)
                 }else{
                     cache.processIntoCache(res.data.data)
                 }
             } catch(error) {
                 console.log(`Error occured trying to cach responce data: ${error.message}`)
             }
+            this.queries.setPromise(query, variables, null);
             this.stripTypenames(res.data.data)
             onResolve(res.data.data)
-            this.queries.setPromise(query, variables, null);
+            return res;
         }).catch((error) => {
             throw new Error(`Error occured while making query ${error.message}`);
             return;
@@ -116,18 +117,19 @@ class Delv {
         }
     }
 
-    networkOnce = ({query, variables, onFetch, onResolve, onError}) => {
+    networkOnce = ({query, variables, onFetch, onResolve, onError, customCache}) => {
         if(this.queries.includes(query, variables)){
             let promise = this.queries.getPromise(query, variables)
             if(promise){
                 promise.then((res) => {
                     onResolve(res.data.data)
+                    return res;
                 })
             }else{
                 onResolve(cache.loadQuery(query))
             }
         }else{
-            this.queryHttp({query, variables, onFetch, onResolve, onError})
+            this.queryHttp({query, variables, onFetch, onResolve, onError, customCache})
         }
     }
 

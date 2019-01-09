@@ -108,7 +108,7 @@ class DragAndDropMutationInner extends Component{
     constructor(props){
         super(props);
         this.state = {
-            events:this.formatQueryResults(),
+            events:this.formatReactQueryResults(),
             hiddenEvents:[],
             selected:{id:null},
             showPopup: false,
@@ -136,23 +136,17 @@ class DragAndDropMutationInner extends Component{
     // used for constructing queries
     makeTemplate = (name, dateInterval) => {
         return `${name}:makeDateInterval(input: {arg0: "${dateInterval.start}", arg1: "${dateInterval.end}", arg2: "${this.props.activeDateGroup.id}"}) {
-    query{
-      dateGroupById(id:"${this.props.activeDateGroup.id}"){
-		nodeId
+    datesJoin{
+      nodeId
+      id
+      dateGroupByDateGroup{
+        nodeId
+      }
+      dateIntervalByDateInterval{
+        nodeId
+        start
+        end
         id
-        datesJoinsByDateGroup{
-          nodes{
-            nodeId
-            id
-            dateIntervalByDateInterval{
-              start
-              end
-              archive
-              nodeId
-              id
-            }
-          }
-        }
       }
     }
   }`
@@ -160,7 +154,16 @@ class DragAndDropMutationInner extends Component{
 
     deleteTemplate = (name, dateInterval) =>{
         return `${name}:removeDateInterval(input: {arg0: "${dateInterval.start}", arg1: "${dateInterval.end}", arg2: "${this.props.activeDateGroup.id}"}) {
-            clientMutationId
+            datesJoin{
+              nodeId
+              id
+              dateGroupByDateGroup{
+                nodeId
+              }
+              dateIntervalByDateInterval{
+                nodeId
+              }
+            }
         }`
     }
 
@@ -200,7 +203,7 @@ class DragAndDropMutationInner extends Component{
         return mutation;
     }
 
-    formatQueryResults = () => {
+    formatReactQueryResults = () => {
         function isDayApart(dateOne, dateTwo) {
             let startTimeMatch = moment(dateOne.start).hour() == moment(dateTwo.start).hour() && moment(dateOne.start).minutes() == moment(dateTwo.start).minutes()
             let endTimeMatch = moment(dateOne.end).add(1, 'days').unix() == moment(dateTwo.end).unix();
@@ -241,14 +244,23 @@ class DragAndDropMutationInner extends Component{
         return dateGroups;
     }
 
-    post = (mutation) => { //jank way to refetch queries
-        new Mutation({
-            mutation:`mutation foo{
-                    ${mutation}
-                }`,
-            onSubmit:()=>{return {}},
-            refetchQueries:[GET_EVENTS]
-        }).onSubmit()
+    post = (mutation, isDelete) => { //jank way to refetch queries
+        if(isDelete){
+            new Mutation({
+                mutation:`mutation foo{
+                        ${mutation}
+                    }`,
+                onSubmit:()=>{return {}},
+                customCache: (cache, data) => {cache.remove(data)}
+            }).onSubmit()
+        }else{
+            new Mutation({
+                mutation:`mutation foo{
+                        ${mutation}
+                    }`,
+                onSubmit:()=>{return {}}
+            }).onSubmit()
+        }
     }
 
 
@@ -276,7 +288,7 @@ class DragAndDropMutationInner extends Component{
                 let newEvent = Object.assign({}, this.state.selected);
                 newEvent.start = this.setTime(moment(event.start).toString(), removedEvent.start)
                 newEvent.end = this.setTime(moment(event.start).add(event.slots.length - 1, 'days').toString(), removedEvent.end)
-                this.post(this.makeBatch(removedEvent, this.deleteTemplate) + "\n" + this.makeBatch(newEvent, this.makeTemplate))
+                this.post(this.makeBatch(removedEvent, this.deleteTemplate) + "\n" + this.makeBatch(newEvent, this.makeTemplate), true)
                 this.setState({
                     events: [
                         ...newEvents,
@@ -290,7 +302,7 @@ class DragAndDropMutationInner extends Component{
 
     removeEvent = (event) => {
         const removedEvent = this.state.events.find((element) => element.id == event.id)
-        this.post(this.makeBatch(removedEvent, this.deleteTemplate))
+        this.post(this.makeBatch(removedEvent, this.deleteTemplate), true)
         const newEvents = this.state.events.filter((element) => element.id != event.id)
         const newHiddenEvents = this.state.hiddenEvents.filter((element) => element.id != event.id)
         this.setState({
@@ -335,7 +347,7 @@ class DragAndDropMutationInner extends Component{
     closePopup = () => {
         this.popupEvent.start = this.setTime(this.popupEvent.start, this.state.startTime)
         this.popupEvent.end = this.setTime(this.popupEvent.end, this.state.endTime)
-        this.post(this.makeBatch(this.popupEvent, this.makeTemplate));
+        this.post(this.makeBatch(this.popupEvent, this.makeTemplate), false);
         this.setState({
             showPopup:false,
             events: [

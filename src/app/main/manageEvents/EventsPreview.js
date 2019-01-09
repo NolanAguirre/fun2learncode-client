@@ -207,7 +207,6 @@ class Event extends Component {
 }
 
 function DateGroupInfoInner(props) {
-    console.log(props.queryResult)
     const dateGroup = props.queryResult.allDateGroups.nodes[0];
     if(!dateGroup){
         return <div></div>

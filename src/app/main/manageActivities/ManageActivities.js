@@ -105,10 +105,17 @@ const CREATE_PREREQUISITE = `mutation($activityPrerequisite:CreateActivityPrereq
   }
 }`;
 
-const REMOVE_PREREQUISITE = `mutation($id:UUID!){
-  deleteActivityPrerequisiteById(input:{id:$id}){
-    activityPrerequisite{
+const REMOVE_PREREQUISITE = `mutation ($id: UUID!) {
+  deleteActivityPrerequisiteById(input: {id: $id}) {
+    activityPrerequisite {
       nodeId
+      id
+      activityByActivity {
+        nodeId
+      }
+      activityByPrerequisite {
+        nodeId
+      }
     }
   }
 }`
@@ -120,7 +127,8 @@ function Prerequisites(props){ // this can use caching
             onSubmit: (event) => {
                 event.preventDefault();
                 return {id: prerequisite.id}
-            }
+            },
+            customCache: (cache, data) => {cache.remove(data)}
         })
         return <form onSubmit={mutation.onSubmit} key={prerequisite.id}>
             <div className="prerequisite-container">
@@ -310,12 +318,9 @@ class ManageActivitiesInner extends Component {
         super(props);
     }
 
-    mapTypes = memoize(
-        (data) =>  data.nodes.map((element) =>  {return{name: element.name, value: element.id}})
-    );
+    mapTypes = (data) => data.nodes.map((element) =>  {return{name: element.name, value: element.id}})
 
-    mapActivities = memoize(
-        (data) => data.nodes.map((element) => {
+    mapActivities = (data) => data.nodes.map((element) => {
             let temp = element.activityPrerequisitesByActivity.nodes.map((el) => el);
             return {
                 name: element.name,
@@ -325,7 +330,6 @@ class ManageActivitiesInner extends Component {
                 prerequisites: temp
             }
         })
-    );
 
     render = () => {
         console.log(this.props.queryResult)

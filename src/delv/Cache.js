@@ -238,12 +238,52 @@ class Cache {
         }
     }
 
+
+
+    removeObject = (obj) => {
+        let objType = obj['__typename']
+        let objUID = obj[UID]
+        CacheEmitter.changeType(objType)
+        delete this.cache[objType][objUID]
+        for(let key in obj){
+            let value = obj[key]
+            if(value instanceof Object){
+                let type = value['__typename']
+                let uid = value[UID];
+                let conflict = this.keyConflict.get(key)
+                CacheEmitter.changeType(type)
+                if(conflict){
+                    this.cache[type][uid][conflict] = this.cache[type][uid][conflict].filter(id=>id!=objUID)
+                }else{
+                    this.cache[type][uid][objType]= this.cache[type][uid][objType].filter(id=>id!=objUID)
+                }
+            }
+        }
+    }
+
     remove = (queryResult) => {
         for(let key in queryResult){
             if(key === '__typename'){
                 continue
             }
+            let value = queryResult[key]
+            if(value['__typename'].startsWith('Delete') || value['__typename'].startsWith('Remove') ){
+                for(let k in value){
+                    if(k === '__typename'){
+                        continue
+                    }
+                    this.removeObject(value[k])
+                }
+            }else if(value['__typename'].startsWith('Create') || value['__typename'].startsWith('Make')){
+                for(let k in value){
+                    if(k === '__typename'){
+                        continue
+                    }
+                    this.formatObject(value[k])
+                }
+            }
         }
+        CacheEmitter.emitCacheUpdate();
     }
 
     processIntoCache = (queryResult) => {
