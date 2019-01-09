@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './CheckIn.css'
 import {SecureRoute} from '../common/Common'
-import {Query} from '../../../delv/delv-react'
+import {ReactQuery} from '../../../delv/delv-react'
 import Logo from '../../logos/drawing.svg'
 import moment from 'moment'
 
@@ -137,9 +137,9 @@ class CheckInInner extends Component{
         if(this.state.UI === 'getStudent'){
             inner = <GetStudent setLastName={this.setLastName} />
         }else if(this.state.UI === 'confirm'){
-            inner = <Query query={GET_STUDENT(this.state.lastName)}>
+            inner = <ReactQuery query={GET_STUDENT(this.state.lastName)}>
                 <ConfirmName />
-            </Query>
+            </ReactQuery>
         }
         return<div className='login'>
           <div className='login-container'>

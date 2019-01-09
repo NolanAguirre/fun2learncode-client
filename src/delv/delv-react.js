@@ -3,7 +3,7 @@ import graphql from 'graphql-anywhere'
 import gql from 'graphql-tag'
 import TypeMap from './TypeMap'
 import Delv from './delv'
-import CacheEmitter from './CacheEmitter'
+import Query from './Query'
 var _ = require('lodash');
 
 class DelvReact extends Component {
@@ -12,11 +12,13 @@ class DelvReact extends Component {
         this.state = {
             isReady: false
         }
-        Delv.registerMount(this);
-    }
 
+    }
+    componentDidMount = () => {
+        Delv.config({...this.props.config, onReady:this.isReady})
+    }
     isReady = () => {
-        this.setState({isReady: true})
+        this.setState({isReady:true})
     }
 
     render = () => {
@@ -32,76 +34,63 @@ export {
     DelvReact
 }
 
-class Query extends Component {
+class ReactQuery extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            queryResult: '',
-            listenToCacheUpdates: true,
-            renderCount: 0
+            queryResult: ''
         }
-        this.networkPolicy = props.networkPolicy || 'network-once'
-        this.id = '_' + Math.random().toString(36).substr(2, 9)
-        this.types = [];
-        this.mapTypes()
+        this.query = new Query({
+            query: this.props.query,
+            variables: this.props.variables,
+            networkPolicy:this.props.networkPolicy,
+            onFetch:this.onFetch,
+            onResolve: this.onResolve,
+            onError:this.onError
+        })
     }
 
     componentDidMount = () => {
-        this.query();
-        if (this.networkPolicy != 'network-only') {
-            CacheEmitter.on(this.id, this.onCacheUpdate)
+        this.query.query();
+        if (this.query.networkPolicy != 'network-only') {
+            this.query.addCacheListener();
         }
     }
 
     componentWillUnmount = () => {
-        CacheEmitter.removeAllListeners(this.id);
+        this.query.removeCacheListener();
     }
 
     componentDidUpdate = (prevProps, prevState, snapshot) => {
         if (prevProps.query != this.props.query) {
-            this.query()
+            this.query = new Query({
+                query: this.props.query,
+                variables: this.props.variables,
+                networkPolicy:this.props.networkPolicy,
+                onFetch:this.onFetch,
+                onResolve: this.onResolve,
+                onError:this.onError
+            })
         }
     }
 
-    query = () => {
-        Delv.query({query: this.props.query, variables: this.props.variables, networkPolicy: this.networkPolicy, onFetch: this.onFetch, onResolve: this.onResolve, onError:this.onError})
-    }
-
-    onFetch = () => {
-        this.setState({queryResult: '', listenToCacheUpdates: false})
+    onFetch = (promise) => {
+        this.setState({queryResult: ''})
+        if(this.props.onFetch){
+            this.props.onFetch(promise)
+        }
     }
 
     onResolve = (data) => {
-        if (!_.isEqual(data, this.state.queryResult)) {
-            this.setState({queryResult: data, listenToCacheUpdates: true});
+        this.setState({queryResult: data})
+        if(this.props.onResolve){
+            this.props.onResolve(data)
         }
     }
 
     onError = (error) => {
         if(this.props.onError){
             this.props.onError(error)
-        }else{
-            console.log(error)
-        }
-    }
-
-    mapTypes = () => {
-        const resolver = (fieldName, root, args, context, info) => {
-            if (!info.isLeaf && fieldName != 'nodes') {
-                this.types.push(TypeMap.guessChildType(TypeMap.get(fieldName)))
-            }
-            return {}
-        }
-        graphql(resolver, gql `${this.props.query}`, null)
-
-    }
-
-    onCacheUpdate = (types) => {
-        if (this.state.listenToCacheUpdates) {
-            let includesType = this.types.some(r => types.includes(r))
-            if (includesType) {
-                this.query();
-            }
         }
     }
 
@@ -113,12 +102,11 @@ class Query extends Component {
             return <div>loading</div>
         }
         return React.cloneElement(this.props.children, {
-            queryResult: this.state.queryResult,
-            renderCount: this.state.renderCount
+            queryResult: this.state.queryResult
         })
     }
 }
 
 export {
-    Query
+    ReactQuery
 }

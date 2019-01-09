@@ -7,7 +7,7 @@ import {CreateAccount} from '../signUp/SignUp'
 import DateTime from 'react-datetime';
 import moment from 'moment'
 import Mutation from '../../../delv/Mutation'
-import {Query} from '../../../delv/delv-react'
+import {ReactQuery} from '../../../delv/delv-react'
 
 const GET_STUDENTS_BY_PARENT =  `{
   allStudents(condition:{parent:"3025bed9-fa08-4753-87c2-2a9e2fdb3efd"}){
@@ -161,11 +161,11 @@ class StudentSelectInner extends Component {
 
 function StudentSelect(props) {
     return <div className='student-select-container'>
-            <h3>Select A Student</h3>
+            <h3>{(props.multiSelect)?'Select students':'Select a student'}</h3>
           <div className='students-container'>
-            <Query query={GET_STUDENTS_BY_PARENT}>
+            <ReactQuery query={GET_STUDENTS_BY_PARENT}>
                     <StudentSelectInner {...props}/>
-            </Query>
+            </ReactQuery>
             <StudentForm client={props.client} parentId={props.user.id}/>
         </div>
   </div>

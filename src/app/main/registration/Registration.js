@@ -3,7 +3,7 @@ import './Registration.css'
 import Login from '../login/Login'
 import StudentSelect from '../studentSelect/StudentSelect'
 import {SecureRoute, DatesTable} from '../common/Common'
-import {Query} from '../../../delv/delv-react'
+import {ReactQuery} from '../../../delv/delv-react'
 import Mutation from '../../../delv/Mutation'
 import Delv from '../../../delv/delv'
 
@@ -153,16 +153,16 @@ class RegistrationInner extends Component{
     render = () =>{
         return <div className='registration-container'>
             <h2>Registration</h2>
-            <Query networkPolicy='cache-first' query={GET_DATE_GROUP_INFO_BY_ID(this.props.match.params.id)}>
+            <ReactQuery networkPolicy='cache-first' query={GET_DATE_GROUP_INFO_BY_ID(this.props.match.params.id)}>
                 <RegistrationEventInfo />
-            </Query>
+            </ReactQuery>
             <span className='error'>{this.state.error}</span>
             <StudentSelect multiSelect={true} isValidStudent={this.checkPrerequisites} setSelectedStudents={this.setSelectedStudents} user={this.props.queryResult.getUserData}/>
             <div>
                 <h4>Add-ons</h4>
                 <AddOns />
             </div>
-            <button onClick={this.post}>Register</button>
+            <button onClick={this.post}>Continue to Payment</button>
         </div>
     }
 }
@@ -173,7 +173,5 @@ function Registration(props){
             <RegistrationInner {...props}/>
         </SecureRoute>
 }
-
-// {(this.state.studentId)?<QueryHandler studentId={this.state.studentId}></QueryHandler>:""}
 
 export default Registration

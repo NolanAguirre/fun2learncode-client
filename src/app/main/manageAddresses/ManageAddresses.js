@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import gql from 'graphql-tag'
 import Mutation from '../../../delv/Mutation'
-import {Query} from '../../../delv/delv-react'
+import {ReactQuery} from '../../../delv/delv-react'
 import {SecureRoute, Location, GridView} from '../common/Common'
 import './ManageAddresses.css'
 
@@ -201,9 +200,9 @@ class ManageAddressesInner extends Component {
 
 function ManageAddresses(props){
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
-        <Query query={GET_ADDRESSES}>
+        <ReactQuery query={GET_ADDRESSES}>
             <ManageAddressesInner />
-        </Query>
+        </ReactQuery>
     </SecureRoute>
 }
 

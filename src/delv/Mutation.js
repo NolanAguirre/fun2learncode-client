@@ -3,11 +3,12 @@ import Cache from './Cache'
 
 
 class Mutation{
-    constructor({mutation, onFetch, onSubmit, onResolve, refetchQueries}){
+    constructor({mutation, onFetch, onSubmit, onResolve, refetchQueries, customCache}){
         this.mutation = mutation;
         this.submit = onSubmit;
         this.fetch = onFetch;
         this.resolve = onResolve
+        this.customCache = customCache
         this.refetchQueries = refetchQueries || []
     }
 
@@ -18,9 +19,9 @@ class Mutation{
         }
     }
 
-    onFetch = () => {
+    onFetch = (promise) => {
         if(this.fetch){
-            this.fetch()
+            this.fetch(promise)
         }
     }
 
@@ -46,7 +47,8 @@ class Mutation{
             variables: this.variables,
             networkPolicy: 'network-only',
             onFetch: this.onFetch,
-            onResolve: this.onResolve
+            onResolve: this.onResolve,
+            customCache: this.customCache
         })
     }
 }

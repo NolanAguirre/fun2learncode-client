@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import './Common.css'
-import { Query } from '../../../delv/delv-react'
+import { ReactQuery } from '../../../delv/delv-react'
 import gql from 'graphql-tag'
 import moment from 'moment';
 
@@ -50,9 +50,9 @@ function SecureRouteInner(props){
 }
 
 function SecureRoute(props){
-    return <Query query={GET_USER_DATA}>
+    return <ReactQuery query={GET_USER_DATA}>
         <SecureRouteInner ignoreResult={props.ignoreResult} roles={props.roles} unauthorized={props.unauthorized}>{props.children}</SecureRouteInner>
-    </Query>
+    </ReactQuery>
 
 }
 export { SecureRoute }

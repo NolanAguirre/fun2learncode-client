@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Mutation from '../../../delv/Mutation'
-import {Query} from '../../../delv/delv-react'
+import {ReactQuery} from '../../../delv/delv-react'
 import {SecureRoute} from '../common/Common'
 
 const USER_DATA = `{
@@ -30,9 +30,9 @@ class Account extends Component{
 
     render = () => {
         return <SecureRoute ignoreResult roles={["FTLC_USER"]}>
-            <Query query={USER_DATA}>
+            <ReactQuery query={USER_DATA}>
                 <AccountInner />
-            </Query>
+            </ReactQuery>
         </SecureRoute>
     }
 }

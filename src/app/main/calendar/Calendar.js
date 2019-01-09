@@ -9,7 +9,7 @@ import DateStore from '../../DateStore';
 import Popup from "reactjs-popup";
 import DateTime from 'react-datetime';
 import Mutation from '../../../delv/Mutation'
-import {Query} from '../../../delv/delv-react'
+import {ReactQuery} from '../../../delv/delv-react'
 import Delv from '../../../delv/delv'
 
 
@@ -389,9 +389,9 @@ class DragAndDropMutationInner extends Component{
 }
 
 function DragAndDropMutation(props){
-    return <Query query={GET_EVENTS}>
+    return <ReactQuery query={GET_EVENTS}>
         <DragAndDropMutationInner {...props}/>
-    </Query>
+    </ReactQuery>
 }
 
 export default DragAndDropMutation

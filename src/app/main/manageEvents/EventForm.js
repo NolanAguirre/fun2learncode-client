@@ -4,7 +4,7 @@ import './ManageEvents.css';
 import DateTime from 'react-datetime';
 import '../../../react-datetime.css'
 import Mutation from '../../../delv/Mutation'
-import {Query} from '../../../delv/delv-react'
+import {ReactQuery} from '../../../delv/delv-react'
 import memoize from "memoize-one";
 import moment from 'moment';
 
@@ -220,8 +220,8 @@ class EventFormInner extends Component {
 }
 
 function EventForm(props) {
-    return <Query query={GET_ACTIVITIES}>
+    return <ReactQuery query={GET_ACTIVITIES}>
         <EventFormInner {...props}/>
-    </Query>
+    </ReactQuery>
 }
 export default EventForm;

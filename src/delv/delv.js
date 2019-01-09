@@ -7,19 +7,14 @@ import QueryManager from './QueryManager'
 axios.defaults.withCredentials = true;
 
 class Delv {
-    constructor(){
+    constructor() {
         this.queries = new QueryManager();
     }
-
-    config = ({url, getAuthToken, handleError}) => {
+    config = ({url, handleError, onReady}) => {
         this.url = url
-        this.getAuthToken = getAuthToken
         this.handleError = handleError
+        this.onReady = onReady
         this.loadIntrospection()
-    }
-
-    registerMount = (mount) => {
-        this.mount = mount
     }
 
     loadIntrospection = () => {
@@ -42,7 +37,7 @@ class Delv {
           }`
         }).then((res) => {
             TypeMap.loadIntrospection(res.data.data);
-            this.mount.isReady();
+            this.onReady();
         }).catch((error) => {
             throw new Error('Something went wrong while attempting making introspection query ' + error)
         })
@@ -72,12 +67,15 @@ class Delv {
         })
     }
 
-    queryHttp = (query, variables, onFetch, onResolve, onError) => {
+    queryHttp = ({query, variables, onFetch, onResolve, onError, customCache}) => {
         this.queries.add(query, variables)
-        onFetch();
         let promise = this.post(query, variables).then((res) => {
             try{
-                cache.processIntoCache(res.data.data)
+                if(customCache){
+                    customCache(cache, res.data.date)
+                }else{
+                    cache.processIntoCache(res.data.data)
+                }
             } catch(error) {
                 console.log(`Error occured trying to cach responce data: ${error.message}`)
             }
@@ -85,52 +83,42 @@ class Delv {
             onResolve(res.data.data)
             this.queries.setPromise(query, variables, null);
         }).catch((error) => {
-            if(onError || this.handleError){
-                if(this.handleError){
-                    if(this.handleError(error)){
-                        return {};
-                    }
-
-                }
-                if(this.onError){
-                    this.onError(error)
-                    return {};
-                }
-            }
-            return error;
+            throw new Error(`Error occured while making query ${error.message}`);
+            return;
         })
+        onFetch(promise);
         this.queries.setPromise(query, variables, promise)
     }
 
-    query = ({query, variables, networkPolicy, onFetch, onResolve, onError}) => {
-        switch(networkPolicy){
+    query = (options) => { // query, variables, networkPolicy, onFetch, onResolve, onError
+        switch(options.networkPolicy){
             case 'cache-first':
-                this.cacheFirst(query, variables, onFetch, onResolve, onError)
+                this.cacheFirst()
                 break
             case 'cache-only':
-                onResolve(cache.loadQuery(query))
+                options.onResolve(cache.loadQuery(options.query))
                 break
             case 'network-only':
-                this.queryHttp(query, variables, onFetch, onResolve, onError)
+                this.queryHttp(options) // query, variables, onFetch, onResolve, onError
                 break
             case 'network-once':
-                this.networkOnce(query, variables, onFetch, onResolve, onError)
+                this.networkOnce(options)
                 break
         }
     }
 
-    cacheFirst = (query, variables, onFetch, onResolve, onError) => {
-        let data = cache.loadQuery(query)
+    cacheFirst = (options) => {
+        let data = cache.loadQuery(options.query)
         if (data.data) {
-            onResolve(data.data);
+            options.onResolve(data.data);
         } else {
-            this.queryHttp(query, variables, onFetch, onResolve, onError)
+            this.queryHttp(options) // query, variables, onFetch, onResolve, onError
         }
     }
 
-    networkOnce = (query, variables, onFetch, onResolve, onError) => {
+    networkOnce = ({query, variables, onFetch, onResolve, onError}) => {
         if(this.queries.includes(query, variables)){
-            let promise = this.queries.getPromise(query.variables)
+            let promise = this.queries.getPromise(query, variables)
             if(promise){
                 promise.then((res) => {
                     onResolve(res.data.data)
@@ -139,9 +127,10 @@ class Delv {
                 onResolve(cache.loadQuery(query))
             }
         }else{
-            this.queryHttp(query, variables, onFetch, onResolve, onError)
+            this.queryHttp({query, variables, onFetch, onResolve, onError})
         }
     }
+
 }
 
 export default new Delv();

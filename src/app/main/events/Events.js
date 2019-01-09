@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './Events.css'
 import EventComponent from './event/Event'
-import {Query} from '../../../delv/delv-react'
+import {ReactQuery} from '../../../delv/delv-react'
 import moment from 'moment'
 import Cache from '../../../delv/Cache'
 const GET_EVENTS_OF_TYPE = (id) => {
@@ -73,9 +73,9 @@ function Events (props) {
   return (
     <div className='events'>
       <h1 className='events-title'>{props.match.params.name}</h1>
-      <Query query={GET_EVENTS_OF_TYPE(props.match.params.id)}>
+      <ReactQuery query={GET_EVENTS_OF_TYPE(props.match.params.id)}>
           <EventsInner activityId={props.match.params.id} activityName={props.match.params.name}/>
-      </Query>
+      </ReactQuery>
     </div>)
 }
 

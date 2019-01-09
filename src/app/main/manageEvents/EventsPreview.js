@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { DropDown } from '../common/Common'
 import './EventsPreview.css'
-import { Query } from '../../../delv/delv-react'
+import { ReactQuery } from '../../../delv/delv-react'
 import DateTime from 'react-datetime'
 import '../../../react-datetime.css'
 import memoize from 'memoize-one'
@@ -248,9 +248,9 @@ function DateGroupInfo(props){
         return <div></div>
     }
     return<div>
-            <Query query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)}>
+            <ReactQuery query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)}>
                 <DateGroupInfoInner />
-            </Query>
+            </ReactQuery>
         </div>
 }
 
@@ -264,9 +264,9 @@ function EventsPreviewInner (props) {
 function EventsPreview (props) {
     return <div className='event-preview-container-container'>
         <div className='event-preview-container'>
-            <Query query={GET_EVENTS}>
+            <ReactQuery query={GET_EVENTS}>
               <EventsPreviewInner>{props.children}</EventsPreviewInner>
-            </Query>
+            </ReactQuery>
         </div>
     </div>
 }

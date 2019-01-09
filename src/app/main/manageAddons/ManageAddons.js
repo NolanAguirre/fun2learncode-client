@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Mutation from '../../../delv/Mutation'
-import {Query} from '../../../delv/delv-react'
+import {ReactQuery} from '../../../delv/delv-react'
 import {SecureRoute, GridView} from '../common/Common'
 import './ManageAddons.css'
 
@@ -176,9 +176,9 @@ class ManageAddonsInner extends Component {
 
 function ManageAddons(props){
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
-        <Query query={GET_ADDONS}>
+        <ReactQuery query={GET_ADDONS}>
             <ManageAddonsInner />
-        </Query>
+        </ReactQuery>
     </SecureRoute>
 }
 

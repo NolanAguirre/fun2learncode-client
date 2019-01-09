@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './ManageStudents.css'
 import StudentSelect from '../studentSelect/StudentSelect'
-import { Query } from '../../../delv/delv-react'
+import { ReactQuery } from '../../../delv/delv-react'
 import {SecureRoute, Location, GridView, DatesTable} from '../common/Common'
 import moment from 'moment';
 
@@ -127,11 +127,10 @@ class ManageStudentsInner extends Component {
 
   render () {
       return <div className='manage-students-container'>
-          Manage Student
           <StudentSelect setSelectedStudents={this.setSelectedStudents} user={this.props.queryResult.getUserData} />
-          {this.state.selectedStudent?<Query query={GET_DATES_WITH_STUDENT(this.state.selectedStudent.id)}>
+          {this.state.selectedStudent?<ReactQuery query={GET_DATES_WITH_STUDENT(this.state.selectedStudent.id)}>
             <EventMonths />
-            </Query>:""}
+            </ReactQuery>:""}
       </div>
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import './Home.css'
 import Section from './section/Section'
-import { Query } from '../../../delv/delv-react'
+import { ReactQuery } from '../../../delv/delv-react'
 
 const GET_ACTIVITIES = `{
   allActivityCatagories {
@@ -22,9 +22,9 @@ function HomeInner(props){
 function Home (props) {
   return <div className='home'>
     <h2>Home</h2>
-    <Query query={GET_ACTIVITIES}>
+    <ReactQuery query={GET_ACTIVITIES}>
         <HomeInner />
-    </Query>
+    </ReactQuery>
   </div>
 }
 

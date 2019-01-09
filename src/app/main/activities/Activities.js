@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import './Activities.css'
 import Activity from './activity/Activity'
-import {Query} from '../../../delv/delv-react'
+import {ReactQuery} from '../../../delv/delv-react'
 
 const GET_ACTIVITIES_IN_CATAGORY = (name) => {
     return `{
@@ -48,9 +48,9 @@ function ActivitiesInner(props) {
 function Activities(props) {
     return <div className='activities-container'>
         <h1 className='activities-header'>{props.match.params.type}</h1>
-        <Query query={GET_ACTIVITIES_IN_CATAGORY(props.match.params.type)}>
+        <ReactQuery query={GET_ACTIVITIES_IN_CATAGORY(props.match.params.type)}>
             <ActivitiesInner/>
-        </Query>
+        </ReactQuery>
     </div>
 
 }

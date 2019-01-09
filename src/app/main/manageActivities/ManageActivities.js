@@ -5,7 +5,7 @@ import Logo from '../../logos/x-icon.svg'
 import {DropDown} from '../common/Common';
 import './ManageActivities.css';
 import Mutation from '../../../delv/Mutation'
-import {Query} from '../../../delv/delv-react'
+import {ReactQuery} from '../../../delv/delv-react'
 import {SecureRoute} from '../common/Common'
 
 //TODO be able to remove prerequisites, make description text box keep text on edit
@@ -353,9 +353,9 @@ class ManageActivitiesInner extends Component {
 function ManageActivities(props) {
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
         <div className="manage-activities-container">
-            <Query query={GET_ACTIVITIES}>
+            <ReactQuery query={GET_ACTIVITIES}>
                 <ManageActivitiesInner />
-            </Query>
+            </ReactQuery>
         </div>
     </SecureRoute>
 }

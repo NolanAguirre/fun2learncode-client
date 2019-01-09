@@ -8,7 +8,7 @@ import EventsPreview from './EventsPreview';
 import moment from 'moment';
 import Popup from "reactjs-popup"
 import Mutation from '../../../delv/Mutation'
-import {Query} from '../../../delv/delv-react'
+import {ReactQuery} from '../../../delv/delv-react'
 import Logo from '../../logos/x-icon.svg'
 
 const GET_ADDRESSES = `{
@@ -339,12 +339,12 @@ class DateGroupForm extends Component {
     render = () => {
         return <div>
             <Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
-                <Query query={GET_ADDRESSES}>
+                <ReactQuery query={GET_ADDRESSES}>
                     <DateGroupFormInner {...this.props} handleSubmit={this.clearPopupState} mutation={(
                             this.props.id)
                             ? UPDATE_DATE_GROUP
                             : CREATE_DATE_GROUP}/>
-                </Query>
+                </ReactQuery>
             </Popup>
             <div onClick={this.showPopup}>
                 {this.props.children}
