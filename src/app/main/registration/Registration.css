@@ -10,6 +10,7 @@
 .registration-info-section{
     display:flex;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 .registration-info-section > div{
     padding: 40px;
@@ -52,14 +53,7 @@
     padding: 20px 10px;
 }
 
-
-
-.payment-overview-table{
-      border-collapse: collapse;
-      width:100%;
-}
 .payment-overview-container tr td, th{
-    padding: 10px;
     text-align: center;
 }
 .payment-overview-table tr:nth-child(even) {
@@ -70,6 +64,81 @@
     background-color: #FFF;
 }
 
+/* STOLE FROM materializecss  */
+table, th, td {
+    border: none;
+}
+
+table {
+    width: 100%;
+    display: table;
+    border-collapse: collapse;
+    border-spacing: 0
+}
+    table.responsive-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        display: block;
+        position: relative
+    }
+    table.responsive-table td:empty:before {
+        content: '\00a0'
+    }
+    table.responsive-table th, table.responsive-table td {
+        margin: 0;
+        vertical-align: top
+    }
+    table.responsive-table th {
+        text-align: left
+    }
+    table.responsive-table thead {
+        display: block;
+        float: left;
+        margin-right:10px;
+    }
+    table.responsive-table thead tr {
+        display: block;
+        padding: 0 10px 0 0
+    }
+    table.responsive-table thead tr th::before {
+        content: "\00a0"
+    }
+    table.responsive-table tbody {
+        display: block;
+        width: auto;
+        position: relative;
+        overflow-x: auto;
+        white-space: nowrap
+    }
+    table.responsive-table tbody tr {
+        display: inline-block;
+        vertical-align: top;
+        padding: 0px 10px;
+    }
+    table.responsive-table th {
+        display: block;
+        text-align: right;
+        padding: 15px 10px;
+        color:rgba(0, 0, 0, 0.7);
+        font-weight: bold;
+    }
+    table.responsive-table td {
+        display: block;
+        color:rgba(0, 0, 0, 0.5);
+        box-sizing: border-box;
+        padding: 15px 10px;
+        min-height: 1.25em;
+        text-align: left
+    }
+    table.responsive-table tr {
+        border-bottom: none;
+    }
+    table.responsive-table thead {
+        border: 0;
+        border-right: 1px solid rgba(0, 0, 0, 0.2)
+    }
+/* STOLE FROM materializecss ^^^^^^^^^^^^ */
 .addon-container {
     display:flex;
     flex-direction: column;
@@ -79,6 +148,7 @@
     margin:0 10px;
     border-radius: 20px;
     border: 2px solid green;
+    flex: 0 0 auto;
 }
 
 .addon-container-selected{
@@ -92,6 +162,7 @@
     margin:0 10px;
     border-radius: 20px;
     border: 2px solid green;
+    flex: 0 0 auto;
 }
 
 .addon-container-description{

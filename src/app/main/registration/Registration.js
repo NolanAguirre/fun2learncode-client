@@ -119,9 +119,8 @@ class RegistrationEventInfo extends Component{
 
 function PaymentOverviewRow(props){
     return <tr>
-            <td>{props.name}</td>
             <td>{props.student}</td>
-            <td>{props.type}</td>
+            <td>{props.name}</td>
             <td>{props.price}$</td>
         </tr>
 }
@@ -142,23 +141,21 @@ function PaymentOverview(props){
             rows.push(<PaymentOverviewRow key={rowCount} type={'Add-on'} name={addon.name} student={student.firstName + " " + student.lastName} price={addon.price} />)
         })
     })
-    return <table className='payment-overview-table'>
+    return<div>
+         <table className='responsive-table'>
         <tbody>
+            <thead>
             <tr>
-                <th>Item</th>
                 <th>Student</th>
-                <th>Type</th>
+                <th>Item</th>
                 <th>Price</th>
             </tr>
+        </thead>
             {rows}
-            <tr>
-                <th></th>
-                <th></th>
-                <th>Total: </th>
-                <th>{total}$</th>
-            </tr>
         </tbody>
     </table>
+    <span>Total: {total}$</span>
+</div>
 }
 
 class RegistrationInner extends Component{
