@@ -6,14 +6,39 @@
     margin:10px 0;
     box-sizing: border-box;
 }
-.registration-container > div{
+
+.registration-info-section{
+    display:flex;
+    justify-content: space-between;
+}
+.registration-info-section > div{
+    padding: 40px;
+    background-color: white;
+    flex:1
+}
+
+.registration-event-info{
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
+}
+
+.registration-event-info h3{
+    margin-top:0;
+}
+
+.payment-overview-container{
+    margin-left: 20px;
+}
+
+.registration-info-tables-container{
+    display:flex;
+}
+
+.registration-section{
     background-color: white;
     padding:20px 40px;
     border-bottom: 2px solid gray;
-}
-
-.registration-container > div:last-of-type{
-    margin-top: 18px;
 }
 
 .registration-form-event-info{
@@ -25,6 +50,24 @@
 .registration-addons-container{
     display: flex;
     padding: 20px 10px;
+}
+
+
+
+.payment-overview-table{
+      border-collapse: collapse;
+      width:100%;
+}
+.payment-overview-container tr td, th{
+    padding: 10px;
+    text-align: center;
+}
+.payment-overview-table tr:nth-child(even) {
+    background-color: #CCC;
+}
+
+.payment-overview-table tr:nth-child(odd) {
+    background-color: #FFF;
 }
 
 .addon-container {

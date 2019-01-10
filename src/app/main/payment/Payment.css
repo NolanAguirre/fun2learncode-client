@@ -1,0 +1,9 @@
+.payment-overview-popup{
+    width:30% !important;
+}
+
+.card-number-element{
+    border:2px solid black;
+    padding:10px;
+    font-size: 20px !important;
+}

@@ -6,7 +6,7 @@ import {SecureRoute, DatesTable, MultiSelect} from '../common/Common'
 import {ReactQuery} from '../../../delv/delv-react'
 import Mutation from '../../../delv/Mutation'
 import Delv from '../../../delv/delv'
-
+import Payment from '../payment/Payment'
 const GET_DATE_GROUP_INFO_BY_ID = (id) => {
     return `{
   allDateGroups(condition:{id: "${id}"}) {
@@ -91,37 +91,86 @@ class RegistrationEventInfo extends Component{
         const activity = event.activityByEventType;
         const dates = dateGroup.datesJoinsByDateGroup;
         const address = dateGroup.addressByAddress;
-        return <div className="registration-form-container">
-            <h3>Event Information</h3>
-            <div className="registration-form-event-info">
-            <table>
-                <tbody>
-                    <tr>
-                        <td>Event:</td>
-                        <td>{activity.name}</td>
-                    </tr>
-                    <tr>
-                        <td>Location: </td>
-                        <td>{address.alias}</td>
-                    </tr>
-                    <tr>
-                        <td>Price:</td>
-                        <td>{dateGroup.price}</td>
-                    </tr>
-                </tbody>
-            </table>
-            Dates:
-            <DatesTable className="registration-dates-table" dates={dates}/>
+        return <div className='registration-info-section'>
+            <div className="registration-event-info">
+                <h3>Event Information</h3>
+                <div className="registration-info-tables-container">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>Event:</td>
+                                <td>{activity.name}</td>
+                            </tr>
+                            <tr>
+                                <td>Location: </td>
+                                <td>{address.alias}</td>
+                            </tr>
+                            <tr>
+                                <td>Price:</td>
+                                <td>{dateGroup.price}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    Dates:
+                    <DatesTable className="registration-dates-table" dates={dates}/>
+                </div>
+            </div>
+            <div className='payment-overview-container'>
+                <PaymentOverview dateGroup={{price: dateGroup.price,id: dateGroup.id,name: activity.name}} addons={this.props.addons} students={this.props.students}/>
             </div>
         </div>
     }
+}
+
+function PaymentOverviewRow(props){
+    return <tr>
+            <td>{props.name}</td>
+            <td>{props.student}</td>
+            <td>{props.type}</td>
+            <td>{props.price}$</td>
+        </tr>
+}
+
+
+function PaymentOverview(props){
+    const {dateGroup, addons, students} = props
+    let rows = [];
+    let total = 0;
+    let rowCount =0;
+    students.forEach((student) => {
+        rowCount++;
+        rows.push(<PaymentOverviewRow key={rowCount} type={'Event'} name={dateGroup.name} student={student.firstName + " " + student.lastName} price={dateGroup.price} />)
+        total+= dateGroup.price
+        addons.forEach((addon)=>{
+            rowCount++;
+            total+= addon.price
+            rows.push(<PaymentOverviewRow key={rowCount} type={'Add-on'} name={addon.name} student={student.firstName + " " + student.lastName} price={addon.price} />)
+        })
+    })
+    return <table className='payment-overview-table'>
+        <tbody>
+            <tr>
+                <th>Item</th>
+                <th>Student</th>
+                <th>Type</th>
+                <th>Price</th>
+            </tr>
+            {rows}
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Total: </th>
+                <th>{total}$</th>
+            </tr>
+        </tbody>
+    </table>
 }
 
 class RegistrationInner extends Component{
     constructor(props){
         super(props)
         this.state = {
-            selectedStudents:[],
+            students:[],
             addons:[],
             error:""
         }
@@ -155,7 +204,7 @@ class RegistrationInner extends Component{
     }
 
     setSelectedStudents = (students) =>{
-        this.setState({selectedStudents:students, error:""});
+        this.setState({students:students, error:""});
     }
 
     setSelectedAddons= (addons) =>{
@@ -165,7 +214,7 @@ class RegistrationInner extends Component{
     post = (event) =>{
         event.preventDefault();
         let mutation = '';
-        this.state.selectedStudents.forEach((student)=>{ mutation += this.template(this.genRandomId(), student) + `\n`});
+        this.state.students.forEach((student)=>{ mutation += this.template(this.genRandomId(), student) + `\n`});
         mutation = `mutation{
                     ${mutation}
                 }`
@@ -185,10 +234,10 @@ class RegistrationInner extends Component{
         const dateGroup = this.props.queryResult.allDateGroups.nodes[0]
         return <div className='registration-container'>
             <h2>Registration</h2>
-            <RegistrationEventInfo dateGroup={dateGroup} />
+            <RegistrationEventInfo dateGroup={dateGroup} addons={this.state.addons} students={this.state.students} />
             <span className='error'>{this.state.error}</span>
-            <StudentSelect multiSelect isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} user={userData}/>
-            <div>
+            <StudentSelect className='registration-section' multiSelect isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} user={userData}/>
+            <div className='registration-section'>
                 <h3>Add-ons</h3>
                 <div className='registration-addons-container'>
                     <MultiSelect multiSelect setSelected={this.setSelectedAddons} formatter={this.formatAddons} queryResult={dateGroup.addOnJoinsByDateGroup}>
@@ -196,7 +245,7 @@ class RegistrationInner extends Component{
                     </MultiSelect>
                 </div>
             </div>
-            <button className="continue-to-payment-btn" onClick={this.post}>Continue to Payment</button>
+            <Payment/>
         </div>
     }
 }
