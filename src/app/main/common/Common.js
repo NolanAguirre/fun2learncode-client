@@ -103,6 +103,13 @@ class MultiSelect extends Component {
         this.state = {selected:[]}
     }
 
+    shouldComponentUpdate(nextProps, nextState){
+        if(this.state != nextState || this.props.queryResult != nextProps.queryResult){
+            return true
+        }
+        return false
+    }
+
     toggle = async (newItem) =>{ // if props selected students returns false or nothing it updates
         if(!this.props.isValidChoice || await this.props.isValidChoice(newItem)){
             if(this.state.selected.includes(newItem)){
@@ -126,8 +133,9 @@ class MultiSelect extends Component {
     }
 
     render(){
+        console.log(this.state.selected)
         return this.props.formatter(this.props.queryResult).map((element) => {
-          const selected = this.state.selected.includes(element);
+          const selected = this.state.selected.filter((el)=>{return el.id === element.id}).length === 1
           return React.cloneElement(this.props.children, {key:element.id, selected, onClick:this.toggle, item:element})
         })
     }
