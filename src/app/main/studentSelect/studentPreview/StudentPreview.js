@@ -2,13 +2,7 @@ import React, { Component } from 'react'
 import './StudentPreview.css'
 
 function StudentPreview (props) {
-    let className;
-    if(props.selected){
-        className = 'selected-student-preview-container'
-    }else{
-        className = 'student-preview-container'
-    }
-  return  <div onClick={() => props.onClick(props.item)} className={className}>
+  return  <div onClick={props.onClick} className={props.className || 'addon-container'}>
         {props.item.firstName + ' ' + props.item.lastName}
     </div>
 }

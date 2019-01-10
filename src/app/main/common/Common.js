@@ -133,12 +133,19 @@ class MultiSelect extends Component {
     }
 
     render(){
-        console.log(this.state.selected)
-        return this.props.formatter(this.props.queryResult).map((element) => {
+        return this.props.items.map((element) => {
           const selected = this.state.selected.filter((el)=>{return el.id === element.id}).length === 1
-          return React.cloneElement(this.props.children, {key:element.id, selected, onClick:this.toggle, item:element})
+          return React.cloneElement(this.props.children, {key:element.id, selected, onClick:()=>{this.toggle(element)}, item:element})
         })
     }
 }
 
 export { MultiSelect }
+
+function Selectable(props){
+    const className = props.selected?props.className.selected:props.className.base
+    console.log(props)
+    return React.cloneElement(props.children, {className, key:props.key, onClick:props.onClick, item:props.item})
+}
+
+export {Selectable}

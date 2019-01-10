@@ -8,7 +8,7 @@ import DateTime from 'react-datetime';
 import moment from 'moment'
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
-import {MultiSelect} from '../common/Common'
+import {MultiSelect, Selectable} from '../common/Common'
 
 const GET_STUDENTS_BY_PARENT =  `{
   allStudents(condition:{parent:"3025bed9-fa08-4753-87c2-2a9e2fdb3efd"}){
@@ -123,16 +123,24 @@ class StudentForm extends Component{
 
 }
 
+function StudentSelectInner(props){
+    return <MultiSelect items={props.queryResult.allStudents.nodes} {...props}>
+        <Selectable className={{selected:'selected-student-preview-container', base: 'student-preview-container'}}>
+            <StudentPreview />
+         </Selectable>
+    </MultiSelect>
+}
+
 function StudentSelect(props) {
     return <div className={props.className||'student-select-container'}>
             <h3>{(props.multiSelect)?'Select students':'Select a student'}</h3>
-          <div className='students-container'>
-            <ReactQuery query={GET_STUDENTS_BY_PARENT}>
-                    <MultiSelect formatter={(queryResult)=>{return queryResult.allStudents.nodes}} {...props}>
-                        <StudentPreview />
-                    </MultiSelect>
-            </ReactQuery>
-            <StudentForm client={props.client} parentId={props.user.id}/>
+            <div className='student-container-scroll'>
+                <div className='students-container'>
+                  <ReactQuery query={GET_STUDENTS_BY_PARENT}>
+                      <StudentSelectInner {...props}/>
+                  </ReactQuery>
+                  <StudentForm client={props.client} parentId={props.user.id}/>
+              </div>
         </div>
   </div>
 }

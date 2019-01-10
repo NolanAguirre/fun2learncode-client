@@ -64,13 +64,7 @@ const GET_DATE_GROUP_INFO_BY_ID = (id) => {
 }`}
 
 function Addon(props) {
-    let className;
-    if(props.selected){
-        className = 'addon-container-selected'
-    }else{
-        className = 'addon-container'
-    }
-  return  <div onClick={() => props.onClick(props.item)} className={className}>
+  return  <div onClick={props.onClick} className={props.className || 'addon-container'}>
         <h3>{props.item.name}</h3>
         <div className='addon-container-description'>
             {props.item.description}
@@ -89,6 +83,7 @@ class RegistrationEventInfo extends Component{
         const dateGroup = this.props.dateGroup
         const event = dateGroup.eventByEvent;
         const activity = event.activityByEventType;
+        const prerequisites = activity.activityPrerequisitesByActivity.nodes.map(prereq=>prereq.activityByPrerequisite.name)
         const dates = dateGroup.datesJoinsByDateGroup;
         const address = dateGroup.addressByAddress;
         return <div className='registration-info-section'>
@@ -240,8 +235,10 @@ class RegistrationInner extends Component{
             <div className='registration-section'>
                 <h3>Add-ons</h3>
                 <div className='registration-addons-container'>
-                    <MultiSelect multiSelect setSelected={this.setSelectedAddons} formatter={this.formatAddons} queryResult={dateGroup.addOnJoinsByDateGroup}>
-                        <Addon />
+                    <MultiSelect multiSelect setSelected={this.setSelectedAddons} items={this.formatAddons(dateGroup.addOnJoinsByDateGroup)}>
+                        <Selectable className={{selected:'addon-container-selected', base:'addon-container'}}>
+                            <Addon />
+                        </Selectable>
                     </MultiSelect>
                 </div>
             </div>
