@@ -14,9 +14,11 @@ class DelvReact extends Component {
         }
 
     }
+
     componentDidMount = () => {
         Delv.config({...this.props.config, onReady:this.isReady})
     }
+
     isReady = () => {
         this.setState({isReady:true})
     }
@@ -46,7 +48,8 @@ class ReactQuery extends Component {
             networkPolicy:this.props.networkPolicy,
             onFetch:this.onFetch,
             onResolve: this.onResolve,
-            onError:this.onError
+            onError:this.onError,
+            formatResult:props.formatResult
         })
     }
 
@@ -69,7 +72,8 @@ class ReactQuery extends Component {
                 networkPolicy:this.props.networkPolicy,
                 onFetch:this.onFetch,
                 onResolve: this.onResolve,
-                onError:this.onError
+                onError:this.onError,
+                formatResult:props.formatResult
             })
             this.query.query();
         }

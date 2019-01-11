@@ -6,7 +6,7 @@ const gql = require('graphql-tag')
 var _ = require('lodash');
 
 class Query {
-    constructor({query, variables, networkPolicy, onFetch, onResolve, onError}) {
+    constructor({query, variables, networkPolicy, onFetch, onResolve, onError, formatResult}) {
         this.q = query
         this.variables = variables
         this.networkPolicy = networkPolicy || 'network-once'
@@ -14,6 +14,7 @@ class Query {
         this.resolve = onResolve
         this.error = onError
         this.resolved = true
+        this.format = formatResult
         this.id = '_' + Math.random().toString(36).substr(2, 9)
         this.types = [];
         this.mapTypes()
@@ -50,7 +51,11 @@ class Query {
 
     onResolve = (data) => {
         if(this.resolve){
-            this.resolve(data)
+            if(this.format){
+                this.resolve(this.format(data))
+            }else{
+                this.resolve(data)
+            }
         }
         this.resolved = true;
     }
