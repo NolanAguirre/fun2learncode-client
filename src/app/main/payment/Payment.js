@@ -47,12 +47,36 @@ class PaymentInformationEntry extends Component{
         super(props)
     }
 
+        handleSubmit = (event) => {
+            event.preventDefault();
+        }
+
     render = () => {
-        return <div>
-        <CardNumberElement className='card-number-element' {...createStripeStyle('18px', '10px')}/>
-        <CardExpiryElement className="card-expiry-element" />
-        <CardCVCElement />
-        <PostalCodeElement />
+        return <div className='payment-container'>
+            <h3>Total: {this.props.total}</h3>
+            <form className='sign-up-form'>
+                Card number
+              <CardNumberElement className='sign-up-form-input' {...createStripeStyle('18px', '10px')}/>
+              <div className='sign-up-input-container'>
+                  <div className='edge-margin'>
+                      Expiry date
+                      <CardExpiryElement className='sign-up-form-input-small '  {...createStripeStyle('18px', '10px')}/>
+                  </div>
+                  <div className='edge-margin'>
+                      Security Code
+                      <CardCVCElement className='edge-padding sign-up-form-input-small' {...createStripeStyle('18px', '10px')}/>
+                  </div>
+              </div>
+              <div className='sign-up-input-container'>
+                  <div>
+                      ZIP/Postal code
+                      <PostalCodeElement className='sign-up-form-input-small' {...createStripeStyle('18px', '10px')}/>
+                  </div>
+              </div>
+              <div>
+                  <button type='submit' className='login-form-btn' onClick={this.handleSubmit}>Submit</button>
+              </div>
+          </form>
       </div>
     }
 }
@@ -68,7 +92,9 @@ class Payment extends Component {
 
     }
     showPopup = () => {
+
         this.setState({showPopup: true});
+
     }
 
     clearPopupState = () => {
@@ -83,7 +109,7 @@ class Payment extends Component {
                 <div className='payment-overview-container'>
                     <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
                         <Elements>
-                            <PaymentInfoEntry />
+                            <PaymentInfoEntry total={this.props.total}/>
                         </Elements>
                     </StripeProvider>
                 </div>
