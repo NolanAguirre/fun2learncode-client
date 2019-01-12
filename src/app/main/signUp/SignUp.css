@@ -5,17 +5,11 @@
 
 .sign-up-input-container{
     display:flex;
-}
-.sign-up-input-container input:first-child{
-    margin-right: 5px;
-}
-.sign-up-input-container input:last-child{
-    margin-left: 5px;
+    margin-top: 40px;
 }
 
 .sign-up-form-input-small {
     width:200px;
-    margin-top: 40px;
     display: block;
     height: 30px;
     padding: .5rem .75rem;
@@ -32,7 +26,6 @@
 .sign-up-form-input {
     width:100%;
     box-sizing: border-box;
-    margin-top: 5px;
     display: block;
     height: 50px;
     padding: .5rem .75rem;

@@ -157,12 +157,12 @@ class CreateAccount extends Component{
           <form className='sign-up-form'>
             <input className='sign-up-form-input' name='email' type='email' onChange={this.handleChange} placeholder='email' />
             <div className='sign-up-input-container'>
-                <input className='sign-up-form-input-small' name='firstName' onChange={this.handleChange} placeholder='first name' />
-                <input className='sign-up-form-input-small' name='lastName' onChange={this.handleChange} placeholder='last name' />
+                <input className='sign-up-form-input-small edge-margin' name='firstName' onChange={this.handleChange} placeholder='first name' />
+                <input className='sign-up-form-input-small edge-margin' name='lastName' onChange={this.handleChange} placeholder='last name' />
             </div>
             <div className='sign-up-input-container'>
-                <input className='sign-up-form-input-small' name='password' type='password' onChange={this.handleChange} placeholder='password' />
-                <input className='sign-up-form-input-small' name='repeatPassword' type='password' onChange={this.handleChange} placeholder='repeat password' />
+                <input className='sign-up-form-input-small edge-margin' name='password' type='password' onChange={this.handleChange} placeholder='password' />
+                <input className='sign-up-form-input-small edge-margin' name='repeatPassword' type='password' onChange={this.handleChange} placeholder='repeat password' />
             </div>
             {this.props.children?React.cloneElement(this.props.children, {handleChange:this.handleChange}):''}
             <div>
