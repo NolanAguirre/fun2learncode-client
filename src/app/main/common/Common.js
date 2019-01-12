@@ -38,13 +38,13 @@ function DropDown (props) {
 export { DropDown }
 
 function SecureRouteInner(props){
-    if(props.queryResult.getUserData && props.roles.includes(props.queryResult.getUserData.role)){
+    if(props.getUserData && props.roles.includes(props.getUserData.role)){
         if(props.ignoreResult){
             return props.children
         }
-        return React.Children.map(props.children, (child)=>React.cloneElement(child, {queryResult:props.queryResult}))
+        return React.Children.map(props.children, (child)=>React.cloneElement(child, {getUserData:props.getUserData}))
     }else if(props.unauthorized){
-        return React.cloneElement(props.unauthorized, {queryResult:props.queryResult})
+        return React.cloneElement(props.unauthorized, {getUserData:props.getUserData})
     }
     return <div>please login</div>
 }
@@ -104,7 +104,7 @@ class MultiSelect extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        if(this.state != nextState || this.props.queryResult != nextProps.queryResult){
+        if(this.state != nextState || this.props.items != nextProps.items){
             return true
         }
         return false
@@ -144,7 +144,6 @@ export { MultiSelect }
 
 function Selectable(props){
     const className = props.selected?props.className.selected:props.className.base
-    console.log(props)
     return React.cloneElement(props.children, {className, key:props.key, onClick:props.onClick, item:props.item})
 }
 

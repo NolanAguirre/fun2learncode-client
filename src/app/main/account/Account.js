@@ -19,7 +19,7 @@ class AccountInner extends Component{
     }
 
     render = () => {
-        return <div>{JSON.stringify(this.props.queryResult)}</div>
+        return <div>{JSON.stringify(this.props.getUserData)}</div>
     }
 }
 

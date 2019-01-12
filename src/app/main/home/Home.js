@@ -15,7 +15,7 @@ const GET_ACTIVITIES = `{
 }`
 
 function HomeInner(props){
-    return props.queryResult.allActivityCatagories.nodes.map((element) => {
+    return props.allActivityCatagories.nodes.map((element) => {
       return <Section name={element.name} description={element.description} key={element.id} />
     })
 }

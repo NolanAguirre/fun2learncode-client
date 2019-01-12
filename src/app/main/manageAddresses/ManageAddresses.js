@@ -187,7 +187,7 @@ class ManageAddressesInner extends Component {
 
   }
   render = () => {
-    const addresses = this.props.queryResult.allAddresses.nodes.map((address) => <ManageAddressForm mutation={UPDATE_ADDRESS} key={address.id} id={address.id} zipcode={address.zipcode} city={address.city} street={address.street} state={address.state} alias={address.alias} />)
+    const addresses = this.props.allAddresses.nodes.map((address) => <ManageAddressForm mutation={UPDATE_ADDRESS} key={address.id} id={address.id} zipcode={address.zipcode} city={address.city} street={address.street} state={address.state} alias={address.alias} />)
     console.log(addresses.length)
     return <div className="manage-addresses-container">
         <div className="manage-addresses-header">

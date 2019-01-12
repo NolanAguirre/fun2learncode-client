@@ -210,7 +210,7 @@ class DragAndDropMutationInner extends Component{
             return startTimeMatch && endTimeMatch;
         }
 
-        let dateGroups = this.props.queryResult.allEvents.nodes.map((event) => {
+        let dateGroups = this.props.allEvents.nodes.map((event) => {
             return event.dateGroupsByEvent.nodes.map((dateGroup) => dateGroup)
         }).reduce((acc, val) => acc.concat(val), []) //reduce flattens array
         .map((dateGroup) => {

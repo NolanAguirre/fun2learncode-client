@@ -273,8 +273,8 @@ class DateGroupFormInner extends Component {
     })
 
     render() {
-        const addresses = this.mapAddresses(this.props.queryResult.allAddresses);
-        const addonOptions = this.mapAddons(this.props.queryResult.allAddOns);
+        const addresses = this.mapAddresses(this.props.allAddresses);
+        const addonOptions = this.mapAddons(this.props.allAddOns);
         const addons = this.props.addOnJoinsByDateGroup && this.props.addOnJoinsByDateGroup.nodes.map(addon => addon)
         return <div className="date-form">
             <h4>Create/Edit Date Group</h4>

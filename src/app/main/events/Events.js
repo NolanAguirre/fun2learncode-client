@@ -47,7 +47,7 @@ const GET_EVENTS_OF_TYPE = (id) => {
 
 function EventsInner(props) { // TODO group this by address so i dont have to load multiple maps
     console.log(Cache.cache)
-    let events = props.queryResult.allEvents.nodes.map((event) => { // this creates event
+    let events = props.allEvents.nodes.map((event) => { // this creates event
       return event.dateGroupsByEvent.nodes.map((dateGroups) => { // if the event has no dates, it is not displayed
         let dates = dateGroups.datesJoinsByDateGroup;
         if (dates.nodes.length === 0) {

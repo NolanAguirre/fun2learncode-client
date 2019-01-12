@@ -124,7 +124,7 @@ class StudentForm extends Component{
 }
 
 function StudentSelectInner(props){
-    return <MultiSelect items={props.queryResult.allStudents.nodes} {...props}>
+    return <MultiSelect items={props.allStudents.nodes} {...props}>
         <Selectable className={{selected:'selected-student-preview-container', base: 'student-preview-container'}}>
             <StudentPreview />
          </Selectable>
@@ -132,17 +132,15 @@ function StudentSelectInner(props){
 }
 
 function StudentSelect(props) {
-    return <div className={props.className||'student-select-container'}>
+    return <div className={'student-select-container'}>
             <h3>{(props.multiSelect)?'Select students':'Select a student'}</h3>
-            <div className='student-container-scroll'>
                 <div className='students-container'>
                   <ReactQuery query={GET_STUDENTS_BY_PARENT}>
                       <StudentSelectInner {...props}/>
                   </ReactQuery>
                   <StudentForm client={props.client} parentId={props.user.id}/>
               </div>
-        </div>
-  </div>
+          </div>
 }
 
 export default StudentSelect

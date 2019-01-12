@@ -17,7 +17,7 @@ const GET_USER_DATA = `{
 
 function NavBarInner(props) {
     const admins = ['FTLC_OWNER', 'FTLC_LEAD_INSTRUCTOR', 'FTLC_ADMIN']
-    const user = props.queryResult.getUserData
+    const user = props.getUserData
     const routeNames = [
         {
             name: 'Home',

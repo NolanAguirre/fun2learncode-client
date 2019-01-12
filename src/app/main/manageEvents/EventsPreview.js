@@ -207,7 +207,7 @@ class Event extends Component {
 }
 
 function DateGroupInfoInner(props) {
-    const dateGroup = props.queryResult.allDateGroups.nodes[0];
+    const dateGroup = props.allDateGroups.nodes[0];
     if(!dateGroup){
         return <div></div>
     }
@@ -254,10 +254,10 @@ function DateGroupInfo(props){
 }
 
 function EventsPreviewInner (props) {
-  if (!props.queryResult.allEvents) {
+  if (!props.allEvents) {
     return <div>is broken</div>
   }
-  return props.queryResult.allEvents.nodes.map((element) => { return React.cloneElement(props.children, { key: element.id, event: element }) })
+  return props.allEvents.nodes.map((element) => { return React.cloneElement(props.children, { key: element.id, event: element }) })
 }
 
 function EventsPreview (props) {

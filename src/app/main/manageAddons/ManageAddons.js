@@ -163,8 +163,8 @@ class ManageAddonsInner extends Component {
     this.setState({ [name]: value })
   }
   render = () => {
-      console.log(this.props.queryResult)
-    const addons = this.props.queryResult.allAddOns.nodes.map((addon) =><ManageAddonForm mutation={UPDATE_ADDON} key={addon.id} price={addon.price} id={addon.id} name={addon.name} description={addon.description} />)
+      console.log(this.props)
+    const addons = this.props.allAddOns.nodes.map((addon) =><ManageAddonForm mutation={UPDATE_ADDON} key={addon.id} price={addon.price} id={addon.id} name={addon.name} description={addon.description} />)
     return <div className="manage-addresses-container">
         <div className="manage-addresses-header">
             <ManageAddonForm mutation={CREATE_ADDON} name={"New Addon"} />

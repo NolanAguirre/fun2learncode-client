@@ -186,7 +186,7 @@ class EventFormInner extends Component {
     }
 
     render = () => {
-        const eventTypes = this.mapEventTypes(this.props.queryResult.allActivities);
+        const eventTypes = this.mapEventTypes(this.props.allActivities);
         return <form onSubmit={this.mutation.onSubmit}>
             <table>
                 <tbody>

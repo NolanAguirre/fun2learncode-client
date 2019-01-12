@@ -144,8 +144,8 @@ class ManageUsersInner extends Component {
     this.setState({ [name]: value })
   }
   render = () => {
-      console.log(this.props.queryResult)
-    const users = this.props.queryResult.allUsers.nodes.map((user) =><ManageUserForm mutation={UPDATE_USER} key={user.id} id={user.id} firstName={user.firstName} lastName={user.lastName} />)
+      console.log(this.props)
+    const users = this.props.allUsers.nodes.map((user) =><ManageUserForm mutation={UPDATE_USER} key={user.id} id={user.id} firstName={user.firstName} lastName={user.lastName} />)
     return <div className="manage-addresses-container">
         <GridView className="manage-addresses-body" childStyle={'manage-address-form-container'} itemsPerRow={5}>{users}</GridView>
     </div>

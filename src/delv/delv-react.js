@@ -73,7 +73,7 @@ class ReactQuery extends Component {
                 onFetch:this.onFetch,
                 onResolve: this.onResolve,
                 onError:this.onError,
-                formatResult:props.formatResult
+                formatResult:this.props.formatResult
             })
             this.query.query();
         }
@@ -100,6 +100,7 @@ class ReactQuery extends Component {
     }
 
     render = () => {
+        console.log('rerending query' + this.query.id)
         if (this.state.queryResult === '') {
             if (this.props.loading) {
                 return this.props.loading
@@ -107,8 +108,7 @@ class ReactQuery extends Component {
             return <div>loading</div>
         }
         return React.cloneElement(this.props.children, {
-            queryResult: this.state.queryResult,
-            delv:this.props
+            ...this.state.queryResult
         })
     }
 }

@@ -333,9 +333,9 @@ class ManageActivitiesInner extends Component {
         })
 
     render = () => {
-        console.log(this.props.queryResult)
-            const types = this.mapTypes(this.props.queryResult.allActivityCatagories);
-            const activities = this.mapActivities(this.props.queryResult.allActivities);
+        console.log(this.props)
+            const types = this.mapTypes(this.props.allActivityCatagories);
+            const activities = this.mapActivities(this.props.allActivities);
             return <React.Fragment>
                 <ManageActivitiesForm mutation={CREATE_ACTIVITY} name={"New Activity"} types={types}/>
                 {activities.map((activity)=>{

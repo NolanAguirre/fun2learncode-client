@@ -35,9 +35,9 @@ const GET_ACTIVITIES_IN_CATAGORY = (name) => {
 }`}
 
 function ActivitiesInner(props) {
-    const activities = props.queryResult.allActivityCatagories.nodes[0].activitiesByType.nodes;
+    const activities = props.allActivityCatagories.nodes[0].activitiesByType.nodes;
     if (activities.length == 0) {
-        return <div>We currently aren't offering any {props.queryResult.allActivityCatagories.nodes[0].name.toLowerCase()}.</div>
+        return <div>We currently aren't offering any {props.allActivityCatagories.nodes[0].name.toLowerCase()}.</div>
     }
     return activities.map((element) => {
         let prerequisites = element.activityPrerequisitesByActivity.nodes.map((prerequisite) => prerequisite.activityByPrerequisite.name)
