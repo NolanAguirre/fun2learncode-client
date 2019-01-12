@@ -1,0 +1,29 @@
+.addon-container {
+    display:flex;
+    flex-direction: column;
+    max-width: 150px;
+    text-align:center;
+    padding:10px 20px;
+    margin:0 10px;
+    border-radius: 20px;
+    border: 2px solid green;
+    flex: 0 0 auto;
+}
+
+.addon-container-selected{
+    color:white;
+    background-color: green;
+    display:flex;
+    flex-direction: column;
+    max-width: 150px;
+    text-align:center;
+    padding:10px 20px;
+    margin:0 10px;
+    border-radius: 20px;
+    border: 2px solid green;
+    flex: 0 0 auto;
+}
+
+.addon-container-description{
+    flex:1;
+}

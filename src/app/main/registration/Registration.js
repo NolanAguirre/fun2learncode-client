@@ -2,11 +2,15 @@ import React, { Component } from 'react'
 import './Registration.css'
 import Login from '../login/Login'
 import StudentSelect from '../studentSelect/StudentSelect'
-import {SecureRoute, DatesTable, MultiSelect} from '../common/Common'
+import AddonSelect from '../addonSelect/AddonSelect'
+import PaymentOverview from '../paymentOverview/PaymentOverview'
+import FullEvent from '../events/event/FullEvent';
+import {SecureRoute, DatesTable, MultiSelect, Selectable} from '../common/Common'
 import {ReactQuery} from '../../../delv/delv-react'
 import Mutation from '../../../delv/Mutation'
 import Delv from '../../../delv/delv'
 import Payment from '../payment/Payment'
+
 const GET_DATE_GROUP_INFO_BY_ID = (id) => {
     return `{
   allDateGroups(condition:{id: "${id}"}) {
@@ -57,106 +61,22 @@ const GET_DATE_GROUP_INFO_BY_ID = (id) => {
           name
           id
           nodeId
+          activityPrerequisitesByActivity{
+            nodes{
+              nodeId
+              id
+              activityByPrerequisite{
+                nodeId
+                id
+                name
+              }
+            }
+          }
         }
       }
     }
   }
 }`}
-
-function Addon(props) {
-  return  <div onClick={props.onClick} className={props.className || 'addon-container'}>
-        <h3>{props.item.name}</h3>
-        <div className='addon-container-description'>
-            {props.item.description}
-        </div>
-        <div>
-            {props.item.price}$
-        </div>
-      </div>
-}
-
-class RegistrationEventInfo extends Component{
-    constructor(props){
-        super(props);
-    }
-    render(){
-        const dateGroup = this.props.dateGroup
-        const event = dateGroup.eventByEvent;
-        const activity = event.activityByEventType;
-        const prerequisites = activity.activityPrerequisitesByActivity.nodes.map(prereq=>prereq.activityByPrerequisite.name)
-        const dates = dateGroup.datesJoinsByDateGroup;
-        const address = dateGroup.addressByAddress;
-        return <div className='registration-info-section'>
-            <div className="registration-event-info">
-                <h3>Event Information</h3>
-                <div className="registration-info-tables-container">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Event:</td>
-                                <td>{activity.name}</td>
-                            </tr>
-                            <tr>
-                                <td>Location: </td>
-                                <td>{address.alias}</td>
-                            </tr>
-                            <tr>
-                                <td>Price:</td>
-                                <td>{dateGroup.price}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    Dates:
-                    <DatesTable className="registration-dates-table" dates={dates}/>
-                </div>
-            </div>
-            <div className='payment-overview-container'>
-                <PaymentOverview dateGroup={{price: dateGroup.price,id: dateGroup.id,name: activity.name}} addons={this.props.addons} students={this.props.students}/>
-            </div>
-        </div>
-    }
-}
-
-function PaymentOverviewRow(props){
-    return <tr>
-            <td>{props.student}</td>
-            <td>{props.name}</td>
-            <td>{props.price}$</td>
-        </tr>
-}
-
-
-function PaymentOverview(props){
-    const {dateGroup, addons, students} = props
-    let rows = [];
-    let total = 0;
-    let rowCount =0;
-    students.forEach((student) => {
-        rowCount++;
-        rows.push(<PaymentOverviewRow key={rowCount} type={'Event'} name={dateGroup.name} student={student.firstName + " " + student.lastName} price={dateGroup.price} />)
-        total+= dateGroup.price
-        addons.forEach((addon)=>{
-            rowCount++;
-            total+= addon.price
-            rows.push(<PaymentOverviewRow key={rowCount} type={'Add-on'} name={addon.name} student={student.firstName + " " + student.lastName} price={addon.price} />)
-        })
-    })
-    return<div>
-         <table className='responsive-table'>
-        <tbody>
-            <thead>
-            <tr>
-                <th>Student</th>
-                <th>Item</th>
-                <th>Price</th>
-            </tr>
-        </thead>
-            {rows}
-        </tbody>
-    </table>
-    <span>Total: {total}$</span>
-</div>
-}
 
 class RegistrationInner extends Component{
     constructor(props){
@@ -166,7 +86,7 @@ class RegistrationInner extends Component{
             addons:[],
             error:""
         }
-        this.template = (name, student) => `${name}:createEventRegistration(input: {eventRegistration: {registeredBy: "${this.props.queryResult.getUserData.id}", student: "${student.id}", dateGroup: "${this.props.match.params.id}"}}) {
+        this.template = (name, student) => `${name}:createEventRegistration(input: {eventRegistration: {registeredBy: "${this.props.getUserData.id}", student: "${student.id}", dateGroup: "${this.props.dateGroupId}"}}) {
     eventRegistration {
       nodeId
       studentByStudent {
@@ -181,7 +101,7 @@ class RegistrationInner extends Component{
 
     checkPrerequisites = (student) => {
         let query = `{
-	               checkPrerequisites(arg0:"${this.props.match.params.id}",arg1:"${student.id}")
+	               checkPrerequisites(arg0:"${this.props.dateGroupId}",arg1:"${student.id}")
                }`
         return Delv.post(query).then((res)=>{
             if(!res.data.data.checkPrerequisites){
@@ -217,39 +137,62 @@ class RegistrationInner extends Component{
 
     }
 
-    formatAddons = (queryResult) =>{
-        return queryResult.nodes.map(element=>element.addOnByAddOn)
-    }
-
     render = () =>{
-        const userData = this.props.delv.queryResult.getUserData
-        const dateGroup = this.props.queryResult.allDateGroups.nodes[0]
+
         return <div className='registration-container'>
             <h2>Registration</h2>
-            <RegistrationEventInfo dateGroup={dateGroup} addons={this.state.addons} students={this.state.students} />
-            <span className='error'>{this.state.error}</span>
-            <StudentSelect className='registration-section' multiSelect isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} user={userData}/>
-            <div className='registration-section'>
-                <h3>Add-ons</h3>
-                <div className='registration-addons-container'>
-                    <MultiSelect multiSelect setSelected={this.setSelectedAddons} items={this.formatAddons(dateGroup.addOnJoinsByDateGroup)}>
-                        <Selectable className={{selected:'addon-container-selected', base:'addon-container'}}>
-                            <Addon />
-                        </Selectable>
-                    </MultiSelect>
+            <div className='registration-info-container'>
+                <div className='registration-info-section'>
+                    <FullEvent dateGroup={this.props.dateGroup}
+                                activity={this.props.activity}
+                                address={this.props.address}
+                                prerequisites={this.props.prerequisites}
+                                dates={this.props.dates}/>
                 </div>
+                <div className='registration-info-section'>
+                   <PaymentOverview dateGroup={{price: this.props.dateGroup.price,id: this.props.dateGroup.id,name: this.props.activity.name}} addons={this.state.addons} students={this.state.students}/>
+               </div>
             </div>
+            <span className='error'>{this.state.error}</span>
+            <StudentSelect multiSelect isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} user={this.props.getUserData}/>
+            <AddonSelect multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
             <Payment/>
         </div>
     }
 }
 
+function RegistrationInbetween(props){
+    function formatResult(queryResult){
+        const dateGroup = queryResult.allDateGroups.nodes[0]
+        const addons =  dateGroup.addOnJoinsByDateGroup.nodes.map(element=>element.addOnByAddOn)
+        const event = dateGroup.eventByEvent;
+        const activity = event.activityByEventType;
+        const dates = dateGroup.datesJoinsByDateGroup;
+        const address = dateGroup.addressByAddress;
+        const prerequisites = activity.activityPrerequisitesByActivity.nodes.map((prereq) => {return prereq.activityByPrerequisite})
+        return {
+            dateGroup,
+            addons,
+            event,
+            activity,
+            dates,
+            address,
+            prerequisites
+        }
+    }
+    return <ReactQuery formatResult={formatResult} query={GET_DATE_GROUP_INFO_BY_ID(props.match.params.id)}>
+        <RegistrationInner dateGroupId={props.match.params.id} getUserData={props.getUserData}/>
+    </ReactQuery>
+}
+
+
 function Registration(props){
     const login = <Login history={props.history} redirectUrl={props.location.pathname} />
+
+
+
     return <SecureRoute unauthorized={login} roles={["FTLC_USER"]}>
-            <ReactQuery query={GET_DATE_GROUP_INFO_BY_ID(props.match.params.id)}>
-                <RegistrationInner {...props}/>
-            </ReactQuery>
+            <RegistrationInbetween {...props}/>
         </SecureRoute>
 }
 
