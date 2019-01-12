@@ -79,6 +79,16 @@ class ReactQuery extends Component {
         }
     }
 
+    shouldComponentUpdate(nextProps, nextState){
+        if(this.state === nextState && nextProps.query === this.props.query){
+            return false
+        }
+        if(this.state.queryResult === '' && nextState.queryResult === '' && nextProps.loading == this.props.loading){
+            return false
+        }
+        return true
+    }
+
     onFetch = (promise) => {
         this.setState({queryResult: ''})
         if(this.props.onFetch){
@@ -100,7 +110,6 @@ class ReactQuery extends Component {
     }
 
     render = () => {
-        console.log('rerending query' + this.query.id)
         if (this.state.queryResult === '') {
             if (this.props.loading) {
                 return this.props.loading
