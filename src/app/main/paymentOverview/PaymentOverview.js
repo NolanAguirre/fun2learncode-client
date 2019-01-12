@@ -25,7 +25,7 @@ function PaymentOverview(props){
             rows.push(<PaymentOverviewRow key={rowCount} type={'Add-on'} name={addon.name} student={student.firstName + " " + student.lastName} price={addon.price} />)
         })
     })
-
+    props.totalChange(total);
     return <div className='payment-overview-container'>
         <h3>Payment Summery</h3>
              <table className='responsive-table custom-scrollbar'>

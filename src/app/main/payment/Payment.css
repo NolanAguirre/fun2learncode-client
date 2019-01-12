@@ -1,9 +1,18 @@
 .payment-overview-popup{
     width:40% !important;
 }
-
+.submit-payment-btn{
+    padding: 13px 40px;
+    margin-top: 20px;
+    width:226px;
+}
 .payment-container{
     padding:20px 40px;
+}
+
+.payment-container h1{
+    text-align: center;
+    margin:0px;
 }
 .edge-margin:first-child{
     margin-right: 5px;

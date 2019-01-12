@@ -45,15 +45,17 @@ const createStripeStyle= (fontSize, padding) => {
 class PaymentInformationEntry extends Component{
     constructor(props){
         super(props)
+        this.state = {};
     }
 
-        handleSubmit = (event) => {
-            event.preventDefault();
-        }
+    handleSubmit = (event) => {
+        event.preventDefault();
+    }
 
     render = () => {
         return <div className='payment-container'>
-            <h3>Total: {this.props.total}</h3>
+            <h1>Total: {this.props.total}$</h1>
+            <span className='error'>{this.state.error}</span>
             <form className='sign-up-form'>
                 Card number
               <CardNumberElement className='sign-up-form-input' {...createStripeStyle('18px', '10px')}/>
@@ -68,13 +70,13 @@ class PaymentInformationEntry extends Component{
                   </div>
               </div>
               <div className='sign-up-input-container'>
-                  <div>
+                  <div className='edge-margin'>
                       ZIP/Postal code
                       <PostalCodeElement className='sign-up-form-input-small' {...createStripeStyle('18px', '10px')}/>
                   </div>
-              </div>
-              <div>
-                  <button type='submit' className='login-form-btn' onClick={this.handleSubmit}>Submit</button>
+                  <div className='edge-margin'>
+                       <button type='submit' className='submit-payment-btn' onClick={this.handleSubmit}>Submit</button>
+                  </div>
               </div>
           </form>
       </div>
@@ -91,9 +93,9 @@ class Payment extends Component {
         }
 
     }
-    showPopup = () => {
 
-        this.setState({showPopup: true});
+    showPopup = (total) => {
+        this.setState({showPopup: true, total});
 
     }
 
@@ -109,12 +111,12 @@ class Payment extends Component {
                 <div className='payment-overview-container'>
                     <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
                         <Elements>
-                            <PaymentInfoEntry total={this.props.total}/>
+                            <PaymentInfoEntry total={this.state.total}/>
                         </Elements>
                     </StripeProvider>
                 </div>
             </Popup>
-            <button className="continue-to-payment-btn" onClick={this.showPopup}> Continue to Payment</button>
+            <button className="continue-to-payment-btn" onClick={()=>{this.showPopup(this.props.getTotal())}}> Continue to Payment</button>
         </React.Fragment>
     }
 }

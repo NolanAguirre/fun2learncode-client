@@ -137,6 +137,10 @@ class RegistrationInner extends Component{
 
     }
 
+    totalChange = (total) => {
+        this.total = total;
+    }
+
     render = () =>{
 
         return <div className='registration-container'>
@@ -150,13 +154,13 @@ class RegistrationInner extends Component{
                                 dates={this.props.dates}/>
                 </div>
                 <div className='registration-info-section'>
-                   <PaymentOverview dateGroup={{price: this.props.dateGroup.price,id: this.props.dateGroup.id,name: this.props.activity.name}} addons={this.state.addons} students={this.state.students}/>
+                   <PaymentOverview totalChange={this.totalChange} dateGroup={{price: this.props.dateGroup.price,id: this.props.dateGroup.id,name: this.props.activity.name}} addons={this.state.addons} students={this.state.students}/>
                </div>
             </div>
             <span className='error'>{this.state.error}</span>
             <StudentSelect multiSelect isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} user={this.props.getUserData}/>
             <AddonSelect multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
-            <Payment/>
+            <Payment getTotal={()=>{return this.total}}/>
         </div>
     }
 }
