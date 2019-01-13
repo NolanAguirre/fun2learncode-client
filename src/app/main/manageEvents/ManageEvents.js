@@ -7,7 +7,7 @@ import DateGroupForm from './DateGroupForm';
 import {SecureRoute} from '../common/Common'
 import {Event, DateGroup, EventsPreview, DateGroupInfo} from './EventsPreview';
 
-class ManageEvents extends Component {
+class ManageEventsInner extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,9 +17,11 @@ class ManageEvents extends Component {
     }
     setActiveDateGroup = (dateGroup) =>{
         if(dateGroup.id != this.state.activeDateGroup.id){
+            console.log(dateGroup)
             this.setState({
-                activeDateGroup:dateGroup
+                activeDateGroup:{...dateGroup}
             });
+            console.log(this.state.activeDateGroup)
         }
     }
 
@@ -30,26 +32,29 @@ class ManageEvents extends Component {
     }
 
     render() {
-        return (<SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
-                     <div className="manage-events-container">
-                            <EventsPreview>
-                                 <Event>
-                                     <DateGroup activeDateGroup={this.state.activeDateGroup} setActiveDateGroup={this.setActiveDateGroup}/>
-                                     <DateGroupForm>
-                                         <button className='create-date-group-btn' >New Group</button>
-                                     </DateGroupForm>
-                                 </Event>
-                            </EventsPreview>
-                            <div className="manage-events-main">
-                                <div className="manage-events-event-form">
-                                    <EventForm/>
-                                    <DateGroupInfo activeDateGroup={this.state.activeDateGroup} />
-                                </div>
-                                    <DragAndDropMutation setActiveDateGroup={this.setActiveDateGroup} activeDateGroup={this.state.activeDateGroup}/>
-                            </div>
+        return (<div className="manage-events-container">
+                    <EventsPreview>
+                         <Event>
+                             <DateGroup activeDateGroup={this.state.activeDateGroup} setActiveDateGroup={this.setActiveDateGroup}/>
+                             <DateGroupForm>
+                                 <button className='create-date-group-btn' >New Group</button>
+                             </DateGroupForm>
+                         </Event>
+                    </EventsPreview>
+                    <div className="manage-events-main">
+                        <div className="manage-events-event-form">
+                            <EventForm/>
+                            <DateGroupInfo activeDateGroup={this.state.activeDateGroup} />
                         </div>
-                </SecureRoute>
-        );
+                            <DragAndDropMutation setActiveDateGroup={this.setActiveDateGroup} activeDateGroup={this.state.activeDateGroup}/>
+                    </div>
+                </div>);
     }
+}
+
+function ManageEvents(props){
+    return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
+            <ManageEventsInner />
+        </SecureRoute>
 }
 export default ManageEvents;
