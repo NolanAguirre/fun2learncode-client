@@ -14,11 +14,17 @@ function PaymentOverview(props){
     const {dateGroup, addons, students} = props
     let rows = [];
     let total = 0;
-    let rowCount =0;
+    let rowCount = 0;
+    let adjustedPrice;
     students.forEach((student) => {
         rowCount++;
-        rows.push(<PaymentOverviewRow key={rowCount} type={'Event'} name={dateGroup.name} student={student.firstName + " " + student.lastName} price={dateGroup.price} />)
-        total+= dateGroup.price
+        if(students.length > 1){
+            adjustedPrice = dateGroup.price *.9
+        }else{
+            adjustedPrice = dateGroup.price
+        }
+        rows.push(<PaymentOverviewRow key={rowCount} type={'Event'} name={dateGroup.name} student={student.firstName + " " + student.lastName} price={adjustedPrice} />)
+        total+= adjustedPrice
         addons.forEach((addon)=>{
             rowCount++;
             total+= addon.price
@@ -40,7 +46,7 @@ function PaymentOverview(props){
                     {rows}
                 </tbody>
             </table>
-        <span>Total: {total}$</span>
+        <span>Total: {total}$ {students.length >1? '(10% off each event for multi-student registration)':''}</span>
     </div>
 }
 
