@@ -26,7 +26,7 @@ class Cache {
             }
         }
         if (fieldName === 'nodes') {
-            return Object.values(root)
+            return Object.values(root) || []
         }
 
         let conflict = this.keyConflict.get(fieldName)
@@ -133,9 +133,8 @@ class Cache {
             if (obj.length > 0) {
                 return obj[0]['__typename']
             }
-        } else {
-            return typeMap.guessChildType(obj['__typename'])
         }
+        return typeMap.guessChildType(obj['__typename'])
     }
 
     formatObject = (object, isRoot, parentObject) => {
@@ -173,6 +172,9 @@ class Cache {
         }
 
         if (object['__typename'].endsWith('Connection')) {
+            if (!this.cache[this.getChildType(object)]) {
+                this.cache[this.getChildType(object)] = {}
+            }
             if (parentObject) {
                 parentObject['uid'] = parentObject['uid'][0]
             }
