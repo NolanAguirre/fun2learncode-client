@@ -89,8 +89,7 @@ class StudentForm extends Component{
 
     render = () => {
         return <React.Fragment>
-            <Popup
-                 contentStyle={{width:"default"}}
+            <Popup contentStyle={{width:"default"}}
                 open={this.state.showPopup}
                 closeOnDocumentClick
                 onClose={this.clearPopupState}>
@@ -101,8 +100,8 @@ class StudentForm extends Component{
                     </div>
                     <form onSubmit={this.mutation.onSubmit}className='sign-up-form'>
                             <div className='sign-up-input-container'>
-                                <input className='sign-up-form-input-small' name='firstName' onChange={this.handleChange} placeholder='first name' />
-                                <input className='sign-up-form-input-small' name='lastName' onChange={this.handleChange} placeholder='last name' />
+                                <input className='sign-up-form-input-small edge-margin' name='firstName' onChange={this.handleChange} placeholder='first name' />
+                                <input className='sign-up-form-input-small edge-margin' name='lastName' onChange={this.handleChange} placeholder='last name' />
                             </div>
                             <div className='sign-up-input-container'>
                                 <span className='dob-label'>Date Of Birth:</span>
