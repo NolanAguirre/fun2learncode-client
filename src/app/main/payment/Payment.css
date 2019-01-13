@@ -1,6 +1,11 @@
 .payment-overview-popup{
     width:40% !important;
 }
+
+.payment-overview-popup *::placeholder{
+    font-family: 'Source Code Pro', monospace;
+    color: '#aab7c4';
+}
 .submit-payment-btn{
     padding: 13px 40px;
     margin-top: 20px;
@@ -9,7 +14,9 @@
 .payment-container{
     padding:20px 40px;
 }
-
+.payment-input-container{
+    width:100%;
+}
 .payment-container h1{
     text-align: center;
     margin:0px;

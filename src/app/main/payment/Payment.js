@@ -22,62 +22,88 @@ const USER_DATA = `{
     }
 }`
 
-const createStripeStyle= (fontSize, padding) => {
-  return {
+const createStripeStyle = {
     style: {
       base: {
-        fontSize,
+        fontSize:'24px',
         color: '#424770',
         letterSpacing: '0.025em',
-        fontFamily: 'Source Code Pro, monospace',
-        '::placeholder': {
-          color: '#aab7c4',
-        },
-        padding,
+        fontFamily: 'Source Code Pro, monospace'
       },
       invalid: {
         color: '#9e2146',
-      },
-    },
+      }
+    }
   };
-};
 
 class PaymentInformationEntry extends Component{
     constructor(props){
         super(props)
-        this.state = {};
+        this.state = {cardholder:'', promoCode:''};
+    }
+
+    handleChange = (event) => {
+        const target = event.target
+        const value = target.value
+        const name = target.name
+        if(name === 'cardholder'){
+            this.setState({[name]: value, error:null})
+
+        }else{
+            this.setState({[name]: value})
+        }
     }
 
     handleSubmit = (event) => {
         event.preventDefault();
+        if(this.state.cardholder != ''){
+            this.props.stripe.createToken({name: this.state.cardholder}).then(({token}) => {
+                this.props.handleSubmit({token, promoCode:this.state.promoCode})
+            });
+        }else{
+            this.setState({error:'Cardholder name required'})
+        }
     }
 
     render = () => {
         return <div className='payment-container'>
             <h1>Total: {this.props.total}$</h1>
-            <span className='error'>{this.state.error}</span>
-            <form className='sign-up-form'>
-                Card number
-              <CardNumberElement className='sign-up-form-input' {...createStripeStyle('18px', '10px')}/>
+            <form className='sign-up-form' onSubmit={this.handleSubmit}>
+                <div className='sign-up-input-container'>
+                    <div className='payment-input-container'>
+                         {this.state.error?<span className='error'>{this.state.error}</span>:'Cardholder name'}
+                        <input className='sign-up-form-input' placeholder="John Doe" name='cardholder' onChange={this.handleChange}/>
+                        </div>
+              </div>
+                <div className='sign-up-input-container'>
+                    <div className='payment-input-container'>
+                        Card number
+                      <CardNumberElement className='sign-up-form-input' {...createStripeStyle}/>
+                        </div>
+              </div>
+
+
               <div className='sign-up-input-container'>
                   <div className='edge-margin'>
                       Expiry date
-                      <CardExpiryElement className='sign-up-form-input-small '  {...createStripeStyle('18px', '10px')}/>
+                      <CardExpiryElement className='sign-up-form-input-small '  {...createStripeStyle}/>
                   </div>
                   <div className='edge-margin'>
                       Security Code
-                      <CardCVCElement className='edge-padding sign-up-form-input-small' {...createStripeStyle('18px', '10px')}/>
+                      <CardCVCElement className='edge-padding sign-up-form-input-small' {...createStripeStyle}/>
                   </div>
               </div>
               <div className='sign-up-input-container'>
                   <div className='edge-margin'>
                       ZIP/Postal code
-                      <PostalCodeElement className='sign-up-form-input-small' {...createStripeStyle('18px', '10px')}/>
+                      <PostalCodeElement className='sign-up-form-input-small' {...createStripeStyle}/>
                   </div>
                   <div className='edge-margin'>
-                       <button type='submit' className='submit-payment-btn' onClick={this.handleSubmit}>Submit</button>
+                      Promo code
+                      <input className='sign-up-form-input-small' name='promoCode' placeholder='Promo Code' onChange={this.handleChange}/>
                   </div>
               </div>
+              <button className='submit-payment-btn' type='submit'>Submit</button>
           </form>
       </div>
     }
@@ -89,7 +115,8 @@ class Payment extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showPopup: false
+            showPopup: false,
+            preventClose:false
         }
 
     }
@@ -100,18 +127,22 @@ class Payment extends Component {
     }
 
     clearPopupState = () => {
-        this.setState({showPopup: false});
+        this.setState({showPopup: false, total:0});
     }
 
 
+    handleSubmit = (token) => {
+        this.setState({preventClose:true});
+        this.props.handleSubmit(token)
+    }
 
     render = () => {
         return <React.Fragment>
-            <Popup className='payment-overview-popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+            <Popup preventClose={this.state.preventClose} className='payment-overview-popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
                 <div className='payment-overview-container'>
                     <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
                         <Elements>
-                            <PaymentInfoEntry total={this.state.total}/>
+                            <PaymentInfoEntry handleSubmit={this.props.handleSubmit} total={this.state.total}/>
                         </Elements>
                     </StripeProvider>
                 </div>
