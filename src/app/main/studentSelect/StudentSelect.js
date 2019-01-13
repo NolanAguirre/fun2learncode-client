@@ -10,8 +10,8 @@ import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
 import {MultiSelect, Selectable} from '../common/Common'
 
-const GET_STUDENTS_BY_PARENT =  `{
-  allStudents(condition:{parent:"3025bed9-fa08-4753-87c2-2a9e2fdb3efd"}){
+const GET_STUDENTS_BY_PARENT = parentId => `{
+  allStudents(condition:{parent:"${parentId}"}){
     nodes{
         parent
         nodeId
@@ -134,7 +134,7 @@ function StudentSelect(props) {
     return <div className='student-select-container custom-scrollbar'>
             <h3>{(props.multiSelect)?'Select students':'Select a student'}</h3>
                 <div className='students-container'>
-                  <ReactQuery query={GET_STUDENTS_BY_PARENT}>
+                  <ReactQuery query={GET_STUDENTS_BY_PARENT(props.user.id)}>
                       <StudentSelectInner {...props}/>
                   </ReactQuery>
                   <StudentForm client={props.client} parentId={props.user.id}/>
