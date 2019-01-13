@@ -123,18 +123,16 @@ class RegistrationInner extends Component{
         this.setState({addons:addons});
     }
 
-    post = (event) =>{
-        event.preventDefault();
-        let mutation = '';
-        this.state.students.forEach((student)=>{ mutation += this.template(this.genRandomId(), student) + `\n`});
-        mutation = `mutation{
-                    ${mutation}
-                }`
-        new Mutation({
-            mutation:mutation,
-            onSubmit:()=>{return{}}
-        }).onSubmit()
-
+    handleSubmit = ({token, promoCode}) =>{
+        let data = {
+            students: this.state.students,
+            addons:this.state.addons,
+            dateGroup: this.props.dateGroupId,
+            user:this.props.getUserData.id,
+            stripeToken: token,
+            promoCode
+        }
+        console.log(data);
     }
 
     totalChange = (total) => {
@@ -160,7 +158,7 @@ class RegistrationInner extends Component{
             <span className='error'>{this.state.error}</span>
             <StudentSelect multiSelect isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} user={this.props.getUserData}/>
             <AddonSelect multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
-            <Payment getTotal={()=>{return this.total}}/>
+            <Payment handleSubmit={this.handleSubmit} getTotal={()=>{return this.total}}/>
         </div>
     }
 }
