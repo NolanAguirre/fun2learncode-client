@@ -55,7 +55,7 @@ class Login extends Component {
                     <form onSubmit={this.handleSubmit} className='login-form'>
                         <input placeholder='email' name='email' type='email' onChange={this.handleChange}/>
                         <input placeholder='password' name='password' type='password' onChange={this.handleChange}/>
-                        <button className='login-form-btn' onClick={this.handleSubmit}>Log In</button>
+                        <button className='login-form-btn' type='submit'>Log In</button>
                     </form>
                     <div className='sign-up-text'>
                         <a href="/Sign up">Sign up</a>
