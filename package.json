@@ -8,9 +8,12 @@
     "apollo-link-context": "^1.0.8",
     "axios": "^0.18.0",
     "graphql": "^14.0.2",
+    "graphql-anywhere": "^4.1.24",
     "graphql-tag": "^2.9.2",
+    "lodash": "^4.17.11",
     "merge": ">=1.2.1",
     "moment": "^2.22.2",
+    "pluralize": "^7.0.0",
     "react": "^16.4.2",
     "react-apollo": "^2.1.11",
     "react-big-calendar": "^0.20.0",
@@ -18,11 +21,9 @@
     "react-dom": "^16.4.2",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.5",
+    "react-stripe-elements": "^2.0.1",
     "react-transition-group": "^1.2.1",
-    "reactjs-popup": "^1.3.1",
-    "graphql-anywhere": "^4.1.24",
-    "lodash": "^4.17.11",
-    "pluralize": "^7.0.0"
+    "reactjs-popup": "^1.3.1"
   },
   "scripts": {
     "start": "react-scripts start",
