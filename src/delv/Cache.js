@@ -18,6 +18,9 @@ class Cache {
     }
 
     resolver = (fieldName, root, args, context, info) => {
+        if(!root || Array.isArray(root) && root.length === 0){
+            return;
+        }
         if (info.isLeaf) {
             if (root.hasOwnProperty(fieldName)) {
                 return root[fieldName];
@@ -26,13 +29,16 @@ class Cache {
             }
         }
         if (fieldName === 'nodes') {
-            return Object.values(root) || []
+            return Object.values(root)
         }
 
         let conflict = this.keyConflict.get(fieldName)
         let fieldType = typeMap.get(fieldName);
         if(fieldType.endsWith('Connection')){
             let childType = typeMap.guessChildType(fieldType);
+            if(!this.cache[childType]){
+                return {}
+            }
             let rootAccessor = childType
             if(conflict){
                 rootAccessor = fieldName
@@ -48,9 +54,10 @@ class Cache {
                 }
                 return intersection;
             }
+            if(this.cache[childType])
             return this.cache[childType][ids]
-        }else{
-            if(this.cache[fieldType][this.cache[fieldName]]){
+        }else if(this.cache[fieldType]){
+            if( this.cache[fieldType][this.cache[fieldName]]){
                 return this.cache[fieldType][this.cache[fieldName]]
             }
             if(conflict){
@@ -59,6 +66,7 @@ class Cache {
                 return this.cache[fieldType][root[fieldType]]
             }
         }
+        return null;
 
     }
 
@@ -296,7 +304,6 @@ class Cache {
             }
         }
         //console.log('emitting cache update')
-        //console.log(this.cache)
         CacheEmitter.emitCacheUpdate();
     }
 
