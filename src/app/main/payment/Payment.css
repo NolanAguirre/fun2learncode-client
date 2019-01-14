@@ -1,5 +1,5 @@
 .payment-overview-popup{
-    width:40% !important;
+    width:auto !important;
 }
 
 .payment-overview-popup *::placeholder{

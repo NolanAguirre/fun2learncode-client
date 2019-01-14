@@ -6,17 +6,14 @@
     box-sizing: border-box;
 }
 
-.registration-container > div{
-    background-color: white;
-    padding:20px 40px;
-
-}
 
 .registration-info-container{
     display:flex;
     width:100%;
     box-sizing: border-box;
     flex-wrap: wrap;
+    background-color: white;
+    padding:20px 40px;
 }
 
 .registration-info-section{

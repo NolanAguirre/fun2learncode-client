@@ -57,8 +57,13 @@ class PaymentInformationEntry extends Component{
     handleSubmit = (event) => {
         event.preventDefault();
         if(this.state.cardholder != ''){
-            this.props.stripe.createToken({name: this.state.cardholder}).then(({token}) => {
-                this.props.handleSubmit({token, promoCode:this.state.promoCode})
+            this.props.stripe.createToken({name: this.state.cardholder}).then(({token, error}) => {
+                //handle error here
+                if(error){
+                    this.setState({error:error.message})
+                }else{
+                    this.props.handleSubmit({token, promoCode:this.state.promoCode})
+                }
             });
         }else{
             this.setState({error:'Cardholder name required'})
@@ -116,7 +121,7 @@ class Payment extends Component {
         super(props);
         this.state = {
             showPopup: false,
-            preventClose:false
+            loading: false
         }
 
     }
@@ -131,21 +136,33 @@ class Payment extends Component {
     }
 
 
-    handleSubmit = (token) => {
-        this.setState({preventClose:true});
-        this.props.handleSubmit(token)
+    handleSubmit = ({token, promoCode}) => {
+        this.setState({loading:true});
+        this.props.handleSubmit({token, promoCode, callback: (res)=>{this.setState({loading:false,complete:res})}})
     }
 
     render = () => {
+        let child;
+        if(this.state.loading){
+            child = <div>loading</div>
+        }else if(this.state.complete){
+            if(this.state.complete.error){
+                child = <span className='error'>{this.state.complete.error}</span>
+            }else{
+                child = <div>Transaction successful</div>
+            }
+        }else{
+            child = <div className='payment-overview-container'>
+                <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
+                    <Elements>
+                        <PaymentInfoEntry handleSubmit={this.handleSubmit} total={this.state.total}/>
+                    </Elements>
+                </StripeProvider>
+            </div>
+        }
         return <React.Fragment>
-            <Popup preventClose={this.state.preventClose} className='payment-overview-popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
-                <div className='payment-overview-container'>
-                    <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
-                        <Elements>
-                            <PaymentInfoEntry handleSubmit={this.props.handleSubmit} total={this.state.total}/>
-                        </Elements>
-                    </StripeProvider>
-                </div>
+            <Popup className='payment-overview-popup' open={this.state.showPopup} closeOnEscape={!this.state.loading} closeOnDocumentClick={!this.state.loading} onClose={this.clearPopupState}>
+                {child}
             </Popup>
             <button className="continue-to-payment-btn" onClick={()=>{this.showPopup(this.props.getTotal())}}> Continue to Payment</button>
         </React.Fragment>

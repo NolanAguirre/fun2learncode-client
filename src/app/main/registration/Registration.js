@@ -10,6 +10,8 @@ import {ReactQuery} from '../../../delv/delv-react'
 import Mutation from '../../../delv/Mutation'
 import Delv from '../../../delv/delv'
 import Payment from '../payment/Payment'
+import axios from 'axios'
+
 
 const GET_DATE_GROUP_INFO_BY_ID = (id) => {
     return `{
@@ -123,16 +125,17 @@ class RegistrationInner extends Component{
         this.setState({addons:addons});
     }
 
-    handleSubmit = ({token, promoCode}) =>{
+    handleSubmit = ({token, promoCode, callback}) =>{
         let data = {
-            students: this.state.students,
-            addons:this.state.addons,
+            students: this.state.students.map(student=>student.id),
+            addons:this.state.addons.map(addon=>addon.id),
             dateGroup: this.props.dateGroupId,
-            user:this.props.getUserData.id,
-            stripeToken: token,
+            user:this.props.getUserData,
+            event:this.props.event.id,
+            stripeToken: token.id,
             promoCode
         }
-        console.log(data);
+        axios.post('http://localhost:3005/payment', data).then((res)=>{callback(res)})
     }
 
     totalChange = (total) => {
@@ -156,8 +159,8 @@ class RegistrationInner extends Component{
                </div>
             </div>
             <span className='error'>{this.state.error}</span>
-            <StudentSelect multiSelect isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} user={this.props.getUserData}/>
-            <AddonSelect multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
+            <StudentSelect className='registration-section' multiSelect isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} user={this.props.getUserData}/>
+            <AddonSelect classNam='registration-section' multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
             <Payment handleSubmit={this.handleSubmit} getTotal={()=>{return this.total}}/>
         </div>
     }
