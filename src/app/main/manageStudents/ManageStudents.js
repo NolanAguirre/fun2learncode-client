@@ -51,7 +51,10 @@ function EventMonthDate(props){
     }
     return <div className='event-month-date-container'>
         <h3>{props.date.activityName}</h3>
-        {localizeUTCTimestamp(props.date.start).format('dddd Do')}
+        <div className='event-mont-date-body'>
+            <span>{localizeUTCTimestamp(props.date.start).format('dddd Do')}</span>
+            <span>View Notes</span>
+        </div>
     </div>
 }
 

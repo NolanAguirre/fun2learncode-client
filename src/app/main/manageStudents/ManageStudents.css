@@ -7,7 +7,9 @@
 .event-months-container{
     display:flex;
     flex-direction: column;
-    border: 2px solid blue;
+    background: white;
+    padding: 20px 40px;
+    margin: 10px 0;
 }
 .event-month{
     display: flex;
@@ -20,5 +22,11 @@
     flex: 1;
 }
 .event-month-date-container h4{
-    
+
+}
+.event-mont-date-body{
+    display: flex;
+    flex-direction: column;
+    min-width: 120px;
+    text-align: center;
 }
