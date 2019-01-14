@@ -28,3 +28,9 @@
 .edge-margin:last-child{
     margin-left: 5px;
 }
+.continue-to-payment-btn{
+    font-size: 24px;
+    padding: 30px 40px;
+    margin: 0 auto;
+    margin-top: 10px;
+}

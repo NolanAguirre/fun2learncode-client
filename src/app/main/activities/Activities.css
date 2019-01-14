@@ -1,8 +1,0 @@
-.activities-container{
-    display: flex;
-    flex:1;
-    flex-direction: column;
-}
-.activities-header{
-    text-align: center;    
-}

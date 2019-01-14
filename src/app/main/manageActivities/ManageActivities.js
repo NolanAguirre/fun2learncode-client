@@ -272,44 +272,52 @@ class ManageActivitiesForm extends Component{
 
     render = () => {
         if(this.state.edit){
-            return <div key={this.props.id} className="activity-container">
+            return <div key={this.props.id} className='styled-container column'>
                 <form onSubmit={this.mutation.onSubmit}>
-                    <div className="activity-header">
-                        <img className="activity-image" src="https://via.placeholder.com/350x150"></img>
-                        <div className="activity-header-text">
-                            <h2 className="activity-title">
-                                <input name="name" onChange={this.handleInputChange} value={this.state.name} />
-                                <DropDown options={this.props.types} name="type" value={this.state.type} onChange={this.handleInputChange}/>
-                            </h2>
-                        </div>
-                        <div className="activity-view-events">
-                            <button type="submit" className="activity-view-events-btn">Finish</button>
-                        </div>
-                    </div>
-                    <div className="activity-body">
-                        <div id={this.props.id} onInput={this.handleDescriptionChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
-                    </div>
-               </form>
+              <div className='container'>
+                <img className='activity-image' src='https://via.placeholder.com/350x150' />
+                <div className='activity-header-text'>
+                  <h2 className='activity-title'>
+                      <input name="name" onChange={this.handleInputChange} value={this.state.name} />
+                      <DropDown options={this.props.types} name="type" value={this.state.type} onChange={this.handleInputChange}/>
+                  </h2>
+                  <div>
+                      {(this.props.prerequisites)?<Prerequisites prerequisites={this.props.prerequisites} />:""}
+                      {this.props.children}
+                  </div>
+                </div>
+                <div className='activity-view-events'>
+                    <button type="submit" className="activity-view-events-btn">Finish</button>
+                </div>
             </div>
+              <div className='activity-body'>
+                <div id={this.props.id} onInput={this.handleDescriptionChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
+              </div>
+          </form>
+        </div>
         }
+
         const typeName = this.props.types.filter(obj=>obj.value===this.props.type)[0]
-        return <div key={this.props.id}className="activity-container">
-            <div className="activity-header">
-                <img className="activity-image" src="https://via.placeholder.com/350x150"></img>
-                <div className="activity-header-text">
-                    <h2 className="activity-title">
-                        {this.props.name} ({typeName && typeName.name})
-                    </h2>
-                    {(this.props.prerequisites)?<Prerequisites prerequisites={this.props.prerequisites} />:""}
-                    {this.props.children}
-                </div>
-                <div className="activity-view-events">
-                    <button type="button" onClick={this.toggleEdit} className="activity-view-events-btn">Edit Details</button>
-                </div>
+        return<div key={this.props.id} className='styled-container column'>
+          <div className='container'>
+            <img className='activity-image' src='https://via.placeholder.com/350x150' />
+            <div className='activity-header-text'>
+              <h2 className='activity-title'>
+                {this.props.name} ({typeName && typeName.name})
+              </h2>
+              <div>
+                  {(this.props.prerequisites)?<Prerequisites prerequisites={this.props.prerequisites} />:""}
+                  {this.props.children}
+              </div>
             </div>
-            <div className="activity-body">
-                {this.props.description}
+            <div className='activity-view-events'>
+              <button type="button" onClick={this.toggleEdit} className="activity-view-events-btn">Edit Details</button>
             </div>
+          </div>
+
+          <div className='activity-body'>
+            <div>{this.props.description}</div>
+          </div>
         </div>
     }
 }

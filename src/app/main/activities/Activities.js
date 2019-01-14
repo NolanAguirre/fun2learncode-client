@@ -46,8 +46,8 @@ function ActivitiesInner(props) {
 }
 
 function Activities(props) {
-    return <div className='activities-container'>
-        <h1 className='activities-header'>{props.match.params.type}</h1>
+    return <div className='container column section'>
+        <h1 className='center-text'>{props.match.params.type}</h1>
         <ReactQuery query={GET_ACTIVITIES_IN_CATAGORY(props.match.params.type)}>
             <ActivitiesInner/>
         </ReactQuery>

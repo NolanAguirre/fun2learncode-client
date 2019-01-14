@@ -2,10 +2,7 @@
     display: flex;
     flex-direction: column;
     flex:1;
-    background-color: white;
     margin: 10px 0;
-    padding: 30px 40px;
-    box-sizing: border-box;
 }
 .manage-activity-textarea{
     flex:1;

@@ -146,21 +146,21 @@ class RegistrationInner extends Component{
 
         return <div className='registration-container'>
             <h2>Registration</h2>
-            <div className='registration-info-container'>
-                <div className='registration-info-section'>
+            <div className='styled-container'>
+                <div className='section'>
                     <FullEvent dateGroup={this.props.dateGroup}
                                 activity={this.props.activity}
                                 address={this.props.address}
                                 prerequisites={this.props.prerequisites}
                                 dates={this.props.dates}/>
                 </div>
-                <div className='registration-info-section'>
+                <div className='section'>
                    <PaymentOverview totalChange={this.totalChange} dateGroup={{price: this.props.dateGroup.price,id: this.props.dateGroup.id,name: this.props.activity.name}} addons={this.state.addons} students={this.state.students}/>
                </div>
             </div>
             <span className='error'>{this.state.error}</span>
-            <StudentSelect className='registration-section' multiSelect isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} user={this.props.getUserData}/>
-            <AddonSelect classNam='registration-section' multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
+            <StudentSelect className='styled-container' multiSelect isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} user={this.props.getUserData}/>
+            <AddonSelect classNam='styled-container' multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
             <Payment handleSubmit={this.handleSubmit} getTotal={()=>{return this.total}}/>
         </div>
     }

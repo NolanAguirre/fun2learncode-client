@@ -27,3 +27,8 @@
 .addon-container-description{
     flex:1;
 }
+.registration-addons-container{
+    display: flex;
+    overflow-x: auto;
+    padding: 20px 10px;
+}
