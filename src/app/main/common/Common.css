@@ -5,8 +5,14 @@
 
 .grid-view-row{
     display:flex;
+    flex-wrap: wrap;
     flex:1;
 }
 .grid-filler{
     flex:1 1 auto;
+}
+@media screen and (max-width: 450px) {
+    .maps-container{
+        display: none;
+    }
 }

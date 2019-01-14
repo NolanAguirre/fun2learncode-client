@@ -1,18 +1,29 @@
-.home-section{
-    padding: 0 50px;
-    display:flex;
+.column{
     flex-direction: column;
 }
-.home-section-info{
-    display: inline-flex;
-    flex-wrap: wrap;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-    border-bottom: 2px solid black;
-}
+
 .home-section-image{
+    max-height: 150px;
+    max-width: 300px;
+    margin:auto;
     padding: 0px 20px;
 }
-.home-section-text{
-    flex:1;
+
+@media screen and (max-width: 420px) {
+    .styled-container{
+        display:flex;
+        background-color: white;
+        padding: 10px 20px;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #b0c9ab;
+    }
+    .home-section-image{
+        padding: 0px;
+    }
+}
+
+@media screen and (max-width: 300px) {
+    .home-section-image{
+        display: none;
+    }
 }

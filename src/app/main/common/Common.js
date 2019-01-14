@@ -20,7 +20,8 @@ function Location (props) {
       <h3>{props.alias}</h3>
       <div>{props.street}, {props.city} {props.state}</div>
     </div>
-    <div><iframe width='400' height='300' id={props.id} src='https://maps.google.com/maps?q=fun2learncode&t=&z=13&ie=UTF8&iwloc=&output=embed' frameBorder='0' scrolling='no' marginHeight='0' marginWidth='0' />
+    <div className='maps-container'>
+        <iframe width='400' height='300' id={props.id} src='https://maps.google.com/maps?q=fun2learncode&t=&z=13&ie=UTF8&iwloc=&output=embed' frameBorder='0' scrolling='no' marginHeight='0' marginWidth='0' />
     </div>
   </div>)
 }
@@ -66,7 +67,7 @@ function DatesTable(props){
       <tbody>
         {dates.map((date, index) => {
           return <React.Fragment key={index}>
-              <tr>
+              <tr className='no-wrap-row'>
             <td>{localizeUTCTimestamp(date.start).format(props.startFormat || "ddd MMM DD")}</td>
             <td>{localizeUTCTimestamp(date.start).format(props.startFormat || "h:MM a") + "-" + localizeUTCTimestamp(date.end).format(props.startFormat || "h:MM a")}</td>
           </tr>

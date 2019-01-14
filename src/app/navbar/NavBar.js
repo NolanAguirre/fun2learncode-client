@@ -130,7 +130,6 @@ function NavBarInner(props) {
             <div className='nav-bar-item'>{routeObj.name}</div>
         </Link>
     })
-
     return (<header className='navbar'>
         <img alt='Fun 2 Learn Code logo' src={Logo}/>
         <div className='nav-item-container'>

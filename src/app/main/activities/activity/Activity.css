@@ -1,15 +1,3 @@
-.activity-container {
-    padding: 20px 40px;
-    border-bottom: 2px solid #b0c9ab;
-    background-color: white;
-    margin: 10px 0;
-}
-
-.activity-header {
-    display: flex;
-    flex-wrap: wrap;
-}
-
 .activity-header-text {
     padding-left: 30px;
     flex: 1;
@@ -34,14 +22,6 @@
     min-width: 150px;
     padding: 30px 20px;
     font-size: 20px;
-}
-
-.activity-container h4{
-    margin: 0;
-}
-
-.prerequisites-container{
-    margin-top: 5px;
 }
 
 @media screen and (max-width: 800px) {

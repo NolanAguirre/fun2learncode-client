@@ -4,3 +4,41 @@ body {
   font-family: sans-serif;
   background-color: rgb(241, 241, 241);
 }
+.container{
+    display:flex;
+    flex-wrap: wrap;
+}
+
+.styled-container{
+    display:flex;
+    flex-wrap: wrap;
+    background-color: white;
+    padding: 20px 40px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #b0c9ab;
+}
+.no-margin{
+    margin:0;
+}
+
+.section{
+    flex:1;
+}
+.center-text{
+    text-align: center;
+}
+.center-y{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.center-x{
+    margin:0 auto;
+}
+.default-link{
+    text-decoration: none;
+    color: black;
+}
+.no-wrap-row{
+    white-space: nowrap;
+}
