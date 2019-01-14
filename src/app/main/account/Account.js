@@ -1,17 +1,8 @@
 import React, { Component } from 'react'
+import OrderHistory from '../orderHistory/OrderHistory'
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
 import {SecureRoute} from '../common/Common'
-
-const USER_DATA = `{
-    getUserData{
-        nodeId
-        id
-        firstName
-        lastName
-        role
-    }
-}`
 
 class AccountInner extends Component{
     constructor(props){
@@ -19,22 +10,24 @@ class AccountInner extends Component{
     }
 
     render = () => {
-        return <div>{JSON.stringify(this.props.getUserData)}</div>
+        return <div className="container column">
+            <h2>My Account</h2>
+            <div className='styled-container'>
+                <h3>Account Information</h3>
+                {JSON.stringify(this.props.getUserData)}
+            </div>
+            <div className='styled-container'>
+                <h3>Order History</h3>
+                <OrderHistory user={this.props.getUserData.id} />
+            </div>
+        </div>
     }
 }
 
-class Account extends Component{
-    constructor(props){
-        super(props)
-    }
-
-    render = () => {
-        return <SecureRoute ignoreResult roles={["FTLC_USER"]}>
-            <ReactQuery query={USER_DATA}>
-                <AccountInner />
-            </ReactQuery>
-        </SecureRoute>
-    }
+function Account(props){
+    return <SecureRoute roles={["FTLC_USER"]}>
+        <AccountInner />
+    </SecureRoute>
 }
 
 export default Account
