@@ -5,7 +5,6 @@ import DateTime from 'react-datetime';
 import '../../../react-datetime.css'
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
-import memoize from "memoize-one";
 import moment from 'moment';
 
 const CREATE_EVENT = `mutation ($event: EventInput!) {
@@ -135,13 +134,6 @@ class EventFormInner extends Component {
         })
     }
 
-    mapEventTypes = memoize(
-        (data) =>{
-            let mapped = data.nodes.map((element) => {return {name: element.name + " (" + element.activityCatagoryByType.name + ")",value: element.id}});
-            return mapped;
-        }
-    )
-
     localizeUTCTimestamp = (timestamp) => {
         if(!timestamp){return null}
         return new Date(moment(moment.utc(timestamp)).local().toString())
@@ -186,7 +178,7 @@ class EventFormInner extends Component {
     }
 
     render = () => {
-        const eventTypes = this.mapEventTypes(this.props.allActivities);
+        const eventTypes = this.props.allActivities.nodes.map((element) => {return {name: element.name + " (" + element.activityCatagoryByType.name + ")",value: element.id}});
         return <form onSubmit={this.mutation.onSubmit}>
             <table>
                 <tbody>
@@ -215,7 +207,7 @@ class EventFormInner extends Component {
                     </tr>
                 </tbody>
             </table>
-        </form> //update event : create event
+        </form>
     }
 }
 

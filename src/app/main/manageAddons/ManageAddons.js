@@ -79,12 +79,12 @@ class ManageAddonForm  extends Component{
     }
 
     hasRequiredValues = () =>{
-        let haveValues =  this.state.name != "" &&
-               this.state.description != "" &&
-               this.state.price != ""
-        let changedValues = this.state.name != this.props.name ||
-               this.state.description != this.props.description ||
-               this.state.price != this.props.price
+        let haveValues =  this.state.name !== "" &&
+               this.state.description !== "" &&
+               this.state.price !== ""
+        let changedValues = this.state.name !== this.props.name ||
+               this.state.description !== this.props.description ||
+               this.state.price !== this.props.price
          return haveValues && changedValues
     }
 

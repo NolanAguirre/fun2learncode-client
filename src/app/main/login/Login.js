@@ -26,7 +26,7 @@ class Login extends Component {
             password: this.state.password
         }).then((res) => {
             if (res.data.error) {
-                this.setState({errors: true})
+                this.setState({error:res.data.error})
             } else {
                 window.location.reload()
                 this.props.history.push(this.props.redirectUrl || '/')
@@ -44,7 +44,7 @@ class Login extends Component {
                     </div>
                     <div className='login-error-container'>
                         {
-                            (this.state.errors)
+                            (this.state.error)
                                 ? <React.Fragment>
                                         <span className='login-error'>Incorrect email or password.</span>
                                         <a href='/'>Forgot password?</a>

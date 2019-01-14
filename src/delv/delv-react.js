@@ -66,6 +66,7 @@ class ReactQuery extends Component {
 
     componentDidUpdate = (prevProps, prevState, snapshot) => {
         if (prevProps.query != this.props.query) {
+            this.query.removeCacheListener();
             this.query = new Query({
                 query: this.props.query,
                 variables: this.props.variables,
@@ -75,6 +76,9 @@ class ReactQuery extends Component {
                 onError:this.onError,
                 formatResult:this.props.formatResult
             })
+            if (this.query.networkPolicy != 'network-only') {
+                this.query.addCacheListener();
+            }
             this.query.query();
         }
     }

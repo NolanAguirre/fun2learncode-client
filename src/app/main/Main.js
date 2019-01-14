@@ -17,6 +17,8 @@ import ManageUsers from  './manageUsers/ManageUsers'
 import {SignUp} from './signUp/SignUp'
 import CheckIn from './checkIn/CheckIn'
 import Account from './account/Account'
+import InstructorLogs from './instructorLogs/InstructorLogs'
+
 class Main extends Component {
   constructor (props) {
     super(props)
@@ -35,8 +37,8 @@ class Main extends Component {
             <Route path='/Registration/:id' component={Registration} />
             <Route path='/User/Manage Students' component={ManageStudents} />
             <Route path='/Event Logs/:eventId/:studentId' component={EventLogs} />
-
             <Route path='/User/Account' component={Account} />
+
 
             <Route exact path='/Admin/Manage Events' component={ManageEvents} />
             <Route exact path='/Admin/Manage Addresses' component={ManageAddresses} />
@@ -45,6 +47,8 @@ class Main extends Component {
             <Route exact path='/Admin/Manage Users' component={ManageUsers} />
 
             <Route exact path='/Attendant/Check In' component={CheckIn} />
+
+            <Route exact path='/Instructor/Instructor Logs' component={InstructorLogs} />
 
             <Route exact path='/Logout' component={Logout} />
           </Switch>

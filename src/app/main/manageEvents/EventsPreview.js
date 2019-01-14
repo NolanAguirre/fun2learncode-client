@@ -127,6 +127,7 @@ class DateGroup extends Component {
         super(props);
         this.state = {hide:true}
     }
+
     toggleCalendarHide = () => {
         // date store has a list of hidden date groups, this will remove or add this date group.
         const id = this.props.dateGroup.id
@@ -140,9 +141,11 @@ class DateGroup extends Component {
             DateStore.set('hidden',[...DateStore.get('hidden'), id])
         }
     }
+
     toggleDates = () => {
         this.setState({hide: !this.state.hide})
     }
+
     render = () => {
         const dates = this.props.dateGroup.datesJoinsByDateGroup.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()}).map((element) => {
             return <div key={element.id}>{moment(moment.utc(element.dateIntervalByDateInterval.start)).local().format("MMM Do h:mma") + "-" +moment(moment.utc(element.dateIntervalByDateInterval.end)).local().format("h:mma")}</div>

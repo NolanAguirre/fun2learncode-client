@@ -9,7 +9,7 @@ import moment from 'moment'
 
 const GET_STUDENT = (studentName) => {
     return `{
-	allUsers(condition:{role:FTLC_STUDENT, firstName:"${studentName}"}){
+	allStudents(condition:{firstName:"${studentName}"}){
     nodes{
       firstName
       lastName
@@ -63,7 +63,7 @@ class ConfirmName extends Component{
         this.state = {
             name:""
         }
-        console.log(props.queryResult)
+        console.log(props)
     }
     handleChange = (event) => {
       const target = event.target
