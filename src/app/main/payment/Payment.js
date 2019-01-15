@@ -56,17 +56,20 @@ class PaymentInformationEntry extends Component{
 
     handleSubmit = (event) => {
         event.preventDefault();
-        if(this.state.cardholder != ''){
-            this.props.stripe.createToken({name: this.state.cardholder}).then(({token, error}) => {
-                //handle error here
-                if(error){
-                    this.setState({error:error.message})
-                }else{
-                    this.props.handleSubmit({token, promoCode:this.state.promoCode})
-                }
-            });
-        }else{
-            this.setState({error:'Cardholder name required'})
+        if(!this.isProcessing){
+            this.isProcessing = true
+            if(this.state.cardholder != ''){
+                this.props.stripe.createToken({name: this.state.cardholder}).then(({token, error}) => {
+                    if(error){
+                        this.isProcessing = false;
+                        this.setState({error:error.message})
+                    }else{
+                        this.props.handleSubmit({token, promoCode:this.state.promoCode})
+                    }
+                });
+            }else{
+                this.setState({error:'Cardholder name required'})
+            }
         }
     }
 
@@ -135,10 +138,9 @@ class Payment extends Component {
         this.setState({showPopup: false, total:0});
     }
 
-
     handleSubmit = ({token, promoCode}) => {
-        this.setState({loading:true});
-        this.props.handleSubmit({token, promoCode, callback: (res)=>{this.setState({loading:false,complete:res})}})
+        this.setState({loading:true})
+        this.props.handleSubmit({token, promoCode, callback: (res)=>{this.setState({loading:false,complete:res.data})}})
     }
 
     render = () => {
