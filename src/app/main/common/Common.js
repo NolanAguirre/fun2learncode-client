@@ -88,7 +88,7 @@ function GridView (props){
     while(items.length){
         let children = items.splice(0,itemsPerRow)
         while(children.length < itemsPerRow){
-            children.push(<div className={props.childStyle || 'grid-filler'} key={children.length}></div>)
+            children.push(<div className={props.fillerStyle || 'grid-filler'} key={children.length}></div>)
         }
         formatted.push(<div className={props.rowStyle || "grid-view-row"} key={items.length}>{children}</div>)
     }

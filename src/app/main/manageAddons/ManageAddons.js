@@ -169,7 +169,7 @@ class ManageAddonsInner extends Component {
         <div className="manage-addresses-header">
             <ManageAddonForm mutation={CREATE_ADDON} name={"New Addon"} />
         </div>
-        <GridView className="manage-addresses-body" childStyle={'manage-address-form-container'} itemsPerRow={3}>{addons}</GridView>
+        <GridView className="manage-addresses-body" fillerStyle={'manage-address-form-container'} itemsPerRow={3}>{addons}</GridView>
     </div>
   }
 }

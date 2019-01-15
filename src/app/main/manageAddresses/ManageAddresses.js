@@ -193,7 +193,7 @@ class ManageAddressesInner extends Component {
         <div className="manage-addresses-header">
             <ManageAddressForm mutation={CREATE_ADDRESS} alias={"New Address"} />
         </div>
-        <GridView className="manage-addresses-body" childStyle={'manage-address-form-container'} itemsPerRow={3}>{addresses}</GridView>
+        <GridView className="manage-addresses-body" fillerStyle={'manage-address-form-container'} itemsPerRow={3}>{addresses}</GridView>
     </div>
   }
 }
