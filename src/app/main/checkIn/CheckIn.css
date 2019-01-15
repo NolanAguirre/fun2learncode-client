@@ -1,0 +1,17 @@
+.check-in-input{
+    margin-bottom: 80px;
+}
+.check-in-student{
+    padding: 10px;
+    background-color: #41a62a;
+    border-radius: 8px;
+    flex: 0 0 auto;
+}
+
+.check-in-student-selected{
+    padding: 10px;
+    background-color: green;
+    color:white;
+    border-radius: 8px;
+    flex: 0 0 auto;
+}
