@@ -32,7 +32,7 @@ class Mutation{
         this.refetchQueries.forEach((query)=>{
             Delv.query({
                 query:query,
-                networkPolicy:'netowork-only',
+                networkPolicy:'network-only',
                 variables:{},
                 onResolve:()=>{},
                 onFetch:()=>{},
