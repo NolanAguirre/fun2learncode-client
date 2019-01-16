@@ -7,7 +7,7 @@ import './ManageActivities.css';
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
 import {SecureRoute} from '../common/Common'
-
+import Activity from '../activities/activity/Activity'
 //TODO be able to remove prerequisites, make description text box keep text on edit
 
 const GET_ACTIVITIES = `{
@@ -22,6 +22,7 @@ const GET_ACTIVITIES = `{
     nodes {
       nodeId
       id
+      url
       description
       name
       activityCatagoryByType {
@@ -43,11 +44,12 @@ const GET_ACTIVITIES = `{
   }
 }`
 
-const CREATE_ACTIVITY =  `mutation ($name: String!, $type: UUID!, $description: String!) {
-  createActivity(input: {activity: {name: $name, type: $type, description: $description}}) {
+const CREATE_ACTIVITY =  `mutation ($activity:CreateActivityInput!) {
+  createActivity(input:$activity) {
     activity {
         nodeId
         id
+        url
         description
         name
         activityCatagoryByType {
@@ -76,6 +78,7 @@ const UPDATE_ACTIVITY = `mutation($id:UUID!, $patch:ActivityPatch!){
         id
         description
         name
+        url
         activityCatagoryByType {
           id
           nodeId
@@ -130,16 +133,14 @@ function Prerequisites(props){ // this can use caching
             },
             customCache: (cache, data) => {cache.remove(data)}
         })
-        return <form onSubmit={mutation.onSubmit} key={prerequisite.id}>
-            <div className="prerequisite-container">
+        return <div key={prerequisite.id} className="prerequisite-container">
                 {prerequisite.activityByPrerequisite.name}
                 <div className="prerequisite-x-container">
-                    <button className="no-style-button" type="submit">
+                    <button className="no-style-button" onClick={mutation.onSubmit}>
                         <img className="x-icon" alt='x-icon' src={Logo} />
                     </button>
                 </div>
-            </div>
-        </form>})
+            </div>})
 }
 
 class PrerequisiteForm extends Component{
@@ -188,10 +189,8 @@ class PrerequisiteForm extends Component{
     render = () =>{
         if(this.state.edit){ // this can use caching
             return <div>
-                <form onSubmit={this.mutation.onSubmit}>
                     <DropDown options={this.props.activities} name="prerequisite" value={this.state.type} onChange={this.handleInputChange}/>
-                    <button type="submit">Confirm</button>
-                </form>
+                    <button onClick={this.mutation.onSubmit}>Confirm</button>
             </div>
         }else{
             return <div>
@@ -209,6 +208,7 @@ class ManageActivitiesForm extends Component{
             type: this.props.type,
             description:this.props.description,
             name:this.props.name,
+            url:this.props.url
         };
         this.mutation = new Mutation({
             mutation:this.props.mutation,
@@ -232,14 +232,17 @@ class ManageActivitiesForm extends Component{
     }
 
     hasRequiredValues = () =>{
-        let haveValues =  this.state.type && this.state.name != 'New Activity' && this.state.description
+        let haveValues =  this.state.type && this.state.name != 'New Activity' && this.state.description && this.state.url
         let changedValues = this.state.type != this.props.type ||
                this.state.name != this.props.name ||
-               this.state.description != this.props.description
+               this.state.description != this.props.description ||
+               this.state.url != this.props.url
+
          return haveValues && changedValues
     }
 
-    toggleEdit = () =>{
+    toggleEdit = (event) =>{
+        event.preventDefault();
         this.setState({edit:true});
         if(this.props.id){
             setTimeout(()=>document.getElementById(`${this.props.id}`).innerHTML = this.props.description, 0); // super hacky way to make contentEditable work
@@ -251,7 +254,8 @@ class ManageActivitiesForm extends Component{
             edit:false,
             type: this.props.type,
             description:this.props.description,
-            name:this.props.name
+            name:this.props.name,
+            url:this.props.url
         });
     }
 
@@ -263,62 +267,44 @@ class ManageActivitiesForm extends Component{
             if(this.props.id){
                 return {"id":this.props.id, "patch": temp}
             }else{
-                return temp;
+                return {activity:temp};
             }
         }
         this.setState({edit:false})
         return false;
     }
 
+    formatName = () => {
+        let typeName = this.props.types.filter(obj=>obj.value===this.props.type)[0]
+        if(typeName && typeName.name){
+            return `${this.props.name} (${typeName.name})`
+        }else{
+            return this.props.name
+        }
+    }
+
     render = () => {
+        let components = {
+            prerequesiteComponent: <React.Fragment>
+                {(this.props.prerequisites)?<Prerequisites prerequisites={this.props.prerequisites} />:""}
+                {this.props.children}
+            </React.Fragment>
+        }
         if(this.state.edit){
-            return <div key={this.props.id} className='styled-container column'>
-                <form onSubmit={this.mutation.onSubmit}>
-              <div className='container'>
-                <img className='activity-image' src='https://via.placeholder.com/350x150' />
-                <div className='activity-header-text'>
-                  <h2 className='activity-title'>
-                      <input name="name" onChange={this.handleInputChange} value={this.state.name} />
-                      <DropDown options={this.props.types} name="type" value={this.state.type} onChange={this.handleInputChange}/>
-                  </h2>
-                  <div>
-                      {(this.props.prerequisites)?<Prerequisites prerequisites={this.props.prerequisites} />:""}
-                      {this.props.children}
-                  </div>
-                </div>
-                <div className='activity-view-events'>
-                    <button type="submit" className="activity-view-events-btn">Finish</button>
-                </div>
-            </div>
-              <div className='activity-body'>
-                <div id={this.props.id} onInput={this.handleDescriptionChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
-              </div>
-          </form>
-        </div>
+            components.imageComponent = <input className='activity-image' name='url' placeholder='Image URL' onChange={this.handleInputChange}></input>
+            components.nameComponent = <React.Fragment>
+                <input name="name" onChange={this.handleInputChange} value={this.state.name} />
+                <DropDown options={this.props.types} name="type" value={this.state.type} onChange={this.handleInputChange}/>
+            </React.Fragment>
+            components.buttonComponent = <button type="submit" className="activity-view-events-btn">Finish</button>
+            components.descriptionComponent = <div id={this.props.id} onInput={this.handleDescriptionChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
+        }else{
+            components.buttonComponent = <button type="button" onClick={this.toggleEdit} className="activity-view-events-btn">Edit Details</button>
         }
 
-        const typeName = this.props.types.filter(obj=>obj.value===this.props.type)[0]
-        return<div key={this.props.id} className='styled-container column'>
-          <div className='container'>
-            <img className='activity-image' src='https://via.placeholder.com/350x150' />
-            <div className='activity-header-text'>
-              <h2 className='activity-title'>
-                {this.props.name} ({typeName && typeName.name})
-              </h2>
-              <div>
-                  {(this.props.prerequisites)?<Prerequisites prerequisites={this.props.prerequisites} />:""}
-                  {this.props.children}
-              </div>
-            </div>
-            <div className='activity-view-events'>
-              <button type="button" onClick={this.toggleEdit} className="activity-view-events-btn">Edit Details</button>
-            </div>
-          </div>
-
-          <div className='activity-body'>
-            <div>{this.props.description}</div>
-          </div>
-        </div>
+        return <form key={this.props.id} onSubmit={this.mutation.onSubmit}>
+            <Activity {...components} name={this.formatName()} url={this.props.url} description={this.props.description} />
+        </form>
     }
 }
 
@@ -336,7 +322,8 @@ class ManageActivitiesInner extends Component {
                 value: element.id, // this is named value so it can be used by the dropdown box
                 type: element.activityCatagoryByType.id,
                 description: element.description,
-                prerequisites: temp
+                prerequisites: temp,
+                url: element.url
             }
         })
 
@@ -355,7 +342,8 @@ class ManageActivitiesInner extends Component {
                         id={activity.value}
                         type={activity.type}
                         description={activity.description}
-                        name={activity.name}>
+                        name={activity.name}
+                        url={activity.url}>
                         <PrerequisiteForm activityId={activity.value} activities={activities}/>
                     </ManageActivitiesForm>
                 })}

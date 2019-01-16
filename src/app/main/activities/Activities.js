@@ -14,9 +14,10 @@ const GET_ACTIVITIES_IN_CATAGORY = (name) => {
       activitiesByType {
         nodes {
             nodeId
+            id
             name
             description
-            id
+            url
           activityPrerequisitesByActivity{
             nodes{
               nodeId
@@ -41,7 +42,7 @@ function ActivitiesInner(props) {
     }
     return activities.map((element) => {
         let prerequisites = element.activityPrerequisitesByActivity.nodes.map((prerequisite) => prerequisite.activityByPrerequisite.name)
-        return <Activity name={element.name} prerequisites={prerequisites} description={element.description} id={element.id} key={element.id}/>
+        return <Activity name={element.name} prerequisites={prerequisites} description={element.description} id={element.id} key={element.id} url={element.url}/>
     })
 }
 
