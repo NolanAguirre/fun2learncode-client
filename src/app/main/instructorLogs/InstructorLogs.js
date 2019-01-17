@@ -1,47 +1,132 @@
 import React, {Component} from 'react';
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
-import {SecureRoute} from '../common/Common'
+import {SecureRoute, GridView} from '../common/Common'
+import moment from 'moment';
 
 const GET_INSTRUCTOR_LOGS = `{
-  allDateIntervals{
+  allEventLogs(condition:{instructor:null}){
     nodes{
       nodeId
-      attendancesByDate{
-        nodes{
+      id
+      instructor
+      comment
+      dateIntervalByDateInterval{
           nodeId
-          studentByStudent{
+          id
+          start
+      }
+      dateGroupByDateGroup{
+        nodeId
+        id
+        eventByEvent{
+          nodeId
+          id
+          activityByEventType{
             nodeId
+            id
+            name
           }
         }
+      }
+      studentByStudent{
+        nodeId
+        id
+        firstName
+        lastName
       }
     }
   }
 }`
 
-class InstructorLogsInner extends Component{
+const UPDATE_INSTRUCTOR_LOG = `mutation($eventLog:UpdateEventLogByIdInput!){
+  updateEventLogById(input:$eventLog){
+    eventLog{
+      nodeId
+      id
+      instructor
+      comment
+      dateGroupByDateGroup{
+        nodeId
+        id
+      }
+      userByInstructor{
+        nodeId
+        id
+      }
+      dateIntervalByDateInterval{
+        nodeId
+        id
+      }
+    }
+  }
+}`
+
+class InstructorLogForm extends Component{
     constructor(props){
         super(props)
+        this.state = {
+            dateGroup: props.log.dateGroupByDateGroup.id,
+            dateInterval: this.props.log.dateIntervalByDateInterval.id,
+            student:this.props.log.studentByStudent.id,
+            instructor: this.props.getUserData.id
+        }
+        this.mutation = new Mutation({
+            mutation:UPDATE_INSTRUCTOR_LOG,
+            onSubmit:this.handleSubmit
+        })
+    }
+
+    handleDescriptionChange = (event) => {
+        event.persist();
+        this.setState({comment:event.target.textContent})
+    }
+    handleSubmit = (event) => {
+        event.preventDefault();
+        if(this.state.comment && this.state.comment != ''){
+            return {eventLog:{id:this.props.log.id, eventLogPatch:this.state}}
+        }
+        return false;
     }
 
     render = () => {
-        return <div>{JSON.stringify(this.props.allDateIntervals)}</div>
+        const student = this.props.log.studentByStudent
+        const name = this.props.log.dateGroupByDateGroup.eventByEvent.activityByEventType.name
+        const start = this.props.log.dateIntervalByDateInterval.start
+        return <div className="styled-container column section edge-margin">
+            <form onSubmit={this.mutation.onSubmit}>
+                <h2 className='no-margin center-text'>{student.firstName} {student.lastName}</h2>
+                <h5 className='no-margin center-text'>{name} {moment(start).format('MMMM, do h:mm a')}</h5>
+                <div id={this.props.id} onInput={this.handleDescriptionChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
+                <button type='submit'>Write Log</button>
+            </form>
+        </div>
     }
 }
 
+function InstructorLogsInner(props){
+        return <GridView className='section' fillerStyle={"styled-container section"} itemsPerRow={3}>
+                {props.allEventLogs.nodes.map((log)=>{return<InstructorLogForm getUserData={props.getUserData} key={log.nodeId} log={log} />})}
+            </GridView>
+}
+
+function Inbetween (props){
+    return <ReactQuery query={GET_INSTRUCTOR_LOGS}>
+        <InstructorLogsInner getUserData={props.getUserData}/>
+    </ReactQuery>
+}
 
 class InstructorLogs extends Component{
     constructor(props){
         super(props)
-
+        this.state = {viewRange:''}
     }
 
     render = () => {
-        return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_INSTRUCTOR"]}>
-            <ReactQuery query={GET_INSTRUCTOR_LOGS}>
-                <InstructorLogsInner />
-            </ReactQuery>
+        return <SecureRoute roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_INSTRUCTOR"]}>
+            <Inbetween />
         </SecureRoute>
     }
 }
+
 export default InstructorLogs
