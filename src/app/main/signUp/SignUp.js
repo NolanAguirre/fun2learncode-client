@@ -3,7 +3,6 @@ import './SignUp.css'
 import Logo from '../../logos/drawing.svg'
 import gql from 'graphql-tag';
 import axios from 'axios'
-import UserStore from '../../UserStore'
 
 function IAm(props){
     return <div className='i-am-container'>
@@ -141,7 +140,6 @@ class CreateAccount extends Component{
                     if(res.data.errors){
                         this.handleServerErrors(res.data.errors);
                     }else{
-                        UserStore.set('authToken', res.data.data.registerUser.query.authenticate)
                         window.location.reload()
                     }
                 })
