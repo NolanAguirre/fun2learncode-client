@@ -43,6 +43,7 @@ const CREATE_DATE_GROUP = `mutation ($dateGroup: DateGroupInput!) {
             id
           }
           price
+          seatsLeft
           capacity
           nodeId
           id
@@ -72,6 +73,7 @@ const UPDATE_DATE_GROUP = `mutation ($id: UUID!, $dateGroup: DateGroupPatch!) {
             id
           }
           price
+          seatsLeft
           capacity
           nodeId
           id
@@ -242,6 +244,13 @@ class DateGroupFormInner extends Component {
             ? target.checked
             : target.value;
         const name = target.name;
+        if(name === 'capacity' && this.props.capacity){
+            if(value - (this.props.capacity - this.props.seatsLeft) < 0){
+                this.setState({error:`There are already ${(this.props.capacity - this.props.seatsLeft)} people signed up`})
+                return;
+            }
+            this.setState({error:null})
+        }
         this.setState({[name]: value});
     }
 
@@ -255,6 +264,7 @@ class DateGroupFormInner extends Component {
                 closeRegistration: this.state.closeRegistration.toISOString(),
                 price: this.state.price,
                 capacity: this.state.capacity,
+                seatsLeft: this.state.capacity - (this.props.capacity - this.props.seatsLeft),
                 address: this.state.address,
                 name: this.state.name
             }
@@ -278,6 +288,7 @@ class DateGroupFormInner extends Component {
         const addons = this.props.addOnJoinsByDateGroup && this.props.addOnJoinsByDateGroup.nodes.map(addon => addon)
         return <div className="date-form">
             <h4>Create/Edit Date Group</h4>
+            <span className='error'>{this.state.error}</span>
             <div className='date-form-inner'>
                 <div>
                     <form onSubmit={this.mutation.onSubmit}>

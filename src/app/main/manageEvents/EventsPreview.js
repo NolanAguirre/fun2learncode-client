@@ -21,6 +21,7 @@ const GET_DATE_GROUP_INFO_BY_ID = (id) => {
       name
       openRegistration
       closeRegistration
+      seatsLeft
       addOnJoinsByDateGroup{
         nodes{
           nodeId
@@ -81,6 +82,7 @@ const GET_EVENTS = `{
         nodes {
           event
           address
+          seatsLeft
           addOnJoinsByDateGroup{
             nodes{
               nodeId

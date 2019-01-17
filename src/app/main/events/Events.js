@@ -10,7 +10,7 @@ const GET_EVENTS_OF_TYPE = (id) => {
     nodes {
       id
       nodeId
-      dateGroupsByEvent(filter: {openRegistration: {lessThanOrEqualTo: "${new Date().toISOString()}"}, closeRegistration: {greaterThanOrEqualTo: "${new Date().toISOString()}"}}) {
+      dateGroupsByEvent(filter: {openRegistration: {lessThanOrEqualTo: "${new Date().toISOString()}"}, closeRegistration: {greaterThanOrEqualTo: "${new Date().toISOString()}"}, seatsLeft:{greaterThan:0}}) {
         nodes {
             addressByAddress {
               nodeId
@@ -23,6 +23,7 @@ const GET_EVENTS_OF_TYPE = (id) => {
             }
             price
             capacity
+            seatsLeft
           name
           nodeId
           openRegistration
@@ -55,7 +56,7 @@ function EventsInner(props) { // TODO group this by address so i dont have to lo
         return <EventComponent
           activityId={props.activityId}
           location={dateGroups.addressByAddress}
-          capacity={dateGroups.capacity}
+          seatsLeft={dateGroups.seatsLeft}
           dates={dates}
           id={dateGroups.id}
           price={dateGroups.price}

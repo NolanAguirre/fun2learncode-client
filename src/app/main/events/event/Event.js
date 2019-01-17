@@ -23,7 +23,7 @@ function EventComponent (props) {
               <Link className='default-link' to={`/Registration/${props.id}`}>
                 <div className='event-register-btn'>Register Now</div>
               </Link>
-              <div className='center-text'>Seats Left: {props.capacity}</div>
+              <div className='center-text'>Seats Left: {props.seatsLeft}</div>
             </div>
         </div>
       </div>

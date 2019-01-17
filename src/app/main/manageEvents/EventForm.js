@@ -34,6 +34,7 @@ const CREATE_EVENT = `mutation ($event: EventInput!) {
             nodeId
             id
             name
+            seatsLeft
             openRegistration
             closeRegistration
             datesJoinsByDateGroup {
