@@ -18,6 +18,8 @@ import {SignUp} from './signUp/SignUp'
 import CheckIn from './checkIn/CheckIn'
 import Account from './account/Account'
 import InstructorLogs from './instructorLogs/InstructorLogs'
+import Test from './test/Test'
+import ManagePromoCodes from './managePromoCodes/ManagePromoCodes'
 
 class Main extends Component {
   constructor (props) {
@@ -45,6 +47,9 @@ class Main extends Component {
             <Route exact path='/Admin/Manage Activities' component={ManageActivities} />
             <Route exact path='/Admin/Manage Addons' component={ManageAddons} />
             <Route exact path='/Admin/Manage Users' component={ManageUsers} />
+            <Route exact path='/Admin/Manage Promo Codes' component={ManagePromoCodes} />
+
+            <Route exact path='/test' component={Test} />
 
             <Route exact path='/Attendant/Check In' component={CheckIn} />
 
