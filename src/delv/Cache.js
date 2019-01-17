@@ -78,6 +78,8 @@ class Cache {
                 match = match && new Date(filterValue).getTime() >= new Date(value).getTime();
             } else if (key === 'greaterThanOrEqualTo') {
                 match = match && new Date(filterValue).getTime() <= new Date(value).getTime();
+            } else if (key === 'notEqualTo'){
+                match = match && value != filterValue
             }
         }
         return match
@@ -91,6 +93,7 @@ class Cache {
 
     filterCache = (set, args) => {
         let returnVal = set;
+        const _this = this;
         if (args.condition) {
             returnVal = _.pickBy(returnVal, function(value, key) {
                 let match = true;
@@ -107,9 +110,11 @@ class Cache {
                 let match = true;
                 for (let k in args.filter) {
                     if (value[k]) {
-                        if (!this.checkFilter(args.filter[k], value[k])) {
+                        if (!_this.checkFilter(args.filter[k], value[k])) {
                             match = false;
                         }
+                    }else{
+                        console.log(`Key data ${k} not found, cannot complete filter`);
                     }
                 }
                 return match;
