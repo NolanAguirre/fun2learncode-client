@@ -4,36 +4,52 @@ import StudentSelect from '../studentSelect/StudentSelect'
 import { ReactQuery } from '../../../delv/delv-react'
 import {SecureRoute, Location, GridView, DatesTable} from '../common/Common'
 import moment from 'moment';
+import Popup from "reactjs-popup"
 
 // user by id is included to ensure transition from loading state, even if the date intervals are the same
 const GET_DATES_WITH_STUDENT = (studentId) =>{
     return `{
-        allStudents(condition:{id:"${studentId}"}){
-    nodes{
+  allStudents(condition: {id: "${studentId}"}) {
+    nodes {
       nodeId
       id
-      eventRegistrationsByStudent{
-        nodes{
+      eventRegistrationsByStudent {
+        nodes {
           nodeId
-          dateGroupByDateGroup{
+          dateGroupByDateGroup {
             nodeId
-            eventByEvent{
+            eventByEvent {
               nodeId
               id
-              activityByEventType{
+              activityByEventType {
                 nodeId
                 name
                 id
               }
             }
-            datesJoinsByDateGroup{
-              nodes{
+            datesJoinsByDateGroup {
+              nodes {
                 nodeId
-                dateIntervalByDateInterval{
+                dateIntervalByDateInterval {
                   nodeId
                   id
                   start
                   end
+                  eventLogsByDateInterval(condition: {student: "${studentId}"}, filter:{instructor:{notEqualTo:null}}) {
+                    nodes {
+                      student
+                      nodeId
+                      id
+                      comment
+                      instructor
+                      userByInstructor {
+                        nodeId
+                        id
+                        firstName
+                        lastName
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -42,20 +58,57 @@ const GET_DATES_WITH_STUDENT = (studentId) =>{
       }
     }
   }
-}`
+}`}
+
+function EventLog(props) {
+    return <div>
+        <h3>{props.firstName} Said...</h3>
+        <div>{props.comment}</div>
+    </div>
 }
 
-function EventMonthDate(props){
-    function localizeUTCTimestamp(timestamp){
+function EventLogs(props){
+    if (props.logs.length > 0){
+        return<div>
+            {props.logs.map(log=><EventLog key={log.id} firstName={log.userByInstructor.firstName} comment={log.comment} />)}
+            <div>
+                View All Event notes
+            </div>
+        </div>
+    }
+    return <div>No Logs found</div>
+}
+
+class EventMonthDate extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {showPopup: false}
+    }
+
+    showPopup = () => {
+        this.setState({showPopup: true});
+
+    }
+
+    clearPopupState = () => {
+        this.setState({showPopup: false});
+    }
+
+    localizeUTCTimestamp = (timestamp) =>{
         return moment(moment.utc(timestamp)).local()
     }
-    return <div className='event-month-date-container'>
-        <h3>{props.date.activityName}</h3>
-        <div className='event-mont-date-body'>
-            <span>{localizeUTCTimestamp(props.date.start).format('dddd Do')}</span>
-            <span>View Notes</span>
+    render = () => {
+        return <div className='event-month-date-container'>
+            <Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+                <EventLogs logs={this.props.date.eventLogsByDateInterval.nodes} />
+            </Popup>
+            <h3 className='margin-bottom-10'>{this.props.date.activityName}</h3>
+            <div className='event-mont-date-body'>
+                <span>{this.localizeUTCTimestamp(this.props.date.start).format('dddd Do')}</span>
+                <span onClick={this.showPopup}>View Notes</span>
+            </div>
         </div>
-    </div>
+    }
 }
 
 class EventMonth extends Component{
@@ -64,10 +117,12 @@ class EventMonth extends Component{
       this.state = {};
     }
     localizeUTCTimestamp = (timestamp) =>{
-        return moment(moment.utc(timestamp)).local().format('MMMM YYYY')
+        return moment(moment.utc(timestamp)).local()
     }
     render = () => {
-        let dates = this.props.month.slice().sort((a,b)=>{return moment(b.start).unix() - moment(a.start).unix()}).map((date)=>{return<EventMonthDate key={moment(date.start).unix()} date={date}/>})
+        let dates = this.props.month.slice().sort((a,b)=>{
+            return moment(b.start).unix() - moment(a.start).unix()}).map((date)=>{return<EventMonthDate key={moment(date.start).unix()} date={date}/>
+        })
         return <React.Fragment>
             <h2>{this.props.monthName}</h2>
                 <GridView itemsPerRow={5} className='event-month'>
@@ -89,6 +144,7 @@ class EventMonths extends Component{
     }
 
     filterToMonth = () => {
+        console.log(this.props)
         const dates = this.props.allStudents.nodes[0].eventRegistrationsByStudent.nodes.map((registration)=>{
             let activityName = registration.dateGroupByDateGroup.eventByEvent.activityByEventType.name
             let dates = registration.dateGroupByDateGroup.datesJoinsByDateGroup.nodes.map((date)=>{
