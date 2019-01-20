@@ -169,14 +169,6 @@ class DragAndDropMutationInner extends Component{
 
     handleTimeChange = (key, value)=> {
         this.setState({[key]:value})
-        const start = this.state.startTime
-        const end = this.state.endTime
-        if(start > end){
-            this.setState({
-                startTime:end,
-                endTime:start
-            })
-        }
     }
 
     setTime = (day, time) =>{
