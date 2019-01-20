@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import gql from 'graphql-tag';
-import memoize from "memoize-one";
 import Logo from '../../logos/x-icon.svg'
 import {DropDown} from '../common/Common';
 import './ManageActivities.css';
@@ -262,12 +261,12 @@ class ManageActivitiesForm extends Component{
     handleSubmit = (event) => {
         event.preventDefault();
         if (this.hasRequiredValues()) {
-            let temp = Object.assign({}, this.state);
-            delete temp.edit;
+            let activity = Object.assign({}, this.state);
+            delete activity.edit;
             if(this.props.id){
-                return {"id":this.props.id, "patch": temp}
+                return {"id":this.props.id, "patch": activity}
             }else{
-                return {activity:temp};
+                return {activity:{activity}};
             }
         }
         this.setState({edit:false})
