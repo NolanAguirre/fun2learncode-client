@@ -264,7 +264,7 @@ class DateGroupFormInner extends Component {
                 closeRegistration: this.state.closeRegistration.toISOString(),
                 price: this.state.price,
                 capacity: this.state.capacity,
-                seatsLeft: this.state.capacity - (this.props.capacity - this.props.seatsLeft),
+                seatsLeft: this.state.capacity - (this.props.capacity - this.props.seatsLeft) || this.state.capacity,
                 address: this.state.address,
                 name: this.state.name
             }
