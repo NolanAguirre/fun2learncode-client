@@ -8,22 +8,6 @@
     box-sizing: border-box;
     max-width: inherit;
 }
-.manage-event-header-item{
-    padding: 30px;
-    background-color: white;
-}
-.manage-events-info{
-    display: flex;
-    flex:1;
-    max-width: inherit;
-}
-.manage-events-main{
-    display: flex;
-    flex-direction: column;
-    flex-grow:889;
-    flex-basis: 0;
-}
-
 
 .manage-events-event-form{
     border-left: 2px solid black;
@@ -31,13 +15,7 @@
     display:flex;
 }
 
-.manage-events-info >div{
-    display: flex;
-    flex-direction: column;
-}
 .manage-events-calander{
-    max-width: inherit;
-    max-height: 600px;
     flex:1;
     padding-top:20px;
 }

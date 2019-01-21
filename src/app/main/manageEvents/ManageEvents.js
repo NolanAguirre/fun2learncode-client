@@ -17,11 +17,10 @@ class ManageEventsInner extends Component {
     }
     setActiveDateGroup = (dateGroup) =>{
         if(dateGroup.id != this.state.activeDateGroup.id){
-            console.log(dateGroup)
             this.setState({
                 activeDateGroup:{...dateGroup}
             });
-            console.log(this.state.activeDateGroup)
+
         }
     }
 
@@ -32,23 +31,23 @@ class ManageEventsInner extends Component {
     }
 
     render() {
-        return (<div className="manage-events-container">
+        return <div className="manage-events-container">
                     <EventsPreview>
-                         <Event>
-                             <DateGroup activeDateGroup={this.state.activeDateGroup} setActiveDateGroup={this.setActiveDateGroup}/>
-                             <DateGroupForm>
-                                 <button className='create-date-group-btn' >New Group</button>
-                             </DateGroupForm>
-                         </Event>
+                        <Event>
+                            <DateGroup setActiveDateGroup={this.setActiveDateGroup} activeDateGroup={this.state.activeDateGroup}/>
+                            <DateGroupForm>
+                                <button className='create-date-group-btn'>New Group</button>
+                            </DateGroupForm>
+                        </Event>
                     </EventsPreview>
-                    <div className="manage-events-main">
+                    <div className="container column section">
                         <div className="manage-events-event-form">
                             <EventForm/>
                             <DateGroupInfo activeDateGroup={this.state.activeDateGroup} />
                         </div>
-                            <DragAndDropMutation setActiveDateGroup={this.setActiveDateGroup} activeDateGroup={this.state.activeDateGroup}/>
+                        <DragAndDropMutation setActiveDateGroup={this.setActiveDateGroup} activeDateGroup={this.state.activeDateGroup}/>
                     </div>
-                </div>);
+                </div>;
     }
 }
 

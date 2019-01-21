@@ -1,14 +1,12 @@
-.event-preview-container-container {
-    flex-basis: 0;
-    flex-grow: 250;
+.event-preview-container{
     margin-right: 10px;
-}
-.event-preview-container {
+    max-height: 700px;
     overflow-y: auto;
 }
 .event-preview-container::-webkit-scrollbar{
     display:none;
 }
+
 .event-preview-header{
     display: flex;
 }
@@ -21,6 +19,7 @@
     padding-left: 10px;
     font-size: 12px;
 }
+
 .event-preview-event-container{
     border: 2px solid black;
     margin-bottom: 5px;

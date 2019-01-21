@@ -10,7 +10,7 @@ import Colors from '../calendar/Colors'
 import DateGroupForm from './DateGroupForm';
 import moment from 'moment'
 import DateStore from '../../DateStore'
-import EventForm from './EventForm';
+import EventForm from './EventForm'
 
 const GET_DATE_GROUP_INFO_BY_ID = (id) => {
     return `{
@@ -186,7 +186,7 @@ class Event extends Component {
     }
     render = () => {
         const event = this.props.event;
-        const dateGroups = event.dateGroupsByEvent.nodes.map((element) => { return React.cloneElement(this.props.children[0], { key: element.id, dateGroup: element }) })
+        const dateGroups = event.dateGroupsByEvent.nodes.map((element) => { return React.cloneElement(this.props.children[0], { key: element.id, dateGroup: element}) })
         return (
             <React.Fragment>
                 <Popup
@@ -266,13 +266,11 @@ function EventsPreviewInner (props) {
 }
 
 function EventsPreview (props) {
-    return <div className='event-preview-container-container'>
-        <div className='event-preview-container'>
+    return <div className='event-preview-container'>
             <ReactQuery query={GET_EVENTS}>
               <EventsPreviewInner>{props.children}</EventsPreviewInner>
             </ReactQuery>
         </div>
-    </div>
 }
 
 export {Event, DateGroup, EventsPreview, DateGroupInfo}
