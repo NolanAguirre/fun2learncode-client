@@ -88,28 +88,23 @@ class RegistrationInner extends Component{
             addons:[],
             error:""
         }
-        this.template = (name, student) => `${name}:createEventRegistration(input: {eventRegistration: {registeredBy: "${this.props.getUserData.id}", student: "${student.id}", dateGroup: "${this.props.dateGroupId}"}}) {
-    eventRegistration {
-      nodeId
-      studentByStudent {
-        nodeId
-      }
-      dateGroupByDateGroup {
-        nodeId
-      }
-    }
-  }`
     }
 
     checkPrerequisites = (student) => {
         let query = `{
-	               checkPrerequisites(arg0:"${this.props.dateGroupId}",arg1:"${student.id}")
-               }`
+  checkPrerequisites(arg0: "${this.props.dateGroupId}", arg1: "${student.id}")
+  checkRegistration(arg0: "${this.props.dateGroupId}", arg1: "${student.id}")
+  checkTime(arg0: "${this.props.dateGroupId}", arg1: "${student.id}")
+}`
         return Delv.post(query).then((res)=>{
             if(!res.data.data.checkPrerequisites){
                 this.setState({error:`${student.firstName} ${student.lastName} does not meet the prerequisites.`})
+            }else if(res.data.data.checkRegistration){
+                this.setState({error:`${student.firstName} ${student.lastName} is already registered for this class.`})
+            }else if(res.data.data.checkTime){
+                this.setState({error:`${student.firstName} ${student.lastName} already has classes planned for this time.`})
             }
-            return res.data.data.checkPrerequisites;
+            return res.data.data.checkPrerequisites && !res.data.data.checkRegistration && !res.data.data.checkTime;
         }).catch((err)=>{console.log(err)});
     }
 
