@@ -4,6 +4,7 @@ import { ReactQuery } from '../../../delv/delv-react'
 import gql from 'graphql-tag'
 import moment from 'moment';
 
+import EventSystem from '../../EventSystem'
 const GET_USER_DATA = `{
     getUserData{
         nodeId
@@ -149,3 +150,33 @@ function Selectable(props){
 }
 
 export {Selectable}
+
+class CustomProvider extends Component{
+    constructor(props){
+        super(props);
+        this.propName = `${props.propName}Provider`
+        this.state={[this.propName]:props.default|| {}}
+    }
+    componentDidMount = () => {
+        EventSystem.on(this.propName, this.handleEvent);
+    }
+    componentWillUnmount = () => {
+        EventSystem.removeListener(this.propName, this.handleEvent)
+    }
+    capitalize = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    emitEvent = (data) => {
+        if(data !== this.state[this.propName]){
+            EventSystem.emit(this.propName, data)
+        }
+    }
+    handleEvent = (args) => {
+        this.setState({[this.propName]:args})
+    }
+    render = () => {
+        return React.cloneElement(this.props.children, {[this.propName]:this.state[this.propName], [`emit${this.capitalize(this.propName)}`]:this.emitEvent});
+    }
+}
+
+export { CustomProvider }

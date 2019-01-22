@@ -135,7 +135,7 @@ class DragAndDropMutationInner extends Component{
 
     // used for constructing queries
     makeTemplate = (name, dateInterval) => {
-        return `${name}:makeDateInterval(input: {arg0: "${dateInterval.start}", arg1: "${dateInterval.end}", arg2: "${this.props.activeDateGroup.id}"}) {
+        return `${name}:makeDateInterval(input: {arg0: "${dateInterval.start}", arg1: "${dateInterval.end}", arg2: "${this.props.dateGroupProvider.id}"}) {
     datesJoin{
       nodeId
       id
@@ -153,7 +153,7 @@ class DragAndDropMutationInner extends Component{
     }
 
     deleteTemplate = (name, dateInterval) =>{
-        return `${name}:removeDateInterval(input: {arg0: "${dateInterval.start}", arg1: "${dateInterval.end}", arg2: "${this.props.activeDateGroup.id}"}) {
+        return `${name}:removeDateInterval(input: {arg0: "${dateInterval.start}", arg1: "${dateInterval.end}", arg2: "${this.props.dateGroupProvider.id}"}) {
             datesJoin{
               nodeId
               id
@@ -257,11 +257,11 @@ class DragAndDropMutationInner extends Component{
 
 
     newEvent = (event) => { //event that files on slot select
-        const dateGroupId = this.props.activeDateGroup.id;
+        const dateGroupId = this.props.dateGroupProvider.id;
         if (dateGroupId && event.action === 'doubleClick' && (!DateStore.get('hidden') || !DateStore.get('hidden').includes(dateGroupId))) {
             this.popupEvent = {
                 id: this.genRandomId(),
-                title: this.props.activeDateGroup.name,
+                title: this.props.dateGroupProvider.name,
                 start: event.start,
                 end: event.start,
                 buttonStyle: {
@@ -308,7 +308,7 @@ class DragAndDropMutationInner extends Component{
         event.buttonStyle = {
             backgroundColor: Colors.get(event.resources.groupId).hover
         }
-        this.props.setActiveDateGroup({id:event.resources.groupId, name:event.title});
+        this.props.emitDateGroupProvider({id:event.resources.groupId, name:event.title});
         this.setState({selected: event})
     }
 

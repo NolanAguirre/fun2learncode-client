@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { DropDown } from '../common/Common'
+import { DropDown, CustomProvider } from '../common/Common'
 import './EventsPreview.css'
 import { ReactQuery } from '../../../delv/delv-react'
 import DateTime from 'react-datetime'
@@ -152,8 +152,8 @@ class DateGroup extends Component {
         const dates = this.props.dateGroup.datesJoinsByDateGroup.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()}).map((element) => {
             return <div key={element.id}>{moment(moment.utc(element.dateIntervalByDateInterval.start)).local().format("MMM Do h:mma") + "-" +moment(moment.utc(element.dateIntervalByDateInterval.end)).local().format("h:mma")}</div>
         })
-        const backgroundColor = (this.props.dateGroup.id == this.props.activeDateGroup.id)? Colors.get(this.props.dateGroup.id).hover : Colors.get(this.props.dateGroup.id).regular
-        return <div onClick={() => {this.props.setActiveDateGroup(this.props.dateGroup)}} style={{ backgroundColor }} className='event-preview-date-container'>
+        const backgroundColor = (this.props.dateGroup.id == this.props.dateGroupProvider.id)? Colors.get(this.props.dateGroup.id).hover : Colors.get(this.props.dateGroup.id).regular
+        return <div onClick={() => {this.props.emitDateGroupProvider(this.props.dateGroup)}} style={{ backgroundColor }} className='event-preview-date-container'>
                 <div className='event-preview-header'>
                     <h4>{this.props.dateGroup.name}</h4>
                     <DateGroupForm {...this.props.dateGroup}>
@@ -186,7 +186,10 @@ class Event extends Component {
     }
     render = () => {
         const event = this.props.event;
-        const dateGroups = event.dateGroupsByEvent.nodes.map((element) => { return React.cloneElement(this.props.children[0], { key: element.id, dateGroup: element}) })
+        const dateGroups = event.dateGroupsByEvent.nodes.map((element) => {
+            return <CustomProvider key={element.id} propName='dateGroup'>
+                {React.cloneElement(this.props.children[0], { dateGroup: element})}
+            </CustomProvider>})
         return (
             <React.Fragment>
                 <Popup
@@ -248,11 +251,11 @@ function DateGroupInfoInner(props) {
 }
 
 function DateGroupInfo(props){
-    if(!props.activeDateGroup.id){
+    if(!props.dateGroupProvider.id){
         return <div></div>
     }
     return<div>
-            <ReactQuery query={GET_DATE_GROUP_INFO_BY_ID(props.activeDateGroup.id)}>
+            <ReactQuery query={GET_DATE_GROUP_INFO_BY_ID(props.dateGroupProvider.id)}>
                 <DateGroupInfoInner />
             </ReactQuery>
         </div>
