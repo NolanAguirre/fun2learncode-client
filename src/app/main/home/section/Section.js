@@ -4,7 +4,7 @@ import './Section.css';
 function Section(props){
         return (
         <div className="styled-container column">
-            <h3>{props.name}</h3>
+            <h2>{props.name}</h2>
             <div className="container">
                 <div className="center-y">
                     <img className="home-section-image" alt="Activity picture" src="https://via.placeholder.com/300x150"></img>

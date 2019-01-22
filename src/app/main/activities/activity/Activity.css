@@ -18,6 +18,10 @@
     padding: 20px 30px;
 }
 
+.activity-view-events a {
+    text-decoration: none;
+}
+
 .activity-view-events-btn {
     min-width: 150px;
     padding: 30px 20px;

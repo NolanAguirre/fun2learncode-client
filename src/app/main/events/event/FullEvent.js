@@ -22,7 +22,7 @@ function FullEvent(props){
                     </tr>
                     <tr>
                         <td>Prerequisites:</td>
-                        <td>{props.prerequisites}</td>
+                        <td>{props.prerequisites.map((prereq=>prereq.name))}</td>
                     </tr>
                 </tbody>
             </table>
