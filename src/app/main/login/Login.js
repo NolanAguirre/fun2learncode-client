@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import './Login.css'
+import {Link} from 'react-router-dom'
 import Logo from '../../logos/drawing.svg'
 import axios from 'axios'
 
@@ -56,9 +57,10 @@ class Login extends Component {
                         <input className='styled-input' placeholder='email' name='email' type='email' onChange={this.handleChange}/>
                         <input className='styled-input' placeholder='password' name='password' type='password' onChange={this.handleChange}/>
                         <div className='event-register-btn center-text' onClick={this.handleSubmit}>Log In</div>
+                        <button className='hacky-submit-button' type='submit'/>
                     </form>
                     <div className='sign-up-text'>
-                        <a href="/Sign up">Sign up</a>
+                        <Link to={`/Sign up`}>Sign up</Link>
                     </div>
                 </div>
             </div>

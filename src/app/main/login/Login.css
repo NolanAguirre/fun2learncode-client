@@ -37,3 +37,7 @@
     margin-top: 40px;
     padding: 10px 40px;
 }
+.hacky-submit-button{
+    visibility: hidden;
+    position: absolute;
+}
