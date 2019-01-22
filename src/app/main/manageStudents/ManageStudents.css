@@ -4,13 +4,6 @@
     flex-direction: column;
     max-width: 100%;
 }
-.event-months-container{
-    display:flex;
-    flex-direction: column;
-    background: white;
-    padding: 20px 40px;
-    margin: 10px 0;
-}
 .event-month{
     display: flex;
     flex-direction: column;

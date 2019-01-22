@@ -217,7 +217,7 @@ class Payment extends Component {
             <Popup className='payment-overview-popup' open={this.state.showPopup} closeOnEscape={!this.state.loading} closeOnDocumentClick={!this.state.loading} onClose={this.clearPopupState}>
                 {child}
             </Popup>
-            <button className="continue-to-payment-btn" onClick={()=>{this.showPopup(this.props.getTotal())}}> Continue to Payment</button>
+            <div className="event-register-btn" onClick={()=>{this.showPopup(this.props.getTotal())}}> Continue to Payment</div>
         </React.Fragment>
     }
 }

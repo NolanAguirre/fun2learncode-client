@@ -168,7 +168,7 @@ class EventMonths extends Component{
     }
 
     render = () => {
-        return <div className="event-months-container">
+        return <div className="styled-container column">
             {this.filterToMonth()}
         </div>
     }
