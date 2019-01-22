@@ -52,7 +52,7 @@ class PaymentInformationEntry extends Component{
         }else if(this.state.state === ''){
             this.setState({stateError:'State is required.'})
         }else if(this.state.promoCode === ''){
-            this.setState.showAddress({showAddress:false})
+            this.setState({showAddress:false})
         }else{
             axios.post('http://localhost:3005/promoCode', {promoCode:this.state.promoCode, event:this.props.event.id, catagory:this.props.activity.id}).then((data)=>{
                 if(data.data.error){
@@ -87,7 +87,7 @@ class PaymentInformationEntry extends Component{
                 this.props.stripe.createToken({name: this.state.cardholder}).then(({token, error}) => {
                     if(error){
                         this.isProcessing = false;
-                        this.setState({error:error.message})
+                        this.setState({stripeError:error.message})
                     }else{
                         const {
                             promoCode,
@@ -95,6 +95,7 @@ class PaymentInformationEntry extends Component{
                             city,
                             state
                         } = this.state
+                        this.setState({stripeError:null})
                         this.props.handleSubmit({token, promoCode, address, city, state})
                     }
                 });
@@ -108,7 +109,7 @@ class PaymentInformationEntry extends Component{
         return <div className='login-widget'>
             <form  className='container section' onSubmit={this.handleSubmit}>
                 <div className={this.state.showAddress?'payment-container':'hidden'}>
-                    <h1 className='center-text'>Sub total: {this.props.total}$</h1>
+                    <h1 className='center-text no-margin'>Sub total: {this.props.total}$</h1>
                     <div className='sign-up-input-container'>
                           <div className='payment-input-container'>
                                {this.state.addressError?<span className='error'>{this.state.addressError}</span>:'Address'}
@@ -126,26 +127,32 @@ class PaymentInformationEntry extends Component{
                         </div>
                     </div>
                   <div className='container'>
-                     <div className='small-input edge-margin'>
-                          ZIP/Postal code
-                          <PostalCodeElement className='styled-input' {...createStripeStyle}/>
-                      </div>
                       <div className='small-input edge-margin'>
-                           {this.state.promoCodeError?<span className='error'>{this.state.promoCodeError}</span>:'Promo code'}
+                          {this.state.promoCodeError?<span className='error'>{this.state.promoCodeError}</span>:'Promo code'}
                           <input className='styled-input' name='promoCode' placeholder='Promo Code' onChange={this.handleChange}/>
+                      </div>
+                     <div className='small-input edge-margin'>
+
                       </div>
                   </div>
                    <div className='event-register-btn center-text' onClick={this.showCard}>Next</div>
               </div>
               <div className={this.state.showAddress?'hidden':'payment-container'}>
-                  <h1 className='center-text'>Total: {this.total}$</h1>
+                  <h1 className='center-text no-margin'>Total: {this.total}$</h1>
+                  <span className='error'>{this.state.stripeError}</span>
                   <div className='container'>
                       {this.state.cardholderError?<span className='error'>{this.state.cardholderError}</span>:'Cardholder name'}
                       <input className='styled-input' placeholder="John Doe" name='cardholder' onChange={this.handleChange}/>
                 </div>
-                <div className='sign-up-input-container'>
-                      Card number
-                    <CardNumberElement className='styled-input' {...createStripeStyle}/>
+                <div className='container'>
+                    <div className='card-number-container edge-margin'>
+                        Card number
+                      <CardNumberElement className='styled-input' {...createStripeStyle}/>
+                    </div>
+                    <div className='cvc-container edge-margin'>
+                        CVC
+                        <CardCVCElement className='styled-input' {...createStripeStyle}/>
+                    </div>
                 </div>
                 <div className='container'>
                     <div className='small-input edge-margin'>
@@ -153,8 +160,8 @@ class PaymentInformationEntry extends Component{
                         <CardExpiryElement className='styled-input '  {...createStripeStyle}/>
                     </div>
                     <div className='small-input edge-margin'>
-                        Security Code
-                        <CardCVCElement className='styled-input' {...createStripeStyle}/>
+                        ZIP/Postal code
+                        <PostalCodeElement className='styled-input' {...createStripeStyle}/>
                     </div>
                 </div>
                  <div className='event-register-btn center-text' onClick={this.handleSubmit}>Submit</div>
@@ -186,7 +193,7 @@ class Payment extends Component {
 
     handleSubmit = ({token, promoCode, address, city, state}) => {
         this.setState({state:'loading'})
-        this.props.handleSubmit({token, promoCode, address, city, state, callback: (res)=>{this.setState({state:'complete',complete:res.data.data})}})
+        this.props.handleSubmit({token, promoCode, address, city, state, callback: (res)=>{this.setState({state:'complete',complete:res.data})}})
     }
 
     render = () => {
@@ -195,7 +202,7 @@ class Payment extends Component {
             child =<img className='loading-icon' src={loading}/>
         }else if(this.state.state === 'complete'){
             if(this.state.complete.error){
-                child = <span className='error'>{this.state.complete.error}</span>
+                child = <div> <span className='error'>{this.state.complete.error}</span> </div>
             }else{
                 child = <div>Transaction successful</div>
             }

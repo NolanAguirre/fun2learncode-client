@@ -35,9 +35,15 @@
     margin-top: 10px;
 }
 .hidden{
-    display:none;
+    display: none;
 }
 .loading-icon{
     width: 300px;
     height:300px;
+}
+.card-number-container{
+    width: calc(77% - 5px);
+}
+.cvc-container{
+    width: calc(23% - 5px);
 }
