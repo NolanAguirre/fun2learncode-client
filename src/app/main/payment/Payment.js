@@ -12,6 +12,7 @@ import {CardNumberElement,
   Elements,
   injectStripe} from 'react-stripe-elements'
 import axios from 'axios'
+import loading from '../../logos/loading.svg'
 
 const USER_DATA = `{
     getUserData{
@@ -172,7 +173,6 @@ class Payment extends Component {
             showPopup: false,
             state:'card'
         }
-
     }
 
     showPopup = (total) => {
@@ -184,15 +184,15 @@ class Payment extends Component {
         this.setState({showPopup: false, total:0});
     }
 
-    handleSubmit = ({token, promoCode}) => {
+    handleSubmit = ({token, promoCode, address, city, state}) => {
         this.setState({state:'loading'})
-        this.props.handleSubmit({token, promoCode, callback: (res)=>{this.setState({state:'complete',complete:res.data})}})
+        this.props.handleSubmit({token, promoCode, address, city, state, callback: (res)=>{this.setState({state:'complete',complete:res.data.data})}})
     }
 
     render = () => {
         let child;
         if(this.state.state === 'loading'){
-            child = <div>loading</div>
+            child =<img className='loading-icon' src={loading}/>
         }else if(this.state.state === 'complete'){
             if(this.state.complete.error){
                 child = <span className='error'>{this.state.complete.error}</span>

@@ -1,6 +1,7 @@
 .payment-overview-popup{
     width:auto !important;
     padding:0!important;
+    border:0!important;
 }
 
 .payment-container{
@@ -35,4 +36,8 @@
 }
 .hidden{
     display:none;
+}
+.loading-icon{
+    width: 300px;
+    height:300px;
 }
