@@ -1,26 +1,25 @@
 .payment-overview-popup{
     width:auto !important;
+    padding:0!important;
 }
 
+.payment-container{
+    display: flex;
+    flex:1;
+    flex-direction: column;
+    justify-content: space-between;
+}
 .payment-overview-popup *::placeholder{
     font-family: 'Source Code Pro', monospace;
     color: '#aab7c4';
 }
 .submit-payment-btn{
+    background: green;
     padding: 13px 40px;
     margin-top: 20px;
     width:226px;
 }
-.payment-container{
-    padding:20px 40px;
-}
-.payment-input-container{
-    width:100%;
-}
-.payment-container h1{
-    text-align: center;
-    margin:0px;
-}
+
 .edge-margin:first-child{
     margin-right: 5px;
 }
@@ -33,4 +32,7 @@
     padding: 30px 40px;
     margin: 0 auto;
     margin-top: 10px;
+}
+.hidden{
+    display:none;
 }

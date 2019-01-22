@@ -1,14 +1,10 @@
-.login{
-    flex:1;
-    display:flex;
-}
 .login-container{
     margin: auto;
 }
 .login-widget{
     padding: 40px;
     background-color:white;
-    min-width: 500px;
+    width: 500px;
     min-height: 500px;
     display: flex;
     flex-direction: column;
@@ -29,26 +25,12 @@
     color:red;
 }
 .login-form{
+    margin-top: 10px;
     display:flex;
     flex:1;
     flex-direction: column;
     justify-content: space-between;
 }
-.login-form input {
-    display: block;
-    height: 40px;
-    margin-top: 5px;
-    padding: .65rem 1rem;
-    font-size: 2rem;
-    line-height: 1.25;
-    color: #1a2e34;
-    background-color: #fff;
-    border: 1px solid #cdd6e4;
-    border-radius: .1875rem;
-    box-shadow: none;
-    background-clip: padding-box;
-}
-
 
 .login-form-btn{
     max-width: 150px;

@@ -11,6 +11,7 @@ import {CardNumberElement,
   StripeProvider,
   Elements,
   injectStripe} from 'react-stripe-elements'
+import Delv from '../../../delv/delv'
 
 const USER_DATA = `{
     getUserData{
@@ -39,7 +40,11 @@ const createStripeStyle = {
 class PaymentInformationEntry extends Component{
     constructor(props){
         super(props)
-        this.state = {cardholder:'', promoCode:''};
+        this.state = {cardholder:'', promoCode:'', address:'', city:'', state:'', showAddress:true};
+    }
+
+    toggleShowAddress = () => {
+        this.setState({showAddress:!this.state.showAddress})
     }
 
     handleChange = (event) => {
@@ -48,7 +53,6 @@ class PaymentInformationEntry extends Component{
         const name = target.name
         if(name === 'cardholder'){
             this.setState({[name]: value, error:null})
-
         }else{
             this.setState({[name]: value})
         }
@@ -74,44 +78,60 @@ class PaymentInformationEntry extends Component{
     }
 
     render = () => {
-        return <div className='payment-container'>
-            <h1>Total: {this.props.total}$</h1>
-            <form className='sign-up-form' onSubmit={this.handleSubmit}>
-                <div className='sign-up-input-container'>
-                    <div className='payment-input-container'>
-                         {this.state.error?<span className='error'>{this.state.error}</span>:'Cardholder name'}
-                        <input className='sign-up-form-input' placeholder="John Doe" name='cardholder' onChange={this.handleChange}/>
+        return <div className='login-widget'>
+            <form  className='container section' onSubmit={this.handleSubmit}>
+                <div className={this.state.showAddress?'payment-container':'hidden'}>
+                    <h1 className='center-text'>Sub total: {this.props.total}$</h1>
+                    <div className='sign-up-input-container'>
+                          <div className='payment-input-container'>
+                              Address
+                            <input className='styled-input' name='address' onChange={this.handleChange}/>
+                          </div>
+                    </div>
+                    <div className='container'>
+                        <div className='small-input edge-margin'>
+                            City
+                            <input className='styled-input' name='city' placeholder='Austin' onChange={this.handleChange}/>
                         </div>
-              </div>
-                <div className='sign-up-input-container'>
-                    <div className='payment-input-container'>
-                        Card number
-                      <CardNumberElement className='sign-up-form-input' {...createStripeStyle}/>
+                        <div className='small-input edge-margin'>
+                            State
+                            <input className='styled-input' name='state' placeholder='Texas' onChange={this.handleChange}/>
                         </div>
+                    </div>
+                  <div className='container'>
+                     <div className='small-input edge-margin'>
+                          ZIP/Postal code
+                          <PostalCodeElement className='styled-input' {...createStripeStyle}/>
+                      </div>
+                      <div className='small-input edge-margin'>
+                          Promo code
+                          <input className='styled-input' name='promoCode' placeholder='Promo Code' onChange={this.handleChange}/>
+                      </div>
+                  </div>
+                   <div className='event-register-btn center-text' onClick={this.toggleShowAddress}>Next</div>
               </div>
-
-
-              <div className='sign-up-input-container'>
-                  <div className='edge-margin'>
-                      Expiry date
-                      <CardExpiryElement className='sign-up-form-input-small '  {...createStripeStyle}/>
-                  </div>
-                  <div className='edge-margin'>
-                      Security Code
-                      <CardCVCElement className='edge-padding sign-up-form-input-small' {...createStripeStyle}/>
-                  </div>
+              <div className={this.state.showAddress?'hidden':'payment-container'}>
+                  <h1 className='center-text'>Total: {this.props.total}$</h1>
+                  <div className='container'>
+                      {this.state.error?<span className='error'>{this.state.error}</span>:'Cardholder name'}
+                      <input className='styled-input' placeholder="John Doe" name='cardholder' onChange={this.handleChange}/>
+                </div>
+                <div className='sign-up-input-container'>
+                      Card number
+                    <CardNumberElement className='styled-input' {...createStripeStyle}/>
+                </div>
+                <div className='container'>
+                    <div className='small-input edge-margin'>
+                        Expiry date
+                        <CardExpiryElement className='styled-input '  {...createStripeStyle}/>
+                    </div>
+                    <div className='small-input edge-margin'>
+                        Security Code
+                        <CardCVCElement className='styled-input' {...createStripeStyle}/>
+                    </div>
+                </div>
+                 <div className='event-register-btn center-text' onClick={this.handleSubmit}>Submit</div>
               </div>
-              <div className='sign-up-input-container'>
-                  <div className='edge-margin'>
-                      ZIP/Postal code
-                      <PostalCodeElement className='sign-up-form-input-small' {...createStripeStyle}/>
-                  </div>
-                  <div className='edge-margin'>
-                      Promo code
-                      <input className='sign-up-form-input-small' name='promoCode' placeholder='Promo Code' onChange={this.handleChange}/>
-                  </div>
-              </div>
-              <button className='submit-payment-btn' type='submit'>Submit</button>
           </form>
       </div>
     }
@@ -124,7 +144,7 @@ class Payment extends Component {
         super(props);
         this.state = {
             showPopup: false,
-            loading: false
+            state:'card'
         }
 
     }
@@ -139,28 +159,26 @@ class Payment extends Component {
     }
 
     handleSubmit = ({token, promoCode}) => {
-        this.setState({loading:true})
-        this.props.handleSubmit({token, promoCode, callback: (res)=>{this.setState({loading:false,complete:res.data})}})
+        this.setState({state:'loading'})
+        this.props.handleSubmit({token, promoCode, callback: (res)=>{this.setState({state:'complete',complete:res.data})}})
     }
 
     render = () => {
         let child;
-        if(this.state.loading){
+        if(this.state.state === 'loading'){
             child = <div>loading</div>
-        }else if(this.state.complete){
+        }else if(this.state.state === 'complete'){
             if(this.state.complete.error){
                 child = <span className='error'>{this.state.complete.error}</span>
             }else{
                 child = <div>Transaction successful</div>
             }
-        }else{
-            child = <div className='payment-overview-container'>
-                <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
+        }else if(this.state.state === 'card'){
+            child = <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
                     <Elements>
                         <PaymentInfoEntry handleSubmit={this.handleSubmit} total={this.state.total}/>
                     </Elements>
                 </StripeProvider>
-            </div>
         }
         return <React.Fragment>
             <Popup className='payment-overview-popup' open={this.state.showPopup} closeOnEscape={!this.state.loading} closeOnDocumentClick={!this.state.loading} onClose={this.clearPopupState}>

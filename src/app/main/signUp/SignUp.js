@@ -152,17 +152,22 @@ class CreateAccount extends Component{
           <div className='login-error-container'>
               <span className='login-error'>{this.state.error}</span>
           </div>
-          <form className='sign-up-form'>
-            <input className='sign-up-form-input' name='email' type='email' onChange={this.handleChange} placeholder='email' />
-            <div className='sign-up-input-container'>
-                <input className='sign-up-form-input-small edge-margin' name='firstName' onChange={this.handleChange} placeholder='first name' />
-                <input className='sign-up-form-input-small edge-margin' name='lastName' onChange={this.handleChange} placeholder='last name' />
+          <form className='container column'>
+            <input className='styled-input' name='email' type='email' onChange={this.handleChange} placeholder='email' />
+            <div className="container margin-top-40">
+                <div className='small-input edge-margin'>
+                    <input className='styled-input' name='firstName' onChange={this.handleChange} placeholder='first name' />
+                </div>
+                <div className='small-input edge-margin'>
+                    <input className='styled-input' name='lastName' onChange={this.handleChange} placeholder='last name' />
+                </div>
             </div>
-            <div className='sign-up-input-container'>
-                <input className='sign-up-form-input-small edge-margin' name='password' type='password' onChange={this.handleChange} placeholder='password' />
-                <input className='sign-up-form-input-small edge-margin' name='repeatPassword' type='password' onChange={this.handleChange} placeholder='repeat password' />
+            <div className="margin-top-40">
+                <input className='styled-input' name='password' type='password' onChange={this.handleChange} placeholder='password' />
             </div>
-            {this.props.children?React.cloneElement(this.props.children, {handleChange:this.handleChange}):''}
+            <div className="margin-top-40">
+                <input className='styled-input' name='repeatPassword' type='password' onChange={this.handleChange} placeholder='repeat password' />
+            </div>
             <div>
                 <button type='submit' className='login-form-btn' onClick={this.handleSubmit}>Create Account</button>
             </div>
@@ -194,7 +199,7 @@ class SignUp extends Component {
       }else if(this.state.UI === 'createAccount'){
           inner = <CreateAccount setUI={this.setUIValue}/>
       }
-    return <div className='login'>
+    return <div className='container section'>
       <div className='login-container'>
           <div className='login-widget'>
                 <div className='login-headers'>

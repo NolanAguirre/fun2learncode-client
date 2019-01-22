@@ -93,19 +93,25 @@ class StudentForm extends Component{
                 open={this.state.showPopup}
                 closeOnDocumentClick
                 onClose={this.clearPopupState}>
-                <div className="create-student-container">
-                    <h1>Add Student</h1>
+                <div className="login-widget">
+                    <h1 className='center-text'>Add Student</h1>
                     <div className='login-error-container'>
                         <span className='login-error'>{this.state.error}</span>
                     </div>
-                    <form onSubmit={this.mutation.onSubmit}className='sign-up-form'>
-                            <div className='sign-up-input-container'>
-                                <input className='sign-up-form-input-small edge-margin' name='firstName' onChange={this.handleChange} placeholder='first name' />
-                                <input className='sign-up-form-input-small edge-margin' name='lastName' onChange={this.handleChange} placeholder='last name' />
+                    <form onSubmit={this.mutation.onSubmit}className='container column'>
+                            <div className='container'>
+                                <div className='small-input edge-margin'>
+                                    <input className='styled-input' name='firstName' onChange={this.handleChange} placeholder='first name' />
+                                </div>
+                                <div className='small-input edge-margin'>
+                                    <input className='styled-input' name='lastName' onChange={this.handleChange} placeholder='last name' />
+                                </div>
                             </div>
-                            <div className='sign-up-input-container'>
+                            <div className='container margin-top-40'>
                                 <span className='dob-label'>Date Of Birth:</span>
-                                <DateTime onChange={(time)=>this.handleTimeChange('dateOfBirth',time)}value={this.state.dateOfBirth} inputProps={{className:'sign-up-form-input-small'}} dateFormat="M/D/YYYY"  timeFormat={false} viewMode='years' />
+                                <div className='small-input edge-margin'>
+                                    <DateTime onChange={(time)=>this.handleTimeChange('dateOfBirth',time)}value={this.state.dateOfBirth} inputProps={{className:'styled-input'}} dateFormat="M/D/YYYY"  timeFormat={false} viewMode='years' />
+                                </div>
                             </div>
                             <div>
                                 <button type='submit' className='login-form-btn'>Add student</button>

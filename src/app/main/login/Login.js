@@ -36,7 +36,7 @@ class Login extends Component {
     }
 
     render() {
-        return (<div className='login'>
+        return (<div className='container section'>
             <div className='login-container'>
                 <div className='login-widget'>
                     <div className='login-headers'>
@@ -53,8 +53,8 @@ class Login extends Component {
                         }
                     </div>
                     <form onSubmit={this.handleSubmit} className='login-form'>
-                        <input placeholder='email' name='email' type='email' onChange={this.handleChange}/>
-                        <input placeholder='password' name='password' type='password' onChange={this.handleChange}/>
+                        <input className='styled-input' placeholder='email' name='email' type='email' onChange={this.handleChange}/>
+                        <input className='styled-input' placeholder='password' name='password' type='password' onChange={this.handleChange}/>
                         <button className='login-form-btn' type='submit'>Log In</button>
                     </form>
                     <div className='sign-up-text'>

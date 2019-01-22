@@ -46,3 +46,25 @@ body {
 .margin-bottom-10{
     margin: 0 0 10px 0;
 }
+.margin-top-40{
+    margin: 40px 0 0 0;
+}
+.styled-input{
+    display: block;
+    width:100%;
+    box-sizing: border-box;
+    padding: .65rem 1rem;
+    font-size: 24px;
+    line-height: 1.25;
+    color: #1a2e34;
+    background-color: #fff;
+    border: 1px solid #cdd6e4;
+    border-radius: .1875rem;
+    box-shadow: none;
+    background-clip: padding-box;
+}
+
+.test-input{
+    width:1200px;
+    height:400px;
+}
