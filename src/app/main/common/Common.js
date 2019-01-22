@@ -3,7 +3,6 @@ import './Common.css'
 import { ReactQuery } from '../../../delv/delv-react'
 import gql from 'graphql-tag'
 import moment from 'moment';
-
 import EventSystem from '../../EventSystem'
 const GET_USER_DATA = `{
     getUserData{
@@ -14,6 +13,21 @@ const GET_USER_DATA = `{
         role
     }
 }`
+
+const GET_ACTIVITIES = `{
+  allActivities {
+   nodes {
+     id
+     nodeId
+     name
+     activityCatagoryByType{
+       name
+       id
+       nodeId
+     }
+   }
+ }
+}`;
 
 function Location (props) {
   return (<div className='location'>
@@ -38,6 +52,21 @@ function DropDown (props) {
     </select>)
 }
 export { DropDown }
+
+function EventDropDownInner(props) {
+    const eventTypes = props.allActivities.nodes.map((element) => {return {name: element.name + " (" + element.activityCatagoryByType.name + ")",value: element.id}});
+    return <DropDown name={props.name} value={props.value} options={eventTypes} onChange={props.onChange}></DropDown>
+}
+
+export {EventDropDownInner}
+
+function EventDropDown(props){
+    return <ReactQuery query={GET_ACTIVITIES}>
+        <EventDropDownInner {...props}/>
+    </ReactQuery>
+}
+
+export {EventDropDown}
 
 function SecureRouteInner(props){
     if(props.getUserData && props.roles.includes(props.getUserData.role)){

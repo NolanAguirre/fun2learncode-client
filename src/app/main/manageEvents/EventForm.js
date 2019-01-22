@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {DropDown} from '../common/Common';
+import {EventDropDown} from '../common/Common';
 import './ManageEvents.css';
 import DateTime from 'react-datetime';
 import '../../../react-datetime.css'
@@ -104,23 +104,7 @@ const UPDATE_EVENT = `mutation ($id:UUID!, $event: EventPatch!) {
  }
 }`
 
-const GET_ACTIVITIES = `{
-  allActivities {
-   nodes {
-     id
-     nodeId
-     name
-     activityCatagoryByType{
-       name
-       id
-       nodeId
-     }
-   }
- }
-}`;
-
-
-class EventFormInner extends Component {
+class EventForm extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -179,14 +163,14 @@ class EventFormInner extends Component {
     }
 
     render = () => {
-        const eventTypes = this.props.allActivities.nodes.map((element) => {return {name: element.name + " (" + element.activityCatagoryByType.name + ")",value: element.id}});
+
         return <form onSubmit={this.mutation.onSubmit}>
             <table>
                 <tbody>
                     <tr>
                         <td>Type:</td>
                         <td>
-                            <DropDown name="eventType" value={this.state.eventType} options={eventTypes} onChange={this.handleChange}></DropDown>
+                            <EventDropDown name='eventType' value={this.state.eventType} onChange={this.handleChange}/>
                         </td>
                     </tr>
                     <tr>
@@ -212,9 +196,5 @@ class EventFormInner extends Component {
     }
 }
 
-function EventForm(props) {
-    return <ReactQuery query={GET_ACTIVITIES}>
-        <EventFormInner {...props}/>
-    </ReactQuery>
-}
+
 export default EventForm;
