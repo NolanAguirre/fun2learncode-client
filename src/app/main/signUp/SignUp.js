@@ -3,6 +3,7 @@ import './SignUp.css'
 import Logo from '../../logos/drawing.svg'
 import gql from 'graphql-tag';
 import axios from 'axios'
+import Popup from "reactjs-popup"
 
 function IAm(props){
     return <div className='i-am-container'>
@@ -32,7 +33,8 @@ class CreateAccount extends Component{
            password: '',
            firstName:'',
            lastName:'',
-           repeatPassword:''
+           repeatPassword:'',
+           showPopup:false
           }
     }
 
@@ -147,6 +149,15 @@ class CreateAccount extends Component{
         }
     }
 
+    showPopup = (total) => {
+        this.setState({showPopup: true});
+    }
+
+    clearPopupState = () => {
+        this.setState({showPopup: false});
+    }
+
+
     render () {
       return<React.Fragment>
           <div className='login-error-container'>
@@ -172,9 +183,64 @@ class CreateAccount extends Component{
                 <button type='submit' className='login-form-btn' onClick={this.handleSubmit}>Create Account</button>
             </div>
             <div>
-                By creating this account you agree to our terms of service.
+                By creating this account you agree to our <span onClick={this.showPopup}>terms of service</span>.
             </div>
         </form>
+        <Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+            <div className='terms-of-service-container'>
+                <h1 className='center-text'>Terms of service</h1>
+                <div>
+                    Uh so, I'm not a lawyer or anything, so I'm going to give you the TL;DR version of some terms of service.
+                </div>
+                <div>
+                    <h4>Your Information</h4>
+                    We require accounts to be created for one reason, to automate the sign-in/sign-up process. We encourage accounts for many other reasons, but its up to you to use those features.
+                    The information we collect is for internal use only, such as where to offer classes next, and will not be sold. We collect: first name, last name, email, and information collected
+                    in the transaction step such as cardholder name and the billing address information. However, we do not store, or even touch sensitive credit card information, all transactions are
+                    handled through Stripe. For students we collect first name, last name, date of birth, and allergies. All the information is secure above industry standards (we use cookies,
+                    not local storage),but we are not liable if this information is to be compromised.
+                </div>
+                <div>
+                    <h4>Signing up for events</h4>
+                    We have prerequesites to some of our camps that are coded into the site, if you feel you student should be allowed in a higher level class then contact the owner and ask. However
+                    age, and typing speed cannot be enforced on this website (it's easy to lie). If you sign up a student who does not meet the per-event requirement (listed in the event description),
+                    the student could be denied access into that camp without a refund. An example is a 5 year old signing up for a minecraft modding camp, it just won't work out.
+                </div>
+                <div>
+                    <h4>Refunds</h4>
+                    Ask for a refund, they are handled on a per case basis. Generally if the event is 2 weeks away you may recieve a full refund, minus any auto-generated promo codes used from the
+                    refunded event. Within two weeks of cancling there is a 20$ fee for cancling, unless the spot is able to be filled. Within one week of the event is very case by case.
+                </div>
+                <div>
+                    <h4>Attending camps</h4>
+                     I give permission for my child to attend Fun 2 Learn Code and to fully participate in all Fun 2 Learn Code programs and activities. I understand that accidents and injuries may
+                     occur during participation in such activities, and that every reasonable effort will be made to provide reasonable care by the Fun 2 Learn Code staff.<br/>
+
+                     I give permission for medical attention to be administered to my child by the Fun 2 Learn Code staff in the event of a medical emergency. When I cannot be contacted, I hereby
+                     give my consent to have my child transported to a hospital emergency room and the hospital and medical staff have my authorization to provide any treatment, at my expense, that
+                     a physician deems necessary for the well-being of my child.<br/>
+
+                     I waive and release Fun 2 Learn Code and its trustees, officers, teachers, employees, volunteers, agents and assigns from and against any and all present and future claims, costs,
+                     liabilities, expenses, or judgments, including attorneys fees and court costs, resulting from any damage, loss, personal injury or illness to my child and/or damage to my child’s
+                     property arising from or out of my child’s attendance or enrollment in, or out of my child’s participation in activities at or offered
+                     by, Fun 2 Learn Code.<br/>
+
+                     We reserve the right to remove a disruptive student from the class.
+                </div>
+                <div>
+                    <h4>Other</h4>
+                    You cannot delete your account once it has been created, we need it for record keeping, but no one can see your information besides admins/owners at fun 2 learn code.<br/>
+
+                    We cannot merge accounts, so dont make two, just recover your password.<br/>
+
+                    We cannot delete students after they have signed up for a class, even if it is refunded, its still a part of record keeping.<br/>
+
+                    Events go live at midnight CST, if you are registering for events at midnight, please refresh and validate that the information is still what you expect.<br/>
+
+                    We email you recipts to your account email, news letters will be an optional and can be a different email.<br/>
+                </div>
+            </div>
+        </Popup>
     </React.Fragment>
     }
 }

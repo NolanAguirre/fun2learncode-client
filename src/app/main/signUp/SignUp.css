@@ -24,3 +24,8 @@
 .small-input{
     width: calc(50% - 5px);
 }
+
+.terms-of-service-container{
+    max-height: 90vh;
+    overflow-y: scroll;
+}
