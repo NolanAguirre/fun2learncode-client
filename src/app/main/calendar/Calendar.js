@@ -361,25 +361,29 @@ class DragAndDropMutationInner extends Component{
         //TODO make this popup pretty, and check to make sure that end is greater than start
         return <React.Fragment>
             <Popup
+          className="calendar-popup"
           open={this.state.showPopup}
           closeOnDocumentClick
           onClose={this.clearPopupState}>
-                <div className="calendar-popup">
-                      <table>
+                <div>
+                    <h3 className='center-text'>Set time of day</h3>
+                    <span className='error'>{(this.state.startTime > this.state.endTime)?'The start time must be before the end time':''}</span>
+                      <table className='calendar-time-table'>
                           <tbody>
                               <tr>
                                   <td>Event Start Time:</td>
-                                  <td><DateTime className="time-input" dateFormat={false} value={this.state.startTime} onChange={(time) => {this.handleTimeChange("startTime", time)}}/></td>
+                                  <td><DateTime className="time-input" timeFormat='HH:mm' dateFormat={false} value={this.state.startTime} onChange={(time) => {this.handleTimeChange("startTime", time)}}/></td>
+                                  <td>{moment(this.state.startTime).format('hh:mm a')}</td>
                               </tr>
                               <tr>
                                   <td>Event End Time:</td>
-                                  <td><DateTime className="time-input" dateFormat={false} value={this.state.endTime}  onChange={(time) => {this.handleTimeChange("endTime", time)}}/></td>
+                                  <td><DateTime className="time-input" timeFormat='HH:mm' dateFormat={false} value={this.state.endTime}  onChange={(time) => {this.handleTimeChange("endTime", time)}}/></td>
+                                  <td>{moment(this.state.endTime).format('hh:mm a')}</td>
                               </tr>
-      						<tr>
-      							<td><button onClick={this.closePopup} type="submit">Set</button></td>
-      						</tr>
                           </tbody>
                       </table>
+                      <div className='event-register-btn center-text margin-top-10' onClick={this.closePopup}>Set</div>
+                      <button className='hacky-submit-button' type='submit'/>
   		          </div>
             </Popup>
             <DragAndDropCalendar

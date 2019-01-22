@@ -49,6 +49,9 @@ body {
 .margin-top-40{
     margin: 40px 0 0 0;
 }
+.margin-top-10{
+    margin: 10px 0 0 0;
+}
 .styled-input{
     display: block;
     width:100%;
