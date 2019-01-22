@@ -11,7 +11,7 @@ import {CardNumberElement,
   StripeProvider,
   Elements,
   injectStripe} from 'react-stripe-elements'
-import Delv from '../../../delv/delv'
+import axios from 'axios'
 
 const USER_DATA = `{
     getUserData{
@@ -43,19 +43,39 @@ class PaymentInformationEntry extends Component{
         this.state = {cardholder:'', promoCode:'', address:'', city:'', state:'', showAddress:true};
     }
 
-    toggleShowAddress = () => {
-        this.setState({showAddress:!this.state.showAddress})
+    showCard = () => {
+        if(this.state.address === ''){
+            this.setState({addressError:'Address is required.'})
+        }else if(this.state.city === ''){
+            this.setState({cityError:'City is required.'})
+        }else if(this.state.state === ''){
+            this.setState({stateError:'State is required.'})
+        }else if(this.state.promoCode === ''){
+            this.setState.showAddress({showAddress:false})
+        }else{
+            axios.post('http://localhost:3005/promoCode', {promoCode:this.state.promoCode, event:this.props.event.id, catagory:this.props.activity.id}).then((data)=>{
+                if(data.data.error){
+                    this.setState({promoCodeError:data.data.error})
+                }else{
+                    const code = data.data.promoCode
+                    this.setState({showAddress:false})
+                    if(code.percent){
+                        this.total = this.props.total * (100-code.effect)/100
+                    }else{
+                        this.total = this.props.total - code.effect;
+                    }
+                }
+            }).catch((error)=>{
+                console.log(error)
+            })
+        }
     }
 
     handleChange = (event) => {
         const target = event.target
         const value = target.value
         const name = target.name
-        if(name === 'cardholder'){
-            this.setState({[name]: value, error:null})
-        }else{
-            this.setState({[name]: value})
-        }
+        this.setState({[name]: value, [name+'Error']:null})
     }
 
     handleSubmit = (event) => {
@@ -68,7 +88,13 @@ class PaymentInformationEntry extends Component{
                         this.isProcessing = false;
                         this.setState({error:error.message})
                     }else{
-                        this.props.handleSubmit({token, promoCode:this.state.promoCode})
+                        const {
+                            promoCode,
+                            address,
+                            city,
+                            state
+                        } = this.state
+                        this.props.handleSubmit({token, promoCode, address, city, state})
                     }
                 });
             }else{
@@ -84,17 +110,17 @@ class PaymentInformationEntry extends Component{
                     <h1 className='center-text'>Sub total: {this.props.total}$</h1>
                     <div className='sign-up-input-container'>
                           <div className='payment-input-container'>
-                              Address
+                               {this.state.addressError?<span className='error'>{this.state.addressError}</span>:'Address'}
                             <input className='styled-input' name='address' onChange={this.handleChange}/>
                           </div>
                     </div>
                     <div className='container'>
                         <div className='small-input edge-margin'>
-                            City
+                             {this.state.cityError?<span className='error'>{this.state.cityError}</span>:'City'}
                             <input className='styled-input' name='city' placeholder='Austin' onChange={this.handleChange}/>
                         </div>
                         <div className='small-input edge-margin'>
-                            State
+                             {this.state.stateError?<span className='error'>{this.state.stateError}</span>:'State'}
                             <input className='styled-input' name='state' placeholder='Texas' onChange={this.handleChange}/>
                         </div>
                     </div>
@@ -104,16 +130,16 @@ class PaymentInformationEntry extends Component{
                           <PostalCodeElement className='styled-input' {...createStripeStyle}/>
                       </div>
                       <div className='small-input edge-margin'>
-                          Promo code
+                           {this.state.promoCodeError?<span className='error'>{this.state.promoCodeError}</span>:'Promo code'}
                           <input className='styled-input' name='promoCode' placeholder='Promo Code' onChange={this.handleChange}/>
                       </div>
                   </div>
-                   <div className='event-register-btn center-text' onClick={this.toggleShowAddress}>Next</div>
+                   <div className='event-register-btn center-text' onClick={this.showCard}>Next</div>
               </div>
               <div className={this.state.showAddress?'hidden':'payment-container'}>
-                  <h1 className='center-text'>Total: {this.props.total}$</h1>
+                  <h1 className='center-text'>Total: {this.total}$</h1>
                   <div className='container'>
-                      {this.state.error?<span className='error'>{this.state.error}</span>:'Cardholder name'}
+                      {this.state.cardholderError?<span className='error'>{this.state.cardholderError}</span>:'Cardholder name'}
                       <input className='styled-input' placeholder="John Doe" name='cardholder' onChange={this.handleChange}/>
                 </div>
                 <div className='sign-up-input-container'>
@@ -176,7 +202,7 @@ class Payment extends Component {
         }else if(this.state.state === 'card'){
             child = <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
                     <Elements>
-                        <PaymentInfoEntry handleSubmit={this.handleSubmit} total={this.state.total}/>
+                        <PaymentInfoEntry activity={this.props.activity} event={this.props.event} handleSubmit={this.handleSubmit} total={this.state.total}/>
                     </Elements>
                 </StripeProvider>
         }
