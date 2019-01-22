@@ -249,6 +249,7 @@ class ManageActivitiesForm extends Component{
     }
 
     resetState = () => {
+        document.getElementById(`${this.props.id || 'new'}`).innerHTML = this.props.description || ''
         this.setState({
             edit:false,
             type: this.props.type,
@@ -290,13 +291,13 @@ class ManageActivitiesForm extends Component{
             </React.Fragment>
         }
         if(this.state.edit){
-            components.imageComponent = <input className='activity-image' name='url' placeholder='Image URL' onChange={this.handleInputChange}></input>
+            components.imageComponent = <input className='activity-image' value={this.state.url} name='url' placeholder='Image URL' onChange={this.handleInputChange}></input>
             components.nameComponent = <React.Fragment>
                 <input name="name" onChange={this.handleInputChange} value={this.state.name} />
                 <DropDown options={this.props.types} name="type" value={this.state.type} onChange={this.handleInputChange}/>
             </React.Fragment>
             components.buttonComponent = <button type="submit" className="activity-view-events-btn">Finish</button>
-            components.descriptionComponent = <div id={this.props.id} onInput={this.handleDescriptionChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
+            components.descriptionComponent = <div id={this.props.id || 'new'} onInput={this.handleDescriptionChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
         }else{
             components.buttonComponent = <button type="button" onClick={this.toggleEdit} className="activity-view-events-btn">Edit Details</button>
         }
@@ -312,8 +313,6 @@ class ManageActivitiesInner extends Component {
         super(props);
     }
 
-    mapTypes = (data) => data.nodes.map((element) =>  {return{name: element.name, value: element.id}})
-
     mapActivities = (data) => data.nodes.map((element) => {
             let temp = element.activityPrerequisitesByActivity.nodes.map((el) => el);
             return {
@@ -327,8 +326,7 @@ class ManageActivitiesInner extends Component {
         })
 
     render = () => {
-        console.log(this.props)
-            const types = this.mapTypes(this.props.allActivityCatagories);
+            const types = this.props.allActivityCatagories.nodes.map((element) =>  {return{name: element.name, value: element.id}})
             const activities = this.mapActivities(this.props.allActivities);
             return <React.Fragment>
                 <ManageActivitiesForm mutation={CREATE_ACTIVITY} name={"New Activity"} types={types}/>
