@@ -6,8 +6,6 @@ import {ReactQuery} from '../../../delv/delv-react'
 import Logo from '../../logos/drawing.svg'
 import moment from 'moment'
 
-//////// TODO this page does not persist thru a refresh, it needs to
-
 const GET_POSSIBLE_EVENTS = `{
 	allDateIntervals(filter:{start:{greaterThan:"${moment().subtract(10,'hours').toISOString()}", lessThan:"${moment().add(10,'hours').toISOString()}"}}){
     nodes{
@@ -15,6 +13,18 @@ const GET_POSSIBLE_EVENTS = `{
       end
       id
       nodeId
+	  attendancesByDateInterval {
+	   nodes {
+		 nodeId
+		 id
+		 studentByStudent {
+		   nodeId
+		   id
+		   firstName
+		   lastName
+		 }
+	   }
+	 }
   		datesJoinsByDateInterval{
         nodes{
           nodeId
@@ -54,13 +64,17 @@ const GET_POSSIBLE_EVENTS = `{
   }
 }`
 
+const genRandomId = () =>{
+	return '_' + Math.random().toString(36).substr(2, 9);
+}
+
 const TEMPLATE = (dateInterval, dateGroup, student) => {
-return `createAttendance(input:{attendance:{dateInterval:"${dateInterval}",dateGroup:"${dateGroup}", student:"${student}",present:true}}){
+return `${genRandomId()}:createAttendance(input:{attendance:{dateInterval:"${dateInterval}",dateGroup:"${dateGroup}", student:"${student}",present:true}}){
     attendance{
       nodeId
     }
   }
-  createEventLog(input:{eventLog:{dateInterval:"${dateInterval}",dateGroup:"${dateGroup}", student:"${student}"}}){
+  ${genRandomId()}:createEventLog(input:{eventLog:{dateInterval:"${dateInterval}",dateGroup:"${dateGroup}", student:"${student}"}}){
 		eventLog{
     	nodeId
   	}
@@ -94,13 +108,16 @@ class CheckInChoice extends Component{
 
     handleSubmit = (event) => {
         event.preventDefault()
-        let mutation = this.selected.map((element)=>{return TEMPLATE(element.dateInterval.id, element.dateGroup.id, element.student.id)})
-        new Mutation({
-            mutation:`mutation{${mutation}}`,
-            onSubmit:()=>{return {}},
-            onResolve:this.handleResolve
-        }).onSubmit()
-
+		if(this.selected && this.selected.length > 0){
+			let mutation = this.selected.map((element)=>{return TEMPLATE(element.dateInterval.id, element.dateGroup.id, element.student.id)})
+	        new Mutation({
+	            mutation:`mutation{${mutation}}`,
+	            onSubmit:()=>{return {}},
+	            onResolve:this.handleResolve
+	        }).onSubmit()
+		}else{
+			this.props.reset(this.selected || [])
+		}
     }
 
     setSelected = (selected) => {
@@ -109,11 +126,12 @@ class CheckInChoice extends Component{
 
     render = () => {
 		if(this.state.signedIn){
-			return <div>You've Been Signed in!</div>
+			return <div className='section center-y'>
+				<h1 className='center-text'>You've Been Signed in!</h1>
+			</div>
 
 		}else{
 			return <div className='container column section'>
-				<h1 className='no-margin center-text'>Sign in</h1>
 				<form className='section container column' onSubmit={this.handleSubmit}>
 					<div className='section'>
 						<MultiSelect multiSelect setSelected={this.setSelected} items={this.props.choices}>
@@ -122,7 +140,7 @@ class CheckInChoice extends Component{
 							</Selectable>
 						</MultiSelect>
 					</div>
-					<div className='event-register-btn' onClick={this.handleSubmit}>Finish</div>
+					<div className='event-register-btn center-text' onClick={this.handleSubmit}>Finish</div>
 				</form>
 			</div>
 		}
@@ -135,20 +153,35 @@ class CheckInInner extends Component{
         this.state = {}
         this.name = React.createRef()
         this.attendance = []
+		this.signedIn = [];
         this.props.allDateIntervals.nodes.forEach((dateInterval)=>{
+			const signedIn = dateInterval.attendancesByDateInterval.nodes.map((attendance)=>{
+				return attendance.studentByStudent.id
+			})
             dateInterval.datesJoinsByDateInterval.nodes.forEach((datesJoin)=>{
                 datesJoin.dateGroupByDateGroup.eventRegistrationsByDateGroup.nodes.forEach((registration)=>{
-                    this.attendance.push({
-                        student:registration.studentByStudent,
+					const student = registration.studentByStudent
+					const temp = {
+                        student,
                         dateGroup:registration.dateGroupByDateGroup,
                         dateInterval:dateInterval,
-                        id:registration.id
-                    })
+                        id:`${dateInterval.id}${student.id}`
+                    }
+					if(signedIn.includes(student.id)){
+						this.signedIn.push(temp)
+					}else{
+						this.attendance.push(temp)
+					}
                 })
             })
         })
-		this.signedIn = [];
     }
+
+	allSignedIn = (name) => {
+		const signedIn = this.signedIn.filter(obj=>obj.student.lastName.toUpperCase() === name).length
+		const notSignedIn = this.attendance.filter(obj=>obj.student.lastName.toUpperCase() === name).length
+		return signedIn > 0 && notSignedIn === 0;
+	}
 
     loadStudents = () => {
         const name = this.name.current.value.toUpperCase()
@@ -156,10 +189,10 @@ class CheckInInner extends Component{
         if(choices.length > 0){
             this.setState({choices})
         }else{
-			if(this.signedIn.includes(name)){
-				this.setState({error:`You've already been signed in`})
+			if(this.allSignedIn(name)){
+				this.setState({error:`All students with the last name ${this.name.current.value} have been signed in.`})
 			}else{
-				this.setState({error:`No students with an event today found`})
+				this.setState({error:`No students with an event today found.`})
 			}
         }
     }
@@ -176,7 +209,7 @@ class CheckInInner extends Component{
 			selected.forEach((element)=>{
 				if(attendance.student.id === element.student.id && attendance.dateInterval.id === element.dateInterval.id){
 					temp = false;
-					this.signedIn.push(element.student.lastName.toUpperCase())
+					this.signedIn.push(attendance)
 				}
 			})
 			return temp;
@@ -185,8 +218,7 @@ class CheckInInner extends Component{
 	}
 
     render = () => {
-
-        return<div className='login'>
+        return<div className='container section'>
           <div className='login-container'>
             <div className='login-widget'>
               <div className='login-headers'>
@@ -195,9 +227,9 @@ class CheckInInner extends Component{
               {this.state.choices?
                   <CheckInChoice reset={this.reset} choices={this.state.choices}/>:<React.Fragment>
 					  <span className='error'>{this.state.error}</span>
-                <div className='center-y section'>
-                    <input className='sign-up-form-input check-in-input' ref={this.name} placeholder='Students last name' onChange={this.clearError}></input>
-                    <div className='event-register-btn' onClick={this.loadStudents}>Check in</div>
+                <div className='check-in-container'>
+                    <input className='styled-input margin-top-40' ref={this.name} placeholder='Students last name' onChange={this.clearError}></input>
+                    <div className='event-register-btn center-text' onClick={this.loadStudents}>Check in</div>
               </div>
 		  </React.Fragment>}
             </div>

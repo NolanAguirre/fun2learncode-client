@@ -6,6 +6,7 @@
     background-color: #41a62a;
     border-radius: 8px;
     flex: 0 0 auto;
+    margin: 10px 0 10px 0;
 }
 
 .check-in-student-selected{
@@ -14,4 +15,11 @@
     color:white;
     border-radius: 8px;
     flex: 0 0 auto;
+    margin: 10px 0 10px 0;
+}
+.check-in-container{
+    display: flex;
+    flex:1;
+    flex-direction: column;
+    justify-content: space-between;
 }
