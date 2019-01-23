@@ -1,6 +1,5 @@
 .activity-header-text {
     padding-left: 30px;
-    flex: 1;
 }
 
 .activity-title {
@@ -31,7 +30,23 @@
     width:350px;
     height:150px;
 }
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 600px) {
+    .mobile-column{
+        flex-direction: column;
+    }
+    .mobile-center-x{
+        margin: 0 auto;
+    }
+    .mobile-center-text{
+        text-align: center;
+    }
+    .activity-header-text{
+        padding:0px;
+    }
+}
+
+
+@media screen and (max-width: 400px) {
     .activity-image {
         display: none;
     }
