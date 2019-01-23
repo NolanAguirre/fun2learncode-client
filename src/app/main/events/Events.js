@@ -3,7 +3,7 @@ import './Events.css'
 import EventComponent from './event/Event'
 import {ReactQuery} from '../../../delv/delv-react'
 import moment from 'moment'
-import Cache from '../../../delv/Cache'
+import SadFace from '../../logos/sadface.svg'
 const GET_EVENTS_OF_TYPE = (id) => {
   return `{
   allEvents(condition: {eventType: "${id}"}, filter: {openRegistration: {lessThanOrEqualTo: "${new Date().toISOString()}"}, closeRegistration: {greaterThanOrEqualTo: "${new Date().toISOString()}"}}) {
@@ -63,20 +63,22 @@ function EventsInner(props) { // TODO group this by address so i dont have to lo
           key={dateGroups.id} />
       })
     })
-    if(events.length > 0){
-        return events
+    if(events.length === 0){
+        return <div style={{background:'white'}}className='center-y section'>
+            <img src={SadFace} title='Icon made by Freepik from www.flaticon.com' />
+            <h2 style={{color:'rgb(164, 164, 164)'}} className='center-text'>Sorry! We currently aren't offering any {props.activityName.toLowerCase()} at this time.</h2>
+        </div>
     }
-    return <div>There are no open events right now</div>
+    return<div className='section container column'>
+        <h1 className='center-text'>{props.activityName}</h1>
+        {events}
+    </div>
 }
 
 function Events (props) {
-  return (
-    <div className='events'>
-      <h1 className='events-title'>{props.match.params.name}</h1>
-      <ReactQuery query={GET_EVENTS_OF_TYPE(props.match.params.id)}>
+  return <ReactQuery query={GET_EVENTS_OF_TYPE(props.match.params.id)}>
           <EventsInner activityId={props.match.params.id} activityName={props.match.params.name}/>
       </ReactQuery>
-    </div>)
 }
 
 export default Events
