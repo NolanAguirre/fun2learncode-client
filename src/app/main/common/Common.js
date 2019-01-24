@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './Common.css'
 import { ReactQuery } from '../../../delv/delv-react'
-import gql from 'graphql-tag'
+import Popup from "reactjs-popup"
 import moment from 'moment';
 import EventSystem from '../../EventSystem'
 const GET_USER_DATA = `{
@@ -209,3 +209,28 @@ class CustomProvider extends Component{
 }
 
 export { CustomProvider }
+
+class BasicPopup extends Component{
+	constructor(props){
+		super(props)
+		this.state = {
+			showPopup:false
+		}
+	}
+	showPopup = () => {
+		this.setState({showPopup:true})
+	}
+	clearPopupState = () => {
+		this.setState({showPopup:false})
+	}
+	render = () => {
+		return <React.Fragment>
+			<Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+                {this.props.children[0]}
+			</Popup>
+            <div className={this.props.buttonClassName || ''} onClick={this.showPopup}>{this.props.children[1]}</div>
+		</React.Fragment>
+	}
+}
+
+export { BasicPopup }
