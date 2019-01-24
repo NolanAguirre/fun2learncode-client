@@ -143,7 +143,7 @@ function StudentSelect(props) {
                   <ReactQuery query={GET_STUDENTS_BY_PARENT(props.user.id)}>
                       <StudentSelectInner {...props}/>
                   </ReactQuery>
-                  <StudentForm client={props.client} parentId={props.user.id}/>
+                  {props.createStudent?<StudentForm client={props.client} parentId={props.user.id}/>:''}
               </div>
           </div>
 }

@@ -144,7 +144,6 @@ class EventMonths extends Component{
     }
 
     filterToMonth = () => {
-        console.log(this.props)
         const dates = this.props.allStudents.nodes[0].eventRegistrationsByStudent.nodes.map((registration)=>{
             let activityName = registration.dateGroupByDateGroup.eventByEvent.activityByEventType.name
             let dates = registration.dateGroupByDateGroup.datesJoinsByDateGroup.nodes.map((date)=>{
@@ -186,7 +185,7 @@ class ManageStudentsInner extends Component {
 
   render () {
       return <div className='manage-students-container'>
-          <StudentSelect setSelected={this.setSelectedStudents} user={this.props.getUserData} />
+          <StudentSelect setSelected={this.setSelectedStudents} user={this.props.getUserData} createStudent/>
           {this.state.selectedStudent?<ReactQuery query={GET_DATES_WITH_STUDENT(this.state.selectedStudent.id)}>
             <EventMonths />
             </ReactQuery>:""}
