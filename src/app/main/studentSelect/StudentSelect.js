@@ -140,10 +140,10 @@ function StudentSelect(props) {
     return <div className='styled-container column custom-scrollbar'>
             <h3>{(props.multiSelect)?'Select students':'Select a student'}</h3>
                 <div className='students-container'>
-                  <ReactQuery query={GET_STUDENTS_BY_PARENT(props.user.id)}>
+                  <ReactQuery query={GET_STUDENTS_BY_PARENT(props.userId)}>
                       <StudentSelectInner {...props}/>
                   </ReactQuery>
-                  {props.createStudent?<StudentForm client={props.client} parentId={props.user.id}/>:''}
+                  {props.createStudent?<StudentForm client={props.client} parentId={props.userId}/>:''}
               </div>
           </div>
 }

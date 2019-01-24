@@ -154,7 +154,7 @@ class RegistrationInner extends Component{
                </div>
             </div>
             <span className='error'>{this.state.error}</span>
-            <StudentSelect className='styled-container' multiSelect createStudent isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} user={this.props.getUserData}/>
+            <StudentSelect className='styled-container' multiSelect createStudent isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} userId={this.props.getUserData.id}/>
             <AddonSelect classNam='styled-container' multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
             <Payment handleSubmit={this.handleSubmit} event={this.props.event} activity={this.props.activity} getTotal={()=>{return this.total}}/>
         </div>
