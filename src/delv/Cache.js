@@ -86,7 +86,7 @@ class Cache {
     }
 
     filterCacheByIds = (type, ids) => {
-        return _.pickBy(this.cache[type], function(value, key) {
+        return _.pickBy(this.cache[type], (value, key) => {
             return ids.includes(key)
         });
     }
@@ -95,7 +95,7 @@ class Cache {
         let returnVal = set;
         const _this = this;
         if (args.condition) {
-            returnVal = _.pickBy(returnVal, function(value, key) {
+            returnVal = _.pickBy(returnVal, (value, key) => {
                 let match = true;
                 for (let k in args.condition) {
                     if (value[k] !== args.condition[k]) {
@@ -106,7 +106,7 @@ class Cache {
             });
         }
         if (args.filter) {
-            returnVal = _.pickBy(returnVal, function(value, key) {
+            returnVal = _.pickBy(returnVal, (value, key) => {
                 let match = true;
                 for (let k in args.filter) {
                     if (value[k]) {
@@ -252,8 +252,6 @@ class Cache {
             this.cache[typename][obj[UID]] = obj;
         }
     }
-
-
 
     removeObject = (obj) => {
         let objType = obj['__typename']
