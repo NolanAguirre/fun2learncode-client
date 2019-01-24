@@ -10,6 +10,8 @@ const GET_USER_DATA = `{
         id
         firstName
         lastName
+        email
+        createdOn
         role
     }
 }`
