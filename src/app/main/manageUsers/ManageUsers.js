@@ -1,56 +1,101 @@
 import React, { Component } from 'react'
 import Mutation from '../../../delv/Mutation'
+import {DropDown, BasicPopup, SecureRoute, GridView} from '../common/Common';
 import {ReactQuery} from '../../../delv/delv-react'
-import {SecureRoute, GridView} from '../common/Common'
-import Popup from "reactjs-popup";
+import moment from 'moment';
+import OrderHistory from '../orderHistory/OrderHistory'
 import './ManageUsers.css'
-
-const GET_USERS = `query{
+import alert from '../../logos/alert.svg'
+const GET_USERS = `{
   allUsers{
     nodes{
-        id
+      id
       firstName
       lastName
+      createdOn
+      email
+      role
       nodeId
-    }
-  }
-}`
-
-const CREATE_USER = `mutation($addon:CreateAddOnInput!){
-  createAddOn(input:$addon){
-    addOn{
-      nodeId
-      description
-      id
-      name
-      price
-      addOnJoinsByAddOn{
+      refundRequestsByUserId(condition:{status:PENDING}){
+        nodes{
+          id
+          status
+          nodeId
+        }
+      }
+      studentsByParent{
         nodes{
           nodeId
+          id
+          firstName
+          lastName
         }
       }
     }
   }
 }`
 
-const UPDATE_USER = `mutation($id:UUID!, $addon:AddOnPatch!){
-  updateAddOnById(input:{id:$id, addOnPatch:$addon}){
-    addOn{
+const UPDATE_USER_ROLE = (userId, role) => `mutation($id:UUID!, $role:RoleType!){
+  updateUserById(input:{id:$id, userPatch:{role:$role}}){
+    user{
       nodeId
-      description
-      id
-      name
-      price
-      addOnJoinsByAddOn{
-        nodes{
-          nodeId
-        }
-      }
+      role
     }
   }
 }`
 
-class ManageUserPopup extends Component{
+const DROPDOWN_OPTIONS = [
+    {
+        name:'User',
+        value:'FTLC_USER'
+    },{
+        name:'Instructor',
+        value:'FTLC_INSTRUCTOR'
+    },{
+        name:'Attendant',
+        value:'FTLC_ATTENDANT'
+    },{
+        name:'Lead instructor',
+        value:'FTLC_LEAD_INSTRUCTOR'
+    },{
+        name:'Admin',
+        value:'FTLC_ADMIN'
+    },{
+        name:'Owner',
+        value:'FTLC_OWNER'
+    }
+]
+
+class ManageUserForm extends Component{
+    constructor(props){
+        super(props)
+        this.state = {
+            promote:this.props.role,
+            student:undefined
+        }
+        this.promoteMutation = new Mutation({
+            mutation:UPDATE_USER_ROLE(this.props.id, this.state.promote),
+            onSubmit:this.promoteUser
+        })
+    }
+    handleChange = (event) => {
+        const target = event.target;
+        const value = target.type === 'checkbox'
+            ? target.checked
+            : target.value;
+        const name = target.name;
+        this.setState({[name]: value});
+    }
+    promoteUser = (event) => {
+        event.preventDefault()
+        if(this.state.promote){
+            return{id:this.props.id, role:this.state.promote}
+        }
+        return false;
+    }
+    setSelectedStudents = (student) =>{
+        this.setState({selectedStudent:student});
+    }
     render = () => {
         return <div>
         <h1>{this.props.firstName} {this.props.lastName}</h1>
@@ -64,70 +109,36 @@ class ManageUserPopup extends Component{
                         </tr>
                         <tr>
                             <td>Email: </td>
-                            <td>Bob@gmail.com</td>
+                            <td>{this.props.email}</td>
                         </tr>
                         <tr>
                             <td>Memeber since: </td>
-                            <td>8/3/2004</td>
+                            <td>{moment(this.props.createdOn).format('MMM, Do YYYY')}</td>
                         </tr>
                         <tr>
                             <td>role: </td>
-                            <td>FTLC_USER</td>
+                            <td>{this.props.role}</td>
                         </tr>
+                        <tr>
+                            <td>promote to: </td>
+                            <td><DropDown options={DROPDOWN_OPTIONS} value={this.state.promote} name='promote' onChange={this.handleChange} /></td>
+                            <td><button onClick={this.promoteMutation.onSubmit}>promote</button></td>
+                        </tr>
+
                     </tbody>
                 </table>
-                SEND EMAIL
-                UPDATE ROLE
-                RESET PASSWORD
             </div>
             <div>
-                <h2>Billing</h2>
-                ADD CREDIT
-                VIEW HISTORY
+                <h2>Order History</h2>
+                <OrderHistory userId={this.props.id}/>
             </div>
-            <div>
-                <h2>Registration history</h2>
-                VIEW HISTORY
-            </div>
-            <div>
+            {this.props.students.length > 0?<div>
                 <h2>Students</h2>
-                REGISTER FOR CLASSES
-                VIEW LOGS
-            </div>
+                <DropDown options={this.props.students} value={this.state.student} name='student' onChange={this.handleChange} />
+            </div>:<div>
+            <h2>This user has no students</h2>
+        </div>}
         </div>
-    }
-}
-
-class ManageUserForm  extends Component{
-    constructor(props){
-        super(props)
-        this.state = {
-            showPopup:false
-        }
-    }
-
-    showPopup = () => {
-        this.setState({showPopup:true})
-    }
-
-    clearPopupState = () => {
-        this.setState({showPopup:false})
-    }
-
-    render = () => {
-        return <React.Fragment>
-        <Popup
-      open={this.state.showPopup}
-      closeOnDocumentClick
-      onClose={this.clearPopupState}>
-      <ManageUserPopup firstName={this.props.firstName} lastName={this.props.lastName}/>
-      </Popup>
-        <div onClick={this.showPopup} className="manage-address-form-container">
-
-            <h2 className="manage-address-form-header">{this.props.name}</h2>
-            <span>{this.props.firstName} {this.props.lastName}</span>
-        </div>
-        </React.Fragment>
     }
 }
 
@@ -144,10 +155,34 @@ class ManageUsersInner extends Component {
     this.setState({ [name]: value })
   }
   render = () => {
-      console.log(this.props)
-    const users = this.props.allUsers.nodes.map((user) =><ManageUserForm mutation={UPDATE_USER} key={user.id} id={user.id} firstName={user.firstName} lastName={user.lastName} />)
+    const users = this.props.allUsers.nodes.map((user) =>{
+        const students = user.studentsByParent.nodes.map((student)=>{
+            return{
+                name: `${student.firstName} ${student.lastName}`,
+                value: student.id
+            }
+        })
+        const showAlert = user.refundRequestsByUserId.nodes.length > 0
+        return <BasicPopup key={user.id} buttonClassName="manage-address-form-container">
+            <ManageUserForm
+                id={user.id}
+                email={user.email}
+                createdOn={user.createdOn}
+                firstName={user.firstName}
+                lastName={user.lastName}
+                role={user.role}
+                students={students}
+                hasRefundRequest={user.refundRequestsByUserId.nodes.length > 0}/>
+                <React.Fragment>
+                    <div className='user-btn'>
+                        <span>{user.firstName} {user.lastName}</span>
+                        {showAlert?<img src={alert} className='alert-logo'/>:''}
+                    </div>
+                </React.Fragment>
+        </BasicPopup>
+            })
     return <div className="manage-addresses-container">
-        <GridView className="manage-addresses-body" childStyle={'manage-address-form-container'} itemsPerRow={5}>{users}</GridView>
+        <GridView className="manage-addresses-body" fillerStyle={'manage-address-form-container'} itemsPerRow={5}>{users}</GridView>
     </div>
   }
 }

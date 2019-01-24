@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
-import {SecureRoute} from '../common/Common'
+import {SecureRoute, BasicPopup} from '../common/Common'
 import moment from 'moment'
 import './OrderHistory.css'
 
@@ -13,6 +13,15 @@ const USER_DATA = id => `{
       snapshot
       status
       createOn
+      refundRequestsByPayment{
+        nodes{
+          nodeId
+          id
+          reason
+          status
+          createdOn
+        }
+      }
     }
   }
 }`
@@ -39,8 +48,14 @@ function Order(props){
 				</div>
 			</div>
 			<div className='container column padding-10'>
-				<button className='order-btn'>Event Details</button>
-				<button className='order-btn'>Order Details</button>
+				<BasicPopup>
+					<div></div>
+					<div className='order-btn'>Event Details</div>
+				</BasicPopup>
+				<BasicPopup>
+					<div>{JSON.stringify(props.payment.snapshot)}</div>
+					<div className='order-btn'>Order Details</div>
+				</BasicPopup>
 				<button className='order-btn'>Request a refund</button>
 			</div>
 		</div>
@@ -49,11 +64,15 @@ function Order(props){
 
 function OrderHistoryInner(props){
     const orders = props.allPayments.nodes.map((payment) => { return <Order key={payment.nodeId} payment={payment}/>})
-    return <React.Fragment>{orders}</React.Fragment>
+	if(orders.length > 0){
+		return <React.Fragment>{orders}</React.Fragment>
+	}else{
+		return <div>No orders found.</div>
+	}
 }
 
 function OrderHistory(props){
-    return <ReactQuery networkPolicy='network-only' query={USER_DATA(props.user)}>
+    return <ReactQuery networkPolicy='network-only' query={USER_DATA(props.userId)}>
         <OrderHistoryInner />
     </ReactQuery>
 }
