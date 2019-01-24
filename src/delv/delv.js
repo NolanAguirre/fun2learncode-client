@@ -45,31 +45,14 @@ class Delv {
 
     post = (query, variables) => {
         return axios.post(this.url, {
-            query: this.queries.addTypename(query),
+            query: query,
             variables
-        })
-    }
-
-    stripTypenames = (obj) => {
-        delete obj['__typename']
-        Object.values(obj).forEach((value) => {
-            if(value instanceof Object){
-                if(Array.isArray(value)){
-                    value.forEach((item)=>{
-                        if(item instanceof Object){
-                            this.stripTypenames(item)
-                        }
-                    })
-                }else{
-                    this.stripTypenames(value)
-                }
-            }
         })
     }
 
     queryHttp = ({query, variables, onFetch, onResolve, onError, customCache}) => {
         this.queries.add(query, variables)
-        let promise = this.post(query, variables).then((res) => {
+        let promise = this.post(this.queries.addTypename(query), variables).then((res) => {
             try{
                 if(customCache){
                     customCache(cache, res.data.data)
@@ -80,8 +63,7 @@ class Delv {
                 console.log(`Error occured trying to cach responce data: ${error.message}`)
             }
             this.queries.setPromise(query, variables, null);
-            this.stripTypenames(res.data.data)
-            onResolve(res.data.data)
+            onResolve(cache.loadQuery(query))
             return res;
         }).catch((error) => {
             throw new Error(`Error occured while making query ${error.message}`);
