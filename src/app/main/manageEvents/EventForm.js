@@ -10,98 +10,49 @@ import moment from 'moment';
 const CREATE_EVENT = `mutation ($event: EventInput!) {
   createEvent(input: {event: $event}) {
     event {
+      nodeId
+      id
+      eventType
+      openRegistration
+      closeRegistration
+      activityByEventType {
         nodeId
         id
-        eventType
-        openRegistration
-        closeRegistration
-        activityByEventType {
+        name
+      }
+      dateGroupsByEvent {
+        nodes {
           nodeId
           id
-          name
+          archive
         }
-        dateGroupsByEvent {
-          nodes {
-            event
-            address
-            addressByAddress {
-              nodeId
-              alias
-              id
-            }
-            price
-            capacity
-            nodeId
-            id
-            name
-            seatsLeft
-            openRegistration
-            closeRegistration
-            datesJoinsByDateGroup {
-              nodes {
-                nodeId
-                id
-                dateInterval
-                dateIntervalByDateInterval {
-                  id
-                  nodeId
-                  start
-                  end
-                }
-              }
-            }
-          }
-        }
+      }
     }
   }
 }`
 
-const UPDATE_EVENT = `mutation ($id:UUID!, $event: EventPatch!) {
- updateEventById(input: {id: $id, eventPatch: $event}) {
-   event {
-       nodeId
-       id
-       eventType
-       openRegistration
-       closeRegistration
-       activityByEventType {
-         nodeId
-         id
-         name
-       }
-       dateGroupsByEvent {
-         nodes {
-           event
-           address
-           addressByAddress {
-             nodeId
-             alias
-             id
-           }
-           price
-           capacity
-           nodeId
-           id
-           name
-           openRegistration
-           closeRegistration
-           datesJoinsByDateGroup {
-             nodes {
-               nodeId
-               id
-               dateInterval
-               dateIntervalByDateInterval {
-                 id
-                 nodeId
-                 start
-                 end
-               }
-             }
-           }
-         }
-       }
-   }
- }
+const UPDATE_EVENT = `mutation ($id: UUID!, $event: EventPatch!) {
+  updateEventById(input: {id: $id, eventPatch: $event}) {
+    event {
+      nodeId
+      id
+      eventType
+      openRegistration
+      closeRegistration
+      activityByEventType {
+        nodeId
+        id
+        name
+      }
+      dateGroupsByEvent {
+        nodes {
+          nodeId
+          id
+          archive
+        }
+      }
+    }
+  }
 }`
 
 class EventForm extends Component {
@@ -163,7 +114,6 @@ class EventForm extends Component {
     }
 
     render = () => {
-
         return <form onSubmit={this.mutation.onSubmit}>
             <table>
                 <tbody>
@@ -174,24 +124,20 @@ class EventForm extends Component {
                         </td>
                     </tr>
                     <tr>
-                        <td>Open Event On:</td>
+                        <td>Open Event:</td>
                         <td>
                             <DateTime dateFormat="MMMM Do YYYY" value={this.state.open} timeFormat={false} onChange={(time) =>{this.handleTimeChange("open", time)}}/>
                         </td>
                     </tr>
                     <tr>
-                        <td>Close Event On:</td>
+                        <td>Close Event:</td>
                         <td>
                             <DateTime dateFormat="MMMM Do YYYY" value={this.state.close} timeFormat={false}  onChange={(time)=>{this.handleTimeChange("close", time)}}/>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <button type="submit">Set Event Values</button>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
+            <button type="submit">Set Event Values</button>
         </form>
     }
 }

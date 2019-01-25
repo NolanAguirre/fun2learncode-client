@@ -18,8 +18,9 @@ const GET_EVENTS = `{
     nodes {
       nodeId
       id
-      dateGroupsByEvent {
+      dateGroupsByEvent{
         nodes {
+          archive
           nodeId
           id
           name
@@ -39,8 +40,7 @@ const GET_EVENTS = `{
       }
     }
   }
-}
-`
+}`
 
 const localizer = BigCalendar.momentLocalizer(moment);
 function Calendar(props){
@@ -357,6 +357,11 @@ class DragAndDropMutationInner extends Component{
         }
     }
 
+    tooltipAccessor = (event) => {
+        return `${event.title}
+${moment(event.start).format('h:mm a')} to ${moment(event.end).format('h:mm a')}`
+    }
+
     render = () => {
         //TODO make this popup pretty, and check to make sure that end is greater than start
         return <React.Fragment>
@@ -372,13 +377,13 @@ class DragAndDropMutationInner extends Component{
                           <tbody>
                               <tr>
                                   <td>Event Start Time:</td>
-                                  <td><DateTime className="time-input" timeFormat='HH:mm' dateFormat={false} value={this.state.startTime} onChange={(time) => {this.handleTimeChange("startTime", time)}}/></td>
-                                  <td>{moment(this.state.startTime).format('hh:mm a')}</td>
+                                  <td><DateTime className="time-input" timeFormat='H:mm' dateFormat={false} value={this.state.startTime} onChange={(time) => {this.handleTimeChange("startTime", time)}}/></td>
+                                  <td>{moment(this.state.startTime).format('h:mm a')}</td>
                               </tr>
                               <tr>
                                   <td>Event End Time:</td>
-                                  <td><DateTime className="time-input" timeFormat='HH:mm' dateFormat={false} value={this.state.endTime}  onChange={(time) => {this.handleTimeChange("endTime", time)}}/></td>
-                                  <td>{moment(this.state.endTime).format('hh:mm a')}</td>
+                                  <td><DateTime className="time-input" timeFormat='H:mm' dateFormat={false} value={this.state.endTime}  onChange={(time) => {this.handleTimeChange("endTime", time)}}/></td>
+                                  <td>{moment(this.state.endTime).format('h:mm a')}</td>
                               </tr>
                           </tbody>
                       </table>
@@ -391,6 +396,7 @@ class DragAndDropMutationInner extends Component{
         selectEvent={this.selectEvent}
         newEvent={this.newEvent}
         events={this.state.events}
+        tooltipAccessor={this.tooltipAccessor}
         className="manage-events-calander"/>
     </React.Fragment>
     }

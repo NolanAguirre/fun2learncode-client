@@ -16,12 +16,15 @@ const GET_DATE_GROUP_INFO_BY_ID = (id) => {
     return `{
   allDateGroups(condition: {id: "${id}"}) {
     nodes {
+        archive
       nodeId
       id
       name
       openRegistration
       closeRegistration
       seatsLeft
+      capacity
+      price
       addOnJoinsByDateGroup{
         nodes{
           nodeId
@@ -78,16 +81,17 @@ const GET_EVENTS = `{
         id
         name
       }
-      dateGroupsByEvent {
+      dateGroupsByEvent(condition: {archive: false}) {
         nodes {
+          archive
           event
           address
           seatsLeft
-          addOnJoinsByDateGroup{
-            nodes{
+          addOnJoinsByDateGroup {
+            nodes {
               nodeId
               id
-              addOnByAddOn{
+              addOnByAddOn {
                 name
                 nodeId
                 id
@@ -193,6 +197,7 @@ class Event extends Component {
         return (
             <React.Fragment>
                 <Popup
+                className='payment-overview-popup'
                 open={this.state.showPopup}
                 closeOnDocumentClick
                 onClose={this.clearPopupState}>
@@ -226,9 +231,6 @@ function DateGroupInfoInner(props) {
         return moment(moment.utc(timestamp)).local().format("MMM Do YYYY")
     }
 
-    const openConflict = dateGroup.openRegistration < event.openRegistration
-    const closeConflict = dateGroup.closeRegistration > event.closeRegistration //TODO alert for conflicts
-
     return <table>
         <tbody>
             <tr>
@@ -242,9 +244,14 @@ function DateGroupInfoInner(props) {
                 <td>to {localizeUTCTimestamp(event.closeRegistration)}</td>
             </tr>
             <tr>
-                <td>Date group registration</td>
+                <td>Group registration</td>
                 <td>{localizeUTCTimestamp(dateGroup.openRegistration)}</td>
                 <td>to {localizeUTCTimestamp(dateGroup.closeRegistration)}</td>
+            </tr>
+            <tr>
+                <td>Seats left</td>
+                <td>{dateGroup.seatsLeft} of {dateGroup.capacity}</td>
+                <td>Price: {dateGroup.price} $</td>
             </tr>
         </tbody>
     </table>
@@ -270,7 +277,7 @@ function EventsPreviewInner (props) {
 
 function EventsPreview (props) {
     return <div className='event-preview-container'>
-            <ReactQuery query={GET_EVENTS}>
+            <ReactQuery query={GET_EVENTS} >
               <EventsPreviewInner>{props.children}</EventsPreviewInner>
             </ReactQuery>
         </div>
