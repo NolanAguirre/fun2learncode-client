@@ -13,30 +13,51 @@ class Login extends Component {
         }
     }
 
+    validEmail = () => {
+        return this.state.email.match('^.+@.+\..+$');
+    }
+
     handleChange = (event) => {
         const target = event.target
         const value = target.value
         const name = target.name
-        this.setState({[name]: value})
+        this.setState({[name]: value, error:null})
     }
 
     handleSubmit = (event) => {
         event.preventDefault()
-        axios.post('http://localhost:3005/authenticate', {
-            email: this.state.email,
-            password: this.state.password
-        }).then((res) => {
-            if (res.data.error) {
-                this.setState({error:res.data.error})
-            } else {
-                window.location.reload()
-                this.props.history.push(this.props.redirectUrl || '/')
-            }
-        })
+        if(!this.validEmail()){
+            this.setState({error:"No valid email address provided."})
+        }else if(this.state.password === ''){
+            this.setState({error:"No password provided."})
+        }else{
+            axios.post('http://localhost:3005/authenticate', {
+                email: this.state.email,
+                password: this.state.password
+            }).then((res) => {
+                if (res.data.error) {
+                    this.setState({error:res.data.error})
+                } else {
+                    window.location.reload()
+                    this.props.history.push(this.props.redirectUrl || '/')
+                }
+            })
+        }
 
     }
 
-    render() {
+    render = () => {
+        let child = "";
+        if(this.state.error){
+            if(this.state.error === 'Email or Password was incorrect'){
+                child = <React.Fragment>
+                        <span className='login-error'>Incorrect email or password.</span>
+                        <Link to={`/recover`}>Forgot password?</Link>
+                    </React.Fragment>
+            }else{
+                child = <span className='login-error'>{this.state.error}</span>
+            }
+        }
         return (<div className='container section'>
             <div className='login-container'>
                 <div className='login-widget'>
@@ -44,14 +65,7 @@ class Login extends Component {
                         <a><img className='nav-logo' src={Logo}/></a>
                     </div>
                     <div className='login-error-container'>
-                        {
-                            (this.state.error)
-                                ? <React.Fragment>
-                                        <span className='login-error'>Incorrect email or password.</span>
-                                        <a href='/'>Forgot password?</a>
-                                    </React.Fragment>
-                                : ""
-                        }
+                        {child}
                     </div>
                     <form onSubmit={this.handleSubmit} className='login-form'>
                         <input className='styled-input' placeholder='email' name='email' type='email' onChange={this.handleChange}/>

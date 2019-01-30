@@ -227,7 +227,7 @@ class BasicPopup extends Component{
 	}
 	render = () => {
 		return <React.Fragment>
-			<Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+			<Popup className={this.props.className} open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
                 {this.props.children[0]}
 			</Popup>
             <div className={this.props.buttonClassName || ''} onClick={this.showPopup}>{this.props.children[1]}</div>

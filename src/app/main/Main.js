@@ -21,6 +21,7 @@ import InstructorLogs from './instructorLogs/InstructorLogs'
 import Test from './test/Test'
 import ManagePromoCodes from './managePromoCodes/ManagePromoCodes'
 import ResetPassword from './resetPassword/ResetPassword'
+import RecoverPassword from './recoverPassword/RecoverPassword'
 
 class Main extends Component {
   constructor (props) {
@@ -42,7 +43,7 @@ class Main extends Component {
             <Route path='/Event Logs/:eventId/:studentId' component={EventLogs} />
             <Route path='/User/Account' component={Account} />
             <Route path='/reset/:token' component={ResetPassword} />
-
+            <Route path='/recover' component={RecoverPassword} />
 
             <Route exact path='/Admin/Manage Events' component={ManageEvents} />
             <Route exact path='/Admin/Manage Addresses' component={ManageAddresses} />

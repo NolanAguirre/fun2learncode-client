@@ -2,9 +2,9 @@
     margin: auto;
 }
 .login-widget{
-    padding: 40px;
+    padding: 40px!important;
     background-color:white;
-    width: 515px;
+    width: 515px!important;
     min-height: 500px;
     display: flex;
     flex-direction: column;

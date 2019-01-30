@@ -33,14 +33,18 @@ class PasswordReset extends Component{
 
     handleSubmit = (event) => {
         event.preventDefault();
-        if(this.passwordMatch() && this.passwordValid()){
-            return{password:this.state.password}
+        if(!this.passwordValid()){
+            this.setState({error:'Password is not valid.'})
+            return false;
+        }else if(!this.passwordMatch()){
+            this.setState({error:'Passwords do not match.'})
+            return false;
         }
-        return false;
+        return {password:this.state.password}
     }
     handleResolve = (data) => {
         if(data.errors){
-           this.setState({error:"password reset failed for unknown reason."})
+           this.setState({error:"Password reset failed for unknown reason."})
         }else{
            this.setState({complete:true})
         }
@@ -52,17 +56,19 @@ class PasswordReset extends Component{
                     <div className='center-text'>Password has been changed.</div>
                 </div>
         }else{
-            return <div className={this.props.className}>
+            return <form onSubmit={this.mutation.onSubmit} className={this.props.className}>
                 <div className="margin-top-40">
+                    <span className='error'>{this.state.error}</span>
                     <input className='styled-input' name='password' type='password' onChange={this.handleChange} placeholder='password' />
                 </div>
                 <div className="margin-top-40">
                     <input className='styled-input' name='repeatPassword' type='password' onChange={this.handleChange} placeholder='repeat password' />
                 </div>
                 <div className="margin-top-40">
-                    <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Change</div>
+                    <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Update Password</div>
                 </div>
-            </div>
+                <button className='hacky-submit-button' type='submit'/>
+            </form>
         }
     }
 }
