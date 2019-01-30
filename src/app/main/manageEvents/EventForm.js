@@ -137,7 +137,7 @@ class EventForm extends Component {
                     <tr>
                         <td>Archive: </td>
                         <td>
-                            <input  value={this.state.archive} name='archive' type='checkbox'  onChange={this.handleChange}></input>
+                            <input checked={this.state.archive} name='archive' type='checkbox'  onChange={this.handleChange}></input>
                         </td>
                     </tr>
                 </tbody>

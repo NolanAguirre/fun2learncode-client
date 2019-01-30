@@ -275,6 +275,11 @@ class ArchiveOptions extends Component{
         ]
     }
 
+    componentDidMount = () => {
+        this.options[1].networkPolicy = 'cache-only';
+        this.setSelectedOption(this.options[1])
+    }
+
     setSelectedOption = (option) => {
         this.setState({archive:option.archive, networkPolicy:option.networkPolicy});
     }
@@ -291,7 +296,7 @@ class ArchiveOptions extends Component{
                     </MultiSelect>
                 </div>
             </div>
-            {React.cloneElement(this.props.children, {query:this.props.query(this.state.archive), networkPolicy:this.state.networkPolicy})}
+            {React.cloneElement(this.props.children, {query:this.props.query(this.state.archive), networkPolicy: this.props.networkPolicy || this.state.networkPolicy})}
         </React.Fragment>
     }
 }
