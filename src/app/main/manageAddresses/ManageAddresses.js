@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
-import {SecureRoute, Location, GridView} from '../common/Common'
+import {SecureRoute, Location, GridView, ArchiveOptions} from '../common/Common'
 import './ManageAddresses.css'
 
-const GET_ADDRESSES = `{
-    allAddresses{
+const GET_ADDRESSES = (archive) => `{
+    allAddresses(condition:{${archive}}){
         nodes{
       id
       nodeId
@@ -15,6 +15,7 @@ const GET_ADDRESSES = `{
       alias
       country
       zipcode
+      archive
     }
   }
 }`
@@ -28,6 +29,7 @@ const CREATE_ADDRESS = `mutation($address:CreateAddressInput!){
       city
       county
       zipcode
+      archive
     }
   }
 }`
@@ -43,6 +45,7 @@ const UPDATE_ADDRESS = `mutation($id:UUID!, $address:AddressPatch!){
       alias
       country
       zipcode
+      archive
     }
   }
 }`
@@ -56,7 +59,8 @@ class ManageAddressForm extends Component{
             city: this.props.city || "",
             state: this.props.state || "",
             alias: this.props.alias || "",
-            zipcode: this.props.zipcode || 78664
+            zipcode: this.props.zipcode || 78664,
+            archive: this.props.archive || false
         }
         this.mutation = new Mutation({
             mutation:this.props.mutation,
@@ -87,7 +91,8 @@ class ManageAddressForm extends Component{
                this.state.city != this.props.city ||
                this.state.state != this.props.state ||
                this.state.alias != this.props.alias ||
-               this.state.zipcode != this.props.zipcode
+               this.state.zipcode != this.props.zipcode ||
+               this.state.archive != this.props.archive
          return haveValues && changedValues
     }
 
@@ -134,6 +139,10 @@ class ManageAddressForm extends Component{
                                 <td>Zipcode: </td>
                                 <td><input name="zipcode" value={this.state.zipcode} onChange={this.handleInputChange} type="number"></input></td>
                             </tr>
+                            <tr>
+                                <td>Archive: </td>
+                                <td><input name="archive" checked={this.state.archive} onChange={this.handleInputChange} type="checkbox"></input></td>
+                            </tr>
                         </tbody>
                     </table>
                     <button type="submit">finish</button>
@@ -164,6 +173,10 @@ class ManageAddressForm extends Component{
                         <td>Zipcode: </td>
                         <td>{this.props.zipcode}</td>
                     </tr>
+                    <tr>
+                        <td>Archive: </td>
+                        <td>{this.props.archive?'True':'False'}</td>
+                    </tr>
                 </tbody>
             </table>
             <button onClick={this.toggleEdit}>edit</button>
@@ -171,38 +184,25 @@ class ManageAddressForm extends Component{
     }
 }
 
-class ManageAddressesInner extends Component {
-  constructor (props) {
-    super(props)
-  }
-  handleInputChange = (event) => {
-    const target = event.target
-    const value = target.type === 'checkbox'
-      ? target.checked
-      : target.value
-    const name = target.name
-    this.setState({ [name]: value })
-  }
-  handleSubmit = (event) => {
-
-  }
-  render = () => {
-    const addresses = this.props.allAddresses.nodes.map((address) => <ManageAddressForm mutation={UPDATE_ADDRESS} key={address.id} id={address.id} zipcode={address.zipcode} city={address.city} street={address.street} state={address.state} alias={address.alias} />)
-    console.log(addresses.length)
-    return <div className="manage-addresses-container">
-        <div className="manage-addresses-header">
-            <ManageAddressForm mutation={CREATE_ADDRESS} alias={"New Address"} />
-        </div>
-        <GridView className="manage-addresses-body" fillerStyle={'manage-address-form-container'} itemsPerRow={3}>{addresses}</GridView>
-    </div>
-  }
+function ManageAddressesInner(props) {
+    const addresses = props.allAddresses.nodes.map((address) => <ManageAddressForm mutation={UPDATE_ADDRESS} key={address.id} {...address} />)
+    return <React.Fragment>
+            <div className="manage-addresses-header">
+                <ManageAddressForm mutation={CREATE_ADDRESS} alias={"New Address"} />
+            </div>
+            <GridView className="manage-addresses-body" fillerStyle={'manage-address-form-container'} itemsPerRow={3}>{addresses}</GridView>
+        </React.Fragment>
 }
 
 function ManageAddresses(props){
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
-        <ReactQuery query={GET_ADDRESSES}>
-            <ManageAddressesInner />
-        </ReactQuery>
+        <div className="manage-addresses-container">
+            <ArchiveOptions query={GET_ADDRESSES}>
+                <ReactQuery>
+                    <ManageAddressesInner />
+                </ReactQuery>
+            </ArchiveOptions>
+        </div>
     </SecureRoute>
 }
 

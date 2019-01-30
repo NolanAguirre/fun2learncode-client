@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { DropDown, CustomProvider } from '../common/Common'
+import { DropDown, CustomProvider, ArchiveOptions } from '../common/Common'
 import './EventsPreview.css'
 import { ReactQuery } from '../../../delv/delv-react'
 import DateTime from 'react-datetime'
@@ -69,11 +69,13 @@ const GET_DATE_GROUP_INFO_BY_ID = (id) => {
 }
 `}
 
-const GET_EVENTS = `{
-  allEvents {
+const GET_EVENTS = (eventArchive) =>  {
+    return (dateGroupArchive) => `{
+  allEvents(condition: {${eventArchive}}){
     nodes {
       nodeId
       id
+      archive
       openRegistration
       closeRegistration
       activityByEventType {
@@ -81,7 +83,7 @@ const GET_EVENTS = `{
         id
         name
       }
-      dateGroupsByEvent(condition: {archive: false}) {
+      dateGroupsByEvent(condition: {${dateGroupArchive}}) {
         nodes {
           archive
           event
@@ -127,6 +129,7 @@ const GET_EVENTS = `{
     }
   }
 }`
+}
 
 class DateGroup extends Component {
     constructor(props){
@@ -205,6 +208,7 @@ class Event extends Component {
                         openRegistration={event.openRegistration}
                         closeRegistration={event.closeRegistration}
                         eventType={event.activityByEventType.id}
+                        archive={event.archive}
                         handleSubmit={this.clearPopupState}/>
                 </Popup>
                 <div className='event-preview-event-container'>
@@ -277,9 +281,13 @@ function EventsPreviewInner (props) {
 
 function EventsPreview (props) {
     return <div className='event-preview-container'>
-            <ReactQuery query={GET_EVENTS} >
-              <EventsPreviewInner>{props.children}</EventsPreviewInner>
-            </ReactQuery>
+            <ArchiveOptions label='Event' query={GET_EVENTS}>
+                <ArchiveOptions label='Group'>
+                    <ReactQuery>
+                        <EventsPreviewInner>{props.children}</EventsPreviewInner>
+                    </ReactQuery>
+                </ArchiveOptions>
+            </ArchiveOptions>
         </div>
 }
 

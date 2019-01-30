@@ -12,6 +12,7 @@ const CREATE_EVENT = `mutation ($event: EventInput!) {
     event {
       nodeId
       id
+      archive
       eventType
       openRegistration
       closeRegistration
@@ -36,6 +37,7 @@ const UPDATE_EVENT = `mutation ($id: UUID!, $event: EventPatch!) {
     event {
       nodeId
       id
+      archive
       eventType
       openRegistration
       closeRegistration
@@ -60,9 +62,9 @@ class EventForm extends Component {
         super(props);
         this.state = {
             eventType:props.eventType,
-            open: this.localizeUTCTimestamp(props.openRegistration) || new Date(moment().hour(23).minute(59).toString()),
-            close: this.localizeUTCTimestamp(props.closeRegistration) || new Date(moment().add(1, "days").hour(23).minute(59).toString()),
-            creatingEvent: true
+            openRegistration: this.localizeUTCTimestamp(props.openRegistration) || new Date(moment().hour(23).minute(59).toString()),
+            closeRegistration: this.localizeUTCTimestamp(props.closeRegistration) || new Date(moment().add(1, "days").hour(23).minute(59).toString()),
+            archive: false || this.props.archive
         }
         this.mutation = new Mutation({
             mutation: (this.props.id)?UPDATE_EVENT:CREATE_EVENT,
@@ -93,8 +95,9 @@ class EventForm extends Component {
     hasRequiredValues = () =>{
         let haveValues =  this.state.eventType
         let changedValues = this.state.eventType != this.props.eventType ||
-               this.normalizeDate(this.state.open) != this.normalizeDate(this.props.openRegistration) ||
-               this.normalizeDate(this.state.close) != this.normalizeDate(this.props.closeRegistration)
+               this.normalizeDate(this.state.openRegistration) != this.normalizeDate(this.props.openRegistration) ||
+               this.normalizeDate(this.state.closeRegistration) != this.normalizeDate(this.props.closeRegistration) ||
+               this.state.archive != this.props.archive
 
          return haveValues && changedValues
     }
@@ -104,11 +107,7 @@ class EventForm extends Component {
             this.props.handleSubmit()
         }
         if(this.hasRequiredValues()){
-            let newEvent = {};
-            newEvent.eventType = this.state.eventType;
-            newEvent.openRegistration = this.state.open;
-            newEvent.closeRegistration = this.state.close;
-            return {id:this.props.id, event:newEvent}
+            return {id:this.props.id, event:{...this.state}}
         }
         return false;
     }
@@ -126,13 +125,19 @@ class EventForm extends Component {
                     <tr>
                         <td>Open Event:</td>
                         <td>
-                            <DateTime dateFormat="MMMM Do YYYY" value={this.state.open} timeFormat={false} onChange={(time) =>{this.handleTimeChange("open", time)}}/>
+                            <DateTime dateFormat="MMMM Do YYYY" value={this.state.openRegistration} timeFormat={false} onChange={(time) =>{this.handleTimeChange("openRegistration", time)}}/>
                         </td>
                     </tr>
                     <tr>
                         <td>Close Event:</td>
                         <td>
-                            <DateTime dateFormat="MMMM Do YYYY" value={this.state.close} timeFormat={false}  onChange={(time)=>{this.handleTimeChange("close", time)}}/>
+                            <DateTime dateFormat="MMMM Do YYYY" value={this.state.closeRegistration} timeFormat={false}  onChange={(time)=>{this.handleTimeChange("closeRegistration", time)}}/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Archive: </td>
+                        <td>
+                            <input  value={this.state.archive} name='archive' type='checkbox'  onChange={this.handleChange}></input>
                         </td>
                     </tr>
                 </tbody>
@@ -141,6 +146,5 @@ class EventForm extends Component {
         </form>
     }
 }
-
 
 export default EventForm;

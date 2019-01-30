@@ -59,7 +59,6 @@ function EventDropDownInner(props) {
     const eventTypes = props.allActivities.nodes.map((element) => {return {name: element.name + " (" + element.activityCatagoryByType.name + ")",value: element.id}});
     return <DropDown name={props.name} value={props.value} options={eventTypes} onChange={props.onChange}></DropDown>
 }
-
 export {EventDropDownInner}
 
 function EventDropDown(props){
@@ -67,7 +66,6 @@ function EventDropDown(props){
         <EventDropDownInner {...props}/>
     </ReactQuery>
 }
-
 export {EventDropDown}
 
 function SecureRouteInner(props){
@@ -108,7 +106,6 @@ function DatesTable(props){
       </tbody>
     </table>
 }
-
 export {DatesTable}
 
 function GridView (props){
@@ -126,14 +123,13 @@ function GridView (props){
         {formatted}
     </div>
 }
-
 export {GridView}
 
 
 class MultiSelect extends Component {
     constructor(props){
         super(props)
-        this.state = {selected:[]}
+        this.state = {selected:[this.props.default]}
     }
 
     shouldComponentUpdate(nextProps, nextState){
@@ -146,13 +142,26 @@ class MultiSelect extends Component {
     toggle = async (newItem) =>{ // if props selected students returns false or nothing it updates
         if(!this.props.isValidChoice || await this.props.isValidChoice(newItem)){
             if(this.state.selected.includes(newItem)){
-                const newSelected= this.state.selected.filter((item)=>{return item.id!==newItem.id})
-                if(this.props.multiSelect){
-                    this.props.setSelected(newSelected)
+                if(this.props.alwaysSelect){
+                    const newSelected = this.state.selected.filter((item)=>{return item.id!==newItem.id})
+                    if(newSelected.length === 0){
+                        return;
+                    }
+                    if(this.props.multiSelect){
+                        this.props.setSelected(newSelected)
+                    }else{
+                        this.props.setSelected(null)
+                    }
+                    this.setState({selected:newSelected})
                 }else{
-                    this.props.setSelected(null)
+                    const newSelected = this.state.selected.filter((item)=>{return item.id!==newItem.id})
+                    if(this.props.multiSelect){
+                        this.props.setSelected(newSelected)
+                    }else{
+                        this.props.setSelected(null)
+                    }
+                    this.setState({selected:newSelected})
                 }
-                this.setState({selected:newSelected})
             }else{
                 if(this.props.multiSelect){
                     this.props.setSelected([...this.state.selected, newItem])
@@ -172,14 +181,12 @@ class MultiSelect extends Component {
         })
     }
 }
-
 export { MultiSelect }
 
 function Selectable(props){
     const className = props.selected?props.className.selected:props.className.base
     return React.cloneElement(props.children, {className, key:props.key, onClick:props.onClick, item:props.item})
 }
-
 export {Selectable}
 
 class CustomProvider extends Component{
@@ -209,7 +216,6 @@ class CustomProvider extends Component{
         return React.cloneElement(this.props.children, {[this.propName]:this.state[this.propName], [`emit${this.capitalize(this.propName)}`]:this.emitEvent});
     }
 }
-
 export { CustomProvider }
 
 class BasicPopup extends Component{
@@ -234,5 +240,59 @@ class BasicPopup extends Component{
 		</React.Fragment>
 	}
 }
-
 export { BasicPopup }
+
+function ArchiveOption(props){
+    return <div className={props.className} onClick={()=>props.onClick(props.item)}>
+        {props.item.name}
+    </div>
+}
+
+class ArchiveOptions extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            archive: '',
+            networkPolicy: 'network-once'
+        }
+        this.options = [
+            {
+                id:1,
+                name:'Active',
+                archive:'archive: false,',
+                networkPolicy: 'cache-only'
+            },{
+                id:2,
+                name:'All',
+                archive:'',
+                networkPolicy: 'network-once'
+            },{
+                id:3,
+                name:'Archive',
+                archive:'archive: true,',
+                networkPolicy: 'cache-only'
+            }
+        ]
+    }
+
+    setSelectedOption = (option) => {
+        this.setState({archive:option.archive, networkPolicy:option.networkPolicy});
+    }
+
+    render = () => {
+        return <React.Fragment>
+            <div>
+                <h4 className='no-margin center-text'>{this.props.label}</h4>
+                <div className={this.props.className || 'archive-options-container'}>
+                    <MultiSelect items={this.options} setSelected={this.setSelectedOption} default={this.options[1]} alwaysSelect>
+                        <Selectable className={{selected:'selected-archive-option-btn archive-option-btn', base: 'archive-option-btn'}}>
+                            <ArchiveOption />
+                        </Selectable>
+                    </MultiSelect>
+                </div>
+            </div>
+            {React.cloneElement(this.props.children, {query:this.props.query(this.state.archive), networkPolicy:this.state.networkPolicy})}
+        </React.Fragment>
+    }
+}
+export { ArchiveOptions }

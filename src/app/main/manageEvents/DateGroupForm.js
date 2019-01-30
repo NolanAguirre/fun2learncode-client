@@ -35,8 +35,8 @@ const CREATE_DATE_GROUP = `mutation ($dateGroup: DateGroupInput!) {
           event
           archive
           eventByEvent{
-        nodeId
-      }
+              nodeId
+          }
           address
           addressByAddress {
             nodeId
@@ -66,8 +66,8 @@ const UPDATE_DATE_GROUP = `mutation ($id: UUID!, $dateGroup: DateGroupPatch!) {
           event
           archive
           eventByEvent{
-        nodeId
-      }
+              nodeId
+          }
           address
           addressByAddress {
             nodeId
@@ -343,6 +343,12 @@ class DateGroupFormInner extends Component {
                                         <input name="capacity" value={this.state.capacity} onChange={this.handleChange} type="number"></input>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>Archive: </td>
+                                    <td>
+                                        <input  value={this.state.archive} name='archive' type='checkbox'  onChange={this.handleChange}></input>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </form>
@@ -354,9 +360,6 @@ class DateGroupFormInner extends Component {
 
             </div>
             <div className='event-register-btn center-text margin-top-10' onClick={this.mutation.onSubmit}>{(this.props.id)?'Update':'Create'}</div>
-            {(this.props.id)?<div>
-                Archive: <input  value={this.state.archive} name='archive' type='checkbox'  onChange={this.handleChange}></input>
-            </div>:''}
         </div>
     }
 }

@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
 import gql from 'graphql-tag';
 import Logo from '../../logos/x-icon.svg'
-import {DropDown} from '../common/Common';
 import './ManageActivities.css';
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
-import {SecureRoute} from '../common/Common'
+import {SecureRoute, DropDown, ArchiveOptions} from '../common/Common'
 import Activity from '../activities/activity/Activity'
 //TODO be able to remove prerequisites, make description text box keep text on edit
 
-const GET_ACTIVITIES = `{
+const GET_ACTIVITIES = (archive) => `{
   allActivityCatagories {
     nodes {
       nodeId
@@ -17,11 +16,12 @@ const GET_ACTIVITIES = `{
       name
     }
   }
-  allActivities {
+  allActivities(condition:{${archive}}){
     nodes {
       nodeId
       id
       url
+      archive
       description
       name
       activityCatagoryByType {
@@ -49,6 +49,7 @@ const CREATE_ACTIVITY =  `mutation ($activity:CreateActivityInput!) {
         nodeId
         id
         url
+        archive
         description
         name
         activityCatagoryByType {
@@ -75,9 +76,10 @@ const UPDATE_ACTIVITY = `mutation($id:UUID!, $patch:ActivityPatch!){
     activity{
         nodeId
         id
+        url
+        archive
         description
         name
-        url
         activityCatagoryByType {
           id
           nodeId
@@ -207,13 +209,18 @@ class ManageActivitiesForm extends Component{
             type: this.props.type,
             description:this.props.description,
             name:this.props.name,
-            url:this.props.url
+            url:this.props.url,
+            archive: this.props.archive
         };
         this.mutation = new Mutation({
             mutation:this.props.mutation,
             onSubmit: this.handleSubmit,
             onResolve: this.resetState
         })
+    }
+
+    componentWillUnmount = () => {
+        this.mutation.removeListeners()
     }
 
     handleDescriptionChange = (event) => {
@@ -235,7 +242,8 @@ class ManageActivitiesForm extends Component{
         let changedValues = this.state.type != this.props.type ||
                this.state.name != this.props.name ||
                this.state.description != this.props.description ||
-               this.state.url != this.props.url
+               this.state.url != this.props.url ||
+               this.state.archive != this.props.archive
 
          return haveValues && changedValues
     }
@@ -249,18 +257,15 @@ class ManageActivitiesForm extends Component{
     }
 
     resetState = () => {
-        document.getElementById(`${this.props.id || 'new'}`).innerHTML = this.props.description || ''
-        this.setState({
-            edit:false,
-            type: this.props.type,
-            description:this.props.description,
-            name:this.props.name,
-            url:this.props.url
-        });
+        const element = document.getElementById(`${this.props.id || 'new'}`)
+        if(element){
+            element.innerHTML = this.props.description || ''
+        }
     }
 
     handleSubmit = (event) => {
         event.preventDefault();
+        this.setState({edit:false})
         if (this.hasRequiredValues()) {
             let activity = Object.assign({}, this.state);
             delete activity.edit;
@@ -270,7 +275,6 @@ class ManageActivitiesForm extends Component{
                 return {activity:{activity}};
             }
         }
-        this.setState({edit:false})
         return false;
     }
 
@@ -286,24 +290,30 @@ class ManageActivitiesForm extends Component{
     render = () => {
         let components = {
             prerequesiteComponent: <React.Fragment>
-                {(this.props.prerequisites)?<Prerequisites prerequisites={this.props.prerequisites} />:""}
-                {this.props.children}
+            {(this.props.prerequisites)?<Prerequisites prerequisites={this.props.prerequisites} />:""}
+            {this.props.children}
             </React.Fragment>
         }
         if(this.state.edit){
-            components.imageComponent = <input className='activity-image' value={this.state.url} name='url' placeholder='Image URL' onChange={this.handleInputChange}></input>
+            components.imageComponent = <textarea className='activity-image' value={this.state.url} name='url' placeholder='Image URL' onChange={this.handleInputChange}/>
             components.nameComponent = <React.Fragment>
-                <input name="name" onChange={this.handleInputChange} value={this.state.name} />
-                <DropDown options={this.props.types} name="type" value={this.state.type} onChange={this.handleInputChange}/>
+                <div className='container column'>
+                    <div>
+                        <input name="name" onChange={this.handleInputChange} value={this.state.name} />
+                        <DropDown options={this.props.types} name="type" value={this.state.type} onChange={this.handleInputChange}/>
+                    </div>
+                     <span className='archive-txt'>Archive: <input name='archive' onChange={this.handleInputChange} checked={this.state.archive} type='checkbox'/></span>
+                </div>
             </React.Fragment>
             components.buttonComponent = <button type="submit" className="activity-view-events-btn">Finish</button>
             components.descriptionComponent = <div id={this.props.id || 'new'} onInput={this.handleDescriptionChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
         }else{
             components.buttonComponent = <button type="button" onClick={this.toggleEdit} className="activity-view-events-btn">Edit Details</button>
+            components.descriptionComponent = <div id={this.props.id || 'new'}>{this.props.description}</div>
         }
 
         return <form key={this.props.id} onSubmit={this.mutation.onSubmit}>
-            <Activity {...components} name={this.formatName()} url={this.props.url} description={this.props.description} />
+            <Activity {...components} name={this.formatName()} url={this.props.url} />
         </form>
     }
 }
@@ -317,11 +327,14 @@ class ManageActivitiesInner extends Component {
             let temp = element.activityPrerequisitesByActivity.nodes.map((el) => el);
             return {
                 name: element.name,
-                value: element.id, // this is named value so it can be used by the dropdown box
+                key: element.id, // this is named value so it can be used by the dropdown box
+                id: element.id,
+                value: element.id,
                 type: element.activityCatagoryByType.id,
                 description: element.description,
                 prerequisites: temp,
-                url: element.url
+                url: element.url,
+                archive:element.archive
             }
         })
 
@@ -334,14 +347,8 @@ class ManageActivitiesInner extends Component {
                     return <ManageActivitiesForm
                         mutation={UPDATE_ACTIVITY}
                         types={types}
-                        prerequisites={activity.prerequisites}
-                        key={activity.value}
-                        id={activity.value}
-                        type={activity.type}
-                        description={activity.description}
-                        name={activity.name}
-                        url={activity.url}>
-                        <PrerequisiteForm activityId={activity.value} activities={activities}/>
+                        {...activity}>
+                        <PrerequisiteForm activityId={activity.id} activities={activities} />
                     </ManageActivitiesForm>
                 })}
                 </React.Fragment>
@@ -351,9 +358,11 @@ class ManageActivitiesInner extends Component {
 function ManageActivities(props) {
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
         <div className="manage-activities-container">
-            <ReactQuery query={GET_ACTIVITIES}>
-                <ManageActivitiesInner />
-            </ReactQuery>
+            <ArchiveOptions query={GET_ACTIVITIES}>
+                <ReactQuery>
+                    <ManageActivitiesInner />
+                </ReactQuery>
+            </ArchiveOptions>
         </div>
     </SecureRoute>
 }

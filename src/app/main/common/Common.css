@@ -16,3 +16,27 @@
         display: none;
     }
 }
+.archive-options-container{
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    padding:5px;
+}
+.archive-option-btn{
+    padding: 10px;
+    background-color: #41a62a;
+    color: white;
+}
+.selected-archive-option-btn{
+    background-color: #348e20!important;
+}
+
+.archive-option-btn:first-child{
+    border-right: 2px solid white;
+    border-radius: 10px 0 0 10px;
+
+}
+.archive-option-btn:last-child{
+    border-left: 2px solid white;
+    border-radius: 0 10px 10px 0;
+}
