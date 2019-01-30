@@ -140,7 +140,7 @@ class DateGroup extends Component {
     toggleCalendarHide = () => {
         // date store has a list of hidden date groups, this will remove or add this date group.
         const id = this.props.dateGroup.id
-        if(DateStore.get('hidden') == undefined){
+        if(DateStore.get('hidden') === undefined){
             DateStore.set('hidden', [])
         }
         if(DateStore.get('hidden').includes(id)){
@@ -151,10 +151,21 @@ class DateGroup extends Component {
         }
     }
 
+    getDefaultCheckbox = () => {
+        const id = this.props.dateGroup.id
+        if(DateStore.get('hidden') === undefined){
+            return true
+        }
+        if(DateStore.get('hidden').includes(id)){
+            return false
+        }
+        return true
+
+    }
+
     toggleDates = () => {
         this.setState({hide: !this.state.hide})
     }
-
     render = () => {
         const dates = this.props.dateGroup.datesJoinsByDateGroup.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()}).map((element) => {
             return <div key={element.id}>{moment(moment.utc(element.dateIntervalByDateInterval.start)).local().format("MMM Do h:mma") + "-" +moment(moment.utc(element.dateIntervalByDateInterval.end)).local().format("h:mma")}</div>
@@ -167,10 +178,11 @@ class DateGroup extends Component {
                         <a>edit</a>
                     </DateGroupForm>
                 </div>
-                <span> Show on Calander <input onChange={this.toggleCalendarHide} type='checkbox' defaultChecked='true' /> </span>
+
                 <div>
                     {(this.state.hide)?'':dates}
                 </div>
+                <span> Show on Calander <input onChange={this.toggleCalendarHide} type='checkbox' defaultChecked={this.getDefaultCheckbox()} /> </span>
                 <div className="dropdown-div">
                     <span onClick={this.toggleDates} >{(this.state.hide)?'Show ':'Hide '} Dates</span>
                 </div>

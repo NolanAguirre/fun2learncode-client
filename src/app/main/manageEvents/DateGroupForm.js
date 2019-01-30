@@ -10,7 +10,7 @@ import Popup from "reactjs-popup"
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
 import Logo from '../../logos/x-icon.svg'
-import DateStore from '../../DateStore';
+
 const GET_ADDRESSES = `{
     allAddresses {
         nodes {
@@ -218,17 +218,6 @@ class DateGroupFormInner extends Component {
         this.mutation = new Mutation({mutation: this.props.mutation, onSubmit: this.handleSubmit})
 
     }
-    toggleCalendarHide = () => {
-        // date store has a list of hidden date groups, this will remove or add this date group.
-        const id = this.props.id
-        if(DateStore.get('hidden') == undefined){
-            DateStore.set('hidden', [])
-        }
-        if(DateStore.get('hidden').includes(id)){
-        }else{
-            DateStore.set('hidden',[...DateStore.get('hidden'), id])
-        }
-    }
     localizeUTCTimestamp = (timestamp) => {
         if (!timestamp) {
             return null
@@ -273,9 +262,6 @@ class DateGroupFormInner extends Component {
         event.preventDefault();
         this.props.handleSubmit();
         if (this.hasRequiredValues()) {
-            if(this.state.archive){
-                this.toggleCalendarHide()
-            }
             let dateGroup = {
                 event: this.props.event,
                 openRegistration: this.state.openRegistration.toISOString(),
