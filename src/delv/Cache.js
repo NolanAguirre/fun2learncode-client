@@ -315,7 +315,7 @@ class Cache {
             return graphql(this.resolver, gql `${query}`, this.cache)
         } catch (error) {
             return {
-                error: error.message
+                error: 'error loading query' + error.message
             }
         }
     }

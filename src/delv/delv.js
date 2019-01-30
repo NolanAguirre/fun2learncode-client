@@ -50,21 +50,28 @@ class Delv {
         })
     }
 
-    queryHttp = ({query, variables, onFetch, onResolve, onError, customCache}) => {
+    queryHttp = ({query, variables, onFetch, onResolve, onError, customCache}, skipCache) => {
         this.queries.add(query, variables)
         let promise = this.post(this.queries.addTypename(query), variables).then((res) => {
-            try{
-                if(customCache){
-                    customCache(cache, res.data.data)
-                }else{
-                    cache.processIntoCache(res.data.data)
+            if(skipCache){
+                this.queries.setPromise(query, variables, null);
+                onResolve(res.data)
+                return res;
+            }else{
+                try{
+                    if(customCache){
+                        customCache(cache, res.data.data)
+                    }else{
+                        cache.processIntoCache(res.data.data)
+                    }
+                } catch(error) {
+                    console.log(`Error occured trying to cach responce data: ${error.message}`)
                 }
-            } catch(error) {
-                console.log(`Error occured trying to cach responce data: ${error.message}`)
+                this.queries.setPromise(query, variables, null);
+                onResolve(cache.loadQuery(query))
+                return res;
             }
-            this.queries.setPromise(query, variables, null);
-            onResolve(cache.loadQuery(query))
-            return res;
+
         }).catch((error) => {
             throw new Error(`Error occured while making query ${error.message}`);
             return;
@@ -83,6 +90,9 @@ class Delv {
                 break
             case 'network-only':
                 this.queryHttp(options) // query, variables, onFetch, onResolve, onError
+                break
+            case 'network-no-cache':
+                this.queryHttp(options, true)
                 break
             case 'network-once':
                 this.networkOnce(options)

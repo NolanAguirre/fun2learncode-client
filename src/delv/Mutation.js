@@ -3,8 +3,9 @@ import Cache from './Cache'
 
 
 class Mutation{
-    constructor({mutation, onFetch, onSubmit, onResolve, refetchQueries, customCache}){
+    constructor({mutation, networkPolicy, onFetch, onSubmit, onResolve, refetchQueries, customCache}){
         this.mutation = mutation;
+        this.networkPolicy = networkPolicy;
         this.submit = onSubmit;
         this.fetch = onFetch;
         this.resolve = onResolve
@@ -26,6 +27,7 @@ class Mutation{
     }
 
     onResolve = (data) => {
+        console.log('mutation on resolve being called')
         if(this.resolve){
             this.resolve(data)
         }
@@ -45,7 +47,7 @@ class Mutation{
         Delv.query({
             query: this.mutation,
             variables: this.variables,
-            networkPolicy: 'network-only',
+            networkPolicy: this.networkPolicy || 'network-only',
             onFetch: this.onFetch,
             onResolve: this.onResolve,
             customCache: this.customCache
