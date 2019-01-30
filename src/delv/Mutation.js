@@ -27,7 +27,6 @@ class Mutation{
     }
 
     onResolve = (data) => {
-        console.log('mutation on resolve being called')
         if(this.resolve){
             this.resolve(data)
         }
@@ -41,6 +40,12 @@ class Mutation{
 
             })
         })
+    }
+
+    removeListeners = () => {
+        this.submit = null
+        this.fetch = null
+        this.resolve = null
     }
 
     query = () => {
