@@ -42,7 +42,7 @@ class AccountInner extends Component{
                                 <td></td>
                                 <td>
                                     <BasicPopup className="login-widget">
-                                        <div className='reset-password-inner'>
+                                        <div className='space-around'>
                                             <h2 className='center-text no-margin'>Reset Password</h2>
                                             <PasswordReset mutation={RESET_PASSWORD}/>
                                         </div>

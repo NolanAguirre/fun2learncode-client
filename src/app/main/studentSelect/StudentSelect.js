@@ -98,7 +98,7 @@ class StudentForm extends Component{
                     <div className='login-error-container'>
                         <span className='login-error'>{this.state.error}</span>
                     </div>
-                    <form onSubmit={this.mutation.onSubmit}className='container column'>
+                    <form onSubmit={this.mutation.onSubmit} className='space-around'>
                             <div className='container'>
                                 <div className='small-input edge-margin'>
                                     <input className='styled-input' name='firstName' onChange={this.handleChange} placeholder='first name' />
@@ -114,7 +114,8 @@ class StudentForm extends Component{
                                 </div>
                             </div>
                             <div>
-                                <button type='submit' className='login-form-btn'>Add student</button>
+                                <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Add student</div>
+                                <button className='hacky-submit-button' type='submit'/>
                             </div>
                     </form>
             </div>

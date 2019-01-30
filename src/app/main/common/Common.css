@@ -9,7 +9,7 @@
     flex:1;
 }
 .grid-filler{
-    flex:1 1 auto;
+    flex:1;
 }
 @media screen and (max-width: 450px) {
     .maps-container{

@@ -62,7 +62,7 @@ class Login extends Component {
             <div className='login-container'>
                 <div className='login-widget'>
                     <div className='login-headers'>
-                        <a><img className='nav-logo' src={Logo}/></a>
+                        <a><img src={Logo}/></a>
                     </div>
                     <div className='login-error-container'>
                         {child}

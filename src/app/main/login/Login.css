@@ -41,3 +41,12 @@
     visibility: hidden;
     position: absolute;
 }
+@media screen and (max-width: 515px) {
+    .login-widget{
+        width:auto!important;
+        margin:0 auto;
+    }
+    .login-container{
+        flex:1;
+    }
+}

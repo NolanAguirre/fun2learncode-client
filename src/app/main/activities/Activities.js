@@ -38,7 +38,7 @@ const GET_ACTIVITIES_IN_CATAGORY = (name) => {
 function ActivitiesInner(props) {
     const activities = props.allActivityCatagories.nodes[0].activitiesByType.nodes;
     if (activities.length == 0) {
-        return <div style={{background:'white'}}className='center-y section'>
+        return <div style={{background:'white'}}className='center-y section fit-parent'>
             <img src={SadFace} title='Icon made by Freepik from www.flaticon.com' />
             <h2 style={{color:'rgb(164, 164, 164)'}} className='center-text'>Sorry! We currently aren't offering any {props.catagory.toLowerCase()} at this time.</h2>
         </div>
