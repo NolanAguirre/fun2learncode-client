@@ -1,6 +1,7 @@
 /* Location */
 .location{
     text-align: center;
+    flex:1;
 }
 
 .grid-view-row{

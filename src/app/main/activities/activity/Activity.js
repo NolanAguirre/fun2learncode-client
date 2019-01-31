@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 function Activity (props) {
     const image = props.imageComponent ||  <img className='activity-image mobile-center-x' src={props.url || 'https://via.placeholder.com/350x150'} />
     const name = props.nameComponent || props.name
-    const prerequisites = props.prerequesiteComponent || (props.prerequisites && props.prerequisites.length > 0)?<div>{props.prerequisites}</div>:''
+    const prerequisites = props.prerequesiteComponent?props.prerequesiteComponent:(props.prerequisites.length !== 0?<div className='mobile-center-text'><h4 className='no-margin'>Prerequisites</h4>{props.prerequisites}</div>:'')
     const button = props.buttonComponent || <Link to={`/Events/${props.name}/${props.id}`}><div className='event-register-btn '>View Event Dates</div></Link>
     const description = props.descriptionComponent ||  <div>{props.description}</div>
   return (<div className='styled-container column'>
@@ -14,13 +14,7 @@ function Activity (props) {
         <h2 className='activity-title mobile-center-text'>
             {name}
         </h2>
-
-            {prerequisites === ''?'':
-                <div className='mobile-center-text'>
-                <h4 className='no-margin'>Prerequisites</h4>
-                {prerequisites}
-            </div>
-            }
+            {prerequisites}
       </div>
       <div className='activity-view-events'>
          {button}
