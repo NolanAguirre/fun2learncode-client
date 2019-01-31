@@ -222,6 +222,9 @@ class Cache {
                 continue
             }
             let value = object[key];
+            if(typeMap.get(key) === 'JSON'){
+                continue
+            }
             if(value instanceof Object){
                 let conflict = this.keyConflict.get(key);
                 if(conflict){
