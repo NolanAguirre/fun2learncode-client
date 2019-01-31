@@ -5,7 +5,6 @@ import Colors from './Colors';
 import './Calendar.css'
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import DateStore from '../../DateStore';
 import Popup from "reactjs-popup";
 import DateTime from 'react-datetime';
 import Mutation from '../../../delv/Mutation'
@@ -220,7 +219,7 @@ class DragAndDropMutationInner extends Component{
 
     newEvent = (event) => { //event that files on slot select
         const dateGroupId = this.props.dateGroupProvider.id;
-        if (dateGroupId && event.action === 'doubleClick' && (!DateStore.get('hidden') || !DateStore.get('hidden').includes(dateGroupId))) {
+        if (dateGroupId && event.action === 'doubleClick' && !this.props.hiddenDateGroupsProvider.includes(dateGroupId)) {
             this.popupEvent = {
                 id: this.genRandomId(),
                 title: this.props.dateGroupProvider.name,
