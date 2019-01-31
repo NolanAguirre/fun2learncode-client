@@ -62,6 +62,7 @@ class ReactQuery extends Component {
 
     componentWillUnmount = () => {
         this.query.removeCacheListener();
+        this.query.removeListeners();
     }
 
     componentDidUpdate = (prevProps, prevState, snapshot) => {

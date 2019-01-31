@@ -67,7 +67,12 @@ class Query {
             throw new Error(`Unhandled Error in Delv Query component: ${error.message}`)
         }
     }
-
+    removeListeners = () => {
+        this.submit = null
+        this.fetch = null
+        this.resolve = null
+    }
+    
     onCacheUpdate = (types) => {
         if (this.resolved) {
             let includesType = this.types.some(r => types.includes(r))
