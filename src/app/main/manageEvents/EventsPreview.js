@@ -137,36 +137,21 @@ class DateGroup extends Component {
         this.state = {hide:true}
     }
 
-    toggleCalendarHide = () => {
-        // date store has a list of hidden date groups, this will remove or add this date group.
+    toggleCalendarHide = (event) => {
         const id = this.props.dateGroup.id
-        if(DateStore.get('hidden') === undefined){
-            DateStore.set('hidden', [])
-        }
-        if(DateStore.get('hidden').includes(id)){
-            const newHide = DateStore.get('hidden').filter((i)=>i!=id);
-            DateStore.set('hidden',newHide)
+        let checked = event.target.checked
+        if(!checked){
+            this.props.emitHiddenDateGroupsProvider([...this.props.hiddenDateGroupsProvider, id])
         }else{
-            DateStore.set('hidden',[...DateStore.get('hidden'), id])
+            this.props.emitHiddenDateGroupsProvider(this.props.hiddenDateGroupsProvider.filter(ID=>ID!==id))
         }
-    }
-
-    getDefaultCheckbox = () => {
-        const id = this.props.dateGroup.id
-        if(DateStore.get('hidden') === undefined){
-            return true
-        }
-        if(DateStore.get('hidden').includes(id)){
-            return false
-        }
-        return true
-
     }
 
     toggleDates = () => {
         this.setState({hide: !this.state.hide})
     }
     render = () => {
+        const isCalendarHidden = !this.props.hiddenDateGroupsProvider.includes(this.props.dateGroup.id)
         const dates = this.props.dateGroup.datesJoinsByDateGroup.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()}).map((element) => {
             return <div key={element.id}>{moment(moment.utc(element.dateIntervalByDateInterval.start)).local().format("MMM Do h:mma") + "-" +moment(moment.utc(element.dateIntervalByDateInterval.end)).local().format("h:mma")}</div>
         })
@@ -182,7 +167,7 @@ class DateGroup extends Component {
                 <div>
                     {(this.state.hide)?'':dates}
                 </div>
-                <span> Show on Calander <input onChange={this.toggleCalendarHide} type='checkbox' defaultChecked={this.getDefaultCheckbox()} /> </span>
+                <span> Show on Calander <input onChange={this.toggleCalendarHide} type='checkbox' checked={isCalendarHidden} /> </span>
                 <div className="dropdown-div">
                     <span onClick={this.toggleDates} >{(this.state.hide)?'Show ':'Hide '} Dates</span>
                 </div>
@@ -207,7 +192,9 @@ class Event extends Component {
         const event = this.props.event;
         const dateGroups = event.dateGroupsByEvent.nodes.map((element) => {
             return <CustomProvider key={element.id} propName='dateGroup'>
-                {React.cloneElement(this.props.children[0], { dateGroup: element})}
+                <CustomProvider propName='hiddenDateGroups' defaultVal={[]}>
+                    {React.cloneElement(this.props.children[0], { dateGroup: element})}
+                </CustomProvider>
             </CustomProvider>})
         return (
             <React.Fragment>

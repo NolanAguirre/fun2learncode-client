@@ -11,7 +11,7 @@ import DateTime from 'react-datetime';
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
 import Delv from '../../../delv/delv'
-
+import { CustomProvider } from '../common/Common'
 
 const GET_EVENTS = `{
   allEvents {
@@ -84,6 +84,17 @@ function Calendar(props){
 }
 
 function DragAndDropCalendar(props){
+    const events = props.events.map((event)=>{
+        const dateGroupId = event.resources.groupId
+        if(event.id === props.selected.id){
+            event.buttonStyle.backgroundColor = Colors.get(dateGroupId).hover
+        }else{
+            event.buttonStyle.backgroundColor = Colors.get(dateGroupId).regular
+        }
+        return event;
+    }).filter((event)=>{
+        return !props.hiddenDateGroups.includes(event.resources.groupId)
+    })
     return (
       <BigCalendar
         selectable
@@ -91,7 +102,7 @@ function DragAndDropCalendar(props){
         className={props.className}
         tooltipAccessor={props.tooltipAccessor}
         localizer={localizer}
-        events={props.events}
+        events={events}
         onSelectSlot={props.newEvent}
         onSelectEvent={props.selectEvent}
         onDoubleClickEvent={props.removeEvent}
@@ -107,22 +118,13 @@ function DragAndDropCalendar(props){
 class DragAndDropMutationInner extends Component{
     constructor(props){
         super(props);
+        console.log(this.props)
         this.state = {
-            events:this.formatReactQueryResults(),
-            hiddenEvents:[],
             selected:{id:null},
             showPopup: false,
             startTime: moment(),
             endTime : moment().add(1, 'hour')
         };
-    }
-
-    componentDidMount = () => {
-        DateStore.on('hidden',(id)=>{this.toggleDisplay(id)});
-    }
-
-    componentWillUnmount = () => {
-        DateStore.removeAllListeners('hidden');
     }
 
     genRandomId = () =>{
@@ -157,6 +159,7 @@ class DragAndDropMutationInner extends Component{
             datesJoin{
               nodeId
               id
+              dateInterval
               dateGroupByDateGroup{
                 nodeId
               }
@@ -193,47 +196,6 @@ class DragAndDropMutationInner extends Component{
         dates.map((date,index) => template(this.genRandomId(), date))
              .forEach((date) => {mutation += date + '\n'})
         return mutation;
-    }
-
-    formatReactQueryResults = () => {
-        function isDayApart(dateOne, dateTwo) {
-            let startTimeMatch = moment(dateOne.start).hour() == moment(dateTwo.start).hour() && moment(dateOne.start).minutes() == moment(dateTwo.start).minutes()
-            let endTimeMatch = moment(dateOne.end).add(1, 'days').unix() == moment(dateTwo.end).unix();
-            return startTimeMatch && endTimeMatch;
-        }
-
-        let dateGroups = this.props.allEvents.nodes.map((event) => {
-            return event.dateGroupsByEvent.nodes.map((dateGroup) => dateGroup)
-        }).reduce((acc, val) => acc.concat(val), []) //reduce flattens array
-        .map((dateGroup) => {
-            let calendarEvents = dateGroup.datesJoinsByDateGroup.nodes.map((dateJoin) => {
-                let dateInterval = dateJoin.dateIntervalByDateInterval
-                return {
-                    id: this.genRandomId(),
-                    start: this.localizeUTCTimestamp(dateInterval.start),
-                    end: this.localizeUTCTimestamp(dateInterval.end),
-                    title: dateGroup.name,
-                    buttonStyle: {
-                        backgroundColor: Colors.get(dateGroup.id).regular
-                    },
-                    resources: {
-                        groupId: dateGroup.id
-                    }
-                }
-            });
-            calendarEvents.sort((a, b) => moment(a.start).unix() - moment(b.start).unix())
-            for(var x = 0; x < calendarEvents.length; x++){
-                for(var y = x+1; y < calendarEvents.length; y++){
-                    if (isDayApart(calendarEvents[x], calendarEvents[y])) {
-                        calendarEvents[x].end = calendarEvents[y].end
-                        calendarEvents.splice(y,1)
-                        y--
-                    }
-                }
-            }
-            return calendarEvents;
-        }).reduce((acc, val) => acc.concat(val), []);
-        return dateGroups;
     }
 
     post = (mutation, isDelete) => { //jank way to refetch queries
@@ -273,80 +235,35 @@ class DragAndDropMutationInner extends Component{
             }
             this.setState({showPopup: true});
         }else if (event.action === 'select') {
-            let selectedId = this.state.selected.id;
-            if (selectedId != null) {
-                const newEvents = this.state.events.filter((element) => element.id != selectedId)
-                const removedEvent = this.state.events.find((element) =>element.id == selectedId);
+            if (this.state.selected.id != null) {
                 let newEvent = Object.assign({}, this.state.selected);
-                newEvent.start = this.setTime(moment(event.start).toString(), removedEvent.start)
-                newEvent.end = this.setTime(moment(event.start).add(event.slots.length - 1, 'days').toString(), removedEvent.end)
-                this.post(this.makeBatch(removedEvent, this.deleteTemplate) + "\n" + this.makeBatch(newEvent, this.makeTemplate), true)
-                this.setState({
-                    events: [
-                        ...newEvents,
-                        newEvent
-                    ]
-                });
+                newEvent.start = this.setTime(moment(event.start).toString(), newEvent.start)
+                newEvent.end = this.setTime(moment(event.start).add(event.slots.length - 1, 'days').toString(), newEvent.end)
+                this.post(this.makeBatch(this.state.selected, this.deleteTemplate) + "\n" + this.makeBatch(newEvent, this.makeTemplate), true)
             }
         }
         this.resetSelectedEvent();
     }
 
     removeEvent = (event) => {
-        const removedEvent = this.state.events.find((element) => element.id == event.id)
-        this.post(this.makeBatch(removedEvent, this.deleteTemplate), true)
-        const newEvents = this.state.events.filter((element) => element.id != event.id)
-        const newHiddenEvents = this.state.hiddenEvents.filter((element) => element.id != event.id)
-        this.setState({
-            events: newEvents,
-            hiddenEvents: newHiddenEvents,
-        })
+        this.post(this.makeBatch(event, this.deleteTemplate), true)
+        this.resetSelectedEvent();
     }
 
-    selectEvent = (event) => {
-        this.resetSelectedEvent();
-        event.buttonStyle = {
-            backgroundColor: Colors.get(event.resources.groupId).hover
-        }
+    selectEvent = (event) =>{
         this.props.emitDateGroupProvider({id:event.resources.groupId, name:event.title});
         this.setState({selected: event})
     }
 
     resetSelectedEvent = () => {
-        let newEvents = this.state.events.map((element) => {
-            element.buttonStyle = {
-                backgroundColor: Colors.get(element.resources.groupId).regular
-            }
-            return element;
-        });
-        this.setState({
-            selected: {id: null},
-            events: newEvents
-        });
-    }
-
-    toggleDisplay = (ids) =>{
-        const newEvents = this.state.events.filter((event) => !ids.includes(event.resources.groupId)); // if hidden includes something on events
-        const removed = this.state.events.filter((event) => ids.includes(event.resources.groupId));
-        const newHiddenEvents = this.state.hiddenEvents.filter((event) => ids.includes(event.resources.groupId));
-        const add = this.state.hiddenEvents.filter((event) => !ids.includes(event.resources.groupId));
-        this.setState({
-            events:[...newEvents, ...add],
-            hiddenEvents: [...newHiddenEvents, ...removed],
-        })
+        this.setState({selected: {id: null}});
     }
 
     closePopup = () => {
         this.popupEvent.start = this.setTime(this.popupEvent.start, this.state.startTime)
         this.popupEvent.end = this.setTime(this.popupEvent.end, this.state.endTime)
         this.post(this.makeBatch(this.popupEvent, this.makeTemplate), false);
-        this.setState({
-            showPopup:false,
-            events: [
-                ...this.state.events,
-                this.popupEvent
-            ]
-        })
+        this.setState({showPopup:false})
         this.popupEvent = null;
     }
 
@@ -392,19 +309,69 @@ ${moment(event.start).format('h:mm a')} to ${moment(event.end).format('h:mm a')}
   		          </div>
             </Popup>
             <DragAndDropCalendar
-        removeEvent={this.removeEvent}
-        selectEvent={this.selectEvent}
-        newEvent={this.newEvent}
-        events={this.state.events}
-        tooltipAccessor={this.tooltipAccessor}
-        className="manage-events-calander"/>
+            selected={this.state.selected}
+            hiddenDateGroups={this.props.hiddenDateGroupsProvider}
+            removeEvent={this.removeEvent}
+            selectEvent={this.selectEvent}
+            newEvent={this.newEvent}
+            events={this.props.events}
+            tooltipAccessor={this.tooltipAccessor}
+            className="manage-events-calander"/>
     </React.Fragment>
     }
 }
 
+
 function DragAndDropMutation(props){
-    return <ReactQuery query={GET_EVENTS}>
-        <DragAndDropMutationInner {...props}/>
+    function formatQueryResults({allEvents}) {
+        function isDayApart(dateOne, dateTwo) {
+            let startTimeMatch = moment(dateOne.start).hour() == moment(dateTwo.start).hour() && moment(dateOne.start).minutes() == moment(dateTwo.start).minutes()
+            let endTimeMatch = moment(dateOne.end).add(1, 'days').unix() == moment(dateTwo.end).unix();
+            return startTimeMatch && endTimeMatch;
+        }
+
+        function localizeUTCTimestamp (timestamp) {
+            return moment(moment.utc(timestamp)).local().toString()
+        }
+
+        let dateGroups = allEvents.nodes.map((event) => {
+            return event.dateGroupsByEvent.nodes.map((dateGroup) => dateGroup)
+        }).reduce((acc, val) => acc.concat(val), []) //reduce flattens array
+        .map((dateGroup) => {
+            let calendarEvents = dateGroup.datesJoinsByDateGroup.nodes.map((dateJoin) => {
+                let dateInterval = dateJoin.dateIntervalByDateInterval
+                return {
+                    id: `${dateGroup.nodeId}${dateInterval.nodeId}`,
+                    start: localizeUTCTimestamp(dateInterval.start),
+                    end: localizeUTCTimestamp(dateInterval.end),
+                    title: dateGroup.name,
+                    buttonStyle: {
+                        backgroundColor: Colors.get(dateGroup.id).regular
+                    },
+                    resources: {
+                        groupId: dateGroup.id
+                    }
+                }
+            });
+            calendarEvents.sort((a, b) => moment(a.start).unix() - moment(b.start).unix())
+            for(var x = 0; x < calendarEvents.length; x++){
+                for(var y = x+1; y < calendarEvents.length; y++){
+                    if (isDayApart(calendarEvents[x], calendarEvents[y])) {
+                        calendarEvents[x].end = calendarEvents[y].end
+                        calendarEvents.splice(y,1)
+                        y--
+                    }
+                }
+            }
+            return calendarEvents;
+        }).reduce((acc, val) => acc.concat(val), []);
+        return {events:dateGroups};
+    }
+
+    return <ReactQuery query={GET_EVENTS} formatResult={formatQueryResults}>
+        <CustomProvider propName='hiddenDateGroups' defaultVal={[]}>
+            <DragAndDropMutationInner {...props}/>
+        </CustomProvider>
     </ReactQuery>
 }
 
