@@ -126,7 +126,11 @@ export {GridView}
 class MultiSelect extends Component {
     constructor(props){
         super(props)
-        this.state = {selected:[this.props.default]}
+        if(this.props.default){
+            this.state = {selected:[this.props.default]}
+        }else{
+            this.state = {selected:[]}
+        }
     }
 
     shouldComponentUpdate(nextProps, nextState){

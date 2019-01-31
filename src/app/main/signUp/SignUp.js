@@ -116,7 +116,7 @@ class CreateAccount extends Component{
         this.setState({error:errors})
     }
 
-    handleSubmit = async (event) => { // dont want a loading state, custom handling of errors where no error state is displayed, used axios
+    handleSubmit = async (event) => {
         event.preventDefault()
         if(this.hasRequiredValues()){
             let uniqueEmail = await this.uniqueEmail();

@@ -36,7 +36,7 @@ class AccountInner extends Component{
                             </tr>
                             <tr>
                                 <td>Memeber since: </td>
-                                <td>{moment(user.created_on).format('MMM, Do YYYY')}</td>
+                                <td>{moment(user.createdOn).format('MMM, Do YYYY')}</td>
                             </tr>
                             <tr>
                                 <td></td>

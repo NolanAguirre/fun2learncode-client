@@ -4,7 +4,7 @@ import {ReactQuery} from '../../../delv/delv-react'
 import {SecureRoute, GridView} from '../common/Common'
 import './ManageAddons.css'
 
-const GET_ADDONS = `{
+const GET_ADDONS =`{
   allAddOns{
     nodes{
       nodeId
@@ -150,34 +150,20 @@ class ManageAddonForm  extends Component{
     }
 }
 
-class ManageAddonsInner extends Component {
-  constructor (props) {
-    super(props)
-  }
-  handleInputChange = (event) => {
-    const target = event.target
-    const value = target.type === 'checkbox'
-      ? target.checked
-      : target.value
-    const name = target.name
-    this.setState({ [name]: value })
-  }
-  render = () => {
-      console.log(this.props)
-    const addons = this.props.allAddOns.nodes.map((addon) =><ManageAddonForm mutation={UPDATE_ADDON} key={addon.id} price={addon.price} id={addon.id} name={addon.name} description={addon.description} />)
+function ManageAddonsInner(props) {
+    const addons = props.allAddOns.nodes.map((addon) =><ManageAddonForm mutation={UPDATE_ADDON} key={addon.id} price={addon.price} id={addon.id} name={addon.name} description={addon.description} />)
     return <div className="manage-addresses-container">
         <div className="manage-addresses-header">
             <ManageAddonForm mutation={CREATE_ADDON} name={"New Addon"} />
         </div>
         <GridView className="manage-addresses-body" fillerStyle={'manage-address-form-container'} itemsPerRow={3}>{addons}</GridView>
     </div>
-  }
 }
 
 function ManageAddons(props){
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
         <ReactQuery query={GET_ADDONS}>
-            <ManageAddonsInner />
+                <ManageAddonsInner />
         </ReactQuery>
     </SecureRoute>
 }

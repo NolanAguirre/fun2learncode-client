@@ -96,9 +96,10 @@ class InstructorLogForm extends Component{
         return <div className="styled-container column section edge-margin">
             <form onSubmit={this.mutation.onSubmit}>
                 <h2 className='no-margin center-text'>{student.firstName} {student.lastName}</h2>
-                <h5 className='no-margin center-text'>{name} {moment(start).format('MMMM, do h:mm a')}</h5>
+                <h5 className='no-margin center-text'>{name} {moment(start).format('MMMM, Do h:mm a')}</h5>
                 <div id={this.props.id} onInput={this.handleDescriptionChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
-                <button type='submit'>Write Log</button>
+                <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Write Log</div>
+                <button className='hacky-submit-button' type='submit'/>
             </form>
         </div>
     }

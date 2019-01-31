@@ -136,10 +136,6 @@ const routeNames = [
 ]
 
 class NavBarInner extends Component {
-
-    showSettings = (event) => {
-        event.preventDefault();
-    }
     getRoutes = () => {
         return routeNames.filter((routeObj) => {
             return routeObj.test(this.props.getUserData)
