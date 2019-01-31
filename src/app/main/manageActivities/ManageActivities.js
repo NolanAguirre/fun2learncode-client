@@ -261,6 +261,14 @@ class ManageActivitiesForm extends Component{
         if(element){
             element.innerHTML = this.props.description || ''
         }
+        this.setState({
+            edit:false,
+            type: this.props.type,
+            description:this.props.description,
+            name:this.props.name,
+            url:this.props.url,
+            archive: this.props.archive
+        })
     }
 
     handleSubmit = (event) => {
