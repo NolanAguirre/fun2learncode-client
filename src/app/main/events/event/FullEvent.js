@@ -18,10 +18,10 @@ function FullEvent(props){
                     </tr>
                     <tr>
                         <td>Price:</td>
-                        <td>{props.dateGroup.price}</td>
+                        <td>{props.dateGroup.price}$</td>
                     </tr>
                     <tr>
-                        <td>Prerequisites:</td>
+                        <td>{props.prerequisites.length > 0?'Prerequisites:':''}</td>
                         <td>{props.prerequisites.map((prereq=>prereq.name))}</td>
                     </tr>
                 </tbody>
