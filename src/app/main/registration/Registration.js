@@ -120,25 +120,15 @@ class RegistrationInner extends Component{
         this.setState({addons:addons});
     }
 
-    handleSubmit = ({token, promoCode, callback}) =>{
-        let data = {
+    getSelections = () => {
+        return {
             students: this.state.students.map(student=>student.id),
             addons:this.state.addons.map(addon=>addon.id),
             dateGroup: this.props.dateGroupId,
-            user:this.props.getUserData,
-            event:this.props.event.id,
-            stripeToken: token.id,
-            promoCode
+            user:this.props.getUserData.id
         }
-        axios.post('http://localhost:3005/payment', data).then((res)=>{callback(res)})
     }
-
-    totalChange = (total) => {
-        this.total = total;
-    }
-
     render = () =>{
-
         return <div className='registration-container'>
             <h2>Registration</h2>
             <div className='styled-container'>
@@ -150,13 +140,13 @@ class RegistrationInner extends Component{
                                 dates={this.props.dates}/>
                 </div>
                 <div className='section'>
-                   <PaymentOverview totalChange={this.totalChange} dateGroup={{price: this.props.dateGroup.price,id: this.props.dateGroup.id,name: this.props.activity.name}} addons={this.state.addons} students={this.state.students}/>
+                   <PaymentOverview dateGroup={{price: this.props.dateGroup.price,id: this.props.dateGroup.id,name: this.props.activity.name}} addons={this.state.addons} students={this.state.students}/>
                </div>
             </div>
             <span className='error'>{this.state.error}</span>
             <StudentSelect className='styled-container' multiSelect createStudent isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} userId={this.props.getUserData.id}/>
             <AddonSelect classNam='styled-container' multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
-            <Payment handleSubmit={this.handleSubmit} event={this.props.event} activity={this.props.activity} getTotal={()=>{return this.total}}/>
+            <Payment getInfo={this.getSelections}/>
         </div>
     }
 }
