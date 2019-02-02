@@ -41,7 +41,7 @@ const createStripeStyle = {
 class AddressForm extends Component{
     constructor(props){
         super(props)
-        this.state = {promoCode:'', address:'', city:'', state:''};
+        this.state = {promoCode:'', address:this.props.address || '', city: this.props.city || '', state:this.props.state || ''};
     }
     handleChange = (event) => {
         const target = event.target
@@ -59,7 +59,7 @@ class AddressForm extends Component{
             this.setState({stateError:'State is required.'})
         }else{
             axios.post('http://localhost:3005/store', {promoCode:this.state.promoCode, ...this.props.info}).then((data)=>{
-                this.props.callback({response:data, address:this.state.addres, city:this.state.city, state:this.state.state});
+                this.props.callback({response:data, address:this.state.address, city:this.state.city, state:this.state.state});
             }).catch((error)=>{
                 console.log(error)
             })
@@ -73,17 +73,17 @@ class AddressForm extends Component{
                 <div className='sign-up-input-container'>
                       <div className='payment-input-container'>
                            {this.state.addressError?<span className='error'>{this.state.addressError}</span>:'Address'}
-                        <input className='styled-input' name='address' onChange={this.handleChange}/>
+                        <input className='styled-input' name='address' value={this.state.address} onChange={this.handleChange}/>
                       </div>
                 </div>
                 <div className='container'>
                     <div className='small-input edge-margin'>
                          {this.state.cityError?<span className='error'>{this.state.cityError}</span>:'City'}
-                        <input className='styled-input' name='city' placeholder='Austin' onChange={this.handleChange}/>
+                        <input className='styled-input' name='city' placeholder='Austin' value={this.state.city} onChange={this.handleChange}/>
                     </div>
                     <div className='small-input edge-margin'>
                          {this.state.stateError?<span className='error'>{this.state.stateError}</span>:'State'}
-                        <input className='styled-input' name='state' placeholder='Texas' onChange={this.handleChange}/>
+                        <input className='styled-input' name='state' placeholder='Texas' value={this.state.state} onChange={this.handleChange}/>
                     </div>
                 </div>
               <div className='container'>
@@ -194,7 +194,7 @@ class Payment extends Component {
 
     onAddressComplete = ({response, city, state, address}) => {
         if(response.data.error){
-            this.setState({UI:'error', error:response.data.error})
+            this.setState({UI:'error', error:response.data.error, city, state, address})
         }else{
             this.setState({UI:'card', total:response.data.total, city, state, address})
         }
@@ -205,17 +205,22 @@ class Payment extends Component {
         if(this.state.UI === 'loading'){
             child = <div className='center-y section'><img className='loading-icon center-x' src={loading}/></div>
         }else if(this.state.UI === 'error'){
-            child = <div> <div className='error'>{this.state.error}</div></div>
+            child = <div className='section container column'>
+                    <div className='section center-y'>
+                        <div className='error center-text'>{this.state.error}</div>
+                </div>
+                <div className='event-register-btn center-text' onClick={()=>{this.transition('address')}}>Back</div>
+            </div>
         }else if(this.state.UI === 'complete'){
 
         }else if(this.state.UI === 'card'){
             child = <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
                     <Elements>
-                        <PaymentInfoEntry callback={this.onCardComplete} city={this.state.city} state={this.state.address} address={this.state.address} total={this.state.total}/>
+                        <PaymentInfoEntry callback={this.onCardComplete} city={this.state.city} state={this.state.state} address={this.state.address} total={this.state.total}/>
                     </Elements>
                 </StripeProvider>
         }else if(this.state.UI === 'address'){
-            child = <AddressForm transition={this.transition} info={this.props.getInfo()} callback={this.onAddressComplete}/>
+            child = <AddressForm transition={this.transition} info={this.props.getInfo()} city={this.state.city} state={this.state.state} address={this.state.address} total={this.state.total} callback={this.onAddressComplete}/>
         }
         return <React.Fragment>
             <Popup className='payment-overview-popup' open={this.state.showPopup} closeOnEscape={!this.state.loading} closeOnDocumentClick={!this.state.loading} onClose={this.clearPopupState}>
