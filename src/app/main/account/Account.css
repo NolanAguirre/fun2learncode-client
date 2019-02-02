@@ -4,3 +4,7 @@
     flex-direction: column;
     justify-content: space-around;
 }
+
+.email-input-container{
+    margin-top:120px;
+}
