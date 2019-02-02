@@ -58,7 +58,7 @@ class AddressForm extends Component{
         }else if(this.state.state === ''){
             this.setState({stateError:'State is required.'})
         }else{
-            axios.post('http://localhost:3005/payment', {promoCode:this.state.promoCode, ...this.props.info}).then((data)=>{
+            axios.post('http://localhost:3005/store', {promoCode:this.state.promoCode, ...this.props.info}).then((data)=>{
                 this.props.callback({response:data, address:this.state.addres, city:this.state.city, state:this.state.state});
             }).catch((error)=>{
                 console.log(error)
