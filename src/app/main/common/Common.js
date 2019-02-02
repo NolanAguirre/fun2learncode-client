@@ -258,36 +258,27 @@ class ArchiveOptions extends Component{
     constructor(props){
         super(props);
         this.state = {
-            archive: '',
-            networkPolicy: 'network-once'
+            archive: 'archive: false,'
         }
         this.options = [
             {
                 id:1,
                 name:'Active',
-                archive:'archive: false,',
-                networkPolicy: 'cache-only'
+                archive:'archive: false,'
             },{
                 id:2,
-                name:'All',
-                archive:'',
-                networkPolicy: 'network-once'
-            },{
-                id:3,
                 name:'Archive',
-                archive:'archive: true,',
-                networkPolicy: 'cache-only'
+                archive:'archive: true,'
             }
         ]
     }
 
     componentDidMount = () => {
-        this.options[1].networkPolicy = 'cache-only';
-        this.setSelectedOption(this.options[1])
+        this.setSelectedOption(this.options[0])
     }
 
     setSelectedOption = (option) => {
-        this.setState({archive:option.archive, networkPolicy:option.networkPolicy});
+        this.setState({archive:option.archive});
     }
 
     render = () => {
@@ -295,14 +286,14 @@ class ArchiveOptions extends Component{
             <div>
                 <h4 className='no-margin center-text'>{this.props.label}</h4>
                 <div className={this.props.className || 'archive-options-container'}>
-                    <MultiSelect items={this.options} setSelected={this.setSelectedOption} default={this.options[1]} alwaysSelect>
+                    <MultiSelect items={this.options} setSelected={this.setSelectedOption} default={this.options[0]} alwaysSelect>
                         <Selectable className={{selected:'selected-archive-option-btn archive-option-btn', base: 'archive-option-btn'}}>
                             <ArchiveOption />
                         </Selectable>
                     </MultiSelect>
                 </div>
             </div>
-            {React.cloneElement(this.props.children, {query:this.props.query(this.state.archive), networkPolicy: this.props.networkPolicy || this.state.networkPolicy})}
+            {React.cloneElement(this.props.children, {query:this.props.query(this.state.archive)})}
         </React.Fragment>
     }
 }
