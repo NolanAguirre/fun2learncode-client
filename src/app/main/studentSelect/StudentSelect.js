@@ -40,7 +40,8 @@ class StudentForm extends Component{
         this.state = {showPopup:false, dateOfBirth:moment()}
         this.mutation = new Mutation({
             mutation:CREATE_STUDENT,
-            onSubmit:this.handleSubmit
+            onSubmit:this.handleSubmit,
+            onResolve:this.onResolve
         })
     }
 
@@ -73,6 +74,10 @@ class StudentForm extends Component{
         }
         this.clearPopupState()
         return false
+    }
+
+    onResolve = () => {
+        this.setState({dateOfBirth:moment()})
     }
 
     handleTimeChange = (key, value)=> {
