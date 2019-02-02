@@ -16,7 +16,7 @@ const GET_ACTIVITIES = `{
 }`
 
 const JOIN_NEWS_LETTER = `mutation($email:String!){
-  createNewsLetter(input:{newsLetter:{email:$email}}) {
+  makeNewsLetter(input:{arg0:$email}) {
     __typename
   }
 }`
@@ -48,18 +48,17 @@ class NewsLetterForm extends Component{
         return false;
     }
     handleResolve = (data) => {
-        console.log(data)
         if(data.errors){
-            this.setState({complete:0})
+            this.setState({complete:2})
         }else{
-            this.setState({complete:1})
+            this.setState({complete:3})
         }
     }
     render = () => {
         if(this.state.complete){
-            if(this.state.complete === 0){
+            if(this.state.complete === 2){
                 return <div>It appears you're already a memeber of our mailing list.</div>
-            }else if(this.state.complete === 1){
+            }else if(this.state.complete === 3){
                 return <div>Thank you for joining our mailing list.</div>
             }
         }else{
