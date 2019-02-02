@@ -10,6 +10,7 @@ let UID = 'nodeId'
 class Cache {
     constructor() {
         this.cache = {};
+        this.emitter = CacheEmitter
         this.keyConflict = new Map();
         this.keyConflict.set('activityPrerequisitesByActivity', 'activityByActivity')
         this.keyConflict.set('activityByActivity', 'activityPrerequisitesByActivity')
