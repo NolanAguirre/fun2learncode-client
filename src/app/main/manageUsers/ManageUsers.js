@@ -108,6 +108,10 @@ class ManageUserForm extends Component{
                             <td>{this.props.firstName} {this.props.lastName}</td>
                         </tr>
                         <tr>
+                            <td>ID: </td>
+                            <td>{this.props.id}</td>
+                        </tr>
+                        <tr>
                             <td>Email: </td>
                             <td>{this.props.email}</td>
                         </tr>
