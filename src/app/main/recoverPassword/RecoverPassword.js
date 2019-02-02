@@ -49,7 +49,7 @@ class RecoverPassword extends Component{
               </div>
             </div>
             <div className='center-y section'>
-              <span className='login-error'>{this.state.error}</span>
+              <div className='error'>{this.state.error}</div>
               <input className='styled-input' name='email' type='email' onChange={this.handleChange} placeholder='email' />
             </div>
             <div className='event-register-btn center-text' onClick={this.handleSubmit}>Reset Password</div>

@@ -71,7 +71,7 @@ class RefundForm extends Component{
 			<Popup className='payment-overview-popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
 				<form className='login-widget' onSubmit={this.mutation.onSubmit}>
 					<h2 className='center-text'>Estimated refund: {this.props.total}$</h2>
-					<span className='error'>{this.state.error}</span>
+					<div className='error'>{this.state.error}</div>
 					<span>Reason for refund:</span>
 					<div id='refund-request-reason' onInput={this.handleReasonChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
 					<span className='refund-footer'>Actual refund amounts may vary depending on promo code usage, distance from event start and other factors.</span>

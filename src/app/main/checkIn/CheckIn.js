@@ -226,7 +226,7 @@ class CheckInInner extends Component{
               </div>
               {this.state.choices?
                   <CheckInChoice reset={this.reset} choices={this.state.choices}/>:<React.Fragment>
-					  <span className='error'>{this.state.error}</span>
+					  <div className='error'>{this.state.error}</div>
                 <div className='check-in-container'>
                     <input className='styled-input margin-top-40' ref={this.name} placeholder='Students last name' onChange={this.clearError}></input>
                     <div className='event-register-btn center-text' onClick={this.loadStudents}>Check in</div>

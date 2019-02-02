@@ -139,7 +139,7 @@ class PaymentInformationEntry extends Component{
         return <form  className='container section' onSubmit={this.handleSubmit}>
               <div className='payment-container'>
                   <h1 className='center-text no-margin'>Total: {this.props.total}$</h1>
-                  <span className='error'>{this.state.stripeError}</span>
+                  <div className='error'>{this.state.stripeError}</div>
                   <div className='container'>
                       {this.state.error?<span className='error'>{this.state.error}</span>:'Cardholder name'}
                       <input className='styled-input' placeholder="John Doe" name='cardholder' onChange={this.handleChange}/>
@@ -205,7 +205,7 @@ class Payment extends Component {
         if(this.state.UI === 'loading'){
             child = <div className='center-y section'><img className='loading-icon center-x' src={loading}/></div>
         }else if(this.state.UI === 'error'){
-            child = <div> <span className='error'>{this.state.error}</span></div>
+            child = <div> <div className='error'>{this.state.error}</div></div>
         }else if(this.state.UI === 'complete'){
 
         }else if(this.state.UI === 'card'){

@@ -58,7 +58,7 @@ class PasswordReset extends Component{
         }else{
             return <form onSubmit={this.mutation.onSubmit} className={this.props.className}>
                 <div className="margin-top-40">
-                    <span className='error'>{this.state.error}</span>
+                    <div className='error'>{this.state.error}</div>
                     <input className='styled-input' name='password' type='password' onChange={this.handleChange} placeholder='password' />
                 </div>
                 <div className="margin-top-40">

@@ -51,7 +51,7 @@ class Login extends Component {
         if(this.state.error){
             if(this.state.error === 'Email or Password was incorrect'){
                 child = <React.Fragment>
-                        <span className='login-error'>Incorrect email or password.</span>
+                        <div className='error'>Incorrect email or password.</div>
                         <Link to={`/recover`}>Forgot password?</Link>
                     </React.Fragment>
             }else{

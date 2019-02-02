@@ -161,7 +161,7 @@ class CreateAccount extends Component{
     render () {
       return<React.Fragment>
           <div className='login-error-container'>
-              <span className='login-error'>{this.state.error}</span>
+              <div className='error'>{this.state.error}</div>
           </div>
           <form className='container column'>
             <input className='styled-input' name='email' type='email' onChange={this.handleChange} placeholder='email' />

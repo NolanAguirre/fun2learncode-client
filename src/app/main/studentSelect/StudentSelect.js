@@ -96,7 +96,7 @@ class StudentForm extends Component{
                 <div className="login-widget">
                     <h1 className='center-text'>Add Student</h1>
                     <div className='login-error-container'>
-                        <span className='login-error'>{this.state.error}</span>
+                        <div className='login-error'>{this.state.error}</div>
                     </div>
                     <form onSubmit={this.mutation.onSubmit} className='space-around'>
                             <div className='container'>

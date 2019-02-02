@@ -288,7 +288,7 @@ ${moment(event.start).format('h:mm a')} to ${moment(event.end).format('h:mm a')}
           onClose={this.clearPopupState}>
                 <div>
                     <h3 className='center-text'>Set time of day</h3>
-                    <span className='error'>{(this.state.startTime > this.state.endTime)?'The start time must be before the end time':''}</span>
+                    <div className='error'>{(this.state.startTime > this.state.endTime)?'The start time must be before the end time':''}</div>
                       <table className='calendar-time-table'>
                           <tbody>
                               <tr>

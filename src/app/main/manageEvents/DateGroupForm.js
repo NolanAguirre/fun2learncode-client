@@ -293,7 +293,7 @@ class DateGroupFormInner extends Component {
         const addons = this.props.addOnJoinsByDateGroup && this.props.addOnJoinsByDateGroup.nodes.map(addon => addon)
         return <div className="styled-container column no-margin">
             <h2 className='center-text no-margin'>{(this.props.id)?'Edit':'Create'} Date Group</h2>
-            <span className='error'>{this.state.error}</span>
+            <div className='error'>{this.state.error}</div>
             <div className='date-form-inner'>
                 <div>
                     <form onSubmit={this.mutation.onSubmit}>

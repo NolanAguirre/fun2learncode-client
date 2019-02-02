@@ -143,7 +143,7 @@ class RegistrationInner extends Component{
                    <PaymentOverview dateGroup={{price: this.props.dateGroup.price,id: this.props.dateGroup.id,name: this.props.activity.name}} addons={this.state.addons} students={this.state.students}/>
                </div>
             </div>
-            <span className='error'>{this.state.error}</span>
+            <div className='error'>{this.state.error}</div>
             <StudentSelect className='styled-container' multiSelect createStudent isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} userId={this.props.getUserData.id}/>
             <AddonSelect classNam='styled-container' multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
             <Payment getInfo={this.getSelections}/>
