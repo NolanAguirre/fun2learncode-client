@@ -9,7 +9,7 @@ import Activity from '../activities/activity/Activity'
 //TODO be able to remove prerequisites, make description text box keep text on edit
 
 const GET_ACTIVITIES = (archive) => `{
-  allActivities(condition:{${archive}}){
+  allActivities(condition:{${archive}}) {
     nodes {
       nodeId
       id
@@ -17,11 +17,11 @@ const GET_ACTIVITIES = (archive) => `{
       archive
       description
       name
-      activityCatagoryByType {
+      categoryByCategory {
         id
         nodeId
       }
-      activityPrerequisitesByActivity{
+      activityPrerequisitesByActivity {
         nodes {
           id
           nodeId
@@ -37,7 +37,7 @@ const GET_ACTIVITIES = (archive) => `{
 }`
 
 const GET_DROPDOWN = `{
-  allActivityCatagories {
+  allCategories {
     nodes {
       nodeId
       id
@@ -55,7 +55,7 @@ const CREATE_ACTIVITY =  `mutation ($activity:CreateActivityInput!) {
         archive
         description
         name
-        activityCatagoryByType {
+        categoryByCategory {
           id
           nodeId
         }
@@ -83,7 +83,7 @@ const UPDATE_ACTIVITY = `mutation($id:UUID!, $patch:ActivityPatch!){
         archive
         description
         name
-        activityCatagoryByType {
+        categoryByCategory {
           id
           nodeId
         }
@@ -193,7 +193,7 @@ class PrerequisiteForm extends Component{
     render = () =>{
         if(this.state.edit){ // this can use caching
             return <div>
-                <DropDown options={this.props.activities} name="prerequisite" value={this.state.type} onChange={this.handleInputChange}/>
+                <DropDown options={this.props.activities} name="prerequisite" value={this.state.category} onChange={this.handleInputChange}/>
                 <button onClick={this.mutation.onSubmit}>Confirm</button>
             </div>
         }else{
@@ -209,7 +209,7 @@ class ManageActivitiesForm extends Component{
         super(props);
         this.state = {
             edit:false,
-            type: this.props.type,
+            category: this.props.category,
             description:this.props.description,
             name:this.props.name,
             url:this.props.url,
@@ -241,8 +241,8 @@ class ManageActivitiesForm extends Component{
     }
 
     hasRequiredValues = () =>{
-        let haveValues =  this.state.type && this.state.name != 'New Activity' && this.state.description && this.state.url
-        let changedValues = this.state.type != this.props.type ||
+        let haveValues =  this.state.category && this.state.name != 'New Activity' && this.state.description && this.state.url
+        let changedValues = this.state.category != this.props.category ||
                this.state.name != this.props.name ||
                this.state.description != this.props.description ||
                this.state.url != this.props.url ||
@@ -266,7 +266,7 @@ class ManageActivitiesForm extends Component{
         }
         this.setState({
             edit:false,
-            type: this.props.type,
+            category: this.props.category,
             description:this.props.description,
             name:this.props.name,
             url:this.props.url,
@@ -290,9 +290,9 @@ class ManageActivitiesForm extends Component{
     }
 
     formatName = () => {
-        let typeName = this.props.types.filter(obj=>obj.value===this.props.type)[0]
-        if(typeName && typeName.name){
-            return `${this.props.name} (${typeName.name})`
+        let catgeoryName = this.props.categories.filter(obj=>obj.value===this.props.category)[0]
+        if( catgeoryName &&  catgeoryName.name){
+            return `${this.props.name} (${catgeoryName.name})`
         }else{
             return this.props.name
         }
@@ -311,7 +311,7 @@ class ManageActivitiesForm extends Component{
                 <div className='container column'>
                     <div>
                         <input name="name" onChange={this.handleInputChange} value={this.state.name} />
-                        <DropDown options={this.props.types} name="type" value={this.state.type} onChange={this.handleInputChange}/>
+                        <DropDown options={this.props.categories} name="category" value={this.state.category} onChange={this.handleInputChange}/>
                     </div>
                      <span className='archive-txt'>Archive: <input name='archive' onChange={this.handleInputChange} checked={this.state.archive} type='checkbox'/></span>
                 </div>
@@ -338,7 +338,7 @@ function ManageActivitiesInner(props) {
                     key: element.id, // this is named value so it can be used by the dropdown box
                     id: element.id,
                     value: element.id,
-                    type: element.activityCatagoryByType.id,
+                    category: element.categoryByCategory.id,
                     description: element.description,
                     prerequisites: temp,
                     url: element.url,
@@ -350,7 +350,7 @@ function ManageActivitiesInner(props) {
         return activities.map((activity) => {
                 return <ManageActivitiesForm
                     mutation={UPDATE_ACTIVITY}
-                    types={props.types}
+                    categories={props.categories}
                     {...activity}>
                     <PrerequisiteForm activityId={activity.id} activities={activities} />
                 </ManageActivitiesForm>
@@ -358,12 +358,12 @@ function ManageActivitiesInner(props) {
 }
 
 function InBetween(props){
-    const types = props.allActivityCatagories.nodes.map((element) =>  {return{name: element.name, value: element.id}})
+    const categories = props.allCategories.nodes.map((element) =>  {return{name: element.name, value: element.id}})
     return <React.Fragment>
-        <ManageActivitiesForm mutation={CREATE_ACTIVITY} name={"New Activity"} types={types}/>
+        <ManageActivitiesForm mutation={CREATE_ACTIVITY} name={"New Activity"} categories={categories}/>
         <ArchiveOptions query={GET_ACTIVITIES}>
             <ReactQuery>
-                <ManageActivitiesInner types={types}/>
+                <ManageActivitiesInner categories={categories}/>
             </ReactQuery>
         </ArchiveOptions>
     </React.Fragment>
