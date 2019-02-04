@@ -27,3 +27,7 @@
     text-align: center;
     margin: 0 0 5px 0;
 }
+.create-address-form{
+    min-width: 400px;
+    margin:0 auto;
+}

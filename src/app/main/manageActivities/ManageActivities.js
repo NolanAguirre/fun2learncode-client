@@ -9,13 +9,6 @@ import Activity from '../activities/activity/Activity'
 //TODO be able to remove prerequisites, make description text box keep text on edit
 
 const GET_ACTIVITIES = (archive) => `{
-  allActivityCatagories {
-    nodes {
-      nodeId
-      id
-      name
-    }
-  }
   allActivities(condition:{${archive}}){
     nodes {
       nodeId
@@ -39,6 +32,16 @@ const GET_ACTIVITIES = (archive) => `{
           }
         }
       }
+    }
+  }
+}`
+
+const GET_DROPDOWN = `{
+  allActivityCatagories {
+    nodes {
+      nodeId
+      id
+      name
     }
   }
 }`
@@ -190,8 +193,8 @@ class PrerequisiteForm extends Component{
     render = () =>{
         if(this.state.edit){ // this can use caching
             return <div>
-                    <DropDown options={this.props.activities} name="prerequisite" value={this.state.type} onChange={this.handleInputChange}/>
-                    <button onClick={this.mutation.onSubmit}>Confirm</button>
+                <DropDown options={this.props.activities} name="prerequisite" value={this.state.type} onChange={this.handleInputChange}/>
+                <button onClick={this.mutation.onSubmit}>Confirm</button>
             </div>
         }else{
             return <div>
@@ -326,51 +329,52 @@ class ManageActivitiesForm extends Component{
     }
 }
 
-class ManageActivitiesInner extends Component {
-    constructor(props) {
-        super(props);
-    }
+function ManageActivitiesInner(props) {
+     function mapActivities(data){
+         return data.nodes.map((element) => {
+                let temp = element.activityPrerequisitesByActivity.nodes.map((el) => el);
+                return {
+                    name: element.name,
+                    key: element.id, // this is named value so it can be used by the dropdown box
+                    id: element.id,
+                    value: element.id,
+                    type: element.activityCatagoryByType.id,
+                    description: element.description,
+                    prerequisites: temp,
+                    url: element.url,
+                    archive:element.archive
+                }
+            })
+        }
+        const activities = mapActivities(props.allActivities);
+        return activities.map((activity) => {
+                return <ManageActivitiesForm
+                    mutation={UPDATE_ACTIVITY}
+                    types={props.types}
+                    {...activity}>
+                    <PrerequisiteForm activityId={activity.id} activities={activities} />
+                </ManageActivitiesForm>
+            })
+}
 
-    mapActivities = (data) => data.nodes.map((element) => {
-            let temp = element.activityPrerequisitesByActivity.nodes.map((el) => el);
-            return {
-                name: element.name,
-                key: element.id, // this is named value so it can be used by the dropdown box
-                id: element.id,
-                value: element.id,
-                type: element.activityCatagoryByType.id,
-                description: element.description,
-                prerequisites: temp,
-                url: element.url,
-                archive:element.archive
-            }
-        })
-
-    render = () => {
-            const types = this.props.allActivityCatagories.nodes.map((element) =>  {return{name: element.name, value: element.id}})
-            const activities = this.mapActivities(this.props.allActivities);
-            return <React.Fragment>
-                <ManageActivitiesForm mutation={CREATE_ACTIVITY} name={"New Activity"} types={types}/>
-                {activities.map((activity)=>{
-                    return <ManageActivitiesForm
-                        mutation={UPDATE_ACTIVITY}
-                        types={types}
-                        {...activity}>
-                        <PrerequisiteForm activityId={activity.id} activities={activities} />
-                    </ManageActivitiesForm>
-                })}
-                </React.Fragment>
-    }
+function InBetween(props){
+    const types = props.allActivityCatagories.nodes.map((element) =>  {return{name: element.name, value: element.id}})
+    return <React.Fragment>
+        <ManageActivitiesForm mutation={CREATE_ACTIVITY} name={"New Activity"} types={types}/>
+        <ArchiveOptions query={GET_ACTIVITIES}>
+            <ReactQuery>
+                <ManageActivitiesInner types={types}/>
+            </ReactQuery>
+        </ArchiveOptions>
+    </React.Fragment>
 }
 
 function ManageActivities(props) {
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
         <div className="manage-activities-container">
-            <ArchiveOptions query={GET_ACTIVITIES}>
-                <ReactQuery>
-                    <ManageActivitiesInner />
-                </ReactQuery>
-            </ArchiveOptions>
+            <ReactQuery query={GET_DROPDOWN}>
+                <InBetween />
+            </ReactQuery>
         </div>
     </SecureRoute>
 }
