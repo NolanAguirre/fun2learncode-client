@@ -6,29 +6,29 @@ import Mutation from '../../../delv/Mutation'
 import moment from 'moment'
 import './ManagePromoCodes.css'
 const GET_DROPDOWN = `{
-    allActivityCatagories {
-      nodes {
-        nodeId
-        id
+  allCategories {
+    nodes {
+      nodeId
+      id
+      name
+    }
+  }
+  allActivities {
+    nodes {
+      id
+      nodeId
+      name
+      categoryByCategory {
         name
+        id
+        nodeId
       }
     }
-    allActivities {
-     nodes {
-       id
-       nodeId
-       name
-       activityCatagoryByType{
-         name
-         id
-         nodeId
-       }
-     }
-   }
+  }
 }`
 
 const GET_PROMO_CODES =  (archive) =>`{
-  allPromoCodes (condition:{${archive}}){
+  allPromoCodes (condition:{${archive}}) {
     nodes {
       id
       nodeId
@@ -44,7 +44,7 @@ const GET_PROMO_CODES =  (archive) =>`{
         firstName
         lastName
       }
-      activityCatagoryByCatagory {
+      categoryByCategory {
         nodeId
         id
         name
@@ -56,7 +56,7 @@ const GET_PROMO_CODES =  (archive) =>`{
       }
       forUser
       forActivity
-      forCatagory
+      forCategory
       percent
       archive
       disabled
@@ -78,7 +78,7 @@ const CREATE_PROMO_CODE = `mutation($promoCode:PromoCodeInput!){
       userByUserId {
         nodeId
       }
-      activityCatagoryByCatagory {
+      categoryByCategory {
         nodeId
       }
       activityByActivity {
@@ -86,7 +86,7 @@ const CREATE_PROMO_CODE = `mutation($promoCode:PromoCodeInput!){
       }
       forUser
       forActivity
-      forCatagory
+      forCategory
       percent
       archive
       disabled
@@ -103,7 +103,7 @@ const UPDATE_PROMO_CODE = `mutation($archive:Boolean, $disable:Boolean, $id:UUID
       userByUserId {
         nodeId
       }
-      activityCatagoryByCatagory {
+      categoryByCategory {
         nodeId
       }
       activityByActivity {
@@ -117,7 +117,7 @@ class CreatePromoCode extends Component{
     constructor(props){
         super(props)
         this.state={
-            forCatagory:false,
+            forCategory:false,
             forActivity:false,
             forUser:false,
             percent:false,
@@ -126,7 +126,7 @@ class CreatePromoCode extends Component{
             isRandom: false,
             code:"NOCODE",
             event:undefined,
-            catagory:undefined,
+            category:undefined,
             userId:'',
             validStart:moment().subtract(1, 'days'),
             validEnd:moment().add(1, 'months')
@@ -139,7 +139,7 @@ class CreatePromoCode extends Component{
     }
     resetState = () =>{
         this.setState({
-            forCatagory:false,
+            forCategory:false,
             forActivity:false,
             forUser:false,
             percent:false,
@@ -148,7 +148,7 @@ class CreatePromoCode extends Component{
             isRandom: false,
             code:"NOCODE",
             activity:undefined,
-            catagory:undefined,
+            category:undefined,
             userId:'',
             validStart:moment().subtract(1, 'days'),
             validEnd:moment().add(1, 'months')
@@ -172,11 +172,11 @@ class CreatePromoCode extends Component{
     }
 
     hasRequiredValues = () => {
-        let forCatagory = !this.state.forCatagory || this.state.catagory
+        let forCategory = !this.state.forCategory || this.state.category
         let forActivity = !this.state.forActivity || this.state.activity
         let forUser = !this.state.forUser || this.state.userId != ''
         let values = this.state.code != 'NOCODE' && this.state.uses > 0 && this.state.effect > 0
-        return forCatagory && forActivity && forUser && values
+        return forCategory && forActivity && forUser && values
     }
 
     handleSubmit = (event) => {
@@ -186,7 +186,7 @@ class CreatePromoCode extends Component{
                 isRandom,
                 error,
                 userId,
-                catagory,
+                category,
                 activity,
                 ...promoCode
             } = this.state
@@ -196,7 +196,7 @@ class CreatePromoCode extends Component{
             if(this.state.forActivity){
                 promoCode = {...promoCode, activity}
             }
-            if(this.state.forCatagory){
+            if(this.state.forCategory){
                 promoCode= {...promoCode, activity}
             }
             return {promoCode}
@@ -206,11 +206,11 @@ class CreatePromoCode extends Component{
 
     }
     render = () => {
-        const types = this.props.allActivityCatagories.nodes.map((element) =>  {return{name: element.name, value: element.id}})
+        const types = this.props.allCategories.nodes.map((element) =>  {return{name: element.name, value: element.id}})
         return <form className='styled-container column' onSubmit={this.mutation.onSubmit}>
             <div className='section container center-x'>
                 <div className='promo-form-column'>
-                    <div>For catagory <input checked={this.state.forCatagory} name='forCatagory' onChange={this.handleChange} type='checkbox'/>{this.state.forCatagory?<DropDown options={types} name="catagory" value={this.state.catagory} onChange={this.handleChange}/>:''}</div>
+                    <div>For category <input checked={this.state.forCategory} name='forCategory' onChange={this.handleChange} type='checkbox'/>{this.state.forCategory?<DropDown options={types} name="category" value={this.state.category} onChange={this.handleChange}/>:''}</div>
                     <div>For activity <input checked={this.state.forActivity} name='forActivity' onChange={this.handleChange} type='checkbox'/>{this.state.forActivity?<EventDropDownInner name='activity' value={this.state.activity} allActivities={this.props.allActivities} onChange={this.handleChange}/>:''}</div>
                     <div>For user <input checked={this.state.forUser} name='forUser' onChange={this.handleChange} type='checkbox'/>{this.state.forUser?<React.Fragment>id: <input value={this.state.userId} name='userId' onChange={this.handleChange}/></React.Fragment>:''}</div>
                     <div>Percent Reduction <input checked={this.state.percent} name='percent' onChange={this.handleChange} type='checkbox'/></div>
@@ -262,8 +262,8 @@ class DisablePromoCode extends Component{
         return false;
     }
     getFor = () => {
-        if(this.props.forCatagory){
-            return this.props.activityCatagoryByCatagory.name
+        if(this.props.forCategory){
+            return this.props.categoryByCategory.name
         }else if(this.props.forActivity){
             return this.props.activityByActivity.name
         }else if(this.props.forUser){

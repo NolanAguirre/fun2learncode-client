@@ -13,39 +13,33 @@ import Payment from '../payment/Payment'
 import axios from 'axios'
 
 
-const GET_DATE_GROUP_INFO_BY_ID = (id) => {
-    return `{
-  allDateGroups(condition:{id: "${id}"}) {
+const GET_EVENT_INFO_BY_ID = (id) => `{
+  allEvents(condition: {id: "${id}"}) {
     nodes {
       nodeId
       id
+      archive
       name
       openRegistration
       closeRegistration
-      addOnJoinsByDateGroup{
-        nodes{
-          nodeId
-          id
-          addOnByAddOn{
-            name
-            nodeId
-            id
-            description
-            price
-          }
-        }
-      }
-      addressByAddress {
-        alias
-        nodeId
-        id
-      }
+      seatsLeft
+      capacity
       price
-      datesJoinsByDateGroup {
+      addOnJoinsByEvent {
         nodes {
           nodeId
           id
-          dateInterval
+          addOnByAddOn {
+            name
+            nodeId
+            id
+          }
+        }
+      }
+      dateJoinsByEvent {
+        nodes {
+          nodeId
+          id
           dateIntervalByDateInterval {
             id
             nodeId
@@ -54,31 +48,30 @@ const GET_DATE_GROUP_INFO_BY_ID = (id) => {
           }
         }
       }
-      eventByEvent {
-        openRegistration
-        closeRegistration
+      addressByAddress {
+        alias
         nodeId
         id
-        activityByEventType {
-          name
-          id
-          nodeId
-          activityPrerequisitesByActivity{
-            nodes{
+      }
+      activityByActivity {
+        id
+        nodeId
+        name
+        activityPrerequisitesByActivity {
+          nodes {
+            nodeId
+            id
+            activityByPrerequisite {
               nodeId
               id
-              activityByPrerequisite{
-                nodeId
-                id
-                name
-              }
+              name
             }
           }
         }
       }
     }
   }
-}`}
+}`
 
 class RegistrationInner extends Component{
     constructor(props){
@@ -92,19 +85,19 @@ class RegistrationInner extends Component{
 
     checkPrerequisites = (student) => {
         let query = `{
-  checkPrerequisites(arg0: "${this.props.dateGroupId}", arg1: "${student.id}")
-  checkRegistration(arg0: "${this.props.dateGroupId}", arg1: "${student.id}")
-  checkTime(arg0: "${this.props.dateGroupId}", arg1: "${student.id}")
+  checkPrerequisite(arg0: "${this.props.eventId}", arg1: "${student.id}")
+  checkRegistration(arg0: "${this.props.eventId}", arg1: "${student.id}")
+  checkTime(arg0: "${this.props.eventId}", arg1: "${student.id}")
 }`
         return Delv.post(query).then((res)=>{
-            if(!res.data.data.checkPrerequisites){
+            if(!res.data.data.checkPrerequisite){
                 this.setState({error:`${student.firstName} ${student.lastName} does not meet the prerequisites.`})
-            }else if(res.data.data.checkRegistration){
+            }else if(!res.data.data.checkRegistration){
                 this.setState({error:`${student.firstName} ${student.lastName} is already registered for this class.`})
-            }else if(res.data.data.checkTime){
+            }else if(!res.data.data.checkTime){
                 this.setState({error:`${student.firstName} ${student.lastName} already has classes planned for this time.`})
             }
-            return res.data.data.checkPrerequisites && !res.data.data.checkRegistration && !res.data.data.checkTime;
+            return res.data.data.checkPrerequisite && res.data.data.checkRegistration && res.data.data.checkTime;
         }).catch((err)=>{console.log(err)});
     }
 
@@ -124,63 +117,59 @@ class RegistrationInner extends Component{
         return {
             students: this.state.students.map(student=>student.id),
             addons:this.state.addons.map(addon=>addon.id),
-            dateGroup: this.props.dateGroupId,
+            event: this.props.eventId,
             user:this.props.getUserData.id
         }
     }
     render = () =>{
+        const info = this.getSelections();
         return <div className='registration-container'>
             <h2>Registration</h2>
             <div className='styled-container'>
                 <div className='section'>
-                    <FullEvent dateGroup={this.props.dateGroup}
+                    <FullEvent event={this.props.event}
                                 activity={this.props.activity}
                                 address={this.props.address}
                                 prerequisites={this.props.prerequisites}
                                 dates={this.props.dates}/>
                 </div>
                 <div className='section'>
-                   <PaymentOverview dateGroup={{price: this.props.dateGroup.price,id: this.props.dateGroup.id,name: this.props.activity.name}} addons={this.state.addons} students={this.state.students}/>
+                   <PaymentOverview event={{price: this.props.event.price,id: this.props.event.id,name: this.props.activity.name}} addons={this.state.addons} students={this.state.students}/>
                </div>
             </div>
             <div className='error'>{this.state.error}</div>
             <StudentSelect className='styled-container' multiSelect createStudent isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} userId={this.props.getUserData.id}/>
             <AddonSelect classNam='styled-container' multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
-            <Payment getInfo={this.getSelections}/>
+            <Payment info={info}/>
         </div>
     }
 }
 
 function RegistrationInbetween(props){
     function formatResult(queryResult){
-        const dateGroup = queryResult.allDateGroups.nodes[0]
-        const addons =  dateGroup.addOnJoinsByDateGroup.nodes.map(element=>element.addOnByAddOn)
-        const event = dateGroup.eventByEvent;
-        const activity = event.activityByEventType;
-        const dates = dateGroup.datesJoinsByDateGroup;
-        const address = dateGroup.addressByAddress;
+        const event = queryResult.allEvents.nodes[0]
+        const addons =  event.addOnJoinsByEvent.nodes.map(element=>element.addOnByAddOn)
+        const activity = event.activityByActivity;
+        const dates = event.dateJoinsByEvent;
+        const address = event.addressByAddress;
         const prerequisites = activity.activityPrerequisitesByActivity.nodes.map((prereq) => {return prereq.activityByPrerequisite})
         return {
-            dateGroup,
-            addons,
             event,
+            addons,
             activity,
             dates,
             address,
             prerequisites
         }
     }
-    return <ReactQuery formatResult={formatResult} query={GET_DATE_GROUP_INFO_BY_ID(props.match.params.id)}>
-        <RegistrationInner dateGroupId={props.match.params.id} getUserData={props.getUserData}/>
+    return <ReactQuery formatResult={formatResult} query={GET_EVENT_INFO_BY_ID(props.match.params.id)}>
+        <RegistrationInner eventId={props.match.params.id} getUserData={props.getUserData}/>
     </ReactQuery>
 }
 
 
 function Registration(props){
     const login = <Login history={props.history} redirectUrl={props.location.pathname} />
-
-
-
     return <SecureRoute unauthorized={login} roles={["FTLC_USER"]}>
             <RegistrationInbetween {...props}/>
         </SecureRoute>

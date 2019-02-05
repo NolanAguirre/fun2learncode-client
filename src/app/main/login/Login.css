@@ -19,6 +19,7 @@
 .login-error-container{
     padding-top: 10px;
     height:18px;
+    display:flex;
 
 }
 .login-form{

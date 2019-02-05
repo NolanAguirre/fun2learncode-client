@@ -5,44 +5,37 @@ import {ReactQuery} from '../../../delv/delv-react'
 import moment from 'moment'
 import SadFace from '../../logos/sadface.svg'
 import {GridView} from '../common/Common'
+
 const GET_EVENTS_OF_TYPE = (id) => {
   return `{
-  allEvents(condition: {eventType: "${id}"}, filter: {openRegistration: {lessThanOrEqualTo: "${new Date().toISOString()}"}, closeRegistration: {greaterThanOrEqualTo: "${new Date().toISOString()}"}}) {
+  allEvents(condition: {activity: "${id}"}, filter: {openRegistration: {lessThanOrEqualTo: "${new Date().toISOString()}"}, closeRegistration: {greaterThanOrEqualTo: "${new Date().toISOString()}"}, seatsLeft: {greaterThan: 0}}) {
     nodes {
       id
       nodeId
+      activity
+      price
+      capacity
+      seatsLeft
+      name
       openRegistration
       closeRegistration
-      eventType
-      dateGroupsByEvent(filter: {openRegistration: {lessThanOrEqualTo: "${new Date().toISOString()}"}, closeRegistration: {greaterThanOrEqualTo: "${new Date().toISOString()}"}, seatsLeft:{greaterThan:0}}) {
+      addressByAddress {
+        nodeId
+        id
+        city
+        street
+        state
+        alias
+        url
+      }
+      dateJoinsByEvent {
         nodes {
-            addressByAddress {
-              nodeId
-              id
-              city
-              street
-              state
-              alias
-              url
-            }
-            price
-            capacity
-            seatsLeft
-          name
           nodeId
-          openRegistration
-          closeRegistration
-          id
-          datesJoinsByDateGroup {
-            nodes {
-              nodeId
-              dateIntervalByDateInterval {
-                nodeId
-                id
-                end
-                start
-              }
-            }
+          dateIntervalByDateInterval {
+            nodeId
+            id
+            end
+            start
           }
         }
       }
@@ -51,22 +44,16 @@ const GET_EVENTS_OF_TYPE = (id) => {
 }`}
 
 function EventsInner(props) { // TODO group this by address so i dont have to load multiple maps
-    let events = props.allEvents.nodes.map((event) => { // this creates event
-      return event.dateGroupsByEvent.nodes.map((dateGroups) => { // if the event has no dates, it is not displayed
-        let dates = dateGroups.datesJoinsByDateGroup;
-        if (dates.nodes.length === 0) {
-          return undefined
-        }
-        return <EventComponent
-          activityId={props.activityId}
-          location={dateGroups.addressByAddress}
-          seatsLeft={dateGroups.seatsLeft}
-          dates={dates}
-          id={dateGroups.id}
-          price={dateGroups.price}
-          key={dateGroups.id} />
-      })
-  })[0]
+    let events = props.allEvents.nodes.map((event) => { // if the event has no dates, it is not displayed
+      return <EventComponent
+        activityId={props.activityId}
+        location={event.addressByAddress}
+        seatsLeft={event.seatsLeft}
+        dates={event.dateJoinsByEvent}
+        id={event.id}
+        price={event.price}
+        key={event.id} />
+    })
     if(events.length === 0){
         return <div style={{background:'white'}}className='center-y section'>
             <img src={SadFace} title='Icon made by Freepik from www.flaticon.com' />

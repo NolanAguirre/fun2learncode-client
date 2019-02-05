@@ -65,6 +65,7 @@ class Delv {
                         cache.processIntoCache(res.data.data)
                     }
                 } catch(error) {
+                    console.log(cache.cache)
                     console.log(`Error occured trying to cach responce data: ${error.message}`)
                 }
                 this.queries.setPromise(query, variables, null);
@@ -72,10 +73,11 @@ class Delv {
                 return res;
             }
 
-        }).catch((error) => {
-            throw new Error(`Error occured while making query ${error.message}`);
-            return;
         })
+        //.catch((error) => {
+            //throw new Error(`Error occured while making query ${error.message}`);
+        //    return;
+        //})
         onFetch(promise);
         this.queries.setPromise(query, variables, promise)
     }

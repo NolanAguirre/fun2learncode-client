@@ -5,7 +5,7 @@ import Mutation from '../../../delv/Mutation'
 import { ReactQuery } from '../../../delv/delv-react'
 
 const GET_ACTIVITIES = `{
-  allActivityCatagories {
+  allCategories {
     nodes {
       nodeId
       name
@@ -71,13 +71,13 @@ class NewsLetterForm extends Component{
     }
 }
 function HomeInner(props){
-    return props.allActivityCatagories.nodes.map((element) => {
+    return props.allCategories.nodes.map((element) => {
       return <Section name={element.name} description={element.description} key={element.id} />
     })
 }
 function Home (props) {
   return <div className='home'>
-    <h2>Home</h2>
+    <div className='welcome'></div>
     <NewsLetterForm />
     <ReactQuery query={GET_ACTIVITIES}>
         <HomeInner />

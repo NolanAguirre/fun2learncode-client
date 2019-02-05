@@ -72,7 +72,7 @@ class Query {
         this.fetch = null
         this.resolve = null
     }
-    
+
     onCacheUpdate = (types) => {
         if (this.resolved) {
             let includesType = this.types.some(r => types.includes(r))

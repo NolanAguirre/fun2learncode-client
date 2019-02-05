@@ -22,7 +22,7 @@ const GET_ACTIVITIES = `{
      id
      nodeId
      name
-     activityCatagoryByType{
+    categoryByCategory{
        name
        id
        nodeId
@@ -53,7 +53,7 @@ function DropDown (props) {
 export { DropDown }
 
 function EventDropDownInner(props) {
-    const eventTypes = props.allActivities.nodes.map((element) => {return {name: element.name + " (" + element.activityCatagoryByType.name + ")",value: element.id}});
+    const eventTypes = props.allActivities.nodes.map((element) => {return {name: element.name + " (" + element.categoryByCategory.name + ")",value: element.id}});
     return <DropDown name={props.name} value={props.value} options={eventTypes} onChange={props.onChange}></DropDown>
 }
 export {EventDropDownInner}

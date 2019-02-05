@@ -16,17 +16,13 @@ const GET_INSTRUCTOR_LOGS = `{
           id
           start
       }
-      dateGroupByDateGroup{
+      eventByEvent{
         nodeId
         id
-        eventByEvent{
+        activityByActivity{
           nodeId
           id
-          activityByEventType{
-            nodeId
-            id
-            name
-          }
+          name
         }
       }
       studentByStudent{
@@ -46,7 +42,7 @@ const UPDATE_INSTRUCTOR_LOG = `mutation($eventLog:UpdateEventLogByIdInput!){
       id
       instructor
       comment
-      dateGroupByDateGroup{
+      eventByEvent{
         nodeId
         id
       }
@@ -66,10 +62,11 @@ class InstructorLogForm extends Component{
     constructor(props){
         super(props)
         this.state = {
-            dateGroup: props.log.dateGroupByDateGroup.id,
+            event: props.log.eventByEvent.id,
             dateInterval: this.props.log.dateIntervalByDateInterval.id,
             student:this.props.log.studentByStudent.id,
-            instructor: this.props.getUserData.id
+            instructor: this.props.getUserData.id,
+            comment:'no comment.'
         }
         this.mutation = new Mutation({
             mutation:UPDATE_INSTRUCTOR_LOG,
@@ -91,7 +88,7 @@ class InstructorLogForm extends Component{
 
     render = () => {
         const student = this.props.log.studentByStudent
-        const name = this.props.log.dateGroupByDateGroup.eventByEvent.activityByEventType.name
+        const name = this.props.log.eventByEvent.activityByActivity.name
         const start = this.props.log.dateIntervalByDateInterval.start
         return <div className="styled-container column section edge-margin">
             <form onSubmit={this.mutation.onSubmit}>
@@ -106,9 +103,14 @@ class InstructorLogForm extends Component{
 }
 
 function InstructorLogsInner(props){
+    const logs = props.allEventLogs.nodes
+    if(logs.length > 0){
         return <GridView className='section' fillerStyle={"styled-container section"} itemsPerRow={3}>
                 {props.allEventLogs.nodes.map((log)=>{return<InstructorLogForm getUserData={props.getUserData} key={log.nodeId} log={log} />})}
             </GridView>
+    }else{
+        return <div>You've written all the logs</div>
+    }
 }
 
 function Inbetween (props){

@@ -1,0 +1,6 @@
+.promo-form-column{
+    width:350px;
+}
+.promo-form-column > div{
+    min-height:25px;
+}

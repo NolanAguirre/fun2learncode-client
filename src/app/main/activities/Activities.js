@@ -5,24 +5,23 @@ import {ReactQuery} from '../../../delv/delv-react'
 import SadFace from '../../logos/sadface.svg'
 const GET_ACTIVITIES_IN_CATAGORY = (name) => {
     return `{
-   allActivityCatagories(condition: {name: "${name}", publicDisplay:true}) {
+  allCategories(condition: {name: "${name}"}) {
     nodes {
       nodeId
       id
       name
-      publicDisplay
-      activitiesByType {
+      activitiesByCategory {
         nodes {
-            nodeId
-            id
-            name
-            description
-            url
-          activityPrerequisitesByActivity{
-            nodes{
+          nodeId
+          id
+          name
+          description
+          url
+          activityPrerequisitesByActivity {
+            nodes {
               nodeId
               id
-        	  activityByPrerequisite{
+              activityByPrerequisite {
                 nodeId
                 id
                 name
@@ -33,10 +32,11 @@ const GET_ACTIVITIES_IN_CATAGORY = (name) => {
       }
     }
   }
-}`}
+}
+`}
 
 function ActivitiesInner(props) {
-    const activities = props.allActivityCatagories.nodes[0].activitiesByType.nodes;
+    const activities = props.allCategories.nodes[0].activitiesByCategory.nodes;
     if (activities.length == 0) {
         return <div style={{background:'white'}}className='center-y section fit-parent'>
             <img src={SadFace} title='Icon made by Freepik from www.flaticon.com' />

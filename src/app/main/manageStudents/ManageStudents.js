@@ -16,18 +16,15 @@ const GET_DATES_WITH_STUDENT = (studentId) =>{
       eventRegistrationsByStudent {
         nodes {
           nodeId
-          dateGroupByDateGroup {
+          eventByEvent {
             nodeId
-            eventByEvent {
+            id
+            activityByActivity {
               nodeId
+              name
               id
-              activityByEventType {
-                nodeId
-                name
-                id
-              }
             }
-            datesJoinsByDateGroup {
+            dateJoinsByEvent {
               nodes {
                 nodeId
                 dateIntervalByDateInterval {
@@ -35,7 +32,7 @@ const GET_DATES_WITH_STUDENT = (studentId) =>{
                   id
                   start
                   end
-                  eventLogsByDateInterval(condition: {student: "${studentId}"}, filter:{instructor:{notEqualTo:null}}) {
+                  eventLogsByDateInterval(condition: {student: "${studentId}"}, filter: {instructor: {notEqualTo: null}}) {
                     nodes {
                       student
                       nodeId
@@ -98,6 +95,7 @@ class EventMonthDate extends Component {
         return moment(moment.utc(timestamp)).local()
     }
     render = () => {
+
         return <div className='event-month-date-container'>
             <Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
                 <EventLogs logs={this.props.date.eventLogsByDateInterval.nodes} />
@@ -145,8 +143,8 @@ class EventMonths extends Component{
 
     filterToMonth = () => {
         const dates = this.props.allStudents.nodes[0].eventRegistrationsByStudent.nodes.map((registration)=>{
-            let activityName = registration.dateGroupByDateGroup.eventByEvent.activityByEventType.name
-            let dates = registration.dateGroupByDateGroup.datesJoinsByDateGroup.nodes.map((date)=>{
+            let activityName = registration.eventByEvent.activityByActivity.name
+            let dates = registration.eventByEvent.dateJoinsByEvent.nodes.map((date)=>{
                 return {...date.dateIntervalByDateInterval, activityName }
             })
             return dates;

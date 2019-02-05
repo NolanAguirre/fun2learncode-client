@@ -18,7 +18,7 @@ function FullEvent(props){
                     </tr>
                     <tr>
                         <td>Price:</td>
-                        <td>{props.dateGroup.price}$</td>
+                        <td>{props.event.price}$</td>
                     </tr>
                     <tr>
                         <td>{props.prerequisites.length > 0?'Prerequisites:':''}</td>

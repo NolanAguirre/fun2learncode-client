@@ -122,24 +122,21 @@ class AdminRefundFrom extends Component{
 }
 
 function Order(props){
-	const students = props.payment.snapshot.students.map((student)=>{
+	const students = props.payment.snapshot._students.map((student)=>{
 		return <div key={student.id}>
 			{student.first_name} {student.last_name}
 			<div className='margin-left-30'>
-			{props.payment.snapshot.addons.map(addon=><div key={addon.id}>{addon.name}</div>)}
+			{props.payment.snapshot._addons.map(addon=><div key={addon.id}>{addon.name}</div>)}
 			</div>
 		</div>
 	})
-	let refundRequest = props.payment.refundRequestsByPayment.nodes
-	if(refundRequest.length === 1){
-		refundRequest = refundRequest[0].status;
-	}
+	let refundRequest = props.payment.refundRequestsByPayment.nodes[0]
 	let requestForm;
 	if(props.adminForm && refundRequest){
 		//requestForm = <admin>
 	}else{
-		requestForm = <React.Fragment>{refundRequest?<span>Refund {refundRequest.toLowerCase()}.</span>:
-		<RefundForm total={props.payment.snapshot.payment.total/100} userId={props.payment.userId} paymentId={props.payment.id}/>}</React.Fragment>
+		requestForm = <React.Fragment>{refundRequest?<span>Refund {refundRequest.status.toLowerCase()}.</span>:
+		<RefundForm total={props.payment.snapshot.Total/100} userId={props.payment.userId} paymentId={props.payment.id}/>}</React.Fragment>
 	}
     return <div className='margin-left-30 container column'>
 		<div className='order-header'>
@@ -148,7 +145,7 @@ function Order(props){
 		</div>
 		<div className='container section'>
 			<div className='padding-10 section'>
-				<h4 className='no-margin'>{props.payment.snapshot.activity.name}</h4>
+				<h4 className='no-margin'>{props.payment.snapshot._event.name}</h4>
 				<div className='margin-left-30'>
 					{students}
 				</div>

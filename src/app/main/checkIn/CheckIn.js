@@ -7,52 +7,48 @@ import Logo from '../../logos/drawing.svg'
 import moment from 'moment'
 
 const GET_POSSIBLE_EVENTS = `{
-	allDateIntervals(filter:{start:{greaterThan:"${moment().subtract(10,'hours').toISOString()}", lessThan:"${moment().add(10,'hours').toISOString()}"}}){
-    nodes{
+  allDateIntervals(filter: {start: {greaterThan: "${moment().subtract(10,'hours').toISOString()}", lessThan: "${moment().add(10,'hours').toISOString()}"}}) {
+    nodes {
       start
       end
       id
       nodeId
-	  attendancesByDateInterval {
-	   nodes {
-		 nodeId
-		 id
-		 studentByStudent {
-		   nodeId
-		   id
-		   firstName
-		   lastName
-		 }
-	   }
-	 }
-  		datesJoinsByDateInterval{
-        nodes{
+      attendancesByDateInterval {
+        nodes {
           nodeId
           id
-          dateGroupByDateGroup{
+          studentByStudent {
             nodeId
             id
-            eventRegistrationsByDateGroup{
-              nodes{
+            firstName
+            lastName
+          }
+        }
+      }
+      dateJoinsByDateInterval {
+        nodes {
+          nodeId
+          id
+          eventByEvent {
+            nodeId
+            id
+            eventRegistrationsByEvent {
+              nodes {
                 nodeId
                 id
-                studentByStudent{
+                studentByStudent {
                   nodeId
                   id
                   firstName
                   lastName
                 }
-                dateGroupByDateGroup{
+                eventByEvent {
                   nodeId
                   id
-                  eventByEvent{
+                  activityByActivity {
                     nodeId
                     id
-                    activityByEventType{
-                      nodeId
-                      id
-                      name
-                    }
+                    name
                   }
                 }
               }
@@ -68,13 +64,13 @@ const genRandomId = () =>{
 	return '_' + Math.random().toString(36).substr(2, 9);
 }
 
-const TEMPLATE = (dateInterval, dateGroup, student) => {
-return `${genRandomId()}:createAttendance(input:{attendance:{dateInterval:"${dateInterval}",dateGroup:"${dateGroup}", student:"${student}",present:true}}){
+const TEMPLATE = (dateInterval, event, student) => {
+return `${genRandomId()}:createAttendance(input:{attendance:{dateInterval:"${dateInterval}",event:"${event}", student:"${student}",present:true}}){
     attendance{
       nodeId
     }
   }
-  ${genRandomId()}:createEventLog(input:{eventLog:{dateInterval:"${dateInterval}",dateGroup:"${dateGroup}", student:"${student}"}}){
+  ${genRandomId()}:createEventLog(input:{eventLog:{dateInterval:"${dateInterval}",event:"${event}", student:"${student}"}}){
 		eventLog{
     	nodeId
   	}
@@ -84,7 +80,7 @@ return `${genRandomId()}:createAttendance(input:{attendance:{dateInterval:"${dat
 function InlineEvent(props) {
     return<div className={props.className} onClick={()=>props.onClick(props.item)}>
         <h2 className="no-margin">{props.item.student.firstName} {props.item.student.lastName}</h2>
-        <span>Event: {props.item.dateGroup.eventByEvent.activityByEventType.name} {moment(props.item.dateInterval.start).format('h:mm a')}-{moment(props.item.dateInterval.end).format('h:mm a')}</span>
+        <span>Event: {props.item.event.activityByActivity.name} {moment(props.item.dateInterval.start).format('h:mm a')}-{moment(props.item.dateInterval.end).format('h:mm a')}</span>
     </div>
 }
 
@@ -109,7 +105,7 @@ class CheckInChoice extends Component{
     handleSubmit = (event) => {
         event.preventDefault()
 		if(this.selected && this.selected.length > 0){
-			let mutation = this.selected.map((element)=>{return TEMPLATE(element.dateInterval.id, element.dateGroup.id, element.student.id)})
+			let mutation = this.selected.map((element)=>{return TEMPLATE(element.dateInterval.id, element.event.id, element.student.id)})
 	        new Mutation({
 	            mutation:`mutation{${mutation}}`,
 	            onSubmit:()=>{return {}},
@@ -140,7 +136,7 @@ class CheckInChoice extends Component{
 							</Selectable>
 						</MultiSelect>
 					</div>
-					<div className='event-register-btn center-text' onClick={this.handleSubmit}>Finish</div>
+					<div className='event-register-btn center-text' onClick={this.handleSubmit}>Check in</div>
 				</form>
 			</div>
 		}
@@ -158,12 +154,12 @@ class CheckInInner extends Component{
 			const signedIn = dateInterval.attendancesByDateInterval.nodes.map((attendance)=>{
 				return attendance.studentByStudent.id
 			})
-            dateInterval.datesJoinsByDateInterval.nodes.forEach((datesJoin)=>{
-                datesJoin.dateGroupByDateGroup.eventRegistrationsByDateGroup.nodes.forEach((registration)=>{
+            dateInterval.dateJoinsByDateInterval.nodes.forEach((dateJoin)=>{
+                dateJoin.eventByEvent.eventRegistrationsByEvent.nodes.forEach((registration)=>{
 					const student = registration.studentByStudent
 					const temp = {
                         student,
-                        dateGroup:registration.dateGroupByDateGroup,
+                        event:registration.eventByEvent,
                         dateInterval:dateInterval,
                         id:`${dateInterval.id}${student.id}`
                     }

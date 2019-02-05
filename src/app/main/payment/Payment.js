@@ -113,12 +113,13 @@ class PaymentInformationEntry extends Component{
         const name = target.name
         this.setState({[name]: value, error:null})
     }
+
     handleSubmit = (event) => {
         if(!this.isProcessing){
             this.isProcessing = true
             if(this.state.cardholder != ''){
                 this.props.stripe.createToken({name: this.state.cardholder, address_line1:this.props.address, address_city:this.props.city, address_state:this.props.state, address_country:'US'})
-                    .then(({token, error}) => {
+                    .then(({token:{id}, error}) => {
                     if(error){
                         this.isProcessing = false;
                         this.setState({stripeError:error.message})
@@ -126,7 +127,7 @@ class PaymentInformationEntry extends Component{
                         if(this.state.stripeError){
                             this.setState({stripeError:null})
                         }
-                        this.props.callback(token)
+                        this.props.callback(id)
                     }
                 });
             }else{
@@ -188,8 +189,17 @@ class Payment extends Component {
 
     transition = (UI) => this.setState({UI})
 
-    onCardComplete = (token) => {
-        this.setState({UI:'loading'})
+    onCardComplete = (id) => {
+        this.transition('loading')
+        axios.post('http://localhost:3005/charge', {token:id, user:this.props.info.user}).then((res)=>{
+            if(res.data.error){
+                this.setState({UI:'error', error:res.data.error})
+            }else{
+                this.transition('complete')
+            }
+        }).catch((error)=>{
+            console.log(error)
+        })
     }
 
     onAddressComplete = ({response, city, state, address}) => {
@@ -212,7 +222,7 @@ class Payment extends Component {
                 <div className='event-register-btn center-text' onClick={()=>{this.transition('address')}}>Back</div>
             </div>
         }else if(this.state.UI === 'complete'){
-
+            child = <div>Transaction Complete</div>
         }else if(this.state.UI === 'card'){
             child = <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
                     <Elements>
@@ -220,7 +230,7 @@ class Payment extends Component {
                     </Elements>
                 </StripeProvider>
         }else if(this.state.UI === 'address'){
-            child = <AddressForm transition={this.transition} info={this.props.getInfo()} city={this.state.city} state={this.state.state} address={this.state.address} total={this.state.total} callback={this.onAddressComplete}/>
+            child = <AddressForm transition={this.transition} info={this.props.info} city={this.state.city} state={this.state.state} address={this.state.address} total={this.state.total} callback={this.onAddressComplete}/>
         }
         return <React.Fragment>
             <Popup className='payment-overview-popup' open={this.state.showPopup} closeOnEscape={!this.state.loading} closeOnDocumentClick={!this.state.loading} onClose={this.clearPopupState}>

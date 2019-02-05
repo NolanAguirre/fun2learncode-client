@@ -11,15 +11,15 @@ function PaymentOverviewRow(props){
 
 
 function PaymentOverview(props){
-    const {dateGroup, addons, students} = props
+    const {event, addons, students} = props
     let rows = [];
     let total = 0;
     let rowCount = 0;
     let adjustedPrice;
     students.forEach((student) => {
         rowCount++;
-        rows.push(<PaymentOverviewRow key={rowCount} type={'Event'} name={dateGroup.name} student={student.firstName + " " + student.lastName} price={dateGroup.price} />)
-        total+= dateGroup.price
+        rows.push(<PaymentOverviewRow key={rowCount} type={'Event'} name={event.name} student={student.firstName + " " + student.lastName} price={event.price} />)
+        total+= event.price
         addons.forEach((addon)=>{
             rowCount++;
             total+= addon.price
