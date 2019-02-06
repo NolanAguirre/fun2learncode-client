@@ -17,6 +17,15 @@ body {
     margin-bottom: 10px;
     border-bottom: 2px solid #4bc82e;
 }
+
+.filler-styled-container{
+    display:flex;
+    flex-wrap: wrap;
+    padding: 20px 40px;
+    margin-bottom: 10px;
+    border-bottom: 2px transparent;
+}
+
 .no-margin{
     margin:0;
 }
