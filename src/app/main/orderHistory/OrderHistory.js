@@ -175,9 +175,24 @@ function OrderHistoryInner(props){
 	}
 }
 
-function OrderHistory(props){
-    return <ReactQuery query={USER_DATA(props.userId)}>
-        <OrderHistoryInner {...props}/>
-    </ReactQuery>
+class OrderHistory extends Component{
+	constructor(props){
+		super(props);
+		this.state = {show:false}
+	}
+	showHistory = () => {
+		this.setState({show:true})
+	}
+	render = () => {
+		if(this.state.show){
+			return <ReactQuery query={USER_DATA(this.props.userId)}>
+				<OrderHistoryInner {...this.props}/>
+			</ReactQuery>
+		}
+		return <div className='show-order-history-btn-container'>
+			<div className='event-register-btn center-text' onClick={this.showHistory}>View order history</div>
+		</div>
+
+	}
 }
 export default OrderHistory

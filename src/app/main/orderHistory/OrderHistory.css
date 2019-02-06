@@ -3,6 +3,10 @@
     flex-wrap: wrap;
     justify-content: space-between;
 }
+.show-order-history-btn-container{
+    width:250px;
+    margin:0 auto;
+}
 .margin-left-30{
     margin-left: 30px;
 }
