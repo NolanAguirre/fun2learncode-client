@@ -50,11 +50,11 @@ class Delv {
         })
     }
 
-    queryHttp = ({query, variables, onFetch, onResolve, onError, customCache}, skipCache) => {
+    queryHttp = ({query, variables, onFetch, onResolve, onError, customCache}, skipCache, returnRes) => {
         this.queries.add(query, variables)
         let promise = this.post(this.queries.addTypename(query), variables).then((res) => {
+            this.queries.setPromise(query, variables, null);
             if(skipCache){
-                this.queries.setPromise(query, variables, null);
                 onResolve(res.data)
                 return res;
             }else{
@@ -65,11 +65,13 @@ class Delv {
                         cache.processIntoCache(res.data.data)
                     }
                 } catch(error) {
-                    console.log(cache.cache)
                     console.log(`Error occured trying to cach responce data: ${error.message}`)
                 }
-                this.queries.setPromise(query, variables, null);
-                onResolve(cache.loadQuery(query))
+                if(returnRes){
+                    onResolve(res.data)
+                }else{
+                    onResolve(cache.loadQuery(query))
+                }
                 return res;
             }
 
@@ -91,7 +93,7 @@ class Delv {
                 options.onResolve(cache.loadQuery(options.query))
                 break
             case 'network-only':
-                this.queryHttp(options) // query, variables, onFetch, onResolve, onError
+                this.queryHttp(options, false, true) // query, variables, onFetch, onResolve, onError
                 break
             case 'network-no-cache':
                 this.queryHttp(options, true)

@@ -81,6 +81,12 @@ class Cache {
                 match = match && new Date(filterValue).getTime() <= new Date(value).getTime();
             } else if (key === 'notEqualTo'){
                 match = match && value != filterValue
+            }else if(key === 'greaterThan'){
+                match = match && filterValue < value
+            }else if(key === 'lessThan'){
+                match = match && filterValue > value
+            }else{
+                console.log('cannot filter correctly')
             }
         }
         return match
