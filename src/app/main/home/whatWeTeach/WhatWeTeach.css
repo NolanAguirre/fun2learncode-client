@@ -44,3 +44,8 @@
     flex-direction: column;
     justify-content: space-between;
 }
+.topic-description{
+    max-width: 500px;
+    padding: 20px;
+    box-sizing: border-box;
+}
