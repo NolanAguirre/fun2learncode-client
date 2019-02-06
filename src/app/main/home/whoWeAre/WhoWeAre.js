@@ -3,7 +3,7 @@ import './WhoWeAre.css'
 
 function WhoWeAre(props){
     return <div className='who-we-are'>
-        <div className='main-contents'>
+        <div className='main-contents container column'>
             <h1 className='center-text'>Who we are</h1>
             <div className='who-we-are-container'>
                 <div className='who-we-are-section'>

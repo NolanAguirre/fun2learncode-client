@@ -28,7 +28,13 @@
     padding:10px;
     height:40px;
 }
-
+.close-nav{
+    margin: 25px 15px 10px 0px;
+}
+.close-nav > img{
+    height:18px;
+    float:right;
+}
 @media screen and (max-width: 800px) {
     .navbar{
         padding:0px;
@@ -47,22 +53,21 @@
         flex-direction: column;
         z-index: 1000;
         height:100vh;
-        background-color: white;
-        padding: 0 5px;
+        padding:0px 5px;
         left: -180px;
         top:0px;
+        background-color: #4bc82e;
     }
     .nav-item-container.open{
         transition: .7s;
         left:0px;
     }
     .nav-item-container.close{
-        transition: .7s;
+        transition: .2s;
         left:-180px;
     }
     .nav-bar-item{
         padding:15px 20px;
-        border-bottom: 2px solid green;
     }
     .nav-logo{
         width:80px;

@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import './NavBar.css'
 import {Link} from 'react-router-dom'
 import Logo from '../logos/drawing.svg'
+import xicon from '../logos/x-icon.svg'
 import SmallLogo from '../logos/small-logo.svg'
 import Menu from '../logos/menu.svg'
 import gql from 'graphql-tag'
@@ -135,19 +136,23 @@ class NavBarInner extends Component {
             return routeObj.test(this.props.getUserData)
         }).map((routeObj) => {
             return <Link key={routeObj.route} to={`/${routeObj.route}`}>
-                <div className='nav-bar-item'>{routeObj.name}</div>
+                <div onClick={this.hideMenu} className='nav-bar-item'>{routeObj.name}</div>
             </Link>
         })
     }
     showMenu = () => {
         const nav = document.getElementById('mobileNavbar')
-        nav.classList.remove('close')
-        nav.classList.add('open')
+        if(nav){
+            nav.classList.remove('close')
+            nav.classList.add('open')
+        }
     }
     hideMenu = () => {
         const nav = document.getElementById('mobileNavbar')
-        nav.classList.remove('open')
-        nav.classList.add('close')
+        if(nav){
+            nav.classList.remove('open')
+            nav.classList.add('close')
+        }
     }
     render = () => {
         const routes = this.getRoutes();
@@ -161,8 +166,8 @@ class NavBarInner extends Component {
         <div className='navbar-mobile'>
             <img onClick={this.showMenu} className='menu-logo'src={Menu} />
             <div id='mobileNavbar' className='nav-item-container'>
-                <div className='nav-bar-item'>
-                    <button onClick={this.hideMenu}>X</button>
+                <div className='close-nav'>
+                    <img onClick={this.hideMenu} src={xicon}/>
                 </div>
                 {routes}
             </div>

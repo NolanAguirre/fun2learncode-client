@@ -154,7 +154,6 @@ class EventPreview extends Component {
 
 
 function EventsPreviewInner (props) {
-    console.log(props)
   if (!props.allEvents) {
     return <div>is broken</div>
   }
