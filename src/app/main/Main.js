@@ -22,6 +22,7 @@ import Test from './test/Test'
 import ManagePromoCodes from './managePromoCodes/ManagePromoCodes'
 import ResetPassword from './resetPassword/ResetPassword'
 import RecoverPassword from './recoverPassword/RecoverPassword'
+import ManageAnnouncements from './manageAnnouncements/ManageAnnouncements'
 
 class Main extends Component {
   constructor (props) {
@@ -30,7 +31,6 @@ class Main extends Component {
   render () {
     return (
       <div className='main'>
-        <div className='main-contents'>
           <Switch>
             <Route exact path='/Home' component={Home} />
             <Route exact path='/Activity/:type' component={Activities} />
@@ -51,6 +51,7 @@ class Main extends Component {
             <Route exact path='/Admin/Manage Addons' component={ManageAddons} />
             <Route exact path='/Admin/Manage Users' component={ManageUsers} />
             <Route exact path='/Admin/Manage Promo Codes' component={ManagePromoCodes} />
+            <Route exact path='/Admin/Announcements' component={ManageAnnouncements} />
 
             <Route exact path='/test' component={Test} />
 
@@ -60,7 +61,6 @@ class Main extends Component {
 
             <Route exact path='/Logout' component={Logout} />
           </Switch>
-        </div>
       </div>
     )
   }

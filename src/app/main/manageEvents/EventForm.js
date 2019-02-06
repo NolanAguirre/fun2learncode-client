@@ -177,7 +177,7 @@ class AddonJoinForm extends Component {
         this.mutation = new Mutation({mutation: CREATE_ADDON, onSubmit: this.handleSubmit})
     }
 
-    handleInputChange = (event) => {
+    handleChange = (event) => {
         const target = event.target;
         const value = target.type === 'checkbox'
             ? target.checked
@@ -200,9 +200,7 @@ class AddonJoinForm extends Component {
                 dateGroup: this.props.dateGroup
             }
             this.setState({edit: false, addon: undefined});
-            return {addon: {
-                    addOnJoin
-                }}
+            return {addon: {addOnJoin}}
         }
         this.setState({edit: false, addon: undefined});
         return false;
@@ -212,7 +210,7 @@ class AddonJoinForm extends Component {
         if (this.state.edit) { // this can use caching
             return <div>
                 <form onSubmit={this.mutation.onSubmit}>
-                    <DropDown options={this.props.addons} name="addon" value={this.state.addon} onChange={this.handleInputChange}/>
+                    <DropDown options={this.props.addons} name="addon" value={this.state.addon} onChange={this.handleChange}/>
                     <button type="submit">Confirm</button>
                 </form>
             </div>

@@ -12,6 +12,20 @@
 .grid-filler{
     flex:1;
 }
+.grid-item-container{
+    padding: 40px;
+    background-color: white;
+    flex:1;
+    margin:10px;
+    display:flex;
+    flex-direction: column;
+}
+.grid-item-container:first-child{
+    margin-left: 0 !important;
+}
+.grid-item-container:last-child{
+    margin-right: 0 !important;
+}
 @media screen and (max-width: 450px) {
     .maps-container{
         display: none;

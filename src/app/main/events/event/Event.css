@@ -6,13 +6,13 @@
 .event-register-btn{
     padding: 20px;
     font-size: 20px;
-    background-color: #41a62a;
+    background-color: #4bc82e;
     color: white;
     transition-duration: .1s;
 }
 
 .event-register-btn:hover{
-    background-color: #348e20;
+    background-color: #41a62a;
 }
 
 .event-register-price{

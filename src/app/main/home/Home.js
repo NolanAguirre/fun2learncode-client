@@ -1,8 +1,13 @@
 import React, {Component} from 'react'
 import './Home.css'
 import Section from './section/Section'
-import Mutation from '../../../delv/Mutation'
 import { ReactQuery } from '../../../delv/delv-react'
+import {GridView} from '../common/Common'
+import spline from '../../logos/spline.svg'
+import WhatWeTeach from './whatWeTeach/WhatWeTeach'
+import Announcement from './announcement/Announcement'
+import NewsLetter from './newsLetter/NewsLetter'
+import WhoWeAre from './whoWeAre/WhoWeAre'
 
 const GET_ACTIVITIES = `{
   allCategories {
@@ -15,73 +20,48 @@ const GET_ACTIVITIES = `{
   }
 }`
 
-const JOIN_NEWS_LETTER = `mutation($email:String!){
-  makeNewsLetter(input:{arg0:$email}) {
-    __typename
-  }
-}`
-
-class NewsLetterForm extends Component{
-    constructor(props){
-        super(props);
-        this.state = {email:''}
-        this.mutation = new Mutation({
-            mutation: JOIN_NEWS_LETTER,
-            networkPolicy:'network-no-cache',
-            onSubmit:this.handleSubmit,
-            onResolve:this.handleResolve
-        })
-    }
-    handleChange = (event) => {
-        const target = event.target
-        const value = target.value
-        const name = target.name
-        this.setState({[name]: value, error:null})
-    }
-
-    handleSubmit = (event) => {
-        event.preventDefault();
-        if(this.state.email.match('^.+@.+\..+$')){
-            return {email:this.state.email}
-        }
-        this.setState({error:'No valid email provided.'})
-        return false;
-    }
-    handleResolve = (data) => {
-        if(data.errors){
-            this.setState({complete:2})
-        }else{
-            this.setState({complete:3})
-        }
-    }
-    render = () => {
-        if(this.state.complete){
-            if(this.state.complete === 2){
-                return <div>It appears you're already a memeber of our mailing list.</div>
-            }else if(this.state.complete === 3){
-                return <div>Thank you for joining our mailing list.</div>
-            }
-        }else{
-            return<form onSubmit={this.mutation.onSubmit} className='conatiner'>
-                <input className='styled-input' name='email' onChange={this.handleChange}/>
-                <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Join</div>
-                <button className='hacky-submit-button' type='submit'/>
-            </form>
-        }
-    }
-}
 function HomeInner(props){
-    return props.allCategories.nodes.map((element) => {
+    const items = props.allCategories.nodes.map((element) => {
       return <Section name={element.name} description={element.description} key={element.id} />
     })
+    return<GridView className='container column' itemsPerRow={2}>
+        {items}
+    </GridView>
 }
+
+
 function Home (props) {
   return <div className='home'>
-    <div className='welcome'></div>
-    <NewsLetterForm />
-    <ReactQuery query={GET_ACTIVITIES}>
-        <HomeInner />
-    </ReactQuery>
+    <div className='welcome'>
+        <div className='center-y section container'>
+            <div className='center-x'>
+                <h1 className='welcome-text'>Welcome to Fun 2 Learn Code</h1>
+            </div>
+        </div>
+    </div>
+    <WhoWeAre />
+    <div className='spline flipped-spline-container'>
+        <img className='flipped-spline' src={spline}/>
+    </div>
+    <WhatWeTeach />
+    <div className='spline'>
+        <img  src={spline}/>
+    </div>
+    <div className='class-structure main-contents'>
+        <h1 className='center-text'>Class Structure</h1>
+        <ReactQuery query={GET_ACTIVITIES}>
+            <HomeInner />
+        </ReactQuery>
+    </div>
+    <div className='spline flipped-spline-container'>
+        <img className='flipped-spline' src={spline}/>
+    </div>
+    <div className='gap-cover'></div>
+    <div className='spline'>
+        <img  src={spline}/>
+    </div>
+    <Announcement />
+    <NewsLetter />
   </div>
 }
 

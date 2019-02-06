@@ -110,7 +110,7 @@ class ManageAddonForm  extends Component{
     }
     render = () => {
         if(this.state.edit){
-            return <div className="manage-address-form-container">
+            return <div className="grid-item-container">
                 <h2 className="manage-address-form-header">{this.props.name}</h2>
                 <form onSubmit={this.mutation.onSubmit}>
                     <table>
@@ -130,7 +130,7 @@ class ManageAddonForm  extends Component{
                 </form>
             </div>
         }
-        return <div className="manage-address-form-container">
+        return <div className="grid-item-container">
             <h2 className="manage-address-form-header">{this.props.name}</h2>
             <table>
                 <tbody>
@@ -152,11 +152,11 @@ class ManageAddonForm  extends Component{
 
 function ManageAddonsInner(props) {
     const addons = props.allAddOns.nodes.map((addon) =><ManageAddonForm mutation={UPDATE_ADDON} key={addon.id} price={addon.price} id={addon.id} name={addon.name} description={addon.description} />)
-    return <div className="manage-addresses-container">
+    return <div className="main-contents container column">
         <div className="manage-addresses-header">
             <ManageAddonForm mutation={CREATE_ADDON} name={"New Addon"} />
         </div>
-        <GridView className="manage-addresses-body" fillerStyle={'manage-address-form-container'} itemsPerRow={3}>{addons}</GridView>
+        <GridView className="manage-addresses-body" fillerStyle={'grid-item-container'} itemsPerRow={3}>{addons}</GridView>
     </div>
 }
 

@@ -1,12 +1,9 @@
 .manage-events-container{
     display:flex;
-    flex:1;
     background-color: white;
-    margin:10px 0;
     padding: 30px;
     align-items: stretch;
     box-sizing: border-box;
-    max-width: inherit;
 }
 
 .manage-events-event-form{

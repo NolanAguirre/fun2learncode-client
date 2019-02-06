@@ -25,12 +25,6 @@ const routeNames = [
             return !user
         }
     }, {
-        name: 'About Us',
-        route: 'About Us',
-        test:(user) => {
-            return !user
-        }
-    }, {
         name: 'Manage Students',
         route: 'User/Manage Students',
         test:(user) => {
@@ -73,8 +67,8 @@ const routeNames = [
             return !user
         }
     },{
-        name: 'Archive',
-        route: 'Admin/Archive',
+        name: 'Announcements',
+        route: 'Admin/Announcements',
         test:(user) => {
             return user && admins.includes(user.role)
         }

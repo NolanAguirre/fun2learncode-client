@@ -317,7 +317,7 @@ class ManageActivitiesForm extends Component{
                 </div>
             </React.Fragment>
             components.buttonComponent = <button type="submit" className="activity-view-events-btn">Finish</button>
-            components.descriptionComponent = <div id={this.props.id || 'new'} onInput={this.handleDescriptionChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
+            components.descriptionComponent = <div id={this.props.id || 'new'} onInput={this.handleDescriptionChange} className="styled-textarea" suppressContentEditableWarning={true} contentEditable></div>
         }else{
             components.buttonComponent = <button type="button" onClick={this.toggleEdit} className="activity-view-events-btn">Edit Details</button>
             components.descriptionComponent = <div id={this.props.id || 'new'}>{this.props.description}</div>
@@ -371,7 +371,7 @@ function InBetween(props){
 
 function ManageActivities(props) {
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
-        <div className="manage-activities-container">
+        <div className="main-contents container column">
             <ReactQuery query={GET_DROPDOWN}>
                 <InBetween />
             </ReactQuery>

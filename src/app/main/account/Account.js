@@ -58,20 +58,27 @@ class UpdateEmail extends Component{
     }
 
     validEmail = () => {
-        return this.state.email.match('^.+@.+\..+$');
+        return this.state.email.match('^.+@.+\..+$')
     }
 
     handleSubmit = (event) => {
         event.preventDefault();
+        if(this.state.error){
+            return false
+        }
         if(!this.validEmail()){
             this.setState({error:'Email is not valid.'})
-            return false;
+            return false
+        }
+        if(this.state.email.toUpperCase() === this.props.email.toUpperCase()){
+            this.setState({error:'Email is already set to provided email.'})
+            return false
         }
         return {email:this.state.email}
     }
     handleResolve = (data) => {
         if(data.errors){
-           this.setState({error:"Email change failed for unknown reason."})
+           this.setState({error:"Email is not valid, or is taken already."})
         }else{
            this.setState({complete:true})
         }
@@ -104,7 +111,7 @@ class AccountInner extends Component{
 
     render = () => {
         const user = this.props.getUserData;
-        return <div className="container column section">
+        return <div className="container column main-contents">
             <h2>My Account</h2>
             <div className='styled-container column'>
                 <h3>Account Information</h3>
@@ -122,7 +129,7 @@ class AccountInner extends Component{
                                     <BasicPopup className="login-widget">
                                         <div className='space-around'>
                                             <h2 className='center-text no-margin'>Change email</h2>
-                                            <UpdateEmail mutation={UPDATE_EMAIl(user.id)}/>
+                                            <UpdateEmail email={user.email} mutation={UPDATE_EMAIl(user.id)}/>
                                         </div>
                                         <div style={{color:'blue'}}>Change email</div>
                                     </BasicPopup>

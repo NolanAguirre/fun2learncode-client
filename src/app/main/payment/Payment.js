@@ -58,12 +58,12 @@ class AddressForm extends Component{
         }else if(this.state.state === ''){
             this.setState({stateError:'State is required.'})
         }else{
+            this.props.setLoading();
             axios.post('http://localhost:3005/store', {promoCode:this.state.promoCode, ...this.props.info}).then((data)=>{
                 this.props.callback({response:data, address:this.state.address, city:this.state.city, state:this.state.state});
             }).catch((error)=>{
                 console.log(error)
             })
-            this.props.transition('loading')
         }
     }
     render = () => {
@@ -104,7 +104,7 @@ class AddressForm extends Component{
 class PaymentInformationEntry extends Component{
     constructor(props){
         super(props)
-        this.state = {cardholder:''};
+        this.state = {cardholder:'', hidden:false};
         this.isProcessing = false;
     }
     handleChange = (event) => {
@@ -116,8 +116,10 @@ class PaymentInformationEntry extends Component{
 
     handleSubmit = (event) => {
         if(!this.isProcessing){
-            this.isProcessing = true
+
             if(this.state.cardholder != ''){
+                this.isProcessing = true
+                this.props.setLoading()
                 this.props.stripe.createToken({name: this.state.cardholder, address_line1:this.props.address, address_city:this.props.city, address_state:this.props.state, address_country:'US'})
                     .then(({token:{id}, error}) => {
                     if(error){
@@ -138,7 +140,7 @@ class PaymentInformationEntry extends Component{
 
     render = () => {
         return <form  className='container section' onSubmit={this.handleSubmit}>
-              <div className='payment-container'>
+              <div className='payment-container' style={this.state.hidden?{visibility:'hidden'}:{}}>
                   <h1 className='center-text no-margin'>Total: {this.props.total}$</h1>
                   <div className='error'>{this.state.stripeError}</div>
                   <div className='container'>
@@ -179,6 +181,7 @@ class Payment extends Component {
         super(props);
         this.state = {
             showPopup: false,
+            loading:false,
             UI:'address'
         }
     }
@@ -187,15 +190,17 @@ class Payment extends Component {
 
     clearPopupState = () => this.setState({showPopup: false})
 
-    transition = (UI) => this.setState({UI})
+    setLoading = () => {
+        this.setState({loading:true})
+    }
 
     onCardComplete = (id) => {
-        this.transition('loading')
         axios.post('http://localhost:3005/charge', {token:id, user:this.props.info.user}).then((res)=>{
             if(res.data.error){
-                this.setState({UI:'error', error:res.data.error})
+                this.setState({UI:'error', error:res.data.error, loading:false})
             }else{
-                this.transition('complete')
+                this.setState({UI:'complete', loading:false, preventClose:true})
+
             }
         }).catch((error)=>{
             console.log(error)
@@ -204,38 +209,37 @@ class Payment extends Component {
 
     onAddressComplete = ({response, city, state, address}) => {
         if(response.data.error){
-            this.setState({UI:'error', error:response.data.error, city, state, address})
+            this.setState({UI:'error', error:response.data.error, city, state, address, loading:false})
         }else{
-            this.setState({UI:'card', total:response.data.total, city, state, address})
+            this.setState({UI:'card', total:response.data.total, city, state, address, loading:false})
         }
     }
 
     render = () => {
         let child;
-        if(this.state.UI === 'loading'){
-            child = <div className='center-y section'><img className='loading-icon center-x' src={loading}/></div>
-        }else if(this.state.UI === 'error'){
+        if(this.state.UI === 'error'){
             child = <div className='section container column'>
                     <div className='section center-y'>
                         <div className='error center-text'>{this.state.error}</div>
                 </div>
-                <div className='event-register-btn center-text' onClick={()=>{this.transition('address')}}>Back</div>
+                <div className='event-register-btn center-text' onClick={()=>{this.setState({UI:'address', loading:false})}}>Back</div>
             </div>
         }else if(this.state.UI === 'complete'){
             child = <div>Transaction Complete</div>
         }else if(this.state.UI === 'card'){
             child = <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
                     <Elements>
-                        <PaymentInfoEntry callback={this.onCardComplete} city={this.state.city} state={this.state.state} address={this.state.address} total={this.state.total}/>
+                        <PaymentInfoEntry callback={this.onCardComplete} setLoading={this.setLoading} city={this.state.city} state={this.state.state} address={this.state.address} total={this.state.total}/>
                     </Elements>
                 </StripeProvider>
         }else if(this.state.UI === 'address'){
-            child = <AddressForm transition={this.transition} info={this.props.info} city={this.state.city} state={this.state.state} address={this.state.address} total={this.state.total} callback={this.onAddressComplete}/>
+            child = <AddressForm setLoading={this.setLoading} info={this.props.info} city={this.state.city} state={this.state.state} address={this.state.address} total={this.state.total} callback={this.onAddressComplete}/>
         }
         return <React.Fragment>
-            <Popup className='payment-overview-popup' open={this.state.showPopup} closeOnEscape={!this.state.loading} closeOnDocumentClick={!this.state.loading} onClose={this.clearPopupState}>
-                <div className='login-widget'>
+            <Popup className='payment-overview-popup' open={this.state.showPopup} closeOnEscape={!(this.state.loading || this.state.preventClose)} closeOnDocumentClick={!(this.state.loading || this.state.preventClose)} onClose={this.clearPopupState}>
+                <div className='login-widget' style={{position:'relative'}}>
                     {child}
+                    <div className={this.state.loading?'payment-loading':'hidden-payment-loading'}><img className='loading-icon center-x' src={loading}/></div>
                 </div>
             </Popup>
             <div className="event-register-btn" onClick={this.showPopup}> Continue to Payment</div>

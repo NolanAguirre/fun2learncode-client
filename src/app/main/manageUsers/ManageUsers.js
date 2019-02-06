@@ -167,7 +167,7 @@ class ManageUsersInner extends Component {
             }
         })
         const showAlert = user.refundRequestsByUserId.nodes.length > 0
-        return <BasicPopup key={user.id} buttonClassName="manage-address-form-container">
+        return <BasicPopup key={user.id} buttonClassName="grid-item-container">
             <ManageUserForm
                 id={user.id}
                 email={user.email}
@@ -185,8 +185,8 @@ class ManageUsersInner extends Component {
                 </React.Fragment>
         </BasicPopup>
             })
-    return <div className="manage-addresses-container">
-        <GridView className="manage-addresses-body" fillerStyle={'manage-address-form-container'} itemsPerRow={5}>{users}</GridView>
+    return <div className="main-contents container column">
+        <GridView className="container column" fillerStyle={'grid-item-container'} itemsPerRow={5}>{users}</GridView>
     </div>
   }
 }

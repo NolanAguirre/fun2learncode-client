@@ -236,7 +236,7 @@ class ManageAddressForm extends Component{
     }
 
     render = () => {
-        return <div className="manage-address-form-container">
+        return <div className="grid-item-container">
             <h2 className="manage-address-form-header">{this.props.alias}</h2>
             {this.props.id?<UpdateAddressForm {...this.state} handleChange={this.handleChange} onSubmit={this.mutation.onSubmit} toggleEdit={this.toggleEdit}/>:
             <CreateAddressFrom {...this.state} handleChange={this.handleChange} onSubmit={this.mutation.onSubmit} toggleEdit={this.toggleEdit}/>}
@@ -246,14 +246,14 @@ class ManageAddressForm extends Component{
 
 function ManageAddressesInner(props){
     const addresses = props.allAddresses.nodes.map((address) => <ManageAddressForm mutation={UPDATE_ADDRESS} key={address.id} {...address} />)
-    return <GridView className="manage-addresses-body" fillerStyle={'manage-address-form-container'} itemsPerRow={3}>{addresses}</GridView>
+    return <GridView className="container column" fillerStyle={'grid-item-container'} itemsPerRow={3}>{addresses}</GridView>
 }
 
 
 function ManageAddresses(props){
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
-        <div className="manage-addresses-container">
-            <div className="manage-addresses-header">
+        <div className="main-contents column container">
+            <div className="container column">
                 <ManageAddressForm mutation={CREATE_ADDRESS} alias={"New Address"} />
             </div>
             <ArchiveOptions query={GET_ADDRESSES}>

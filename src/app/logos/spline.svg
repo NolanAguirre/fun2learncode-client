@@ -1,0 +1,10 @@
+<svg id="spline" version="1.1" viewBox="0 0 1448.5 92.877" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="rect">
+        <rect x="22" y="-64" width="1440" height="5471" clip-rule="evenodd"></rect>
+      </clipPath>
+    </defs>
+    <g transform="matrix(1.0175 0 0 1.0431 -39.159 -427.19)" clip-path="url(#rect)">
+      <path d="m1103.5 405.69 375.32 4.074 25.672 73.626s-298.52-70.153-446.39-70.153c-316.5 0-325 71.148-632 81.148-149.58 4.872-387.57-44.027-387.57-44.027l0.31168-43.048z" fill="#4bc82e"></path>
+    </g>
+</svg>

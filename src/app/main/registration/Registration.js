@@ -123,7 +123,7 @@ class RegistrationInner extends Component{
     }
     render = () =>{
         const info = this.getSelections();
-        return <div className='registration-container'>
+        return <div className='registration-container main-contents'>
             <h2>Registration</h2>
             <div className='styled-container'>
                 <div className='section'>

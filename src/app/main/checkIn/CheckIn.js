@@ -214,7 +214,7 @@ class CheckInInner extends Component{
 	}
 
     render = () => {
-        return<div className='container section'>
+        return<div className='main-contents container'>
           <div className='login-container'>
             <div className='login-widget'>
               <div className='login-headers'>

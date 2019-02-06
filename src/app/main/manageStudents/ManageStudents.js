@@ -59,7 +59,7 @@ const GET_DATES_WITH_STUDENT = (studentId) =>{
 
 function EventLog(props) {
     return <div>
-        <h3>{props.firstName} Said...</h3>
+        <h3>{props.firstName} said...</h3>
         <div>{props.comment}</div>
     </div>
 }
@@ -68,9 +68,6 @@ function EventLogs(props){
     if (props.logs.length > 0){
         return<div>
             {props.logs.map(log=><EventLog key={log.id} firstName={log.userByInstructor.firstName} comment={log.comment} />)}
-            <div>
-                View All Event notes
-            </div>
         </div>
     }
     return <div>No Logs found</div>
@@ -182,7 +179,7 @@ class ManageStudentsInner extends Component {
   }
 
   render () {
-      return <div className='manage-students-container'>
+      return <div className='manage-students-container main-contents'>
           <StudentSelect setSelected={this.setSelectedStudents} userId={this.props.getUserData.id} createStudent/>
           {this.state.selectedStudent?<ReactQuery query={GET_DATES_WITH_STUDENT(this.state.selectedStudent.id)}>
             <EventMonths />
@@ -190,8 +187,6 @@ class ManageStudentsInner extends Component {
       </div>
   }
 }
-
-
 
 function ManageStudents(props){
     return <SecureRoute roles={['FTLC_USER']}>

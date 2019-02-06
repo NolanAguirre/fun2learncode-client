@@ -1,4 +1,57 @@
 .home{
-    max-width: 1200px;
-    margin: 0 auto;
+    flex:1;
+    background-color: white;
+}
+.welcome {
+    background-image: url(https://unity3d.com/sites/default/files/styles/frontpage_promo_large_background/public/unity-front-header_1.jpg?itok=xjesqqrQ);
+    z-index: -999;
+    height: calc(100vh - 80.5px);
+    display:flex;
+}
+.welcome-text{
+    color:white;
+    animation: fadein 2s;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.spline{
+    overflow-x: hidden;
+    overflow-y: visible;
+    display: flex;
+    flex:1;
+    justify-content: flex-start;
+}
+.spline img{
+    width:101%;
+    height:100%;
+}
+.flipped-spline-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.flipped-spline {
+    transform: scaleY(-1);
+}
+.gap-cover{
+    background-color: #4bc82e;
+    width:12px;
+    margin:-5px 0px;
+}
+
+.class-structure {
+    display:flex;
+    flex-direction: column;
+    color: rgb(102, 102, 102);
+}
+
+@media screen and (max-width: 650px) {
+    .what-we-offer {
+        padding: 40px 0px!important;
+    }
 }

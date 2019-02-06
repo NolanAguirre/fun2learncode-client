@@ -1,0 +1,16 @@
+.who-we-are {
+    background-color: white;
+}
+.who-we-are-container{
+    display:flex;
+    justify-content: space-around;
+    flex:1;
+}
+.who-we-are-section{
+    flex:1;
+    box-sizing: border-box;
+    max-width: 500px;
+    background-color: #4bc82e;
+    padding:20px;
+    border-radius: 20px;
+}

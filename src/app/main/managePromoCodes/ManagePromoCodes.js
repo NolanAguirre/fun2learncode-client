@@ -273,7 +273,7 @@ class DisablePromoCode extends Component{
         return 'All'
     }
     render = () => {
-        return <form className='manage-address-form-container'>
+        return <form className='grid-item-container'>
             <table>
                 <tbody>
                     <tr>
@@ -341,7 +341,7 @@ class ManagePromoCodesInner extends Component {
 
 function ManagePromoCodes(props){
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
-        <div className='section container column'>
+        <div className='main-contents container column'>
             <ReactQuery query={GET_DROPDOWN}>
                     <ManagePromoCodesInner />
             </ReactQuery>

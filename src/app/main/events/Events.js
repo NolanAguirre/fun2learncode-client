@@ -55,12 +55,12 @@ function EventsInner(props) { // TODO group this by address so i dont have to lo
         key={event.id} />
     })
     if(events.length === 0){
-        return <div style={{background:'white'}}className='center-y section'>
+        return <div style={{background:'white'}}className='center-y main-contents'>
             <img src={SadFace} title='Icon made by Freepik from www.flaticon.com' />
             <h2 style={{color:'rgb(164, 164, 164)'}} className='center-text'>Sorry! We currently aren't offering any {props.activityName.toLowerCase()} at this time.</h2>
         </div>
     }
-    return <div className='section container column'>
+    return <div className='main-contents container column'>
         <h1 className='center-text'>{props.activityName}</h1>
         <GridView className="manage-addresses-body" itemsPerRow={2} >{events}</GridView>
     </div>

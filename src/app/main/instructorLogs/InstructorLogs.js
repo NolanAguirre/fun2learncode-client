@@ -105,7 +105,7 @@ class InstructorLogForm extends Component{
 function InstructorLogsInner(props){
     const logs = props.allEventLogs.nodes
     if(logs.length > 0){
-        return <GridView className='section' fillerStyle={"styled-container section"} itemsPerRow={3}>
+        return <GridView className='main-contents' fillerStyle={"styled-container section"} itemsPerRow={3}>
                 {props.allEventLogs.nodes.map((log)=>{return<InstructorLogForm getUserData={props.getUserData} key={log.nodeId} log={log} />})}
             </GridView>
     }else{

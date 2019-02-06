@@ -8,6 +8,10 @@
     margin:auto;
     padding: 0px 20px;
 }
+.home-section{
+    width:400px;
+    margin:0 auto;
+}
 
 @media screen and (max-width: 420px) {
     .styled-container{
