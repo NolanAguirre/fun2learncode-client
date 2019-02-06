@@ -21,18 +21,13 @@
 .spline{
     overflow-x: hidden;
     overflow-y: visible;
-    display: flex;
-    flex:1;
-    justify-content: flex-start;
 }
 .spline img{
-    width:101%;
-    height:100%;
-}
-.flipped-spline-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    position: relative;
+    left:-5px;
+    top:0;
+    width:calc(100% + 20px);
+    height:auto;
 }
 
 .flipped-spline {
@@ -40,8 +35,9 @@
 }
 .gap-cover{
     background-color: #4bc82e;
-    width:12px;
-    margin:-5px 0px;
+    height:6px;
+    margin-top:-5px;
+    margin-bottom: -1px;
 }
 
 .class-structure {

@@ -17,8 +17,7 @@ class ManageAnnouncementsInner extends Component{
         super(props)
         this.state = {
             title: '',
-            message: '',
-            startDisplay: moment(),
+            message: ''
 
         }
         this.mutation = new Mutation({
@@ -47,8 +46,7 @@ class ManageAnnouncementsInner extends Component{
 
     hasRequiredValues = () =>{
         return this.state.title != "" &&
-               this.state.message != "" &&
-               this.state.startDisplay
+               this.state.message != ""
     }
 
     handleSubmit = (event) => {
@@ -65,10 +63,6 @@ class ManageAnnouncementsInner extends Component{
         return <form className="styled-container main-contents column" onSubmit={this.mutation.onSubmit}>
                 <div className='center-x'>
                     <input className='announcement-title-input' name="title" onChange={this.handleChange} value={this.state.title} placeholder='Title' />
-                </div>
-                <div className='container'>
-                    Make public on:
-                    <DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={this.state.startDisplay} onChange={(time) => {this.handleTimeChange("startDisplay", time)}}/>
                 </div>
                 <h3 className='no-margin'>Announcement message:</h3>
                 <div id='message' onInput={this.handleContentEditableChange} className="styled-textarea" suppressContentEditableWarning={true} contentEditable></div>
