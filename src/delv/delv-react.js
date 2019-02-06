@@ -55,7 +55,7 @@ class ReactQuery extends Component {
 
     componentDidMount = () => {
         this.query.query();
-        if (!(this.query.networkPolicy != 'network-only' || this.query.networkPolicy != 'network-no-cache')) {
+        if (!(this.query.networkPolicy === 'network-only' || this.query.networkPolicy === 'network-no-cache')) {
             this.query.addCacheListener();
         }
     }
@@ -77,7 +77,7 @@ class ReactQuery extends Component {
                 onError:this.onError,
                 formatResult:this.props.formatResult
             })
-            if (!(this.query.networkPolicy != 'network-only' || this.query.networkPolicy != 'network-no-cache')) {
+            if (!(this.query.networkPolicy === 'network-only' || this.query.networkPolicy === 'network-no-cache')) {
                 this.query.addCacheListener();
             }
             this.query.query();
