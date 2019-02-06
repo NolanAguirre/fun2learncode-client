@@ -73,6 +73,8 @@ const GET_EVENTS = (eventArchive) => `{
       name
       openRegistration
       closeRegistration
+      activity
+      address
       addOnJoinsByEvent {
         nodes {
           nodeId
@@ -137,7 +139,7 @@ class EventPreview extends Component {
                 <div className='event-preview-header'>
                     <h4>{this.props.event.activityByActivity.name}</h4>
                     <h4>{this.props.event.name}</h4>
-                    <a>edit</a>
+                    <EventForm {...this.props.event} buttonText='edit'/>
                 </div>
                 <span> Show on Calander <input onChange={this.toggleCalendarHide} type='checkbox' checked={isCalendarHidden} /> </span>
                 <div className="dropdown-div">

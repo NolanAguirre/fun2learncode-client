@@ -54,6 +54,8 @@ const CREATE_EVENT= `mutation ($event: EventInput!) {
       name
       openRegistration
       closeRegistration
+      activity
+      address
       addOnJoinsByEvent{
           nodes{
               nodeId
@@ -90,9 +92,13 @@ const UPDATE_EVENT= `mutation ($id: UUID!, $event: EventPatch!) {
       name
       openRegistration
       closeRegistration
+      activity
+      address
       addOnJoinsByEvent{
-          nodeId
-          id
+        nodes{
+           nodeId
+              id
+          }
       }
       activityByActivity {
         id
@@ -399,7 +405,7 @@ class EventForm extends Component {
                 </ReactQuery>
             </Popup>
             <div onClick={this.showPopup}>
-                Create new event
+                {this.props.buttonText || 'Create new event'}
             </div>
         </div>
     }
