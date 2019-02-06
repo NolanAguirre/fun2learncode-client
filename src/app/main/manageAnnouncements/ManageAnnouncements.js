@@ -22,7 +22,8 @@ class ManageAnnouncementsInner extends Component{
         }
         this.mutation = new Mutation({
             mutation:CREATE_ANNOUNCEMENT,
-            onSubmit:this.handleSubmit
+            onSubmit:this.handleSubmit,
+            onResolve:this.resetState
         })
     }
 
@@ -57,6 +58,14 @@ class ManageAnnouncementsInner extends Component{
             }
         }
         return false
+    }
+
+    resetState = () => {
+        const element = document.getElementById(`message`)
+        if(element){
+            element.innerHTML = ''
+        }
+        this.setState({message:'',title:''})
     }
 
     render = () => {
