@@ -55,7 +55,7 @@ class ReactQuery extends Component {
 
     componentDidMount = () => {
         this.query.query();
-        if (this.query.networkPolicy != 'network-only') {
+        if (!(this.query.networkPolicy != 'network-only' || this.query.networkPolicy != 'network-no-cache')) {
             this.query.addCacheListener();
         }
     }
@@ -77,7 +77,7 @@ class ReactQuery extends Component {
                 onError:this.onError,
                 formatResult:this.props.formatResult
             })
-            if (this.query.networkPolicy != 'network-only') {
+            if (!(this.query.networkPolicy != 'network-only' || this.query.networkPolicy != 'network-no-cache')) {
                 this.query.addCacheListener();
             }
             this.query.query();
@@ -95,7 +95,9 @@ class ReactQuery extends Component {
     }
 
     onFetch = (promise) => {
-        this.setState({queryResult: ''})
+        if(!this.props.skipLoading){
+            this.setState({queryResult: ''})
+        }
         if(this.props.onFetch){
             this.props.onFetch(promise)
         }
