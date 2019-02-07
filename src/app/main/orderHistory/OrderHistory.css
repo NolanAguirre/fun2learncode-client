@@ -1,7 +1,21 @@
+.order-container{
+    padding:20px 40px;
+}
+
 .order-header{
     display:flex;
     flex-wrap: wrap;
     justify-content: space-between;
+}
+.order-body{
+    display:flex;
+    flex-wrap: wrap;
+    flex:1;
+}
+.order-body > div{
+    flex:1;
+    border: 2px solid black;
+    margin: 5px;
 }
 .show-order-history-btn-container{
     width:250px;
