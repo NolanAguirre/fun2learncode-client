@@ -26,40 +26,40 @@ const GET_DROPDOWN = `{
     }
   }
 }`
-
+const PROMO_FRAGMENT = `id
+nodeId
+code
+effect
+uses
+code
+validStart
+validEnd
+userByUserId {
+  nodeId
+  id
+  firstName
+  lastName
+}
+categoryByCategory {
+  nodeId
+  id
+  name
+}
+activityByActivity {
+  nodeId
+  id
+  name
+}
+forUser
+forActivity
+forCategory
+percent
+archive
+disabled`
 const GET_PROMO_CODES =  (archive) =>`{
   allPromoCodes (condition:{${archive}}) {
     nodes {
-      id
-      nodeId
-      code
-      effect
-      uses
-      code
-      validStart
-      validEnd
-      userByUserId {
-        nodeId
-        id
-        firstName
-        lastName
-      }
-      categoryByCategory {
-        nodeId
-        id
-        name
-      }
-      activityByActivity {
-        nodeId
-        id
-        name
-      }
-      forUser
-      forActivity
-      forCategory
-      percent
-      archive
-      disabled
+     ${PROMO_FRAGMENT}
     }
   }
 }`
@@ -67,29 +67,7 @@ const GET_PROMO_CODES =  (archive) =>`{
 const CREATE_PROMO_CODE = `mutation($promoCode:PromoCodeInput!){
   createPromoCode(input:{promoCode:$promoCode}){
     promoCode{
-      id
-      nodeId
-      code
-      effect
-      uses
-      code
-      validStart
-      validEnd
-      userByUserId {
-        nodeId
-      }
-      categoryByCategory {
-        nodeId
-      }
-      activityByActivity {
-        nodeId
-      }
-      forUser
-      forActivity
-      forCategory
-      percent
-      archive
-      disabled
+      ${PROMO_FRAGMENT}
     }
   }
 }`
@@ -97,18 +75,7 @@ const CREATE_PROMO_CODE = `mutation($promoCode:PromoCodeInput!){
 const UPDATE_PROMO_CODE = `mutation($archive:Boolean, $disable:Boolean, $id:UUID!){
   updatePromoCodeById(input:{promoCodePatch:{archive:$archive,disabled:$disable},id:$id}){
     promoCode{
-      nodeId
-      archive
-      disabled
-      userByUserId {
-        nodeId
-      }
-      categoryByCategory {
-        nodeId
-      }
-      activityByActivity {
-        nodeId
-      }
+      ${PROMO_FRAGMENT}
     }
   }
 }`
@@ -197,7 +164,7 @@ class CreatePromoCode extends Component{
                 promoCode = {...promoCode, activity}
             }
             if(this.state.forCategory){
-                promoCode= {...promoCode, activity}
+                promoCode= {...promoCode, category}
             }
             return {promoCode}
         }
@@ -221,7 +188,7 @@ class CreatePromoCode extends Component{
                     <div className='container'>End Date: <DateTime className='tiny-input' dateFormat="MMMM Do YYYY" value={this.state.validEnd} timeFormat={false} onChange={(time) =>{this.handleTimeChange("validEnd", time)}}/></div>
                     <div>Code random <input value={this.state.isRandom} name='isRandom' onChange={this.handleChange} type='checkbox'/></div>
                     <div>Code <input value={this.state.code} name='code' onChange={this.handleChange} style={{width:'100px'}}/></div>
-                    <div>Uses <input name='uses' onChange={this.handleChange} value={this.state.uses} type='number' style={{width:'30px'}}/></div>
+                    <div>Uses <input name='uses' onChange={this.handleChange} value={this.state.uses} type='number' style={{width:'100px'}}/></div>
                 </div>
             </div>
             <div className='event-register-btn center-text center-x' style={{width:'200px'}}onClick={this.mutation.onSubmit}>Create</div>
