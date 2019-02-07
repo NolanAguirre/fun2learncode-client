@@ -10,6 +10,9 @@
     flex-direction: column;
     justify-content: space-between;
 }
+.payment-container a{
+    text-decoration: none;
+}
 .payment-overview-popup *::placeholder{
     font-family: 'Source Code Pro', monospace;
     color: '#aab7c4';

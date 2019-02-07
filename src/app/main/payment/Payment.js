@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import Mutation from '../../../delv/Mutation'
+import Query from '../../../delv/Query'
 import {ReactQuery} from '../../../delv/delv-react'
 import {SecureRoute} from '../common/Common'
+import {Link} from 'react-router-dom'
 import Popup from "reactjs-popup"
 import './Payment.css'
 import {CardNumberElement,
@@ -22,6 +24,77 @@ const USER_DATA = `{
         lastName
         role
     }
+}`
+
+const UPDATE_ORDER_HISTORY = (id, students) => `{
+  allPayments(condition: {userId: "${id}"}) {
+    nodes {
+      nodeId
+      id
+      snapshot
+      status
+      createOn
+      userId
+      eventRegistrationsByPayment {
+        nodes {
+          studentByStudent {
+            nodeId
+            id
+            eventRegistrationsByStudent {
+              nodes {
+                nodeId
+                id
+                eventByEvent {
+                  nodeId
+                  id
+                  activityByActivity {
+                    nodeId
+                    name
+                    id
+                  }
+                  dateJoinsByEvent {
+                    nodes {
+                      nodeId
+                      dateIntervalByDateInterval {
+                        nodeId
+                        id
+                        start
+                        end
+                        eventLogsByDateInterval(filter: {instructor: {notEqualTo: null}, student:{in:${students}}}) {
+                          nodes {
+                            student
+                            nodeId
+                            id
+                            comment
+                            instructor
+                            userByInstructor {
+                              nodeId
+                              id
+                              firstName
+                              lastName
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      refundRequestsByPayment {
+        nodes {
+          nodeId
+          id
+          reason
+          status
+          createdOn
+        }
+      }
+    }
+  }
 }`
 
 const createStripeStyle = {
@@ -116,12 +189,16 @@ class PaymentInformationEntry extends Component{
 
     handleSubmit = (event) => {
         if(!this.isProcessing){
-
             if(this.state.cardholder != ''){
                 this.isProcessing = true
                 this.props.setLoading()
-                this.props.stripe.createToken({name: this.state.cardholder, address_line1:this.props.address, address_city:this.props.city, address_state:this.props.state, address_country:'US'})
-                    .then(({token:{id}, error}) => {
+                this.props.stripe.createToken({
+                    name: this.state.cardholder,
+                    address_line1:this.props.address,
+                    address_city:this.props.city,
+                    address_state:this.props.state,
+                    address_country:'US'
+                }).then(({token:{id}, error}) => {
                     if(error){
                         this.isProcessing = false;
                         this.setState({stripeError:error.message})
@@ -199,8 +276,8 @@ class Payment extends Component {
             if(res.data.error){
                 this.setState({UI:'error', error:res.data.error, loading:false})
             }else{
-                this.setState({UI:'complete', loading:false, preventClose:true})
-
+                new Query({query:UPDATE_ORDER_HISTORY(this.props.info.user, JSON.stringify(res.data.students)), networkPolicy:'network-only'}).query();
+                this.setState({UI:'complete' ,loading:false, preventClose:true})
             }
         }).catch((error)=>{
             console.log(error)
@@ -225,7 +302,10 @@ class Payment extends Component {
                 <div className='event-register-btn center-text' onClick={()=>{this.setState({UI:'address', loading:false})}}>Back</div>
             </div>
         }else if(this.state.UI === 'complete'){
-            child = <div>Transaction Complete</div>
+            child = <div className='payment-container'>
+                <h2 className='center-text'>Transaction Complete!</h2>
+                <Link to={`/`}><div className="event-register-btn center-x center-text" style={{width:'200px'}}>Home</div></Link>
+            </div>
         }else if(this.state.UI === 'card'){
             child = <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
                     <Elements>
