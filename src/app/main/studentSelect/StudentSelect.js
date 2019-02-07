@@ -33,11 +33,17 @@ const CREATE_STUDENT = `mutation($student:CreateStudentInput!){
     }
   }
 }`
-
+function toProperCaps(string) {
+    try{
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }catch(error){
+        return string
+    }
+}
 class StudentForm extends Component{
     constructor(props){
         super(props);
-        this.state = {showPopup:false, dateOfBirth:moment()}
+        this.state = {showPopup:false, dateOfBirth:moment(), firstName:'', lastName:''}
         this.mutation = new Mutation({
             mutation:CREATE_STUDENT,
             onSubmit:this.handleSubmit,
@@ -50,14 +56,14 @@ class StudentForm extends Component{
       const value = target.value
       const name = target.name
       this.setState({
-        [name]: value,
+        [name]: toProperCaps(value),
         error:undefined
         })
     }
 
     hasRequiredValues = () =>{
-        let haveValues =  this.state.firstName &&
-               this.state.lastName  &&
+        let haveValues =  this.state.firstName !== '' &&
+               this.state.lastName !== '' &&
                this.state.dateOfBirth
          return haveValues
     }
@@ -106,10 +112,10 @@ class StudentForm extends Component{
                     <form onSubmit={this.mutation.onSubmit} className='space-around'>
                             <div className='container'>
                                 <div className='small-input edge-margin'>
-                                    <input className='styled-input' name='firstName' onChange={this.handleChange} placeholder='first name' />
+                                    <input className='styled-input' name='firstName' value={this.state.firstName} onChange={this.handleChange} placeholder='first name' />
                                 </div>
                                 <div className='small-input edge-margin'>
-                                    <input className='styled-input' name='lastName' onChange={this.handleChange} placeholder='last name' />
+                                    <input className='styled-input' name='lastName' value={this.state.lastName} onChange={this.handleChange} placeholder='last name' />
                                 </div>
                             </div>
                             <div className='container margin-top-40'>
