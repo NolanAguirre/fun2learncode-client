@@ -81,6 +81,9 @@ class InstructorLogForm extends Component{
     handleSubmit = (event) => {
         event.preventDefault();
         if(this.state.comment && this.state.comment != ''){
+            if(this.state.comment === 'no comment.' && !window.confirm('Do you want to write a log with no comment?')){
+                return false;
+            }
             return {eventLog:{id:this.props.log.id, eventLogPatch:this.state}}
         }
         return false;
@@ -94,7 +97,7 @@ class InstructorLogForm extends Component{
             <form onSubmit={this.mutation.onSubmit}>
                 <h2 className='no-margin center-text'>{student.firstName} {student.lastName}</h2>
                 <h5 className='no-margin center-text'>{name} {moment(start).format('MMMM, Do h:mm a')}</h5>
-                <div id={this.props.id} onInput={this.handleDescriptionChange} className="manage-activity-textarea" suppressContentEditableWarning={true} contentEditable></div>
+                <div id={this.props.id} onInput={this.handleDescriptionChange} className="styled-textarea" suppressContentEditableWarning={true} contentEditable></div>
                 <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Write Log</div>
                 <button className='hacky-submit-button' type='submit'/>
             </form>
