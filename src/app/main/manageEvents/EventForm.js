@@ -203,7 +203,7 @@ class AddonJoinForm extends Component {
         if (this.state.addon != undefined) {
             let addOnJoin = {
                 addOn: this.state.addon,
-                dateGroup: this.props.dateGroup
+                event: this.props.event
             }
             this.setState({edit: false, addon: undefined});
             return {addon: {addOnJoin}}
@@ -316,7 +316,7 @@ class EventFormInner extends Component {
     render() {
         const addresses = this.mapAddresses(this.props.allAddresses);
         const addonOptions = this.mapAddons(this.props.allAddOns);
-        const addons = this.props.addOnJoinsByDateGroup && this.props.addOnJoinsByDateGroup.nodes.map(addon => addon)
+        const addons = this.props.addOnJoinsByEvent && this.props.addOnJoinsByEvent.nodes.map(addon => addon)
         return <div className="styled-container column no-margin">
             <h2 className='center-text no-margin'>{(this.props.id)?'Edit':'Create'} Event</h2>
             <div className='error'>{this.state.error}</div>
@@ -335,11 +335,11 @@ class EventFormInner extends Component {
                                 </tr>
                                 <tr>
                                     <td>Set Start: </td>
-                                    <td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={this.state.openRegistration} onChange={(time) => {this.handleTimeChange("openRegistration", time)}}/></td>
+                                    <td><DateTime className="full-date-input" dateFormat="MMM Do YYYY" timeFormat="H:mm"  value={this.state.openRegistration} onChange={(time) => {this.handleTimeChange("openRegistration", time)}}/></td>
                                 </tr>
                                 <tr>
                                     <td>Set End: </td>
-                                    <td><DateTime className="full-date-input" dateFormat="MMMM Do YYYY" timeFormat={false} value={this.state.closeRegistration} onChange={(time) => {this.handleTimeChange("closeRegistration", time)}}/></td>
+                                    <td><DateTime className="full-date-input" dateFormat="MMM Do YYYY" timeFormat="H:mm" value={this.state.closeRegistration} onChange={(time) => {this.handleTimeChange("closeRegistration", time)}}/></td>
                                 </tr>
                                 <tr>
                                     <td>Location: </td>
@@ -371,8 +371,8 @@ class EventFormInner extends Component {
                 </div>
 
                 {(this.props.id)?<div>
-                        <AddonJoins dateGroup={this.props.id} addons={addons}/>
-                        <AddonJoinForm dateGroup={this.props.id} addons={addonOptions}/></div>:""}
+                        <AddonJoins event={this.props.id} addons={addons}/>
+                        <AddonJoinForm event={this.props.id} addons={addonOptions}/></div>:""}
 
             </div>
             <div className='event-register-btn center-text margin-top-10' onClick={this.mutation.onSubmit}>{(this.props.id)?'Update':'Create'}</div>
