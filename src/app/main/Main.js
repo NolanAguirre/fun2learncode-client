@@ -32,7 +32,7 @@ class Main extends Component {
     return (
       <div className='main'>
           <Switch>
-            <Route exact path='/Home' component={Home} />
+            <Route exact path='/' component={Home} />
             <Route exact path='/Activity/:type' component={Activities} />
             <Route exact path='/Login' component={Login} />
             <Route path='/Events/:name/:id' component={Events} />

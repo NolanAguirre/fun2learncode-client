@@ -21,9 +21,9 @@ const admins = ['FTLC_OWNER', 'FTLC_LEAD_INSTRUCTOR', 'FTLC_ADMIN']
 const routeNames = [
     {
         name: 'Home',
-        route: 'Home',
+        route: '',
         test:(user) => {
-            return !user
+            return !user || !admins.includes(user.role)
         }
     }, {
         name: 'Manage Students',

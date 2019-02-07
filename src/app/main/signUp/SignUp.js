@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './SignUp.css'
 import Logo from '../../logos/drawing.svg'
-import gql from 'graphql-tag';
+import Delv from '../../../delv/delv';
 import axios from 'axios'
 import Popup from "reactjs-popup"
 
@@ -103,26 +103,28 @@ class SignUp extends Component {
             if(!this.passwordValid()){
                 this.setState({error:'Password must be longer than 5 characters'})
             }else if(!this.passwordMatch()){
-                this.setState({error:'The passwords to not match'})
+                this.setState({error:'The passwords to not match.'})
             }else if(!this.validEmail()){
-                this.setState({error:'The email give is not valid'})
+                this.setState({error:'The email give is not valid.'})
             }else if(!uniqueEmail){
-                this.setState({error:'The email give is already registered to an account'})
+                this.setState({error:'The email give is already registered to an account.'})
             }else {
                 let user = Object.assign({}, this.state);
                 delete user.repeatPassword
                 delete user.error
+                delete user.showPopup
                 axios.post('http://localhost:3005/graphql', { query: `mutation($user:RegisterUserInput!) {
                   registerUser(input:$user){
                       query{
                           authenticate(arg0:"${this.state.email}", password:"${this.state.password}")
                       }
                   }
-                }`,variables:{user}}).then((res) => {
+              }`,variables:{user}}).then((res) => {
                     if(res.data.errors){
                         this.handleServerErrors(res.data.errors);
                     }else{
-                        window.location.reload()
+                        Delv.clearCache();
+                        window.location.href = '/Login'
                     }
                 })
             }
@@ -143,7 +145,7 @@ class SignUp extends Component {
       <div className='login-container'>
           <div className='login-widget'>
                 <div className='login-headers'>
-                  <a><img className='nav-logo' src={Logo} /></a>
+                  <a><img src={Logo} /></a>
                 </div>
                 <div className='login-error-container'>
                     <div className='error'>{this.state.error}</div>

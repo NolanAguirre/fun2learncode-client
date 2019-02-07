@@ -3,7 +3,7 @@ import './Login.css'
 import {Link} from 'react-router-dom'
 import Logo from '../../logos/drawing.svg'
 import axios from 'axios'
-
+import Delv from '../../../delv/delv';
 class Login extends Component {
     constructor(props) {
         super(props)
@@ -38,8 +38,8 @@ class Login extends Component {
                 if (res.data.error) {
                     this.setState({error:res.data.error})
                 } else {
-                    window.location.reload()
-                    this.props.history.push(this.props.redirectUrl || '/')
+                    Delv.clearCache();
+                    window.location.href = this.props.redirectUrl || '/'
                 }
             })
         }
