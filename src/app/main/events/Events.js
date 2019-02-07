@@ -26,7 +26,6 @@ const GET_EVENTS_OF_TYPE = (id) => {
         street
         state
         alias
-        url
       }
       dateJoinsByEvent {
         nodes {
