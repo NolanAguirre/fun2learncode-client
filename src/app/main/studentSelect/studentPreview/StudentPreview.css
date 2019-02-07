@@ -1,7 +1,7 @@
 .student-preview-container{
     padding: 40px;
     margin: 0 20px;
-    background-color: #41a62a;
+    background-color: #4bc82e;
     border-radius: 8px;
     flex: 0 0 auto;
 }
@@ -9,7 +9,7 @@
 .selected-student-preview-container{
     padding: 40px;
     margin: 0 20px;
-    background-color: green;
+    background-color: #41a62a;
     color:white;
     border-radius: 8px;
     flex: 0 0 auto;

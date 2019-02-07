@@ -97,7 +97,7 @@ class ManageUserForm extends Component{
         this.setState({selectedStudent:student});
     }
     render = () => {
-        return <div>
+        return <div className='manage-user-form'>
         <h1>{this.props.firstName} {this.props.lastName}</h1>
             <div>
                 <h2>Account</h2>
@@ -115,7 +115,7 @@ class ManageUserForm extends Component{
                             <td>Email: </td>
                             <td>{this.props.email}</td>
                         </tr>
-                        <tr>
+                        <tr className='no-wrap'>
                             <td>Memeber since: </td>
                             <td>{moment(this.props.createdOn).format('MMM, Do YYYY')}</td>
                         </tr>
@@ -134,7 +134,7 @@ class ManageUserForm extends Component{
             </div>
             <div>
                 <h2>Order History</h2>
-                <OrderHistory userId={this.props.id}/>
+                <OrderHistory userId={this.props.id} adminForm={true}/>
             </div>
             {this.props.students.length > 0?<div>
                 <h2>Students</h2>
@@ -167,7 +167,7 @@ class ManageUsersInner extends Component {
             }
         })
         const showAlert = user.refundRequestsByUserId.nodes.length > 0
-        return <BasicPopup key={user.id} buttonClassName="grid-item-container">
+        return <BasicPopup className='payment-overview-popup' key={user.id} buttonClassName="grid-item-container">
             <ManageUserForm
                 id={user.id}
                 email={user.email}

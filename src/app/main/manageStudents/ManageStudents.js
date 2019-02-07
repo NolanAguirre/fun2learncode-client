@@ -120,7 +120,7 @@ class EventMonth extends Component{
         })
         return <React.Fragment>
             <h2>{this.props.monthName}</h2>
-                <GridView itemsPerRow={5} className='event-month'>
+                <GridView itemsPerRow={5} className='event-month' fillerStyle='filler-event-month-date-container'>
                     {dates}
                 </GridView>
         </React.Fragment>

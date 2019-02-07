@@ -48,7 +48,7 @@ class Announcements extends Component{
             step = 3
         }else if(width <= 700){
             step = 1
-        }else if(width < 3000){
+        }else if(width < 1300){
             step = 2
         }
         this.state = {head:this.count+1, step}

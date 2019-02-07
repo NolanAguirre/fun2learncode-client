@@ -12,6 +12,12 @@
     margin:10px;
     flex: 1;
 }
+.filler-event-month-date-container{
+    border: 2px solid transparent;
+    padding:10px;
+    margin:10px;
+    flex: 1;
+}
 .event-month-date-container h4{
 
 }

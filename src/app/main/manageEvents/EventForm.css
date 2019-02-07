@@ -1,5 +1,5 @@
 .full-date-input > input{
-    max-width: 120px;
+    max-width: 200px;
 }
 .time-input > input{
     max-width: 60px;
@@ -14,13 +14,6 @@
     width:100%;
     margin-bottom: 20px;
 }
-.event-preview-event-button{
-    text-align: center;
-    background-color: red;
-    padding: 10px;
-    margin: 0 30px;
-}
-
 .date-form-inner{
     display: flex;
     align-content: space-around;

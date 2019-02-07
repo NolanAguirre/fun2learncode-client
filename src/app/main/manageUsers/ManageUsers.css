@@ -3,3 +3,6 @@
     flex:1;
     justify-content: space-between;
 }
+.manage-user-form{
+    padding:20px 40px;
+}

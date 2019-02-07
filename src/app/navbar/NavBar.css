@@ -63,7 +63,7 @@
         left:0px;
     }
     .nav-item-container.close{
-        transition: .2s;
+        transition: 0s;
         left:-180px;
     }
     .nav-bar-item{

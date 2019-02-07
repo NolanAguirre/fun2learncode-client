@@ -94,3 +94,15 @@ body {
     border: 1px solid rgb(214, 214, 214);
     color: gray;
 }
+
+.styled-button{
+    padding: 20px;
+    font-size: 20px;
+    background-color: #4bc82e;
+    color: white;
+    transition-duration: .1s;
+}
+
+.styled-button:hover{
+    background-color: #41a62a;
+}
