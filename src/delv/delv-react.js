@@ -6,35 +6,12 @@ import Delv from './delv'
 import Query from './Query'
 var _ = require('lodash');
 
-class DelvReact extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            isReady: false
-        }
-
-    }
-
-    componentDidMount = () => {
-        Delv.config({...this.props.config, onReady:this.isReady})
-    }
-
-    isReady = () => {
-        this.setState({isReady:true})
-    }
-
-    render = () => {
-        if (this.state.isReady) {
-            return this.props.children
-        } else {
-            return <div>'loading...'</div>
-        }
-    }
+function DelvReact(props){
+    Delv.config({...props.config})
+    return props.children
 }
 
-export {
-    DelvReact
-}
+export {DelvReact}
 
 class ReactQuery extends Component {
     constructor(props) {

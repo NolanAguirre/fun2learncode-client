@@ -178,7 +178,7 @@ class NavBarInner extends Component {
 }
 
 function NavBar(props) {
-    return <ReactQuery query={GET_USER_DATA}>
+    return <ReactQuery query={GET_USER_DATA} skipLoading>
         <NavBarInner/>
     </ReactQuery>
 }

@@ -9,15 +9,16 @@ axios.defaults.withCredentials = true;
 class Delv {
     constructor() {
         this.queries = new QueryManager();
+        TypeMap.loadTypes();
+        this.isReady = true
+        this.queuedQueries = []
     }
-    config = ({url, handleError, onReady}) => {
+    config = ({url, handleError}) => {
         this.url = url
         this.handleError = handleError
-        this.onReady = onReady
-        this.loadIntrospection()
+        // this.loadIntrospection() //development purposes
     }
-
-    loadIntrospection = () => {
+    loadIntrospection = () => { //development purposes
         axios.post(this.url, {
             query: `{
               __schema {
@@ -43,6 +44,13 @@ class Delv {
         })
     }
 
+    onReady = () => {
+        this.isReady = true;
+        this.queuedQueries.forEach((query)=>{
+            this.queryHttp(query.options, query.skipCache, query.returnRes)
+        })
+    }
+
     post = (query, variables) => {
         return axios.post(this.url, {
             query: query,
@@ -51,6 +59,9 @@ class Delv {
     }
 
     queryHttp = ({query, variables, onFetch, onResolve, onError, customCache}, skipCache, returnRes) => {
+        if(!this.isReady){
+            this.queuedQueries.push({options:{query, variables, onFetch, onResolve, onError, customCache}, skipCache, returnRes})
+        }
         this.queries.add(query, variables)
         let promise = this.post(this.queries.addTypename(query), variables).then((res) => {
             this.queries.setPromise(query, variables, null);
@@ -127,6 +138,11 @@ class Delv {
         }else{
             this.queryHttp({query, variables, onFetch, onResolve, onError, customCache})
         }
+    }
+
+    clearCache = () => {
+        this.queries = new QueryManager();
+        cache.clearCache();
     }
 
 }
