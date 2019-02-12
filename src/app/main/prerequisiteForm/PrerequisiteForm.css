@@ -1,0 +1,14 @@
+.prerequisite-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.prerequisite-x-container {
+    margin-left: 5px;
+}
+
+.x-icon {
+    height: 15px;
+    width: 15px;
+}
