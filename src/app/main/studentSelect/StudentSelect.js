@@ -21,6 +21,8 @@ const GET_STUDENTS_BY_PARENT = parentId => `{
       studentWaiversByStudent(filter:{createdOn:{greaterThan:"${moment().subtract(1,'years').toISOString()}"}}){
         nodes {
           id
+          nodeId
+          createdOn
         }
       }
     }

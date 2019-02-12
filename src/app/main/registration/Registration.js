@@ -101,7 +101,7 @@ class RegistrationInner extends Component{
                 this.setState({error:`${student.firstName} ${student.lastName} is already registered for this class.`})
             }else if(!res.data.data.checkTime){
                 this.setState({error:`${student.firstName} ${student.lastName} already has classes planned for this time.`})
-            }else if(res.data.allStudentWaivers.totalCount === 0){
+            }else if(res.data.data.allStudentWaivers.totalCount === 0){
                 this.setState({error:`${student.firstName} ${student.lastName} has no waiver on file.`})
             }else{
                 return true

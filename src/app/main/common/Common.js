@@ -142,7 +142,7 @@ class MultiSelect extends Component {
 
     toggle = async (newItem) =>{ // if props selected students returns false or nothing it updates
         if(!this.props.isValidChoice || await this.props.isValidChoice(newItem)){
-            if(this.state.selected.includes(newItem)){
+            if(this.state.selected.filter((item)=>{return item.id===newItem.id}).length === 1){
                 if(this.props.alwaysSelect){
                     const newSelected = this.state.selected.filter((item)=>{return item.id!==newItem.id})
                     if(newSelected.length === 0){
