@@ -8,6 +8,10 @@
     outline: inherit;
 }
 
+.manage-activity-form{
+    max-width: 400px;
+}
+
 .prerequisite-container {
     display: flex;
     align-items: center;

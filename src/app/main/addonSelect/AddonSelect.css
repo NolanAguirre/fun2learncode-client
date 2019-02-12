@@ -1,18 +1,18 @@
 .addon-container {
     display:flex;
     flex-direction: column;
+    background-color: #4bc82e;
     max-width: 150px;
     text-align:center;
     padding:10px 20px;
     margin:0 10px;
     border-radius: 20px;
-    border: 2px solid green;
     flex: 0 0 auto;
 }
 
 .addon-container-selected{
     color:white;
-    background-color: green;
+    background-color: #41a62a;
     display:flex;
     flex-direction: column;
     max-width: 150px;
@@ -20,7 +20,6 @@
     padding:10px 20px;
     margin:0 10px;
     border-radius: 20px;
-    border: 2px solid green;
     flex: 0 0 auto;
 }
 
@@ -31,4 +30,8 @@
     display: flex;
     overflow-x: auto;
     padding: 20px 10px;
+}
+
+.addon-select-filler{
+    min-height: 50px;
 }

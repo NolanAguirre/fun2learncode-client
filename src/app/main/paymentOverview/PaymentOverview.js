@@ -28,6 +28,7 @@ function PaymentOverview(props){
     })
     return <div className='payment-overview-container'>
         <h3>Payment Summery</h3>
+        <div className='payment-table-container'>
              <table className='responsive-table custom-scrollbar'>
              <thead>
              <tr>
@@ -40,6 +41,7 @@ function PaymentOverview(props){
                     {rows}
                 </tbody>
             </table>
+        </div>
         <span>sub-total: {total}$ </span>
     </div>
 }

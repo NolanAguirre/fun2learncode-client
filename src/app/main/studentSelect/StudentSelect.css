@@ -1,3 +1,8 @@
+.student-select-inner{
+    display: flex;
+    flex:1;
+    justify-content: space-between;
+}
 .students-container{
     display: flex;
     flex:1;
@@ -19,4 +24,10 @@
     font-size: 24px;
     display: flex;
     align-items: center;
+}
+.waiver-found{
+    color:green;
+}
+.waiver-needed{
+    color:red;
 }

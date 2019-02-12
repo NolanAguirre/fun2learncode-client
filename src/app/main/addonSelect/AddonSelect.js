@@ -15,16 +15,19 @@ function Addon(props) {
 }
 
 function AddonSelect (props) {
-    return <div>
-        <h3>Add-ons</h3>
-        <div className='registration-addons-container'>
-            <MultiSelect multiSelect setSelected={props.setSelected} items={props.addons}>
-                <Selectable className={{selected:'addon-container-selected', base:'addon-container'}}>
-                    <Addon />
-                </Selectable>
-            </MultiSelect>
+    if(props.addons && props.addons.length > 0){
+        return <div className={props.className}>
+            <h3>Add-ons</h3>
+            <div className='registration-addons-container'>
+                <MultiSelect multiSelect setSelected={props.setSelected} items={props.addons}>
+                    <Selectable className={{selected:'addon-container-selected', base:'addon-container'}}>
+                        <Addon />
+                    </Selectable>
+                </MultiSelect>
+            </div>
         </div>
-    </div>
+    }
+    return <div className='addon-select-filler'></div>
 }
 
 export default AddonSelect

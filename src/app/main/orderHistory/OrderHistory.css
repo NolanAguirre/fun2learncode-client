@@ -14,8 +14,8 @@
 }
 .order-body > div{
     flex:1;
-    border: 2px solid black;
-    margin: 5px;
+    /* border: 2px solid black; */
+    margin: 5px 20px;
 }
 .show-order-history-btn-container{
     width:250px;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './StudentSelect.css'
 import StudentPreview from './studentPreview/StudentPreview'
-
+import StudentWaiver from '../studentWaiver/StudentWaiver'
 import Popup from "reactjs-popup"
 import {CreateAccount} from '../signUp/SignUp'
 import DateTime from 'react-datetime';
@@ -11,13 +11,18 @@ import {ReactQuery} from '../../../delv/delv-react'
 import {MultiSelect, Selectable} from '../common/Common'
 
 const GET_STUDENTS_BY_PARENT = parentId => `{
-  allStudents(condition:{parent:"${parentId}"}){
-    nodes{
-        parent
-        nodeId
-        id
-        firstName
-        lastName
+  allStudents(condition: {parent: "${parentId}"}) {
+    nodes {
+      parent
+      nodeId
+      id
+      firstName
+      lastName
+      studentWaiversByStudent(filter:{createdOn:{greaterThan:"${moment().subtract(1,'years').toISOString()}"}}){
+        nodes {
+          id
+        }
+      }
     }
   }
 }`
@@ -140,23 +145,61 @@ class StudentForm extends Component{
 
 }
 
+class StudentWaiverDisplay extends Component{
+    constructor(props){
+        super(props)
+        this.state = {showPopup:false}
+    }
+    showPopup = (id) => {
+        this.setState({showPopup:true, studentId:id});
+    }
+    clearPopupState = () =>{
+        this.setState({showPopup:false});
+    }
+
+    render = () => {
+        let attentionNeeded = false;
+        const children = this.props.allStudents.nodes.map((student)=>{
+            const waiver = student.studentWaiversByStudent.nodes[0];
+            if(waiver){
+                return <div key={student.nodeId} className='waiver-found'>{student.firstName} {student.lastName}</div>
+            }
+            attentionNeeded = true;
+            return <div key={student.nodeId} onClick={()=>{this.showPopup(student.id)}} className='waiver-needed'>{student.firstName} {student.lastName}</div>
+        })
+        return <div>
+            <Popup className='payment-overview-popup'open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+                <StudentWaiver studentId={this.state.studentId}> </StudentWaiver>
+            </Popup>
+            <h3 className='no-margin'>Waivers</h3>
+            {attentionNeeded?<div className='error'>Attention Needed!</div>:''}
+            {children}
+        </div>
+    }
+}
+
 function StudentSelectInner(props){
-    return <MultiSelect items={props.allStudents.nodes} {...props}>
-        <Selectable className={{selected:'selected-student-preview-container', base: 'student-preview-container'}}>
-            <StudentPreview />
-         </Selectable>
-    </MultiSelect>
+    return <div className='student-select-inner'>
+        <div className='students-container'>
+            <MultiSelect items={props.allStudents.nodes} {...props}>
+                <Selectable className={{selected:'selected-student-preview-container', base: 'student-preview-container'}}>
+                    <StudentPreview />
+                 </Selectable>
+            </MultiSelect>
+            {props.children}
+         </div>
+        <StudentWaiverDisplay allStudents={props.allStudents} />
+    </div>
 }
 
 function StudentSelect(props) {
     return <div className='styled-container column custom-scrollbar'>
             <h3>{(props.multiSelect)?'Select students':'Select a student'}</h3>
-                <div className='students-container'>
-                  <ReactQuery query={GET_STUDENTS_BY_PARENT(props.userId)}>
-                      <StudentSelectInner {...props}/>
-                  </ReactQuery>
-                  {props.createStudent?<StudentForm client={props.client} parentId={props.userId}/>:''}
-              </div>
+                <ReactQuery query={GET_STUDENTS_BY_PARENT(props.userId)} skipLoading>
+                    <StudentSelectInner {...props}>
+                        {props.createStudent?<StudentForm client={props.client} parentId={props.userId}/>:''}
+                    </StudentSelectInner>
+                </ReactQuery>
           </div>
 }
 

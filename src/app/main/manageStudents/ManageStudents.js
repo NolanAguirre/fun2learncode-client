@@ -5,7 +5,6 @@ import { ReactQuery } from '../../../delv/delv-react'
 import {SecureRoute, Location, GridView, DatesTable} from '../common/Common'
 import moment from 'moment';
 import Popup from "reactjs-popup"
-
 // user by id is included to ensure transition from loading state, even if the date intervals are the same
 const GET_DATES_WITH_STUDENT = (studentId) =>{
     return `{
@@ -130,7 +129,7 @@ class EventMonth extends Component{
 class EventMonths extends Component{
     constructor (props) {
       super(props)
-      this.state = {};
+      this.state = {selectedStudent:{}};
       this.filterToMonth();
     }
 

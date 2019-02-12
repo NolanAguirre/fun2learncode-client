@@ -8,27 +8,28 @@ import RefundResponse from '../refund/RefundResponse'
 import ViewRefund from '../refund/ViewRefund'
 
 const USER_DATA = id => `{
-	allPayments{
-    nodes{
+  allPayments(condition: {userId: "${id}"}) {
+    nodes {
       nodeId
       id
       snapshot
       status
       createOn
-	  userId
-      refundRequestsByPayment{
-        nodes{
+      userId
+      refundRequestsByPayment {
+        nodes {
           nodeId
           id
           reason
-		  grantedReason
+          grantedReason
           status
           createdOn
         }
       }
     }
   }
-}`
+}
+`
 
 function Order(props){
 	const students = props.payment.snapshot._students.map((student)=>{
@@ -63,10 +64,11 @@ function Order(props){
 				{requestForm}
 			</div>
 			<div>
-
+				<div className='styled-button center-text'>View event details</div>
 			</div>
 			<div>
-				<div>Placed at: {moment(props.payment.createOn).format('h:mm a')}</div>
+				<div>Event:</div>
+				<div>Addons: {props.payment.snapshot._addons.length}</div>
 				<div>Total: {props.payment.snapshot.total}</div>
 			</div>
 		</div>

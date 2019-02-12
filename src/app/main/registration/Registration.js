@@ -11,7 +11,7 @@ import Mutation from '../../../delv/Mutation'
 import Delv from '../../../delv/delv'
 import Payment from '../payment/Payment'
 import axios from 'axios'
-
+import moment from 'moment'
 
 const GET_EVENT_INFO_BY_ID = (id) => `{
   allEvents(condition: {id: "${id}"}) {
@@ -31,6 +31,8 @@ const GET_EVENT_INFO_BY_ID = (id) => `{
           id
           addOnByAddOn {
             name
+            description
+            price
             nodeId
             id
           }
@@ -88,6 +90,9 @@ class RegistrationInner extends Component{
   checkPrerequisite(arg0: "${this.props.eventId}", arg1: "${student.id}")
   checkRegistration(arg0: "${this.props.eventId}", arg1: "${student.id}")
   checkTime(arg0: "${this.props.eventId}", arg1: "${student.id}")
+  allStudentWaivers(condition:{student:"${student.id}"}, filter:{createdOn:{greaterThan:"${moment().subtract(1,'years').toISOString()}"}}){
+    totalCount
+  }
 }`
         return Delv.post(query).then((res)=>{
             if(!res.data.data.checkPrerequisite){
@@ -96,8 +101,12 @@ class RegistrationInner extends Component{
                 this.setState({error:`${student.firstName} ${student.lastName} is already registered for this class.`})
             }else if(!res.data.data.checkTime){
                 this.setState({error:`${student.firstName} ${student.lastName} already has classes planned for this time.`})
+            }else if(res.data.allStudentWaivers.totalCount === 0){
+                this.setState({error:`${student.firstName} ${student.lastName} has no waiver on file.`})
+            }else{
+                return true
             }
-            return res.data.data.checkPrerequisite && res.data.data.checkRegistration && res.data.data.checkTime;
+            return false
         }).catch((err)=>{console.log(err)});
     }
 
@@ -139,7 +148,7 @@ class RegistrationInner extends Component{
             </div>
             <div className='error'>{this.state.error}</div>
             <StudentSelect className='styled-container' multiSelect createStudent isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} userId={this.props.getUserData.id}/>
-            <AddonSelect classNam='styled-container' multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
+            <AddonSelect className='styled-container column' multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
             <Payment info={info}/>
         </div>
     }

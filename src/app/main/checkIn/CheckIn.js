@@ -7,7 +7,7 @@ import Logo from '../../logos/drawing.svg'
 import moment from 'moment'
 
 const GET_POSSIBLE_EVENTS = `{
-  allDateIntervals(filter: {start: {greaterThan: "${moment().subtract(10,'hours').toISOString()}", lessThan: "${moment().add(10,'hours').toISOString()}"}}) {
+  allDateIntervals(filter: {start: {greaterThan: "${moment().subtract(1000,'hours').toISOString()}", lessThan: "${moment().add(1000,'hours').toISOString()}"}}) {
     nodes {
       start
       end

@@ -63,7 +63,7 @@ class RefundRequest extends Component{
 					<button className='hacky-submit-button' type='submit'/>
 				</form>
 			</Popup>
-            <div onClick={this.showPopup} className='styled-button'>Request refund</div>
+            <div onClick={this.showPopup} className='center-text styled-button'>Request refund</div>
 		</React.Fragment>
 	}
 }

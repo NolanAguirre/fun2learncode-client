@@ -10,23 +10,21 @@ function EventComponent (props) {
             state={props.location.state}
             alias={props.location.alias} />
         <div className='section container'>
-          <div className='section'>
-            <h3 className='center-text'>Dates</h3>
-            <DatesTable className='center-x' dates={props.dates}/>
-          </div>
-
-
-        <div className='section container'>
-            <div className='center-x center-y'>
-                <div className='event-register'>
-                  <div className='event-register-price'>${props.price}</div>
-                  <Link className='default-link' to={`/Registration/${props.id}`}>
-                    <div className='event-register-btn'>Register Now</div>
-                  </Link>
-                  <div className='center-text'>Seats Left: {props.seatsLeft}</div>
+            <div className='section container column'>
+                <h3 className='center-text'>Dates</h3>
+                <DatesTable className='center-x' dates={props.dates}/>
+            </div>
+            <div className='section container column center-y'>
+                <div className='event-btn-container center-x'>
+                    <Link className='default-link event-register-btn' to={`/Registration/${props.id}`}>
+                        <h2 className='event-register-header'>Register Now</h2>
+                        <div>
+                            <span className='event-register-price'>${props.price}</span>
+                             <span className='event-register-seats'>- Seats Left: {props.seatsLeft}</span>
+                         </div>
+                    </Link>
                 </div>
             </div>
-          </div>
         </div>
     </div>
   )

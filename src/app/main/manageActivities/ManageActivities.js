@@ -4,7 +4,7 @@ import Logo from '../../logos/x-icon.svg'
 import './ManageActivities.css';
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
-import {SecureRoute, DropDown, ArchiveOptions} from '../common/Common'
+import {SecureRoute, DropDown, ArchiveOptions, GridView} from '../common/Common'
 import Activity from '../activities/activity/Activity'
 //TODO be able to remove prerequisites, make description text box keep text on edit
 
@@ -203,7 +203,7 @@ class PrerequisiteForm extends Component{
         }
     }
 }
-
+// TODO make this its own form
 class ManageActivitiesForm extends Component{
     constructor(props) {
         super(props);
@@ -316,14 +316,14 @@ class ManageActivitiesForm extends Component{
                      <span className='archive-txt'>Archive: <input name='archive' onChange={this.handleInputChange} checked={this.state.archive} type='checkbox'/></span>
                 </div>
             </React.Fragment>
-            components.buttonComponent = <button type="submit" className="activity-view-events-btn">Finish</button>
+            components.buttonComponent = <button type="submit">Finish</button>
             components.descriptionComponent = <div id={this.props.id || 'new'} onInput={this.handleDescriptionChange} className="styled-textarea" suppressContentEditableWarning={true} contentEditable></div>
         }else{
-            components.buttonComponent = <button type="button" onClick={this.toggleEdit} className="activity-view-events-btn">Edit Details</button>
+            components.buttonComponent = <button type="button" onClick={this.toggleEdit}>Edit Details</button>
             components.descriptionComponent = <div id={this.props.id || 'new'}>{this.props.description}</div>
         }
 
-        return <form key={this.props.id} onSubmit={this.mutation.onSubmit}>
+        return <form className='manage-activity-form'key={this.props.id} onSubmit={this.mutation.onSubmit}>
             <Activity {...components} name={this.formatName()} url={this.props.url} />
         </form>
     }
@@ -347,7 +347,7 @@ function ManageActivitiesInner(props) {
             })
         }
         const activities = mapActivities(props.allActivities);
-        return activities.map((activity) => {
+        const child = activities.map((activity) => {
                 return <ManageActivitiesForm
                     mutation={UPDATE_ACTIVITY}
                     categories={props.categories}
@@ -355,6 +355,7 @@ function ManageActivitiesInner(props) {
                     <PrerequisiteForm activityId={activity.id} activities={activities} />
                 </ManageActivitiesForm>
             })
+        return <GridView className='container column main-contents' itemsPerRow={3}>{child}</GridView>
 }
 
 function InBetween(props){

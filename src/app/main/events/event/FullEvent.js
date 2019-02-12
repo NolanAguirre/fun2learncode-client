@@ -2,6 +2,58 @@ import React, { Component } from 'react'
 import './Event.css'
 import {DatesTable} from '../../common/Common'
 
+const GET_EVENT = (id) => `{
+  allEvents(condition:{id:"${id}"}){
+    nodes{
+    	id
+      nodeId
+      price
+      openRegistration
+      closeRegistration
+      capacity
+      name
+      activityByActivity{
+        nodeId
+        name
+      }
+      addressByAddress{
+        nodeId
+        alias
+        street
+        state
+        city
+        zipcode
+      }
+      dateJoinsByEvent{
+        nodes{
+          nodeId
+          dateIntervalByDateInterval{
+            nodeId
+            start
+            end
+            eventLogsByDateInterval{
+              nodes{
+                nodeId
+                comment
+                userByInstructor{
+                  nodeId
+                  firstName
+                  lastName
+                }
+                studentByStudent{
+                  nodeId
+                  firstName
+                  lastName
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}`
+
 function FullEvent(props){
     return <div className='container column'>
         <h3>Event Information</h3>
