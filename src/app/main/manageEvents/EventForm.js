@@ -405,7 +405,7 @@ class EventForm extends Component {
                 </ReactQuery>
             </Popup>
             <div onClick={this.showPopup}>
-                {this.props.buttonText || 'Create new event'}
+                {this.props.buttonText || <div className='styled-button'>Create new event</div>}
             </div>
         </div>
     }
