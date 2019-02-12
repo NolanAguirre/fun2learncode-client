@@ -191,33 +191,33 @@ class ManageActivitiesForm extends Component{
     }
 
     render = () => {
-        let components = {
-            prerequesiteComponent: <React.Fragment>
-            {(this.props.prerequisites)?<Prerequisites prerequisites={this.props.prerequisites} />:""}
-            {this.props.children}
-            </React.Fragment>
-        }
         if(this.state.edit){
-            components.imageComponent = <textarea className='activity-image' value={this.state.url} name='url' placeholder='Image URL' onChange={this.handleInputChange}/>
-            components.nameComponent = <React.Fragment>
-                <div className='container column'>
-                    <div>
-                        <input name="name" onChange={this.handleInputChange} value={this.state.name} />
-                        <DropDown options={this.props.categories} name="category" value={this.state.category} onChange={this.handleInputChange}/>
-                    </div>
-                     <span className='archive-txt'>Archive: <input name='archive' onChange={this.handleInputChange} checked={this.state.archive} type='checkbox'/></span>
-                </div>
-            </React.Fragment>
-            components.buttonComponent = <button type="submit">Finish</button>
-            components.descriptionComponent = <div id={this.props.id || 'new'} onInput={this.handleDescriptionChange} className="styled-textarea" suppressContentEditableWarning={true} contentEditable></div>
+            return <form className='activity-card' key={this.props.id} onSubmit={this.mutation.onSubmit}>
+                    <textarea className='activity-image' value={this.state.url} name='url' placeholder='Image URL' onChange={this.handleInputChange}/>
+                        <div className='container column'>
+                            <div>
+                                <input name="name" onChange={this.handleInputChange} value={this.state.name} />
+                                <DropDown options={this.props.categories} name="category" value={this.state.category} onChange={this.handleInputChange}/>
+                            </div>
+                             <span className='archive-txt'>Archive: <input name='archive' onChange={this.handleInputChange} checked={this.state.archive} type='checkbox'/></span>
+                        </div>
+                      <div className='activity-body'>
+                          <div id={this.props.id || 'new'} onInput={this.handleDescriptionChange} className="styled-textarea" suppressContentEditableWarning={true} contentEditable></div>
+                      </div>
+                      <div className='styled-button margin-top-10' onClick={this.mutation.onSubmit}>Finish</div>
+                      <button className='hacky-submit-button' type='submit'/>
+                  </form>
         }else{
-            components.buttonComponent = <button type="button" onClick={this.toggleEdit}>Edit Details</button>
-            components.descriptionComponent = <div id={this.props.id || 'new'}>{this.props.description}</div>
+            const prerequisites = this.props.prerequisites && this.props.prerequisites.length !== 0?<div><h4 className='no-margin'>Prerequisites</h4></div>:''
+            return <div className='activity-card'>
+                    <img className='activity-image mobile-center-x' src={this.props.url || 'https://via.placeholder.com/350x150'} />
+                  <h2>{this.props.name}</h2>
+                      {(this.props.prerequisites)?<Prerequisites prerequisites={this.props.prerequisites} />:""}
+                      {this.props.children}
+                  <div className='activity-body'>{this.props.description}</div>
+                  <div className='styled-button margin-top-10' onClick={this.toggleEdit}>Edit</div>
+              </div>
         }
-
-        return <form className='manage-activity-form'key={this.props.id} onSubmit={this.mutation.onSubmit}>
-
-        </form>
     }
 }
 
@@ -239,21 +239,21 @@ function ManageActivitiesInner(props) {
             })
         }
         const activities = mapActivities(props.allActivities);
-        const child = activities.map((activity) => {
-                return <ManageActivitiesForm
-                    mutation={UPDATE_ACTIVITY}
-                    categories={props.categories}
-                    {...activity}>
-                    <PrerequisiteForm activityId={activity.id} activities={activities} />
-                </ManageActivitiesForm>
-            })
-        return <GridView className='container column main-contents' itemsPerRow={3}>{child}</GridView>
+        const mapped = activities.map((activity) => {
+            return <ManageActivitiesForm
+                mutation={UPDATE_ACTIVITY}
+                categories={props.categories}
+                {...activity}>
+                <PrerequisiteForm activityId={activity.id} activities={activities} />
+            </ManageActivitiesForm>
+        })
+        const child = [<ManageActivitiesForm mutation={CREATE_ACTIVITY} key='new' name={"New Activity"} categories={props.categories}/>, ...mapped]
+        return <GridView fillerStyle='activity-card' className='container column section' itemsPerRow={3}>{child}</GridView>
 }
 
 function InBetween(props){
     const categories = props.allCategories.nodes.map((element) =>  {return{name: element.name, value: element.id}})
     return <React.Fragment>
-        <ManageActivitiesForm mutation={CREATE_ACTIVITY} name={"New Activity"} categories={categories}/>
         <ArchiveOptions query={GET_ACTIVITIES}>
             <ReactQuery>
                 <ManageActivitiesInner categories={categories}/>
