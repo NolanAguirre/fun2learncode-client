@@ -10,15 +10,17 @@ import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
 import {MultiSelect, Selectable} from '../common/Common'
 
+const yearAgo = moment().subtract(1,'years').toISOString()
+
 const GET_STUDENTS_BY_PARENT = parentId => `{
   allStudents(condition: {parent: "${parentId}"}) {
     nodes {
-      parent
       nodeId
+      parent
       id
       firstName
       lastName
-      studentWaiversByStudent(filter:{createdOn:{greaterThan:"${moment().subtract(1,'years').toISOString()}"}}){
+      studentWaiversByStudent(filter:{createdOn:{greaterThan:"${yearAgo}"}}){
         nodes {
           id
           nodeId
@@ -195,6 +197,7 @@ function StudentSelectInner(props){
 }
 
 function StudentSelect(props) {
+    console.log(props)
     return <div className='styled-container column custom-scrollbar'>
             <h3>{(props.multiSelect)?'Select students':'Select a student'}</h3>
                 <ReactQuery query={GET_STUDENTS_BY_PARENT(props.userId)} skipLoading>

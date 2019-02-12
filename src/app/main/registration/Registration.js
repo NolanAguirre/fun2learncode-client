@@ -90,9 +90,7 @@ class RegistrationInner extends Component{
   checkPrerequisite(arg0: "${this.props.eventId}", arg1: "${student.id}")
   checkRegistration(arg0: "${this.props.eventId}", arg1: "${student.id}")
   checkTime(arg0: "${this.props.eventId}", arg1: "${student.id}")
-  allStudentWaivers(condition:{student:"${student.id}"}, filter:{createdOn:{greaterThan:"${moment().subtract(1,'years').toISOString()}"}}){
-    totalCount
-  }
+  checkWaiver(arg0:"${student.id}")
 }`
         return Delv.post(query).then((res)=>{
             if(!res.data.data.checkPrerequisite){
@@ -101,7 +99,7 @@ class RegistrationInner extends Component{
                 this.setState({error:`${student.firstName} ${student.lastName} is already registered for this class.`})
             }else if(!res.data.data.checkTime){
                 this.setState({error:`${student.firstName} ${student.lastName} already has classes planned for this time.`})
-            }else if(res.data.data.allStudentWaivers.totalCount === 0){
+            }else if(res.data.data.checkWaiver){
                 this.setState({error:`${student.firstName} ${student.lastName} has no waiver on file.`})
             }else{
                 return true
