@@ -194,14 +194,15 @@ class CustomProvider extends Component{
     constructor(props){
         super(props);
         this.propName = `${props.propName}Provider`
-        this.state={[this.propName]:props.defaultVal|| {}}
+        const recentValue = EventSystem.recentValues.get(this.propName);
+        if(recentValue){
+            this.state = {[this.propName]:recentValue}
+        }else{
+            this.state={[this.propName]:props.defaultVal|| {}}
+        }
     }
     componentDidMount = () => {
         EventSystem.on(this.propName, this.handleEvent);
-        const recentValue = EventSystem.recentValues.get(this.propName);
-        if(recentValue){
-            this.setState({[this.propName]:recentValue})
-        }
     }
     componentWillUnmount = () => {
         EventSystem.removeListener(this.propName, this.handleEvent)
