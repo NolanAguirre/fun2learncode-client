@@ -10,56 +10,6 @@ import Colors from '../calendar/Colors'
 import moment from 'moment'
 import EventForm from './EventForm'
 
-const GET_EVENT_INFO_BY_ID = (id) => {
-    return `{
-  allEvents(condition: {id: "${id}"}) {
-    nodes {
-      nodeId
-      id
-      archive
-      name
-      openRegistration
-      closeRegistration
-      seatsLeft
-      capacity
-      price
-      addOnJoinsByEvent {
-        nodes {
-          nodeId
-          id
-          addOnByAddOn {
-            name
-            nodeId
-            id
-          }
-        }
-      }
-      dateJoinsByEvent {
-        nodes {
-          nodeId
-          id
-          dateIntervalByDateInterval {
-            id
-            nodeId
-            start
-            end
-          }
-        }
-      }
-      addressByAddress {
-        alias
-        nodeId
-        id
-      }
-      activityByActivity {
-        id
-        nodeId
-        name
-      }
-    }
-  }
-}`}
-
 const GET_EVENTS = (eventArchive) => `{
   allEvents (condition: {${eventArchive}}){
     nodes {

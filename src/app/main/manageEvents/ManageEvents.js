@@ -3,7 +3,8 @@ import {DropDown} from '../common/Common';
 import './ManageEvents.css';
 import DragAndDropMutation from '../calendar/Calendar';
 import EventForm from './EventForm';
-import {SecureRoute, CustomProvider} from '../common/Common'
+import QueryFullEvent from '../events/event/QueryFullEvent'
+import {SecureRoute, CustomProvider, BasicPopup} from '../common/Common'
 import {EventsPreview, EventInfo} from './EventsPreview';
 
 function ManageEvents(props){
@@ -13,6 +14,10 @@ function ManageEvents(props){
                     <div className="container column section">
                         <div className="manage-events-event-form">
                             <EventForm/>
+                            <BasicPopup>
+                                <QueryFullEvent />
+                                <button>full event details</button>
+                            </BasicPopup>
                         </div>
                         <DragAndDropMutation/>
                     </div>
