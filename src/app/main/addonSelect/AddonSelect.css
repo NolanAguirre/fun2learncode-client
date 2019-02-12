@@ -29,7 +29,6 @@
 .registration-addons-container{
     display: flex;
     overflow-x: auto;
-    padding: 20px 10px;
 }
 
 .addon-select-filler{

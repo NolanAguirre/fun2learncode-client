@@ -7,7 +7,7 @@
 .grid-view-row{
     display:flex;
     flex-wrap: wrap;
-    flex:1;
+    width:100%;
 }
 .grid-filler{
     flex:1;

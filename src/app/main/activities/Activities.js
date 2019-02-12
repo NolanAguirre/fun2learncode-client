@@ -46,18 +46,18 @@ function ActivitiesInner(props) {
     }
     const child = activities.map((element) => {
         let prerequisites = element.activityPrerequisitesByActivity.nodes.map(prerequisite => prerequisite.activityByPrerequisite.name)
-        return <Activity name={element.name} prerequisites={prerequisites} description={element.description} id={element.id} key={element.id} url={element.url}/>
+        return <Activity history={props.history} name={element.name} prerequisites={prerequisites} description={element.description} id={element.id} key={element.id} url={element.url}/>
     })
     return <div  className='container column main-contents'>
         <h1 className='center-text'>{props.catagory}</h1>
-        <GridView className='container column main-contents' itemsPerRow={3}>{child}</GridView>
+        <GridView className='container column section' itemsPerRow={3}>{child}</GridView>
 </div>
 }
 
 function Activities(props) {
     const loading = <div className='container column main-contents' style={{background:'white'}}></div>
     return  <ReactQuery query={GET_ACTIVITIES_IN_CATAGORY(props.match.params.type)} loading={loading}>
-            <ActivitiesInner catagory={props.match.params.type}/>
+            <ActivitiesInner history={props.history} catagory={props.match.params.type}/>
         </ReactQuery>
 }
 export default Activities

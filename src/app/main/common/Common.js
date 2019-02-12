@@ -95,7 +95,7 @@ function DatesTable(props){
         {dates.map((date, index) => {
           return <React.Fragment key={index}>
               <tr className='no-wrap-row'>
-            <td>{localizeUTCTimestamp(date.start).format(props.startFormat || "ddd MMM DD")}</td>
+            <td>{localizeUTCTimestamp(date.start).format(props.startFormat || "ddd MMM Do")}</td>
             <td>{localizeUTCTimestamp(date.start).format(props.startFormat || "h:mm a") + "-" + localizeUTCTimestamp(date.end).format(props.startFormat || "h:mm a")}</td>
           </tr>
         </React.Fragment>
