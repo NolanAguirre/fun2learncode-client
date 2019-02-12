@@ -12,8 +12,10 @@ const CREATE_REFUND_REQUEST = `mutation($user:UUID!, $payment:UUID!, $reason:Str
 	  id
 	  reason
 	  status
-	  createOn
+	  createdOn
+	  grantedReason
 	  paymentByPayment{
+		  id
 		  nodeId
 	  }
     }
@@ -29,6 +31,9 @@ class RefundRequest extends Component{
 			onSubmit:this.handleSubmit,
 			onResolve:this.clearPopupState
 		})
+	}
+	componentWillUnmount = () => {
+		this.mutation.removeListeners()
 	}
 	showPopup = () => {
 		this.setState({showPopup:true})

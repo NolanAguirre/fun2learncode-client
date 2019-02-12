@@ -84,7 +84,9 @@ class RefundResponse extends Component{
 						<div style={{height:'40px'}}>
 
 							Grant:<input checked={this.state.grant} name='grant' type='checkbox'  onChange={this.handleChange}/>
-							{this.state.grant?<React.Fragment>Amount:<input style={{width:'80px'}} type='number' name='amountRefunded' value={this.state.amountRefunded} onChange={this.handleChange}/></React.Fragment>:''}
+							{this.state.grant?
+                                <React.Fragment>Amount:<input style={{width:'80px'}} type='number' name='amountRefunded' value={this.state.amountRefunded} onChange={this.handleChange}/> of {this.props.total}
+                            </React.Fragment>:''}
 							{this.state.grant?<div>
 								Remove registration:<input checked={this.state.remove} name='remove' type='checkbox'  onChange={this.handleChange}/>
 							</div>:''}
