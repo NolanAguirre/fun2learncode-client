@@ -46,13 +46,14 @@ function Order(props){
     const pc = snapshot._promoCode
 	let refundRequest = props.payment.refundRequestsByPayment.nodes[0]
 	let requestForm
-    let refundAmount
+    let refundAmount = 0;
 	if(props.adminForm){
 		if(refundRequest){
 			if(refundRequest.status === 'PENDING'){
 				requestForm = <RefundResponse{...refundRequest} userId={props.payment.userId} paymentId={props.payment.id} total={parseFloat(props.payment.snapshot.total)}/>
 			}else{
 				requestForm = <ViewRefund {...refundRequest}/>
+                refundAmount = refundRequest.amountRefunded
 			}
 		}
 	}else{
