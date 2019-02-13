@@ -284,7 +284,7 @@ class ArchiveOptions extends Component{
 
     render = () => {
         return <React.Fragment>
-            <div>
+            <div className='margin-top-10'>
                 <h4 className='no-margin center-text'>{this.props.label}</h4>
                 <div className={this.props.className || 'archive-options-container'}>
                     <MultiSelect items={this.options} setSelected={this.setSelectedOption} default={this.options[0]} alwaysSelect>

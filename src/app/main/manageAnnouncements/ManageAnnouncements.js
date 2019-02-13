@@ -69,7 +69,7 @@ class ManageAnnouncementsInner extends Component{
     }
 
     render = () => {
-        return <form className="styled-container main-contents column" onSubmit={this.mutation.onSubmit}>
+        return <form className="announcement-container main-contents" onSubmit={this.mutation.onSubmit}>
                 <div className='center-x'>
                     <input className='announcement-title-input' name="title" onChange={this.handleChange} value={this.state.title} placeholder='Title' />
                 </div>

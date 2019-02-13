@@ -1,11 +1,11 @@
 .main{
     flex:1;
     display: flex;
+    justify-content: center;
 }
 .main-contents{
     max-width: 1200px;
     flex:1;
-    margin: 0 auto;
 }
 
 @media screen and (max-width: 1200px) {

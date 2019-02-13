@@ -89,7 +89,7 @@ body {
 }
 .styled-textarea {
     flex: 1;
-    min-height: 40px;
+    min-height: 200px;
     word-wrap: break-word;
     border: 1px solid rgb(214, 214, 214);
     color: gray;

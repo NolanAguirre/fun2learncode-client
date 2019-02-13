@@ -61,8 +61,12 @@ function FullEvent(props){
             <table className="section">
                 <tbody>
                     <tr>
-                        <td>Event:</td>
+                        <td>Activity:</td>
                         <td>{props.activity.name}</td>
+                    </tr>
+                    <tr>
+                        <td>Event:</td>
+                        <td>{props.name}</td>
                     </tr>
                     <tr>
                         <td>Location: </td>

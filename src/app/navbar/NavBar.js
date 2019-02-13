@@ -156,7 +156,7 @@ class NavBarInner extends Component {
     }
     render = () => {
         const routes = this.getRoutes();
-        return (<header className='navbar'>
+        return (<header>
         <div className='navbar-desktop'>
             <img className='nav-logo' alt='Fun 2 Learn Code logo' src={Logo}/>
             <div className='nav-item-container'>

@@ -308,7 +308,7 @@ class ManagePromoCodesInner extends Component {
 
 function ManagePromoCodes(props){
     return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
-        <div className='main-contents container column'>
+        <div className='main-contents container column margin-top-10'>
             <ReactQuery query={GET_DROPDOWN}>
                     <ManagePromoCodesInner />
             </ReactQuery>

@@ -197,7 +197,6 @@ function StudentSelectInner(props){
 }
 
 function StudentSelect(props) {
-    console.log(props)
     return <div className='styled-container column custom-scrollbar'>
             <h3>{(props.multiSelect)?'Select students':'Select a student'}</h3>
                 <ReactQuery query={GET_STUDENTS_BY_PARENT(props.userId)} skipLoading>

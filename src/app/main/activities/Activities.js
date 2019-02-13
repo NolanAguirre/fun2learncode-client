@@ -39,7 +39,7 @@ const GET_ACTIVITIES_IN_CATAGORY = (name) => {
 function ActivitiesInner(props) {
     const activities = props.allCategories.nodes[0].activitiesByCategory.nodes;
     if (activities.length == 0) {
-        return <div style={{background:'white'}} className='center-y main-contents'>
+        return <div className='center-y main-contents'>
             <img src={SadFace} title='Icon made by Freepik from www.flaticon.com' />
             <h2 style={{color:'rgb(164, 164, 164)'}} className='center-text'>Sorry! We currently aren't offering any {props.catagory.toLowerCase()} at this time.</h2>
         </div>
@@ -49,9 +49,9 @@ function ActivitiesInner(props) {
         return <Activity history={props.history} name={element.name} prerequisites={prerequisites} description={element.description} id={element.id} key={element.id} url={element.url}/>
     })
     return <div  className='container column main-contents'>
-        <h1 className='center-text'>{props.catagory}</h1>
+        <h1 className='category-header'>{props.catagory}</h1>
         <GridView className='container column section' itemsPerRow={3}>{child}</GridView>
-</div>
+    </div>
 }
 
 function Activities(props) {
