@@ -5,7 +5,7 @@ const gql = require('graphql-tag')
 const util = require('util');
 var _ = require('lodash');
 
-let UID = 'nodeId'
+let UID = 'id'
 
 class Cache {
     constructor() {
