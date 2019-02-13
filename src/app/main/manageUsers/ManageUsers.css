@@ -1,8 +1,31 @@
-.user-btn{
-    display: flex;
+
+.manage-users{
+    margin: 10px 0;
+    background-color: white;
     flex:1;
-    justify-content: space-between;
+    max-width: 1200px;
+
 }
 .manage-user-form{
     padding:20px 40px;
+}
+.manage-users-table{
+    border-collapse: collapse;
+    width:100%;
+}
+.manage-users-table td{
+    border: 1px solid black;
+    font-size: 12px;
+}
+/* .manage-users-table tr:nth-child(odd) {
+  background-color: #e4e4e4;
+}
+
+.manage-users-table tr:nth-child(even) {
+  background-color: white;
+} */
+.manage-users-table tr:nth-child(even) td:nth-child(odd),
+ .manage-users-table tr:nth-child(odd) td:nth-child(even)
+{
+    background-color: #e4e4e4;
 }

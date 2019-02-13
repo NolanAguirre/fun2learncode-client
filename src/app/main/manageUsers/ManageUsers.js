@@ -6,21 +6,38 @@ import moment from 'moment';
 import OrderHistory from '../orderHistory/OrderHistory'
 import './ManageUsers.css'
 import alert from '../../logos/alert.svg'
+import Popup from "reactjs-popup"
 const GET_USERS = `{
   allUsers{
     nodes{
+      nodeId
       id
       firstName
       lastName
-      createdOn
       email
-      role
+    }
+  }
+}`
+
+const GET_USER_DATA = (userId) => `{
+  allUsers(condition:{id:"${userId}"}){
+    nodes{
       nodeId
-      refundRequestsByUserId(condition:{status:PENDING}){
+      id
+      createdOn
+      role
+      firstName
+      lastName
+      email
+      refundRequestsByUserId{
         nodes{
-          id
-          status
           nodeId
+          id
+          reason
+          amountRefunded
+          grantedReason
+          status
+          createdOn
         }
       }
       studentsByParent{
@@ -70,7 +87,7 @@ class ManageUserForm extends Component{
     constructor(props){
         super(props)
         this.state = {
-            promote:this.props.role,
+            promote:props.allUsers.nodes[0].role,
             student:undefined
         }
         this.promoteMutation = new Mutation({
@@ -97,6 +114,7 @@ class ManageUserForm extends Component{
         this.setState({selectedStudent:student});
     }
     render = () => {
+        const user = this.props.allUsers.nodes[0]
         return <div className='manage-user-form'>
         <h1>{this.props.firstName} {this.props.lastName}</h1>
             <div>
@@ -105,23 +123,23 @@ class ManageUserForm extends Component{
                     <tbody>
                         <tr>
                             <td>Name: </td>
-                            <td>{this.props.firstName} {this.props.lastName}</td>
+                            <td>{user.firstName} {user.lastName}</td>
                         </tr>
                         <tr>
                             <td>ID: </td>
-                            <td>{this.props.id}</td>
+                            <td>{user.id}</td>
                         </tr>
                         <tr>
                             <td>Email: </td>
-                            <td>{this.props.email}</td>
+                            <td>{user.email}</td>
                         </tr>
                         <tr className='no-wrap'>
                             <td>Memeber since: </td>
-                            <td>{moment(this.props.createdOn).format('MMM, Do YYYY')}</td>
+                            <td>{moment(user.createdOn).format('MMM, Do YYYY')}</td>
                         </tr>
                         <tr>
                             <td>role: </td>
-                            <td>{this.props.role}</td>
+                            <td>{user.role}</td>
                         </tr>
                         <tr>
                             <td>promote to: </td>
@@ -134,61 +152,52 @@ class ManageUserForm extends Component{
             </div>
             <div>
                 <h2>Order History</h2>
-                <OrderHistory userId={this.props.id} adminForm={true}/>
+                <OrderHistory userId={user.id} adminForm={true}/>
             </div>
-            {this.props.students.length > 0?<div>
+            {user.studentsByParent.nodes.length > 0?<div>
                 <h2>Students</h2>
-                <DropDown options={this.props.students} value={this.state.student} name='student' onChange={this.handleChange} />
             </div>:<div>
             <h2>This user has no students</h2>
         </div>}
         </div>
     }
 }
+// <DropDown options={this.props.students} value={this.state.student} name='student' onChange={this.handleChange} />
 
+
+
+const itemsPerRow = 5;
 class ManageUsersInner extends Component {
-  constructor (props) {
-    super(props)
-  }
-  handleInputChange = (event) => {
-    const target = event.target
-    const value = target.type === 'checkbox'
-      ? target.checked
-      : target.value
-    const name = target.name
-    this.setState({ [name]: value })
-  }
-  render = () => {
-    const users = this.props.allUsers.nodes.map((user) =>{
-        const students = user.studentsByParent.nodes.map((student)=>{
-            return{
-                name: `${student.firstName} ${student.lastName}`,
-                value: student.id
-            }
-        })
-        const showAlert = user.refundRequestsByUserId.nodes.length > 0
-        return <BasicPopup className='payment-overview-popup' key={user.id} buttonClassName="grid-item-container">
-            <ManageUserForm
-                id={user.id}
-                email={user.email}
-                createdOn={user.createdOn}
-                firstName={user.firstName}
-                lastName={user.lastName}
-                role={user.role}
-                students={students}
-                hasRefundRequest={user.refundRequestsByUserId.nodes.length > 0}/>
-                <React.Fragment>
-                    <div className='user-btn'>
-                        <span>{user.firstName} {user.lastName}</span>
-                        {showAlert?<img src={alert} className='alert-logo'/>:''}
-                    </div>
-                </React.Fragment>
-        </BasicPopup>
-            })
-    return <div className="main-contents container column">
-        <GridView className="container column" fillerStyle={'grid-item-container'} itemsPerRow={5}>{users}</GridView>
-    </div>
-  }
+    constructor(props){
+        super(props)
+        this.state = {showPopup:false}
+    }
+    showPopup = (userId) => {
+        this.setState({showPopup:true, userId})
+    }
+    clearPopupState = () => {
+        this.setState({showPopup:false, userId:undefined})
+    }
+    render = () => {
+        const allUsers = this.props.allUsers.nodes
+        let child = [];
+        for(let x = 0; x < allUsers.length; x+=itemsPerRow){
+            let rows = allUsers.slice(x,x+itemsPerRow).map((user)=><td key={user.id}><div onClick={()=>{this.showPopup(user.id)}}>{user.firstName} {user.lastName}<br/>{user.email}</div></td>)
+            child.push(<tr key={x}>{rows}</tr>)
+        }
+        return<div className='manage-users'>
+            <Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState} className='main-contents'>
+                <ReactQuery query={GET_USER_DATA(this.state.userId)}>
+                    <ManageUserForm/>
+                </ReactQuery>
+            </Popup>
+            <table className='manage-users-table'>
+                <tbody>
+                    {child}
+                </tbody>
+            </table>
+        </div>
+    }
 }
 
 function ManageUsers(props){
