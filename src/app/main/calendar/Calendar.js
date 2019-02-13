@@ -12,22 +12,19 @@ import {ReactQuery} from '../../../delv/delv-react'
 import Delv from '../../../delv/delv'
 import { CustomProvider } from '../common/Common'
 
+const localizer = BigCalendar.momentLocalizer(moment)
+
 const GET_EVENTS = `{
-  allEvents {
+  allEvents(condition: {showCalendar: true}) {
     nodes {
-      nodeId
-      id
-      archive
-      nodeId
       id
       name
+      showCalendar
       dateJoinsByEvent {
         nodes {
-          nodeId
           id
           dateIntervalByDateInterval {
             id
-            nodeId
             start
             end
           }
@@ -37,58 +34,18 @@ const GET_EVENTS = `{
   }
 }`
 
-const localizer = BigCalendar.momentLocalizer(moment);
-function Calendar(props){
-    let colors = ['blue', 'red', 'green', 'purple']
-    function flattenDeep(arr1) {
-        return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val), []);
-    }
-    let events = flattenDeep(props.calanderEvents.map((element)=>{
-        let address = element.node.addressByAddress.alias;
-        let name = element.node.activityByEventType.name;
-        let dateGroups = element.node.eventDatesByEvent.edges.map((el)=>{
-            let date = el.node.dateGroupByDateGroup.datesJoinsByDateGroup.edges.map((foo)=>{
-                let color = colors.pop();
-                return {
-                    title:name + " @ " + address,
-                    start: new Date(foo.node.dateIntervalByDateInterval.start),
-                    end: new Date(foo.node.dateIntervalByDateInterval.end),
-                    resource: {buttonStyle:{backgroundColor:color}},
-
-                };
-            })
-            return date;
-        })
-        return dateGroups.filter((el)=>{
-            return el.length > 0;
-        })
-    }).filter((el)=>{
-        return el.length > 0;
-    }))
-    return(
-    <div className={props.className}>
-    <BigCalendar
-      popup
-      showMultiDayTimes={true}
-      localizer={localizer}
-      events={events}
-      eventPropGetter={(event,start,end,isSelected: boolean ) => {return{style:event.buttonStyle}}}
-      tooltipAccessor={(event)=>{return moment(event.start).format("HH:MM") + " - " + moment(event.end).format("HH:MM")}}
-    />
-  </div>);
-}
 
 function DragAndDropCalendar(props){
     const events = props.events.map((event)=>{
         const eventId = event.resources.eventId
         if(event.id === props.selected.id){
             event.buttonStyle.backgroundColor = Colors.get(eventId).hover
+            event.buttonStyle.color = 'black'
         }else{
             event.buttonStyle.backgroundColor = Colors.get(eventId).regular
+            event.buttonStyle.color = 'rgb(80, 80, 80)'
         }
         return event;
-    }).filter((event)=>{
-        return !props.hiddenEvents.includes(event.resources.eventId)
     })
     return (
       <BigCalendar
@@ -113,7 +70,6 @@ function DragAndDropCalendar(props){
 class DragAndDropMutationInner extends Component{
     constructor(props){
         super(props);
-        console.log(this.props)
         this.state = {
             selected:{id:null},
             showPopup: false,
@@ -215,7 +171,7 @@ class DragAndDropMutationInner extends Component{
 
     newEvent = (event) => { //event that files on slot select
         const eventId = this.props.activeEventProvider.id;
-        if (eventId && event.action === 'doubleClick' && !this.props.hiddenEventsProvider.includes(eventId)) {
+        if (eventId && event.action === 'doubleClick') {
             this.popupEvent = {
                 id: this.genRandomId(),
                 title: this.props.activeEventProvider.name,
@@ -305,7 +261,6 @@ ${moment(event.start).format('h:mm a')} to ${moment(event.end).format('h:mm a')}
             </Popup>
             <DragAndDropCalendar
             selected={this.state.selected}
-            hiddenEvents={this.props.hiddenEventsProvider}
             removeEvent={this.removeEvent}
             selectEvent={this.selectEvent}
             newEvent={this.newEvent}
@@ -333,7 +288,7 @@ function DragAndDropMutation(props){
             let calendarEvents = event.dateJoinsByEvent.nodes.map((dateJoin) => {
                 let dateInterval = dateJoin.dateIntervalByDateInterval;
                 return {
-                    id: `${event.nodeId}${dateInterval.nodeId}`,
+                    id: `${event.id}${dateInterval.id}`,
                     start: localizeUTCTimestamp(dateInterval.start),
                     end: localizeUTCTimestamp(dateInterval.end),
                     title: event.name,
@@ -362,9 +317,7 @@ function DragAndDropMutation(props){
 
     return <ReactQuery query={GET_EVENTS} formatResult={formatQueryResults}>
         <CustomProvider propName='activeEvent'>
-            <CustomProvider propName='hiddenEvents' defaultVal={[]}>
-                <DragAndDropMutationInner {...props}/>
-            </CustomProvider>
+            <DragAndDropMutationInner {...props}/>
         </CustomProvider>
     </ReactQuery>
 }
