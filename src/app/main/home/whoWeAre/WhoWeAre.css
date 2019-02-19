@@ -1,6 +1,7 @@
 .who-we-are {
     background-color: white;
 }
+
 .who-we-are-container{
     display:flex;
     flex-wrap: wrap;

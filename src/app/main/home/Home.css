@@ -41,6 +41,7 @@
 }
 
 .class-structure {
+    margin:0 auto;
     display:flex;
     flex-direction: column;
     color: rgb(102, 102, 102);

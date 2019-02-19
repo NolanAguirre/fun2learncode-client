@@ -1,16 +1,15 @@
 .home-announcement{
-    display: flex;
-    justify-content: center;
-    padding: 100px 0px;
 }
 .announcements{
     flex:1;
     display:flex;
+    margin:0 auto;
 }
 .announcements-container{
     flex:1;
     display:flex;
     justify-content: center;
+    padding:20px;
 }
 .announcement-body-container{
     width: 300px;
