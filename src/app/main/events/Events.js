@@ -5,10 +5,10 @@ import {ReactQuery} from '../../../delv/delv-react'
 import moment from 'moment'
 import SadFace from '../../logos/sadface.svg'
 import {GridView} from '../common/Common'
-
+const NOW = new Date().toISOString()
 const GET_EVENTS_OF_TYPE = (id) => {
   return `{
-  allEvents(condition: {activity: "${id}"}, filter: {openRegistration: {lessThanOrEqualTo: "${new Date().toISOString()}"}, closeRegistration: {greaterThanOrEqualTo: "${new Date().toISOString()}"}, seatsLeft: {greaterThan: 0}}) {
+  allEvents(condition: {activity: "${id}"}, filter: {openRegistration: {lessThanOrEqualTo: "${NOW}"}, closeRegistration: {greaterThanOrEqualTo: "${NOW}"}, seatsLeft: {greaterThan: 0}}) {
     nodes {
       id
       nodeId

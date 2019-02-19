@@ -23,6 +23,7 @@ import ManagePromoCodes from './managePromoCodes/ManagePromoCodes'
 import ResetPassword from './resetPassword/ResetPassword'
 import RecoverPassword from './recoverPassword/RecoverPassword'
 import ManageAnnouncements from './manageAnnouncements/ManageAnnouncements'
+import RecentEvents from './recentEvents/RecentEvents'
 
 class Main extends Component {
   constructor (props) {
@@ -52,6 +53,7 @@ class Main extends Component {
             <Route exact path='/Admin/Manage Users' component={ManageUsers} />
             <Route exact path='/Admin/Manage Promo Codes' component={ManagePromoCodes} />
             <Route exact path='/Admin/Announcements' component={ManageAnnouncements} />
+            <Route exact path='/Recent Events' component={RecentEvents} />
 
             <Route exact path='/test' component={Test} />
 

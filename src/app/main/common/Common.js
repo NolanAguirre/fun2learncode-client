@@ -4,6 +4,8 @@ import { ReactQuery } from '../../../delv/delv-react'
 import Popup from "reactjs-popup"
 import moment from 'moment';
 import EventSystem from '../../EventSystem'
+import DateTime from 'react-datetime'
+
 const GET_USER_DATA = `{
     getUserData{
         nodeId
@@ -301,3 +303,46 @@ class ArchiveOptions extends Component{
 
 
 export { ArchiveOptions }
+
+class TimeRangeSelector extends Component{
+    constructor(props){
+        super(props)
+        this.state = {
+            start:moment().add(1, 'months'),
+            past: 2
+        }
+    }
+    localizeUTCTimestamp = (timestamp) => {
+        if (!timestamp) {
+            return null
+        }
+        return new Date(moment(moment.utc(timestamp)).local().toString())
+    }
+    handleTimeChange = (key, value) => {
+        this.setState({[key]: value})
+    }
+
+    handleChange = (event) => {
+        const target = event.target;
+        const value = target.type === 'checkbox'
+            ? target.checked
+            : target.value;
+        const name = target.name;
+        this.setState({[name]: value});
+    }
+
+    render = () => {
+        return <React.Fragment>
+        <div className='container'>
+            Start
+            <DateTime className="full-date-input" dateFormat="MMMM YYYY" timeFormat={false} value={this.state.start} onChange={(time) =>{this.handleTimeChange("start", time)}}/>
+            Past <input className="full-date-input" name={"past"} value={this.state.past} onChange={this.handleChange}/> Months
+        </div>
+        {React.cloneElement(this.props.children, {query:this.props.query(moment(this.state.start).subtract(this.state.past, 'months').endOf('month').toISOString(),
+            moment(this.state.start).endOf('month').toISOString())})}
+    </React.Fragment>
+    }
+}
+
+
+export { TimeRangeSelector }

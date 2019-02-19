@@ -14,27 +14,23 @@ import Logo from '../../logos/x-icon.svg'
 const GET_DROPDOWN = `{
   allAddresses {
     nodes {
-      nodeId
       id
       alias
     }
   }
   allActivities {
-   nodes {
-     id
-     nodeId
-     name
-    categoryByCategory{
-       name
-       id
-       nodeId
-     }
-   }
- }
+    nodes {
+      id
+      name
+      categoryByCategory {
+        name
+        id
+      }
+    }
+  }
   allAddOns {
     nodes {
       id
-      nodeId
       name
       description
     }
@@ -45,35 +41,31 @@ const CREATE_EVENT= `mutation ($event: EventInput!) {
   createEvent(input: {event: $event}) {
     event {
       id
-      nodeId
       archive
       price
       seatsLeft
       capacity
-      nodeId
       name
       openRegistration
       closeRegistration
       activity
       address
-      addOnJoinsByEvent{
-          nodes{
-              nodeId
-              id
-          }
+      showCalendar
+      addOnJoinsByEvent {
+        nodes {
+          id
+        }
       }
       activityByActivity {
         id
-        nodeId
       }
       addressByAddress {
-        nodeId
         alias
         id
       }
       dateJoinsByEvent {
         nodes {
-          nodeId
+          id
         }
       }
     }
@@ -84,7 +76,6 @@ const UPDATE_EVENT= `mutation ($id: UUID!, $event: EventPatch!) {
   updateEventById(input: {id: $id, eventPatch: $event}) {
     event {
       id
-      nodeId
       archive
       price
       seatsLeft
@@ -94,25 +85,12 @@ const UPDATE_EVENT= `mutation ($id: UUID!, $event: EventPatch!) {
       closeRegistration
       activity
       address
-      addOnJoinsByEvent{
-        nodes{
-           nodeId
-              id
-          }
-      }
       activityByActivity {
         id
-        nodeId
       }
       addressByAddress {
-        nodeId
         alias
         id
-      }
-      dateJoinsByEvent {
-        nodes {
-          nodeId
-        }
       }
     }
   }
@@ -121,27 +99,26 @@ const UPDATE_EVENT= `mutation ($id: UUID!, $event: EventPatch!) {
 const REMOVE_ADDON = `mutation ($id: UUID!) {
   deleteAddOnJoinById(input: {id: $id}) {
     addOnJoin {
-      nodeId
+      id
       addOnByAddOn {
-        nodeId
+        id
       }
       eventByEvent {
-        nodeId
+        id
       }
     }
   }
 }`
 
-const CREATE_ADDON = `mutation($addon:CreateAddOnJoinInput!){
-  createAddOnJoin(input:$addon){
-    addOnJoin{
-      nodeId
+const CREATE_ADDON = `mutation ($addon: CreateAddOnJoinInput!) {
+  createAddOnJoin(input: $addon) {
+    addOnJoin {
       id
-      addOnByAddOn{
-        nodeId
+      addOnByAddOn {
+        id
       }
-      eventByEvent{
-        nodeId
+      eventByEvent {
+        id
       }
     }
   }
@@ -236,8 +213,8 @@ class EventFormInner extends Component {
             price: props.price || 100,
             capacity: props.capacity || 8,
             address: props.address,
-            openRegistration: this.localizeUTCTimestamp(props.openRegistration) || new Date(moment().hour(23).minute(59).toString()),
-            closeRegistration: this.localizeUTCTimestamp(props.closeRegistration) || new Date(moment().add(1, "days").hour(23).minute(59).toString()),
+            openRegistration: this.localizeUTCTimestamp(props.openRegistration) || new Date(moment().hour(23).minute(59).second(59).millisecond(999).toString()),
+            closeRegistration: this.localizeUTCTimestamp(props.closeRegistration) || new Date(moment().add(1, "days").hour(23).minute(59).second(59).millisecond(999).toString()),
             archive: false || this.props.archive,
             activity: this.props.activity
         }
@@ -412,9 +389,3 @@ class EventForm extends Component {
 }
 
 export default EventForm;
-
-// delete from ftlc.date_group;
-//
-// delete from ftlc.events;
-//
-// delete from ftlc.activities;

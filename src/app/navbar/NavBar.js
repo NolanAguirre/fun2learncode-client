@@ -68,6 +68,12 @@ const routeNames = [
             return !user
         }
     },{
+        name: 'Recent Events',
+        route: 'Recent Events',
+        test:(user) => {
+            return user && admins.includes(user.role)
+        }
+    },{
         name: 'Announcements',
         route: 'Admin/Announcements',
         test:(user) => {
