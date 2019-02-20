@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import {ReactQuery} from '../../../delv/delv-react'
-import {SecureRoute} from '../common/Common'
+import {SecureRoute, BasicPopup} from '../common/Common'
 import moment from 'moment'
 import './OrderHistory.css'
 import RefundRequest from '../refund/RefundRequest'
 import RefundResponse from '../refund/RefundResponse'
 import ViewRefund from '../refund/ViewRefund'
-
+import QueryFullEvent from '../events/event/QueryFullEvent'
 const USER_DATA = id => `{
   allPayments(condition: {userId: "${id}"}) {
     nodes {
@@ -29,8 +29,7 @@ const USER_DATA = id => `{
       }
     }
   }
-}
-`
+}`
 
 function OrderRow(props){
     return<tr>
@@ -122,7 +121,10 @@ function Order(props){
 				{requestForm}
 			</div>
 			<div>
-				<div className='styled-button center-text'>View event details</div>
+                <BasicPopup>
+                    <QueryFullEvent eventId={event.id} />
+                    <div className='styled-button center-text'>View event details</div>
+                </BasicPopup>
 			</div>
 		</div>
     </div>

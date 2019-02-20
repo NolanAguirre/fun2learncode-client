@@ -8,7 +8,6 @@ const GET_EVENT = (id) => `{
   allEvents(condition: {id: "${id}"}) {
     nodes {
       id
-      nodeId
       price
       openRegistration
       closeRegistration
@@ -17,10 +16,8 @@ const GET_EVENT = (id) => `{
       seatsLeft
       addOnJoinsByEvent{
         nodes{
-          nodeId
           id
           addOnByAddOn{
-            nodeId
             id
             price
             name
@@ -29,11 +26,11 @@ const GET_EVENT = (id) => `{
         }
       }
       activityByActivity {
-        nodeId
+        id
         name
       }
       addressByAddress {
-        nodeId
+        id
         alias
         street
         state
@@ -42,9 +39,9 @@ const GET_EVENT = (id) => `{
       }
       dateJoinsByEvent {
         nodes {
-          nodeId
+          id
           dateIntervalByDateInterval {
-            nodeId
+            id
             start
             end
           }
@@ -120,8 +117,11 @@ function InBetween(props){
 }
 
 function FullEvent(props){
+    if(props.eventId){
+        return <InBetween {...props}/>
+    }
     return <CustomProvider propName='activeEvent'>
-        <InBetween/>
+        <InBetween {...props}/>
     </CustomProvider>
 }
 
