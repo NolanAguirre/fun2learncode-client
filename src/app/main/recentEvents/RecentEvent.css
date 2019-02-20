@@ -1,0 +1,11 @@
+.recent-events-container{
+    width:100%;
+}
+.recent-event{
+    background-color: white;
+    flex:1;
+    padding:20px;
+}
+.recent-event-day-container{
+
+}
