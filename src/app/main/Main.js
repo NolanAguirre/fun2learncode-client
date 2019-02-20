@@ -17,7 +17,6 @@ import ManageUsers from  './manageUsers/ManageUsers'
 import {SignUp} from './signUp/SignUp'
 import CheckIn from './checkIn/CheckIn'
 import Account from './account/Account'
-import InstructorLogs from './instructorLogs/InstructorLogs'
 import Test from './test/Test'
 import ManagePromoCodes from './managePromoCodes/ManagePromoCodes'
 import ResetPassword from './resetPassword/ResetPassword'
@@ -40,8 +39,8 @@ class Main extends Component {
             <Route exact path='/Sign up' component={SignUp} />
 
             <Route path='/Registration/:id' component={Registration} />
-            <Route path='/User/Manage Students' component={ManageStudents} />
-            <Route path='/Event Logs/:eventId/:studentId' component={EventLogs} />
+            <Route exact path='/User/Manage Students' component={ManageStudents} />
+            <Route path='/Logs/:eventId/:studentId' component={EventLogs} />
             <Route path='/User/Account' component={Account} />
             <Route path='/reset/:token' component={ResetPassword} />
             <Route path='/recover' component={RecoverPassword} />
@@ -58,8 +57,6 @@ class Main extends Component {
             <Route exact path='/test' component={Test} />
 
             <Route exact path='/Attendant/Check In' component={CheckIn} />
-
-            <Route exact path='/Instructor/Instructor Logs' component={InstructorLogs} />
 
             <Route exact path='/Logout' component={Logout} />
           </Switch>

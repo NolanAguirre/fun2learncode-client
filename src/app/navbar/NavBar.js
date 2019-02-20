@@ -18,6 +18,7 @@ const GET_USER_DATA = `{
     }
 }`
 const admins = ['FTLC_OWNER', 'FTLC_LEAD_INSTRUCTOR', 'FTLC_ADMIN']
+const employee = ['FTLC_OWNER', 'FTLC_INSTRUCTOR', 'FTLC_ADMIN']
 const routeNames = [
     {
         name: 'Home',
@@ -71,7 +72,7 @@ const routeNames = [
         name: 'Recent Events',
         route: 'Recent Events',
         test:(user) => {
-            return user && admins.includes(user.role)
+            return user && employee.includes(user.role)
         }
     },{
         name: 'Announcements',
@@ -102,12 +103,6 @@ const routeNames = [
         route: 'Admin/Manage Users',
         test:(user) => {
             return user && admins.includes(user.role)
-        }
-    }, {
-        name: 'Write Student Logs',
-        route: 'Instructor/Instructor Logs',
-        test:(user) => {
-            return user && user.role === 'FTLC_INSTRUCTOR'
         }
     }, {
         name: 'Check In',

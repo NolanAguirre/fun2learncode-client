@@ -7,26 +7,21 @@ import moment from 'moment';
 const GET_INSTRUCTOR_LOGS = `{
   allEventLogs(condition:{instructor:null}){
     nodes{
-      nodeId
       id
       instructor
       comment
       dateIntervalByDateInterval{
-          nodeId
           id
           start
       }
       eventByEvent{
-        nodeId
         id
         activityByActivity{
-          nodeId
           id
           name
         }
       }
       studentByStudent{
-        nodeId
         id
         firstName
         lastName
@@ -35,69 +30,77 @@ const GET_INSTRUCTOR_LOGS = `{
   }
 }`
 
-const UPDATE_INSTRUCTOR_LOG = `mutation($eventLog:UpdateEventLogByIdInput!){
-  updateEventLogById(input:$eventLog){
-    eventLog{
-      nodeId
+const CREATE_LOG = `mutation ($eventLog: EventLogInput!) {
+  createEventLog(input: {eventLog:$eventLog}) {
+    eventLog {
       id
-      instructor
+      event
+      student
       comment
-      eventByEvent{
-        nodeId
+      eventByEvent {
         id
       }
-      userByInstructor{
-        nodeId
+      userByInstructor {
         id
       }
-      dateIntervalByDateInterval{
-        nodeId
+      dateIntervalByDateInterval {
+        id
+      }
+      studentByStudent{
         id
       }
     }
   }
 }`
+const localize = (timestamp) =>{
+    return moment(moment.utc(timestamp)).local()
+}
 
 class InstructorLogForm extends Component{
     constructor(props){
         super(props)
         this.state = {
-            event: props.log.eventByEvent.id,
-            dateInterval: this.props.log.dateIntervalByDateInterval.id,
-            student:this.props.log.studentByStudent.id,
-            instructor: this.props.getUserData.id,
-            comment:'no comment.'
+            event: props.eventId,
+            dateInterval: props.dateId,
+            student:props.studentId,
+            instructor: props.instructorId,
+            comment:''
         }
+        this.id = Math.random().toString(36).substr(2, 9)
         this.mutation = new Mutation({
-            mutation:UPDATE_INSTRUCTOR_LOG,
-            onSubmit:this.handleSubmit
+            mutation:CREATE_LOG,
+            onSubmit:this.handleSubmit,
+            onResolve: this.resetState
         })
     }
-
+    componentWillUnmount = () => {
+        this.mutation.removeListeners()
+    }
     handleDescriptionChange = (event) => {
         event.persist();
         this.setState({comment:event.target.textContent})
     }
     handleSubmit = (event) => {
         event.preventDefault();
+        //!window.confirm('Do you want to write a log with no comment?')
         if(this.state.comment && this.state.comment != ''){
-            if(this.state.comment === 'no comment.' && !window.confirm('Do you want to write a log with no comment?')){
-                return false;
-            }
-            return {eventLog:{id:this.props.log.id, eventLogPatch:this.state}}
+            return {eventLog:this.state}
         }
         return false;
     }
+    resetState = () => {
+        setTimeout(()=>document.getElementById(`${this.id}`).innerHTML = '', 0);
+        this.setState({event: this.props.eventId,
+        dateInterval: this.props.dateId,
+        student:this.props.studentId,
+        instructor: this.props.instructorId,
+        comment:''})
+    }
 
     render = () => {
-        const student = this.props.log.studentByStudent
-        const name = this.props.log.eventByEvent.activityByActivity.name
-        const start = this.props.log.dateIntervalByDateInterval.start
-        return <div className="styled-container column section edge-margin">
+        return <div className="column section">
             <form onSubmit={this.mutation.onSubmit}>
-                <h2 className='no-margin center-text'>{student.firstName} {student.lastName}</h2>
-                <h5 className='no-margin center-text'>{name} {moment(start).format('MMMM, Do h:mm a')}</h5>
-                <div id={this.props.id} onInput={this.handleDescriptionChange} className="styled-textarea" suppressContentEditableWarning={true} contentEditable></div>
+                <div id={this.id} onInput={this.handleDescriptionChange} className="styled-textarea" suppressContentEditableWarning={true} contentEditable></div>
                 <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Write Log</div>
                 <button className='hacky-submit-button' type='submit'/>
             </form>
@@ -105,34 +108,4 @@ class InstructorLogForm extends Component{
     }
 }
 
-function InstructorLogsInner(props){
-    const logs = props.allEventLogs.nodes
-    if(logs.length > 0){
-        return <GridView className='main-contents' fillerStyle={"styled-container section"} itemsPerRow={3}>
-                {props.allEventLogs.nodes.map((log)=>{return<InstructorLogForm getUserData={props.getUserData} key={log.nodeId} log={log} />})}
-            </GridView>
-    }else{
-        return <div>You've written all the logs</div>
-    }
-}
-
-function Inbetween (props){
-    return <ReactQuery query={GET_INSTRUCTOR_LOGS}>
-        <InstructorLogsInner getUserData={props.getUserData}/>
-    </ReactQuery>
-}
-
-class InstructorLogs extends Component{
-    constructor(props){
-        super(props)
-        this.state = {viewRange:''}
-    }
-
-    render = () => {
-        return <SecureRoute roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_INSTRUCTOR"]}>
-            <Inbetween />
-        </SecureRoute>
-    }
-}
-
-export default InstructorLogs
+export default InstructorLogForm
