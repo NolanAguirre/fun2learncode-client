@@ -1,72 +1,104 @@
 import React, { Component } from 'react'
-import { Location } from '../common/Common'
+import moment from 'moment'
+import { Location, GridView, SecureRoute} from '../common/Common'
 import './EventLogs.css'
 import gql from 'graphql-tag'
-import {Query} from '../../../delv/delv-react'
+import {ReactQuery} from '../../../delv/delv-react'
+import InstructorLogForm from '../instructorLogs/InstructorLogs'
 // THIS IS NOT TESTED YET
-function EventLogTableRow (props) {
-  return (
-    <tr>
-      <td>{new Date(props.date).toDateString()}</td>
-      <td>{'' + props.attendance}</td>
-      <td>{props.comment}</td>
-      <td>no file</td>
-    </tr>)
+const GET_LOGS = (eventId, studentId) => `{
+  allEventLogs(condition: {event: "${eventId}", student: "${studentId}"}) {
+    nodes {
+      id
+      event
+      student
+      comment
+      dateIntervalByDateInterval {
+        nodeId
+        id
+        start
+        end
+      }
+      userByInstructor {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+  allEvents(condition: {id: "${eventId}"}) {
+    nodes {
+      id
+      name
+      activityByActivity {
+        id
+        name
+      }
+    }
+  }
+  allStudents(condition: {id: "${studentId}"}) {
+    nodes {
+      id
+      firstName
+      lastName
+    }
+  }
+}`
+
+const localize = (timestamp) =>{
+    return moment(moment.utc(timestamp)).local()
 }
-class EventLogs extends Component {
-  constructor (props) {
-    super(props)
-    this.eventId = this.props.match.params.eventId
-    this.studentId = this.props.match.params.studentId
-  }
-  render () {
-      return<div></div>
-    // return (
-    //     <QueryHandler query={GET_EVENT_LOGS_FOR_STUDENT(this.eventId, this.studentId)} child={(data)=>{
-    //             let address = data.eventById.addressByAddress
-    //     return (
-    //       <div className='event-logs-container'>
-    //         <div className='event-info-container'>
-    //           <div className='event-info'>
-    //             <h2>{data.eventById.activityByEventType.name}</h2>
-    //           </div>
-    //           <Location
-    //             id={address.id}
-    //             alias={address.alias}
-    //             street={address.street}
-    //             city={address.city}
-    //             state={address.state}
-    //           />
-    //         </div>
-    //         <div className='event-logs-table-container'>
-    //           <h2>Event Logs</h2>
-    //           <table className='event-logs-table'>
-    //             <tbody className='event-logs-table-body'>
-    //               <tr>
-    //                 <th>Date</th>
-    //                 <th>Attendane</th>
-    //                 <th>Comment</th>
-    //                 <th>File</th>
-    //               </tr>
-    //               {
-    //                 data.eventById.eventDatesByEvent.edges.map((element) => {
-    //                   let date = element.startTime
-    //                   let attendance = element.node.eventRegistrationsByEventDate.node[0].attendance
-    //                   let comment = element.node.eventLogsByEventDate.nodes[0].comment
-    //                   return <EventLogTableRow
-    //                     key={element.id}
-    //                     date={date}
-    //                     attendance={attendance}
-    //                     comment={comment} />
-    //                 })
-    //               }
-    //             </tbody>
-    //           </table>
-    //         </div>
-    //       </div>
-    //   )}} />
-    //)
-  }
+
+function EventLog(props){
+
+    return <div className="event-log-container">
+        <h3>{localize(props.date.start).format('MMMM, Do h:mm a')} - {localize(props.date.end).format('h:mm a')}</h3>
+        {props.logs.map(log =>{
+            const instructor = (log.instructor && log.instructor.firstName) || 'Attendant'
+            return <div className='event-log' key={log.key}><div>{instructor} said:</div>{log.comment}</div>
+        })}
+        {props.user.role=== 'FTLC_USER'?'':<InstructorLogForm eventId={props.event} studentId={props.student} dateId={props.date.id} instructorId={props.user.id}/>}
+    </div>
+}
+
+function EventLogsInner(props) {
+    let dates = {}
+    const event = props.allEvents.nodes[0]
+    const activityName = event.activityByActivity.name
+    const student = props.allStudents.nodes[0]
+    props.allEventLogs.nodes.forEach((log)=>{
+        const start = log.dateIntervalByDateInterval.start
+        const newLog = {
+            key: log.id,
+            comment:log.comment,
+            instructor: log.userByInstructor
+        }
+        if(dates[start]){
+            dates[start].logs.push(newLog)
+        }else{
+            dates[start] = {
+                event:event.id,
+                student: student.id,
+                date:log.dateIntervalByDateInterval,
+                logs:[newLog]
+            }
+        }
+    })
+    return <div className='main-contents'>
+        <h2>{activityName} {student.firstName} {student.lastName}</h2>
+        <h3>{event.name}</h3>
+        <GridView fillerStyle={"event-log-container filler"} itemsPerRow={3}>
+                {Object.values(dates).sort((a,b)=>a.date.start<b.date.start).map(date=><EventLog key={date.date.id} user={props.getUserData} {...date} />)}
+        </GridView>
+    </div>
+}
+
+function EventLogs(props){
+    return <SecureRoute roles={['FTLC_ADMIN', 'FTLC_OWNER', 'FTLC_INSTRUCTOR', 'FTLC_USER']}>
+            <ReactQuery query={GET_LOGS(props.match.params.eventId,props.match.params.studentId)}>
+                <EventLogsInner />
+            </ReactQuery>
+        </SecureRoute>
 }
 
 export default EventLogs
