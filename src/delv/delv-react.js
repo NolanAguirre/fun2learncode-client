@@ -94,6 +94,17 @@ class ReactQuery extends Component {
     }
 
     render = () => {
+        const {
+            query,
+            variables,
+            networkPolicy,
+            onFetch,
+            onResolve,
+            onError,
+            formatResult,
+            children,
+            ...otherProps
+        } = this.props
         if (this.state.queryResult === '') {
             if (this.props.loading) {
                 return this.props.loading
@@ -101,7 +112,7 @@ class ReactQuery extends Component {
             return <div>loading</div>
         }
         return React.cloneElement(this.props.children, {
-            ...this.state.queryResult
+            ...this.state.queryResult, ...otherProps
         })
     }
 }
