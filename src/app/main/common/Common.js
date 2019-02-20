@@ -33,6 +33,8 @@ const GET_ACTIVITIES = `{
  }
 }`;
 
+const localize = (timestamp) =>  moment(moment.utc(timestamp)).local()
+
 function Location (props) {
   return (<div className='center-text margin-bottom-10'>
     <div>
@@ -88,17 +90,15 @@ function SecureRoute(props){
 export { SecureRoute }
 
 function DatesTable(props){
-    function localizeUTCTimestamp(timestamp){
-        return moment(moment.utc(timestamp)).local()
-    }
+
     let dates = props.dates.nodes.map((date) => date.dateIntervalByDateInterval).sort((a,b)=>{return moment(a.start).unix() - moment(b.start).unix()})
     return<table className={props.className || ""}>
       <tbody>
         {dates.map((date, index) => {
           return <React.Fragment key={index}>
               <tr className='no-wrap-row'>
-            <td>{localizeUTCTimestamp(date.start).format(props.startFormat || "ddd MMM Do")}</td>
-            <td>{localizeUTCTimestamp(date.start).format(props.startFormat || "h:mm a") + "-" + localizeUTCTimestamp(date.end).format(props.startFormat || "h:mm a")}</td>
+            <td>{localize(date.start).format(props.startFormat || "ddd MMM Do")}</td>
+            <td>{localize(date.start).format(props.startFormat || "h:mm a") + "-" + localize(date.end).format(props.startFormat || "h:mm a")}</td>
           </tr>
         </React.Fragment>
         })}
@@ -311,12 +311,6 @@ class TimeRangeSelector extends Component{
             start:moment().add(1, 'months'),
             past: 2
         }
-    }
-    localizeUTCTimestamp = (timestamp) => {
-        if (!timestamp) {
-            return null
-        }
-        return new Date(moment(moment.utc(timestamp)).local().toString())
     }
     handleTimeChange = (key, value) => {
         this.setState({[key]: value})
