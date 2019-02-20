@@ -140,6 +140,14 @@ function OrderHistoryInner(props){
 	}
 }
 
+function StatelessOrderHistory(props){
+    return <ReactQuery query={USER_DATA(props.userId)}>
+        <OrderHistoryInner {...props}/>
+    </ReactQuery>
+}
+
+export {StatelessOrderHistory}
+
 class OrderHistory extends Component{
 	constructor(props){
 		super(props);
@@ -160,4 +168,4 @@ class OrderHistory extends Component{
 
 	}
 }
-export default OrderHistory
+export {OrderHistory}

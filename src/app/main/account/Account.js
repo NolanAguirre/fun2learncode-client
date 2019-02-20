@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import OrderHistory from '../orderHistory/OrderHistory'
+import {OrderHistory} from '../orderHistory/OrderHistory'
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
 import {SecureRoute, BasicPopup} from '../common/Common'
