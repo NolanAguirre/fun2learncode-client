@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './StudentSelect.css'
 import StudentPreview from './studentPreview/StudentPreview'
-import StudentWaiver from '../studentWaiver/StudentWaiver'
+import {StudentWaiverForm} from '../studentWaiver/StudentWaiver'
 import Popup from "reactjs-popup"
 import {CreateAccount} from '../signUp/SignUp'
 import DateTime from 'react-datetime';
@@ -23,7 +23,6 @@ const GET_STUDENTS_BY_PARENT = parentId => `{
       studentWaiversByStudent(filter:{createdOn:{greaterThan:"${yearAgo}"}}){
         nodes {
           id
-          nodeId
           createdOn
         }
       }
@@ -173,7 +172,7 @@ class StudentWaiverDisplay extends Component{
         })
         return <div>
             <Popup className='payment-overview-popup'open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
-                <StudentWaiver studentId={this.state.studentId}> </StudentWaiver>
+                <StudentWaiverForm studentId={this.state.studentId}/>
             </Popup>
             <h3 className='no-margin'>Waivers</h3>
             {attentionNeeded?<div className='error'>Attention Needed!</div>:''}

@@ -16,7 +16,45 @@ const CREATE_STUDENT_WAIVER = `mutation ($studentWaiver: StudentWaiverInput!) {
   }
 }`
 
-class StudentWaiver extends Component{
+function StudentWaiver(props){
+    return <div className='student-waiver-container'>
+            <h2 className='center-text'>Student Waiver</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Primary care name:</td>
+                        <td>{props.primaryCare}</td>
+                    </tr>
+                    <tr>
+                        <td>Primary care phone:</td>
+                        <td>{props.primaryCarePhone}</td>
+                    </tr>
+                    <tr>
+                        <td>Emergency phone:</td>
+                        <td>{props.emergencyPhone}</td>
+                    </tr>
+                    <tr>
+                        <td>Pickup one:</td>
+                        <td>{props.pickupOne}</td>
+                    </tr>
+                    <tr>
+                        <td>Pickup two:</td>
+                        <td>{props.pickupTwo}</td>
+                    </tr>
+                    <tr>
+                        <td>Created on:</td>
+                        <td>{props.createdOn}</td>
+                    </tr>
+                </tbody>
+            </table>
+            Allergies/Other information:
+            {props.other}
+        </div>
+}
+
+export { StudentWaiver }
+
+class StudentWaiverForm extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -82,8 +120,7 @@ class StudentWaiver extends Component{
     }
 
     render = () => {
-        return <div className='student-waiver-container'>
-            <form onSubmit={this.mutation.onSubmit}>
+        return <form className='student-waiver-container' onSubmit={this.mutation.onSubmit}>
                 <h2 className='center-text'>Student Waiver</h2>
                 Primary care name:
                 <input className='styled-input' name='primaryCare' onChange={this.handleChange} />
@@ -99,7 +136,8 @@ class StudentWaiver extends Component{
                 <div id='new' onInput={this.handleTextAreaChange} className="styled-textarea" style={{minHeight:'80px'}} suppressContentEditableWarning={true} contentEditable></div>
                 <div className='styled-button margin-top-10' onClick={this.mutation.onSubmit}>Finish waiver</div>
             </form>
-        </div>
     }
 }
-export default StudentWaiver
+
+
+export {StudentWaiverForm}
