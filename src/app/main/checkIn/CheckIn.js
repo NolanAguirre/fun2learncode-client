@@ -63,18 +63,22 @@ const GET_POSSIBLE_EVENTS = `{
 const genRandomId = () =>{
 	return '_' + Math.random().toString(36).substr(2, 9);
 }
+const localize = (timestamp) =>{
+    return moment(moment.utc(timestamp)).local()
+}
 
 const TEMPLATE = (dateInterval, event, student) => {
-return `${genRandomId()}:createAttendance(input:{attendance:{dateInterval:"${dateInterval}",event:"${event}", student:"${student}",present:true}}){
+    const NOW = new Date().toISOString()
+return `${genRandomId()}:createAttendance(input:{attendance:{dateInterval:"${dateInterval}",event:"${event}", student:"${student}", checkInTime:"${NOW}"present:true}}){
     attendance{
-      nodeId
+      id
     }
   }
-  ${genRandomId()}:createEventLog(input:{eventLog:{dateInterval:"${dateInterval}",event:"${event}", student:"${student}"}}){
-		eventLog{
-    	nodeId
-  	}
-}`
+  ${genRandomId()}:createEventLog(input: {eventLog: {dateInterval: "${dateInterval}", event: "${event}", student: "${student}", comment:"Student signed in at ${localize(NOW).format('h:mm a')}."}}) {
+    eventLog {
+      id
+    }
+  }`
 }
 
 function InlineEvent(props) {
