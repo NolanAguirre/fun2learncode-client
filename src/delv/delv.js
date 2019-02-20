@@ -18,6 +18,7 @@ class Delv {
         this.handleError = handleError
         // this.loadIntrospection() //development purposes
     }
+
     loadIntrospection = () => { //development purposes
         axios.post(this.url, {
             query: `{
@@ -62,7 +63,7 @@ class Delv {
         if(!this.isReady){
             this.queuedQueries.push({options:{query, variables, onFetch, onResolve, onError, customCache}, skipCache, returnRes})
         }
-        this.queries.add(query, variables)
+        this.queries.add(query, variables) //TODO add typenames on only some queries
         let promise = this.post(this.queries.addTypename(query), variables).then((res) => {
             this.queries.setPromise(query, variables, null);
             if(skipCache){
@@ -79,7 +80,7 @@ class Delv {
                     console.log(`Error occured trying to cach responce data: ${error.message}`)
                 }
                 if(returnRes){
-                    onResolve(res.data)
+                    onResolve(res.data.data)
                 }else{
                     onResolve(cache.loadQuery(query))
                 }
@@ -112,6 +113,23 @@ class Delv {
             case 'network-once':
                 this.networkOnce(options)
                 break
+            case 'cache-by-query':
+                this.cacheByQuery(options)
+                break
+        }
+    }
+
+    cacheByQuery = (options) => {
+        let query = this.queries.includes(options.query, options.variables)
+        if(query){
+            options.onResolve(cache.cache[query.id])
+        }else{
+            this.queries.add(options.query, options.variables)
+            query = this.queries.includes(options.query, options.variables)
+            this.queryHttp({...options, customCache:(cache, data)=>{
+                console.log('caching by query')
+                cache.cache[query.id] = data;
+            }}, false, true)
         }
     }
 

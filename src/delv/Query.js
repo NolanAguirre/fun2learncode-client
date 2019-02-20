@@ -17,7 +17,9 @@ class Query {
         this.format = formatResult
         this.id = '_' + Math.random().toString(36).substr(2, 9)
         this.types = [];
-        this.mapTypes()
+        if(networkPolicy != 'network-no-cache' && networkPolicy != 'cache-by-query'){
+            this.mapTypes()
+        }
     }
 
     mapTypes = () => {

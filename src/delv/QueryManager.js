@@ -15,7 +15,8 @@ class QueryManager{
         let normalized = this.normalizeQuery(query, variables)
         if(!this.includes(query, variables)){
             this.queries[normalized] = {
-                promise:null
+                promise:null,
+                id: Math.random().toString(36).substr(2, 9)
             }
         }
     }
