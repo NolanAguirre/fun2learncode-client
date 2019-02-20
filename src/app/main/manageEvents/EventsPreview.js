@@ -71,6 +71,7 @@ const TOGGLE_CALENDAR = `mutation ($id: UUID!, $show: Boolean!) {
     }
   }
 }`
+
 class EventPreview extends Component {
     constructor(props){
         super(props);
@@ -88,6 +89,17 @@ class EventPreview extends Component {
     toggleDates = () => {
         this.setState({hide: !this.state.hide})
     }
+
+    copyToClipboard = () => {
+        navigator.clipboard.writeText(this.props.event.id).then(
+        function() {
+          console.log("Copying to clipboard was successful!");
+        },
+        function(err) {
+            alert(`Copy Failed id is: ${this.props.event.id}`)
+        }
+      );
+    }
     render = () => {
         const dates = this.props.event.dateJoinsByEvent.nodes.slice().sort((a,b)=>{return moment(a.dateIntervalByDateInterval.start).unix() - moment(b.dateIntervalByDateInterval.start).unix()}).map((element) => {
             return <div key={element.id}>{moment(moment.utc(element.dateIntervalByDateInterval.start)).local().format("MMM Do h:mma") + "-" +moment(moment.utc(element.dateIntervalByDateInterval.end)).local().format("h:mma")}</div>
@@ -98,8 +110,9 @@ class EventPreview extends Component {
                     <h4>{this.props.event.activityByActivity.name}</h4>
                     <h4>{this.props.event.name}</h4>
                     <EventForm {...this.props.event} buttonText='edit'/>
-                </div>
+                    {navigator.clipboard?<div onClick={this.copyToClipboard}>Copy id</div>:this.props.event.id}
                 <span> Show on Calendar <input onChange={this.toggleCalendarHide} type='checkbox' checked={this.props.event.showCalendar}/> </span>
+                </div>
                 <div className="dropdown-div">
                     <span onClick={this.toggleDates} >{(this.state.hide)?'Show ':'Hide '} Dates</span>
                 </div>
@@ -127,9 +140,9 @@ function EventsPreviewInner (props) {
 function EventsPreview (props) {
     return <div className='event-preview-container'>
         <ArchiveOptions query={GET_EVENTS}>
-                    <ReactQuery formatResult={fomatEvents}>
-                        <EventsPreviewInner {...props}/>
-                    </ReactQuery>
+                <ReactQuery formatResult={fomatEvents}>
+                    <EventsPreviewInner {...props}/>
+                </ReactQuery>
             </ArchiveOptions>
         </div>
 }
