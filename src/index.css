@@ -106,3 +106,9 @@ body {
 .styled-button:hover{
     background-color: #41a62a;
 }
+
+.float-down{
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}

@@ -72,7 +72,7 @@ function Order(props){
         let price = event.price
         orderTable.push(<OrderRow key={x++} name={s.first_name} item={snapshot._activity.name} cost={price}/>)
         if(s.price){
-            orderTable.push(<OrderRow key={x++} name={''} item={'Override'} cost={-(price - s.price)}/>)
+            orderTable.push(<OrderRow key={x++} name={s.firstName} item={'Override'} cost={-(price - s.price)}/>)
         }
         if(pc){
             if(pc.percent){
@@ -92,35 +92,34 @@ function Order(props){
 			<h3 className='no-margin'>{moment(props.payment.createOn).format('MMMM, Do YYYY')}</h3>
 			<span>Order # {props.payment.id}</span>
 		</div>
-        <div>
-            <table className='order-table'>
-                <tbody>
-                    <tr>
-                        <th>Student</th>
-                        <th>Item</th>
-                        <th>Price</th>
-                    </tr>
-                    {orderTable}
-                    {refundAmount?<tr>
-                        <td></td>
-                        <td>Refund:</td>
-                        <td className='order-row-price'>-{refundAmount.toFixed(2)}</td>
-                    </tr>:null}
-                    <tr>
-                        <td></td>
-                        <td>Total:</td>
-                        <td className='order-row-price'>{snapshot.total - refundAmount}$</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+
 		<div className='order-body'>
-            <div></div>
-            <div></div>
-			<div>
+            <div>
+                <table className='order-table'>
+                    <tbody>
+                        <tr>
+                            <th>Student</th>
+                            <th>Item</th>
+                            <th>Price</th>
+                        </tr>
+                        {orderTable}
+                        {refundAmount?<tr>
+                            <td></td>
+                            <td>Refund:</td>
+                            <td className='order-row-price'>-{refundAmount.toFixed(2)}</td>
+                        </tr>:null}
+                        <tr>
+                            <td></td>
+                            <td>Total:</td>
+                            <td className='order-row-price'>{snapshot.total - refundAmount}$</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+			<div className='float-down'>
 				{requestForm}
 			</div>
-			<div>
+			<div className='float-down'>
                 <BasicPopup>
                     <QueryFullEvent eventId={event.id} />
                     <div className='styled-button center-text'>View event details</div>
