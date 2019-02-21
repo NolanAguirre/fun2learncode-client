@@ -1,4 +1,3 @@
-
 .manage-users{
     margin: 10px 0;
     background-color: white;
@@ -6,24 +5,39 @@
     max-width: 1200px;
 
 }
-.manage-user-form{
+.override-form{
+    flex:1;
+    min-width: 300px;
+    padding:20px;
+    box-shadow: border-box;
+}
+.manage-user-popup{
     padding:20px 40px;
 }
 .manage-users-table{
     border-collapse: collapse;
     width:100%;
 }
+.manage-user-table{
+    width:100%;
+}
 .manage-users-table td{
     border: 1px solid black;
     font-size: 12px;
 }
-/* .manage-users-table tr:nth-child(odd) {
-  background-color: #e4e4e4;
+.manage-user-btn-container{
+    padding-top: 20px;
+    width:100%;
+    display: flex;
+    justify-content: space-around;
 }
-
-.manage-users-table tr:nth-child(even) {
-  background-color: white;
-} */
+.back-arrow{
+    max-width: 24px;
+    max-height: 24px;
+}
+.back-container{
+    font-size: 38px;
+}
 .manage-users-table tr:nth-child(even) td:nth-child(odd),
  .manage-users-table tr:nth-child(odd) td:nth-child(even)
 {
