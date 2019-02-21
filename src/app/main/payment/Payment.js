@@ -189,26 +189,30 @@ class PaymentInformationEntry extends Component{
 
     handleSubmit = (event) => {
         if(!this.isProcessing){
-            if(this.state.cardholder != ''){
+            if(this.state.cardholder || this.props.total < 1){
                 this.isProcessing = true
-                this.props.setLoading()
-                this.props.stripe.createToken({
-                    name: this.state.cardholder,
-                    address_line1:this.props.address,
-                    address_city:this.props.city,
-                    address_state:this.props.state,
-                    address_country:'US'
-                }).then(({token:{id}, error}) => {
-                    if(error){
-                        this.isProcessing = false;
-                        this.setState({stripeError:error.message})
-                    }else{
-                        if(this.state.stripeError){
-                            this.setState({stripeError:null})
+                if(this.props.total < 1){
+                    this.props.callback()
+                }else{
+                    this.props.setLoading()
+                    this.props.stripe.createToken({
+                        name: this.state.cardholder,
+                        address_line1:this.props.address,
+                        address_city:this.props.city,
+                        address_state:this.props.state,
+                        address_country:'US'
+                    }).then(({token:{id}, error}) => {
+                        if(error){
+                            this.isProcessing = false;
+                            this.setState({stripeError:error.message})
+                        }else{
+                            if(this.state.stripeError){
+                                this.setState({stripeError:null})
+                            }
+                            this.props.callback(id)
                         }
-                        this.props.callback(id)
-                    }
-                });
+                    });
+                }
             }else{
                 this.setState({error:'Cardholder name required.'})
             }
@@ -216,8 +220,17 @@ class PaymentInformationEntry extends Component{
     }
 
     render = () => {
+        if(this.props.total < 22){
+            return <form  className='container section' onSubmit={this.handleSubmit}>
+                  <div className='payment-container'>
+                     <h1 className='center-text no-margin'>Total: 0$</h1>
+                     <div className='event-register-btn center-text' onClick={this.handleSubmit}>Submit</div>
+                     <button className='hacky-submit-button' type='submit'/>
+                  </div>
+              </form>
+        }
         return <form  className='container section' onSubmit={this.handleSubmit}>
-              <div className='payment-container' style={this.state.hidden?{visibility:'hidden'}:{}}>
+              <div className='payment-container'>
                   <h1 className='center-text no-margin'>Total: {this.props.total}$</h1>
                   <div className='error'>{this.state.stripeError}</div>
                   <div className='container'>
@@ -271,8 +284,8 @@ class Payment extends Component {
         this.setState({loading:true})
     }
 
-    onCardComplete = (id) => {
-        axios.post('http://localhost:3005/charge', {token:id, user:this.props.info.user}).then((res)=>{
+    onCardComplete = (token) => {
+        axios.post('http://localhost:3005/charge', {token, user:this.props.info.user}).then((res)=>{
             if(res.data.error){
                 this.setState({UI:'error', error:res.data.error, loading:false})
             }else{
