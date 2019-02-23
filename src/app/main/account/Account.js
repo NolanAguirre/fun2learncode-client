@@ -6,6 +6,7 @@ import {SecureRoute, BasicPopup} from '../common/Common'
 import moment from 'moment'
 import PasswordReset from '../passwordReset/PasswordReset'
 import './Account.css'
+import EventRequest from '../eventRequest/EventRequest'
 const RESET_PASSWORD = `mutation($password:String!){
   resetPassword(input:{arg0:$password,arg1:"BY USER"}){
     clientMutationId
@@ -88,14 +89,13 @@ class UpdateEmail extends Component{
                     <div className='center-text'>Email has been changed.</div>
                 </div>
         }else{
-            return <form onSubmit={this.mutation.onSubmit}>
-                <div className="email-input-container">
+            return <form onSubmit={this.mutation.onSubmit} className="login-form">
+                <div />
+                <div>
                     <div className='error'>{this.state.error}</div>
                     <input className='styled-input' name='email' type='email' onChange={this.handleChange} placeholder='email' />
                 </div>
-                <div className="email-input-container">
-                    <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Change email</div>
-                </div>
+                <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Change email</div>
                 <button className='hacky-submit-button' type='submit'/>
             </form>
         }
@@ -111,9 +111,9 @@ class AccountInner extends Component{
         const user = this.props.getUserData;
         return <div className="container column main-contents">
             <h2>My Account</h2>
-            <div className='styled-container column'>
-                <h3>Account Information</h3>
+            <div className='account-top-container'>
                 <div>
+                    <h3>Account Information</h3>
                     <table>
                         <tbody>
                             <tr>
@@ -124,9 +124,9 @@ class AccountInner extends Component{
                                 <td>Email: </td>
                                 <td>{user.email}</td>
                                 <td>
-                                    <BasicPopup className="login-widget">
-                                        <div className='space-around'>
-                                            <h2 className='center-text no-margin'>Change email</h2>
+                                    <BasicPopup className='payment-popup'>
+                                        <div className="login-container">
+                                            <h2 className='center-text'>Change email</h2>
                                             <UpdateEmail email={user.email} mutation={UPDATE_EMAIl(user.id)}/>
                                         </div>
                                         <div style={{color:'blue'}}>Change email</div>
@@ -140,9 +140,9 @@ class AccountInner extends Component{
                             <tr>
                                 <td></td>
                                 <td>
-                                    <BasicPopup className="login-widget">
-                                        <div className='space-around'>
-                                            <h2 className='center-text no-margin'>Reset Password</h2>
+                                    <BasicPopup className='payment-popup'>
+                                        <div className="login-container">
+                                            <h2 className='center-text'>Reset Password</h2>
                                             <PasswordReset mutation={RESET_PASSWORD}/>
                                         </div>
                                         <div style={{color:'blue'}}>Change Password</div>
@@ -152,6 +152,13 @@ class AccountInner extends Component{
                         </tbody>
                     </table>
                 </div>
+                <div className='account-event-request-section'>
+                    <h3 className='center-text'>Request an event</h3>
+                    <div className='margin-top-40'>
+                        <EventRequest/>
+                    </div>
+                </div>
+
             </div>
             <div className='styled-container column'>
                 <h2>Order History</h2>

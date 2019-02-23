@@ -2,6 +2,10 @@
     background-color: white;
     padding:20px;
     display:flex;
-    flex-direction: wrap;
+    flex-wrap: wrap;
     justify-content: space-between;
+}
+.account-event-request-section{
+    padding:20px;
+    min-width: 300px;
 }
