@@ -5,8 +5,8 @@ import axios from 'axios'
 import './Refund.css'
 import Popup from "reactjs-popup"
 
-const CREATE_REFUND_REQUEST = `mutation($user:UUID!, $payment:UUID!, $reason:String!){
-	createRefundRequest(input:{refundRequest:{reason:$reason, userId:$user, payment:$payment}}){
+const CREATE_REFUND_REQUEST = `mutation($payment:UUID!, $reason:String!){
+	createRefundRequest(input:{refundRequest:{reason:$reason, payment:$payment}}){
     refundRequest{
 	  id
 	  reason
@@ -47,7 +47,7 @@ class RefundRequest extends Component{
 	handleSubmit = (event) => {
 		event.preventDefault();
 		if(this.state.reason != ''){
-			return {user:this.props.userId, payment:this.props.paymentId, reason:this.state.reason}
+			return {payment:this.props.paymentId, reason:this.state.reason}
 		}
 		this.setState({error:'Please provide a reason for the refund.'})
 		return false;
@@ -55,8 +55,8 @@ class RefundRequest extends Component{
 
 	render = () => {
 		return <React.Fragment>
-			<Popup className='payment-overview-popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
-				<form className='login-widget' onSubmit={this.mutation.onSubmit}>
+			<Popup className='payment-popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+				<form className='login-container' onSubmit={this.mutation.onSubmit}>
 					<h2 className='center-text'>Estimated refund: {this.props.total}$</h2>
 					<div className='error'>{this.state.error}</div>
 					<span>Reason for refund:</span>

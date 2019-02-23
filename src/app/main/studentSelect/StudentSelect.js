@@ -36,6 +36,12 @@ const CREATE_STUDENT = `mutation($student:CreateStudentInput!){
         id
         firstName
         lastName
+        studentWaiversByStudent(filter:{createdOn:{greaterThan:"${yearAgo}"}}){
+          nodes {
+            id
+            createdOn
+          }
+        }
     }
   }
 }`
@@ -80,7 +86,6 @@ class StudentForm extends Component{
             let student = Object.assign({}, this.state)
             delete student.error
             delete student.showPopup
-            student.parent = this.props.parentId
             this.clearPopupState()
             return {student: { student }}
         }
@@ -110,12 +115,10 @@ class StudentForm extends Component{
                 open={this.state.showPopup}
                 closeOnDocumentClick
                 onClose={this.clearPopupState}>
-                <div className="login-widget">
+                <div className="login-container">
                     <h1 className='center-text'>Add Student</h1>
-                    <div className='login-error-container'>
-                        <div className='login-error'>{this.state.error}</div>
-                    </div>
-                    <form onSubmit={this.mutation.onSubmit} className='space-around'>
+                    <div className='error'>{this.state.error}</div>
+                    <form onSubmit={this.mutation.onSubmit} className='login-form'>
                             <div className='container'>
                                 <div className='small-input edge-margin'>
                                     <input className='styled-input' name='firstName' value={this.state.firstName} onChange={this.handleChange} placeholder='first name' />
@@ -169,7 +172,7 @@ class StudentWaiverDisplay extends Component{
             return <div key={student.id} onClick={()=>{this.showPopup(student.id)}} className='waiver-needed'>{student.firstName} {student.lastName}</div>
         })
         return <div>
-            <Popup className='payment-overview-popup'open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+            <Popup className='payment-popup'open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
                 <StudentWaiverForm studentId={this.state.studentId}/>
             </Popup>
             <h3 className='no-margin'>Waivers</h3>
