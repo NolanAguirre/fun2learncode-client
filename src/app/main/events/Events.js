@@ -8,7 +8,7 @@ import {GridView} from '../common/Common'
 const NOW = new Date().toISOString()
 const GET_EVENTS_OF_TYPE = (id) => {
   return `{
-  allEvents(condition: {activity: "${id}"}, filter: {openRegistration: {lessThanOrEqualTo: "${NOW}"}, closeRegistration: {greaterThanOrEqualTo: "${NOW}"}, seatsLeft: {greaterThan: 0}}) {
+  allEvents(condition: {activity: "${id}", publicDisplay:true}, filter: {openRegistration: {lessThanOrEqualTo: "${NOW}"}, closeRegistration: {greaterThanOrEqualTo: "${NOW}"}, seatsLeft: {greaterThan: 0}}) {
     nodes {
       id
       activity
@@ -18,6 +18,7 @@ const GET_EVENTS_OF_TYPE = (id) => {
       name
       openRegistration
       closeRegistration
+      publicDisplay
       addressByAddress {
         id
         city
