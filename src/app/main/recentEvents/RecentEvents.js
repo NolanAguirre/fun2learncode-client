@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 import moment from 'moment'
 import './RecentEvent.css'
 import {ReactQuery} from '../../../delv/delv-react'
-import {TimeRangeSelector, SecureRoute, GridView} from '../common/Common'
+import {TimeRangeSelector, SecureRoute, GridView, BasicPopup} from '../common/Common'
 import Popup from "reactjs-popup"
 import {Link} from 'react-router-dom'
+import QueryFullEvent from '../events/event/QueryFullEvent'
 
 const RECENT_EVENT = (start, end) => `{
   eventInDates(arg0: "${start}", arg1: "${end}") {
@@ -74,6 +75,7 @@ function RecentEventStudent(props){
         <Link to={`/Logs/${props.eventId}/${props.id}`}>View/Write logs</Link>
     </div>
 }
+
 class RecentEventDay extends Component{
     constructor(props){
         super(props)
@@ -81,8 +83,7 @@ class RecentEventDay extends Component{
     }
     render = () => {
         return <div className='recent-event-day-container'>
-            <h2>{localize(this.props.start).format('dddd MMMM Do')}</h2>
-            <span>{localize(this.props.start).format('h:mm a')} - {localize(this.props.end).format('h:mm a')}</span>
+            <h2>{localize(this.props.start).format('dddd MMMM Do h:mm a')} - {localize(this.props.end).format('h:mm a')}</h2>
             <GridView>
                 {this.props.students.map((student)=><RecentEventStudent {...student} eventId={this.props.eventId} key={student.id}/>)}
             </GridView>
@@ -115,7 +116,6 @@ class RecentEventDays extends Component{
                 })
             })
         }
-        console.log(dates)
         return <div>
             {dates.map((date)=>{
                 return <RecentEventDay key={date.id} {...date} eventId={event.id}/>
@@ -135,8 +135,11 @@ function AdminEvent(props){
             Registration: {props.event.seatsLeft} of {props.event.capacity} <br/>
             Close: {localize(props.event.closeRegistration).format('MMMM, Do h:mm a')}
         </div>
-        <div onClick={()=>{props.onClick(props.event.id)}}>
+        <div onClick={()=>{props.onClick(props.event.id, 'registration')}}>
             View Registration Data
+        </div>
+        <div onClick={()=>{props.onClick(props.event.id, 'default')}}>
+            View Event Data
         </div>
     </div>
 }
@@ -144,23 +147,27 @@ function AdminEvent(props){
 class RecentEventsInner extends Component{
     constructor(props){
         super(props)
-        this.state = {showPopup:false}
+        this.state = {showPopup:false, UI:'default'}
     }
-    showPopup = (eventId) => {
-        this.setState({showPopup:true, eventId})
+    showPopup = (eventId, UI) => {
+        this.setState({showPopup:true, eventId, UI})
     }
     clearPopupState = () => {
-        this.setState({showPopup:false, eventId:undefined})
+        this.setState({showPopup:false, eventId:undefined, UI:'default'})
     }
     render = () => {
         const events = this.props.data.eventInDates.nodes.sort((a,b)=>a.closeRegistration<b.closeRegistration).map((event)=>{
             return <AdminEvent event={event} onClick={this.showPopup} key={event.id}/>
         })
-        return <div className='recent-events-container'>
-        <Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState} className='main-contents'>
-            <ReactQuery query={EVENT_REGISTRATIONS(this.state.eventId)}>
+        let popupInner = <QueryFullEvent eventId={this.state.eventId}/>
+        if(this.state.UI === 'registration'){
+            popupInner = <ReactQuery query={EVENT_REGISTRATIONS(this.state.eventId)}>
                 <RecentEventDays/>
             </ReactQuery>
+        }
+        return <div className='recent-events-container'>
+        <Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState} className='main-contents'>
+            {popupInner}
         </Popup>
         <GridView itemsPerRow={3}>
             {events}
