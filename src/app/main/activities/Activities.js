@@ -8,22 +8,19 @@ const GET_ACTIVITIES_IN_CATAGORY = (name) => {
     return `{
   allCategories(condition: {name: "${name}"}) {
     nodes {
-      nodeId
       id
       name
-      activitiesByCategory {
+      activitiesByCategory(condition: {publicDisplay: true}) {
         nodes {
-          nodeId
           id
           name
           description
           url
+          publicDisplay
           activityPrerequisitesByActivity {
             nodes {
-              nodeId
               id
               activityByPrerequisite {
-                nodeId
                 id
                 name
               }
@@ -33,8 +30,7 @@ const GET_ACTIVITIES_IN_CATAGORY = (name) => {
       }
     }
   }
-}
-`}
+}`}
 
 function ActivitiesInner(props) {
     const activities = props.allCategories.nodes[0].activitiesByCategory.nodes;

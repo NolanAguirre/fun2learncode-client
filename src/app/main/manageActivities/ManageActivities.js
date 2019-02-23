@@ -9,24 +9,21 @@ import {PrerequisiteForm, Prerequisites} from '../prerequisiteForm/PrerequisiteF
 const GET_ACTIVITIES = (archive) => `{
   allActivities(condition:{${archive}}) {
     nodes {
-      nodeId
       id
       url
       archive
       description
       name
+      publicDisplay
       categoryByCategory {
         id
-        nodeId
       }
       activityPrerequisitesByActivity {
         nodes {
           id
-          nodeId
           activityByPrerequisite {
             name
             id
-            nodeId
           }
         }
       }
@@ -37,7 +34,6 @@ const GET_ACTIVITIES = (archive) => `{
 const GET_DROPDOWN = `{
   allCategories {
     nodes {
-      nodeId
       id
       name
     }
@@ -53,6 +49,7 @@ const CREATE_ACTIVITY =  `mutation ($activity:CreateActivityInput!) {
         archive
         description
         name
+        publicDisplay
         categoryByCategory {
           id
           nodeId
@@ -81,6 +78,7 @@ const UPDATE_ACTIVITY = `mutation($id:UUID!, $patch:ActivityPatch!){
         archive
         description
         name
+        publicDisplay
         categoryByCategory {
           id
           nodeId
@@ -95,18 +93,10 @@ const UPDATE_ACTIVITY = `mutation($id:UUID!, $patch:ActivityPatch!){
   }
 }`
 
-// TODO make this its own form
 class ManageActivitiesForm extends Component{
     constructor(props) {
         super(props);
-        this.state = {
-            edit:false,
-            category: this.props.category,
-            description:this.props.description,
-            name:this.props.name,
-            url:this.props.url,
-            archive: this.props.archive
-        };
+        this.state = this.getDefaultState()
         this.mutation = new Mutation({
             mutation:this.props.mutation,
             onSubmit: this.handleSubmit,
@@ -118,6 +108,17 @@ class ManageActivitiesForm extends Component{
         this.mutation.removeListeners()
     }
 
+    getDefaultState = () => {
+        return {
+            edit:false,
+            category: this.props.category,
+            description:this.props.description,
+            name:this.props.name,
+            url:this.props.url,
+            archive: this.props.archive,
+            publicDisplay: this.props.publicDisplay
+        }
+    }
     handleDescriptionChange = (event) => {
         event.persist();
         this.setState({description:event.target.textContent})
@@ -138,8 +139,8 @@ class ManageActivitiesForm extends Component{
                this.state.name != this.props.name ||
                this.state.description != this.props.description ||
                this.state.url != this.props.url ||
-               this.state.archive != this.props.archive
-
+               this.state.archive != this.props.archive ||
+               this.state.publicDisplay != this.props.publicDisplay
          return haveValues && changedValues
     }
 
@@ -156,14 +157,7 @@ class ManageActivitiesForm extends Component{
         if(element){
             element.innerHTML = this.props.description || ''
         }
-        this.setState({
-            edit:false,
-            category: this.props.category,
-            description:this.props.description,
-            name:this.props.name,
-            url:this.props.url,
-            archive: this.props.archive
-        })
+        this.setState(this.getDefaultState())
     }
 
     handleSubmit = (event) => {
@@ -183,7 +177,7 @@ class ManageActivitiesForm extends Component{
 
     formatName = () => {
         let catgeoryName = this.props.categories.filter(obj=>obj.value===this.props.category)[0]
-        if( catgeoryName &&  catgeoryName.name){
+        if( catgeoryName && catgeoryName.name){
             return `${this.props.name} (${catgeoryName.name})`
         }else{
             return this.props.name
@@ -199,7 +193,10 @@ class ManageActivitiesForm extends Component{
                                 <input name="name" onChange={this.handleInputChange} value={this.state.name} />
                                 <DropDown options={this.props.categories} name="category" value={this.state.category} onChange={this.handleInputChange}/>
                             </div>
-                             <span className='archive-txt'>Archive: <input name='archive' onChange={this.handleInputChange} checked={this.state.archive} type='checkbox'/></span>
+                             <span className='archive-txt'>
+                                Archive: <input name='archive' onChange={this.handleInputChange} checked={this.state.archive} type='checkbox'/>
+                                Public: <input name='publicDisplay' onChange={this.handleInputChange} checked={this.state.publicDisplay} type='checkbox'/>
+                            </span>
                         </div>
                       <div className='activity-body'>
                           <div id={this.props.id || 'new'} onInput={this.handleDescriptionChange} className="styled-textarea" suppressContentEditableWarning={true} contentEditable></div>
@@ -234,11 +231,12 @@ function ManageActivitiesInner(props) {
                     description: element.description,
                     prerequisites: temp,
                     url: element.url,
-                    archive:element.archive
+                    archive:element.archive,
+                    publicDisplay:element.publicDisplay
                 }
             })
         }
-        const activities = mapActivities(props.allActivities);
+        const activities = mapActivities(props.allActivities)
         const mapped = activities.map((activity) => {
             return <ManageActivitiesForm
                 mutation={UPDATE_ACTIVITY}
