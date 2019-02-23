@@ -10,21 +10,11 @@ import Popup from "reactjs-popup"
 import {StudentWaiver} from '../studentWaiver/StudentWaiver'
 import next from '../../logos/next.svg'
 import DateTime from 'react-datetime'
+import EventResponse from '../eventRequest/EventResponse'
 const yearAgo = moment().subtract(1,'years').toISOString()
 
 const GET_USERS = `{
   allUsers{
-    nodes{
-      id
-      firstName
-      lastName
-      email
-    }
-  }
-}`
-
-const GET_USER_DATA = (userId) => `{
-  allUsers(condition:{id:"${userId}"}){
     nodes{
       id
       createdOn
@@ -32,9 +22,16 @@ const GET_USER_DATA = (userId) => `{
       firstName
       lastName
       email
-      refundRequestsByUserId{
+      eventRequestsByUserId(condition:{status:PENDING}){
         nodes{
           id
+          status
+        }
+      }
+      refundRequestsByUserId(condition:{status:PENDING}){
+        nodes{
+          id
+          status
         }
       }
     }
@@ -256,7 +253,7 @@ class ManageUserForm extends Component{
         this.state = {UI:'default'}
     }
     render = () => {
-        const user = this.props.allUsers.nodes[0]
+        const user = this.props.user
         if(this.state.UI === 'students'){
             return<div className='manage-user-popup'>
                 <h1>{user.firstName} {user.lastName}s Students</h1> // TODO add '
@@ -271,6 +268,12 @@ class ManageUserForm extends Component{
                 <StatelessOrderHistory userId={user.id} adminForm/>
                 <div className='back-container' onClick={()=>{this.setState({UI:'default'})}}> <img className='previous back-arrow' src={next} title='Icon made by Gregor Cresnar'/> Back</div>
             </div>
+        }else if(this.state.UI === 'events'){
+            return <div className='manage-user-popup'>
+               <h1>{user.firstName} {user.lastName}s Event Requests</h1>
+               <EventResponse userId={user.id}/>
+               <div className='back-container' onClick={()=>{this.setState({UI:'default'})}}> <img className='previous back-arrow' src={next} title='Icon made by Gregor Cresnar'/> Back</div>
+           </div>
         }
         return <div className='manage-user-popup'>
             <h1>{user.firstName} {user.lastName}</h1>
@@ -278,6 +281,7 @@ class ManageUserForm extends Component{
             <div className='manage-user-btn-container'>
                 <span className='styled-button' onClick={()=>{this.setState({UI:'orders'})}}>View orders</span>
                 <span className='styled-button' onClick={()=>{this.setState({UI:'students'})}}>View Students</span>
+                <span className='styled-button' onClick={()=>{this.setState({UI:'events'})}}>View Requests</span>
             </div>
     </div>
 
@@ -290,24 +294,33 @@ class ManageUsersInner extends Component {
         super(props)
         this.state = {showPopup:false}
     }
-    showPopup = (userId) => {
-        this.setState({showPopup:true, userId})
+    showPopup = (user) => {
+        this.setState({showPopup:true, user})
     }
     clearPopupState = () => {
-        this.setState({showPopup:false, userId:undefined})
+        this.setState({showPopup:false, user:undefined})
     }
     render = () => {
         const allUsers = this.props.allUsers.nodes
         let child = [];
         for(let x = 0; x < allUsers.length; x+=itemsPerRow){
-            let rows = allUsers.slice(x,x+itemsPerRow).map((user)=><td key={user.id}><div onClick={()=>{this.showPopup(user.id)}}>{user.firstName} {user.lastName}<br/>{user.email}</div></td>)
+            let rows = allUsers.slice(x,x+itemsPerRow).map((user)=>{
+            let className = ''
+            if(user.eventRequestsByUserId.nodes.length && user.refundRequestsByUserId.nodes.length){
+                className = 'red-tint'
+            }else if(user.eventRequestsByUserId.nodes.length){
+                className='blue-tint'
+            }else if(user.refundRequestsByUserId.nodes.length){
+                className='orange-tint'
+            }
+            return <td key={user.id}>
+            <div className={className} onClick={()=>{this.showPopup(user)}}>{user.firstName} {user.lastName}<br/>{user.email}</div>
+        </td>})
             child.push(<tr key={x}>{rows}</tr>)
         }
         return<div className='manage-users'>
             <Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState} className='main-contents'>
-                <ReactQuery query={GET_USER_DATA(this.state.userId)}>
-                    <ManageUserForm/>
-                </ReactQuery>
+                <ManageUserForm user={this.state.user}/>
             </Popup>
             <table className='manage-users-table'>
                 <tbody>
