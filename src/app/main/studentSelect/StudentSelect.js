@@ -15,7 +15,6 @@ const yearAgo = moment().subtract(1,'years').toISOString()
 const GET_STUDENTS_BY_PARENT = parentId => `{
   allStudents(condition: {parent: "${parentId}"}) {
     nodes {
-      nodeId
       parent
       id
       firstName
@@ -34,7 +33,6 @@ const CREATE_STUDENT = `mutation($student:CreateStudentInput!){
   createStudent(input:$student){
       student{
         parent
-        nodeId
         id
         firstName
         lastName
@@ -165,10 +163,10 @@ class StudentWaiverDisplay extends Component{
         const children = this.props.allStudents.nodes.map((student)=>{
             const waiver = student.studentWaiversByStudent.nodes[0];
             if(waiver){
-                return <div key={student.nodeId} className='waiver-found'>{student.firstName} {student.lastName}</div>
+                return <div key={student.id} className='waiver-found'>{student.firstName} {student.lastName}</div>
             }
             attentionNeeded = true;
-            return <div key={student.nodeId} onClick={()=>{this.showPopup(student.id)}} className='waiver-needed'>{student.firstName} {student.lastName}</div>
+            return <div key={student.id} onClick={()=>{this.showPopup(student.id)}} className='waiver-needed'>{student.firstName} {student.lastName}</div>
         })
         return <div>
             <Popup className='payment-overview-popup'open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>

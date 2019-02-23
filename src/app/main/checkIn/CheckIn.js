@@ -12,13 +12,10 @@ const GET_POSSIBLE_EVENTS = `{
       start
       end
       id
-      nodeId
       attendancesByDateInterval {
         nodes {
-          nodeId
           id
           studentByStudent {
-            nodeId
             id
             firstName
             lastName
@@ -27,26 +24,20 @@ const GET_POSSIBLE_EVENTS = `{
       }
       dateJoinsByDateInterval {
         nodes {
-          nodeId
           id
           eventByEvent {
-            nodeId
             id
             eventRegistrationsByEvent {
               nodes {
-                nodeId
                 id
                 studentByStudent {
-                  nodeId
                   id
                   firstName
                   lastName
                 }
                 eventByEvent {
-                  nodeId
                   id
                   activityByActivity {
-                    nodeId
                     id
                     name
                   }

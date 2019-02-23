@@ -8,7 +8,6 @@ const GET_ADDRESSES = (archive) => `{
     allAddresses(condition:{${archive}}){
         nodes{
       id
-      nodeId
       street
       city
       state
@@ -38,7 +37,6 @@ const UPDATE_ADDRESS = `mutation($id:UUID!, $address:AddressPatch!){
   updateAddressById(input:{addressPatch:$address, id:$id}){
     address{
       id
-      nodeId
       street
       city
       state

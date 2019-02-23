@@ -10,7 +10,6 @@ import QueryFullEvent from '../events/event/QueryFullEvent'
 const USER_DATA = id => `{
   allPayments(condition: {userId: "${id}"}) {
     nodes {
-      nodeId
       id
       snapshot
       status
@@ -18,7 +17,6 @@ const USER_DATA = id => `{
       userId
       refundRequestsByPayment {
         nodes {
-          nodeId
           id
           reason
           amountRefunded
@@ -131,7 +129,7 @@ function Order(props){
 
 function OrderHistoryInner(props){
 	let {allPayments, ...otherProps} = props
-    const orders = props.allPayments.nodes.map((payment) => { return <Order key={payment.nodeId} payment={payment} {...otherProps}/>})
+    const orders = props.allPayments.nodes.map((payment) => { return <Order key={payment.id} payment={payment} {...otherProps}/>})
 	if(orders.length > 0){
 		return <React.Fragment>{orders}</React.Fragment>
 	}else{

@@ -16,7 +16,6 @@ import moment from 'moment'
 const GET_EVENT_INFO_BY_ID = (id) => `{
   allEvents(condition: {id: "${id}"}) {
     nodes {
-      nodeId
       id
       archive
       name
@@ -27,24 +26,20 @@ const GET_EVENT_INFO_BY_ID = (id) => `{
       price
       addOnJoinsByEvent {
         nodes {
-          nodeId
           id
           addOnByAddOn {
             name
             description
             price
-            nodeId
             id
           }
         }
       }
       dateJoinsByEvent {
         nodes {
-          nodeId
           id
           dateIntervalByDateInterval {
             id
-            nodeId
             start
             end
           }
@@ -52,19 +47,15 @@ const GET_EVENT_INFO_BY_ID = (id) => `{
       }
       addressByAddress {
         alias
-        nodeId
         id
       }
       activityByActivity {
         id
-        nodeId
         name
         activityPrerequisitesByActivity {
           nodes {
-            nodeId
             id
             activityByPrerequisite {
-              nodeId
               id
               name
             }

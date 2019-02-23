@@ -8,7 +8,6 @@ import Popup from "reactjs-popup"
 const CREATE_REFUND_REQUEST = `mutation($user:UUID!, $payment:UUID!, $reason:String!){
 	createRefundRequest(input:{refundRequest:{reason:$reason, userId:$user, payment:$payment}}){
     refundRequest{
-      nodeId
 	  id
 	  reason
 	  status
@@ -16,7 +15,6 @@ const CREATE_REFUND_REQUEST = `mutation($user:UUID!, $payment:UUID!, $reason:Str
 	  grantedReason
 	  paymentByPayment{
 		  id
-		  nodeId
 	  }
     }
   }

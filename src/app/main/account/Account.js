@@ -16,11 +16,9 @@ const UPDATE_EMAIl = (id) => `mutation ($email: String!) {
     user {
       email
       id
-      nodeId
     }
   }
-}
-`
+}`
 
 
 class UpdateEmail extends Component{
@@ -38,12 +36,12 @@ class UpdateEmail extends Component{
         const {
             updateUserById: {
                 user:{
-                    nodeId,
+                    id,
                     email
                 }
             }
         } = data
-        cache.cache.User[nodeId].email = email
+        cache.cache.User[id].email = email
         cache.emitter.changeType('User')
         cache.emitter.emitCacheUpdate()
     }

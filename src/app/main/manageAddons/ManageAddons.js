@@ -7,7 +7,6 @@ import './ManageAddons.css'
 const GET_ADDONS =`{
   allAddOns{
     nodes{
-      nodeId
       id
       name
       description
@@ -19,14 +18,13 @@ const GET_ADDONS =`{
 const CREATE_ADDON = `mutation($addon:CreateAddOnInput!){
   createAddOn(input:$addon){
     addOn{
-      nodeId
       description
       id
       name
       price
       addOnJoinsByAddOn{
         nodes{
-          nodeId
+          id
         }
       }
     }
@@ -36,14 +34,13 @@ const CREATE_ADDON = `mutation($addon:CreateAddOnInput!){
 const UPDATE_ADDON = `mutation($id:UUID!, $addon:AddOnPatch!){
   updateAddOnById(input:{id:$id, addOnPatch:$addon}){
     addOn{
-      nodeId
       description
       id
       name
       price
       addOnJoinsByAddOn{
         nodes{
-          nodeId
+            id
         }
       }
     }

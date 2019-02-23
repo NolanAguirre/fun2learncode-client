@@ -7,13 +7,12 @@ import {DropDown} from '../common/Common'
 const CREATE_PREREQUISITE = `mutation($activityPrerequisite:CreateActivityPrerequisiteInput!){
   createActivityPrerequisite(input:$activityPrerequisite){
   	activityPrerequisite{
-      nodeId
       id
       activityByActivity{
-        nodeId
+        id
       }
       activityByPrerequisite{
-        nodeId
+        id
       }
     }
   }
@@ -22,13 +21,12 @@ const CREATE_PREREQUISITE = `mutation($activityPrerequisite:CreateActivityPrereq
 const REMOVE_PREREQUISITE = `mutation ($id: UUID!) {
   deleteActivityPrerequisiteById(input: {id: $id}) {
     activityPrerequisite {
-      nodeId
       id
       activityByActivity {
-        nodeId
+        id
       }
       activityByPrerequisite {
-        nodeId
+        id
       }
     }
   }

@@ -18,7 +18,6 @@ import loading from '../../logos/loading.svg'
 
 const USER_DATA = `{
     getUserData{
-        nodeId
         id
         firstName
         lastName
@@ -29,7 +28,6 @@ const USER_DATA = `{
 const UPDATE_ORDER_HISTORY = (id, students) => `{
   allPayments(condition: {userId: "${id}"}) {
     nodes {
-      nodeId
       id
       snapshot
       status
@@ -38,37 +36,30 @@ const UPDATE_ORDER_HISTORY = (id, students) => `{
       eventRegistrationsByPayment {
         nodes {
           studentByStudent {
-            nodeId
             id
             eventRegistrationsByStudent {
               nodes {
-                nodeId
                 id
                 eventByEvent {
-                  nodeId
                   id
                   activityByActivity {
-                    nodeId
                     name
                     id
                   }
                   dateJoinsByEvent {
                     nodes {
-                      nodeId
+                        id
                       dateIntervalByDateInterval {
-                        nodeId
                         id
                         start
                         end
                         eventLogsByDateInterval(filter: {instructor: {notEqualTo: null}, student:{in:${students}}}) {
                           nodes {
                             student
-                            nodeId
                             id
                             comment
                             instructor
                             userByInstructor {
-                              nodeId
                               id
                               firstName
                               lastName
@@ -86,7 +77,6 @@ const UPDATE_ORDER_HISTORY = (id, students) => `{
       }
       refundRequestsByPayment {
         nodes {
-          nodeId
           id
           reason
           status

@@ -8,7 +8,6 @@ import './ManagePromoCodes.css'
 const GET_DROPDOWN = `{
   allCategories {
     nodes {
-      nodeId
       id
       name
     }
@@ -16,18 +15,15 @@ const GET_DROPDOWN = `{
   allActivities {
     nodes {
       id
-      nodeId
       name
       categoryByCategory {
         name
         id
-        nodeId
       }
     }
   }
 }`
 const PROMO_FRAGMENT = `id
-nodeId
 code
 effect
 uses
@@ -35,18 +31,15 @@ code
 validStart
 validEnd
 userByUserId {
-  nodeId
   id
   firstName
   lastName
 }
 categoryByCategory {
-  nodeId
   id
   name
 }
 activityByActivity {
-  nodeId
   id
   name
 }
@@ -56,6 +49,7 @@ forCategory
 percent
 archive
 disabled`
+
 const GET_PROMO_CODES =  (archive) =>`{
   allPromoCodes (condition:{${archive}}) {
     nodes {
@@ -285,7 +279,7 @@ class DisablePromoCode extends Component{
 
 function ViewPromoCodes(props){
     return <GridView itemsPerRow={4}>
-        {props.allPromoCodes.nodes.map(promoCode=><DisablePromoCode key={promoCode.nodeId}{...promoCode}/>)}
+        {props.allPromoCodes.nodes.map(promoCode=><DisablePromoCode key={promoCode.code}{...promoCode}/>)}
     </GridView>
 }
 

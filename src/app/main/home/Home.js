@@ -12,7 +12,6 @@ import WhoWeAre from './whoWeAre/WhoWeAre'
 const GET_ACTIVITIES = `{
   allCategories {
     nodes {
-      nodeId
       name
       description
       id

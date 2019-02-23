@@ -8,7 +8,9 @@ import Popup from "reactjs-popup"
 const REJECT_REFUND_REQUEST = (id, reason) => `mutation{
   updateRefundRequestById(input:{id:"${id}", refundRequestPatch:{status:DECLINED, grantedReason:"${reason}"}}){
     refundRequest{
-      nodeId
+      id
+      status
+      grantedReason
     }
   }
 }`

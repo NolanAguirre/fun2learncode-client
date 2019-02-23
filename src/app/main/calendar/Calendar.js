@@ -90,13 +90,11 @@ class DragAndDropMutationInner extends Component{
     makeTemplate = (name, dateInterval) => {
         return `${name}:makeDateInterval(input: {arg0: "${dateInterval.start}", arg1: "${dateInterval.end}", arg2: "${this.props.activeEventProvider.id}"}) {
     dateJoin{
-      nodeId
       id
       eventByEvent{
-        nodeId
+        id
       }
       dateIntervalByDateInterval{
-        nodeId
         start
         end
         id
@@ -108,14 +106,13 @@ class DragAndDropMutationInner extends Component{
     deleteTemplate = (name, dateInterval) =>{
         return `${name}:removeDateInterval(input: {arg0: "${dateInterval.start}", arg1: "${dateInterval.end}", arg2: "${this.props.activeEventProvider.id}"}) {
             dateJoin{
-              nodeId
               id
               dateInterval
               eventByEvent{
-                nodeId
+                id
               }
               dateIntervalByDateInterval{
-                nodeId
+                id
               }
             }
         }`

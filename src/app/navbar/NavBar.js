@@ -10,7 +10,6 @@ import {ReactQuery} from '../../delv/delv-react'
 
 const GET_USER_DATA = `{
     getUserData{
-        nodeId
         id
         firstName
         lastName

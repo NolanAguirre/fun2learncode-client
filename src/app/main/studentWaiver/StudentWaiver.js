@@ -5,11 +5,9 @@ import Mutation from '../../../delv/Mutation'
 const CREATE_STUDENT_WAIVER = `mutation ($studentWaiver: StudentWaiverInput!) {
   createStudentWaiver(input: {studentWaiver: $studentWaiver}) {
     studentWaiver {
-      nodeId
       id
       createdOn
       studentByStudent {
-        nodeId
         id
       }
     }

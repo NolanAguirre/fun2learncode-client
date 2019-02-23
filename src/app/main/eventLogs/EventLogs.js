@@ -14,7 +14,6 @@ const GET_LOGS = (eventId, studentId) => `{
       student
       comment
       dateIntervalByDateInterval {
-        nodeId
         id
         start
         end

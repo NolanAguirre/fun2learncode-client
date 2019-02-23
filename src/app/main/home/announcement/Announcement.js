@@ -8,7 +8,6 @@ import { ReactQuery } from '../../../../delv/delv-react'
 const ANNOUNCEMENTS = (params) => `{
   allAnnouncements(filter:{id:{greaterThan:${params.greaterThan}, lessThan:${params.lessThan}}}) {
     nodes{
-      nodeId
       id
       message
       title

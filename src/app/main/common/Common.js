@@ -8,7 +8,6 @@ import DateTime from 'react-datetime'
 
 const GET_USER_DATA = `{
     getUserData{
-        nodeId
         id
         firstName
         lastName
@@ -22,12 +21,10 @@ const GET_ACTIVITIES = `{
   allActivities {
    nodes {
      id
-     nodeId
      name
     categoryByCategory{
        name
        id
-       nodeId
      }
    }
  }

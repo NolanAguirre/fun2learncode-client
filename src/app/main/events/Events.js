@@ -11,7 +11,6 @@ const GET_EVENTS_OF_TYPE = (id) => {
   allEvents(condition: {activity: "${id}"}, filter: {openRegistration: {lessThanOrEqualTo: "${NOW}"}, closeRegistration: {greaterThanOrEqualTo: "${NOW}"}, seatsLeft: {greaterThan: 0}}) {
     nodes {
       id
-      nodeId
       activity
       price
       capacity
@@ -20,7 +19,6 @@ const GET_EVENTS_OF_TYPE = (id) => {
       openRegistration
       closeRegistration
       addressByAddress {
-        nodeId
         id
         city
         street
@@ -29,9 +27,8 @@ const GET_EVENTS_OF_TYPE = (id) => {
       }
       dateJoinsByEvent {
         nodes {
-          nodeId
+          id
           dateIntervalByDateInterval {
-            nodeId
             id
             end
             start
