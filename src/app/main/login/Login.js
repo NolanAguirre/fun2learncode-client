@@ -3,19 +3,14 @@ import './Login.css'
 import {Link} from 'react-router-dom'
 import Logo from '../../logos/drawing.svg'
 import axios from 'axios'
-import Delv from '../../../delv/delv';
+import Delv from '../../../delv/delv'
 class Login extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            email: '',
-            password: ''
-        }
+        this.state = {email: '', password: ''}
     }
 
-    validEmail = () => {
-        return this.state.email.match('^.+@.+\..+$');
-    }
+    validEmail = () =>  this.state.email.match(/^.+@.+\..+$/)
 
     handleChange = (event) => {
         const target = event.target
@@ -27,9 +22,9 @@ class Login extends Component {
     handleSubmit = (event) => {
         event.preventDefault()
         if(!this.validEmail()){
-            this.setState({error:"No valid email address provided."})
-        }else if(this.state.password === ''){
-            this.setState({error:"No password provided."})
+            this.setState({error:'No valid email address provided.'})
+        }else if(!this.state.password){
+            this.setState({error:'No password provided.'})
         }else{
             axios.post('http://localhost:3005/authenticate', {
                 email: this.state.email,
@@ -38,47 +33,34 @@ class Login extends Component {
                 if (res.data.error) {
                     this.setState({error:res.data.error})
                 } else {
-                    Delv.clearCache();
+                    Delv.clearCache()
                     window.location.href = this.props.redirectUrl || '/'
                 }
             })
         }
-
     }
 
     render = () => {
-        let child = "";
-        if(this.state.error){
-            if(this.state.error === 'Email or Password was incorrect'){
-                child = <React.Fragment>
-                        <div className='error'>Incorrect email or password.</div>
-                        <Link to={`/recover`}>Forgot password?</Link>
-                    </React.Fragment>
-            }else{
-                child = <span className='login-error'>{this.state.error}</span>
-            }
+        let child = <div className='error'>{this.state.error}</div>
+        if(this.state.error === 'Email or Password was incorrect'){
+            child = <React.Fragment>
+                <div className='error'>Incorrect email or password.</div>
+                <Link to={'/recover'}>Forgot password?</Link>
+            </React.Fragment>
         }
-        return (<div className='container section'>
-            <div className='login-container'>
-                <div className='login-widget'>
-                    <div className='login-headers'>
-                        <a><img src={Logo}/></a>
-                    </div>
-                    <div className='login-error-container'>
-                        {child}
-                    </div>
-                    <form onSubmit={this.handleSubmit} className='login-form'>
-                        <input className='styled-input' placeholder='email' name='email' type='email' onChange={this.handleChange}/>
-                        <input className='styled-input' placeholder='password' name='password' type='password' onChange={this.handleChange}/>
-                        <div className='event-register-btn center-text' onClick={this.handleSubmit}>Log In</div>
-                        <button className='hacky-submit-button' type='submit'/>
-                    </form>
-                    <div className='sign-up-text'>
-                        <Link to={`/Sign up`}>Sign up</Link>
-                    </div>
-                </div>
+        return <div className='login-container'>
+            <div className='login-headers'>
+                <a><img src={Logo}/></a>
             </div>
-        </div>)
+            {child}
+            <form onSubmit={this.handleSubmit} className='login-form'>
+                <input className='styled-input' placeholder='email' name='email' type='email' onChange={this.handleChange}/>
+                <input className='styled-input' placeholder='password' name='password' type='password' onChange={this.handleChange}/>
+                <div className='event-register-btn center-text' onClick={this.handleSubmit}>Log In</div>
+                <button className='hacky-submit-button' type='submit'/>
+            </form>
+            <Link to={'/Sign up'}>Sign up</Link>
+        </div>
     }
 }
 export default Login
