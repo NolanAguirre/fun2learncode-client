@@ -1,7 +1,0 @@
-import React, { Component } from 'react'
-import './Events.css'
-import EventComponent from './event/Event'
-import {ReactQuery} from '../../../delv/delv-react'
-import moment from 'moment'
-import SadFace from '../../logos/sadface.svg'
-import {GridView} from '../common/Common'
