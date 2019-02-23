@@ -56,17 +56,13 @@ class PasswordReset extends Component{
                     <div className='center-text'>Password has been changed.</div>
                 </div>
         }else{
-            return <form onSubmit={this.mutation.onSubmit} className={this.props.className}>
-                <div className="margin-top-40">
+            return <form onSubmit={this.mutation.onSubmit} className='login-form'>
+                <div>
                     <div className='error'>{this.state.error}</div>
                     <input className='styled-input' name='password' type='password' onChange={this.handleChange} placeholder='password' />
                 </div>
-                <div className="margin-top-40">
-                    <input className='styled-input' name='repeatPassword' type='password' onChange={this.handleChange} placeholder='repeat password' />
-                </div>
-                <div className="margin-top-40">
-                    <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Update Password</div>
-                </div>
+                <input className='styled-input' name='repeatPassword' type='password' onChange={this.handleChange} placeholder='repeat password' />
+                <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Update Password</div>
                 <button className='hacky-submit-button' type='submit'/>
             </form>
         }

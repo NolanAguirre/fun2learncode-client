@@ -209,9 +209,7 @@ class CheckInInner extends Component{
 	}
 
     render = () => {
-        return<div className='main-contents container'>
-          <div className='login-container'>
-            <div className='login-widget'>
+        return <div className='login-widget'>
               <div className='login-headers'>
                 <a><img className='nav-logo' src={Logo} /></a>
               </div>
@@ -224,8 +222,7 @@ class CheckInInner extends Component{
               </div>
 		  </React.Fragment>}
             </div>
-          </div>
-        </div>
+
     }
 }
 

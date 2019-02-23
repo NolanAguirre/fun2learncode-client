@@ -74,8 +74,8 @@ class RefundResponse extends Component{
 
 	render = () => {
 		return <React.Fragment>
-			<Popup className='payment-overview-popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
-				<div className='login-widget'>
+			<Popup className='payment-popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+				<div className='login-container'>
 					<div>Refund Status: {this.props.status}</div>
 					<div>Reason for refund:</div>
 					<div>{this.props.reason}</div>

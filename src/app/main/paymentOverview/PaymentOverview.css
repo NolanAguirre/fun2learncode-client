@@ -71,7 +71,7 @@ table, th, td {
     }
     table.responsive-table td {
         display: block;
-        color:rgba(0, 0, 0, 0.5);
+        color:rgb(102, 102, 102);
         box-sizing: border-box;
         padding: 15px 10px;
         min-height: 1.25em;

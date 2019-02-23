@@ -1,4 +1,4 @@
-.payment-overview-popup{
+.payment-popup{
     width:auto !important;
     padding:0!important;
     border:0!important;
@@ -13,7 +13,7 @@
 .payment-container a{
     text-decoration: none;
 }
-.payment-overview-popup *::placeholder{
+.payment-popup *::placeholder{
     font-family: 'Source Code Pro', monospace;
     color: '#aab7c4';
 }
@@ -57,7 +57,7 @@
 .payment-loading{
     z-index: 1000;
     position:absolute;
-    background-color: white;
+    /* background-color: white; */
     width:calc(100% - 80px);
     height:calc(100% - 80px);
 }

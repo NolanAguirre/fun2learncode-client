@@ -112,3 +112,13 @@ body {
     flex-direction: column;
     justify-content: flex-end;
 }
+
+.error{
+    height:18px;
+    color:red;
+    padding: 5px 0px;
+}
+
+.box-shadow{
+    box-shadow: 0 4px 40px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}

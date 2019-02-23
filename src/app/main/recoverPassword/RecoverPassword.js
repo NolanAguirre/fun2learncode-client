@@ -57,7 +57,7 @@ class RecoverPassword extends Component{
         }
         return <div className='container section'>
             <div className='login-container'>
-              <div className='login-widget'>
+              <div className='login-container'>
                   <div className='login-headers'>
                         <a><img className='nav-logo' src={Logo}/></a>
                   </div>

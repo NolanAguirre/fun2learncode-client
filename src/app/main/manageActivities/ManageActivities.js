@@ -207,7 +207,7 @@ class ManageActivitiesForm extends Component{
         }else{
             const prerequisites = this.props.prerequisites && this.props.prerequisites.length !== 0?<div><h4 className='no-margin'>Prerequisites</h4></div>:''
             return <div className='activity-card'>
-                    <img className='activity-image mobile-center-x' src={this.props.url || 'https://via.placeholder.com/350x150'} />
+                    <img className='activity-image' src={this.props.url || 'https://via.placeholder.com/350x150'} />
                   <h2>{this.props.name}</h2>
                       {(this.props.prerequisites)?<Prerequisites prerequisites={this.props.prerequisites} />:""}
                       {this.props.children}

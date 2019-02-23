@@ -1,27 +1,17 @@
 .login-container{
     margin: auto;
-    box-shadow: 0 4px 40px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-.login-widget{
     padding: 40px!important;
     background-color:white;
-    width: 515px!important;
+    width: 515px;
     min-height: 500px;
     display: flex;
     flex-direction: column;
-    margin: auto;
     box-sizing: border-box;
 }
+
 .login-headers{
     display: flex;
     justify-content: center;
-    border-bottom: 2px solid gray; /* Change this color */
-}
-.login-error-container{
-    padding-top: 10px;
-    height:18px;
-    display:flex;
-
 }
 .login-form{
     margin-top: 10px;
@@ -31,21 +21,13 @@
     justify-content: space-between;
 }
 
-.login-form-btn{
-    max-width: 150px;
-    margin-top: 40px;
-    padding: 10px 40px;
-}
 .hacky-submit-button{
     visibility: hidden;
     position: absolute;
 }
 @media screen and (max-width: 515px) {
-    .login-widget{
+    .login-container{
         width:auto!important;
         margin:0 auto;
-    }
-    .login-container{
-        flex:1;
     }
 }

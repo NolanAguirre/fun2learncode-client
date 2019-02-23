@@ -1,10 +1,7 @@
-.space-around{
-    flex:1;
+.account-top-container{
+    background-color: white;
+    padding:20px;
     display:flex;
-    flex-direction: column;
-    justify-content: space-around;
-}
-
-.email-input-container{
-    margin-top:120px;
+    flex-direction: wrap;
+    justify-content: space-between;
 }
