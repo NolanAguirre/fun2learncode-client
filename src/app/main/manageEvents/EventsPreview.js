@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { DropDown, CustomProvider, ArchiveOptions } from '../common/Common'
 import './EventsPreview.css'
 import { ReactQuery } from '../../../delv/delv-react'
-import DateTime from 'react-datetime'
 import '../../../react-datetime.css'
 import Popup from "reactjs-popup"
 import Colors from '../calendar/Colors'
@@ -32,6 +31,7 @@ const GET_EVENTS = (eventArchive) => `{
       activity
       address
       showCalendar
+      publicDisplay
       addOnJoinsByEvent {
         nodes {
           id

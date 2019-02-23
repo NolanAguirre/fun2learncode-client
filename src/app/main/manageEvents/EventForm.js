@@ -51,6 +51,7 @@ const CREATE_EVENT= `mutation ($event: EventInput!) {
       activity
       address
       showCalendar
+      publicDisplay
       addOnJoinsByEvent {
         nodes {
           id
@@ -85,6 +86,8 @@ const UPDATE_EVENT= `mutation ($id: UUID!, $event: EventPatch!) {
       closeRegistration
       activity
       address
+      showCalendar
+      publicDisplay
       activityByActivity {
         id
       }
@@ -216,7 +219,8 @@ class EventFormInner extends Component {
             openRegistration: this.localizeUTCTimestamp(props.openRegistration) || new Date(moment().hour(23).minute(59).second(59).millisecond(999).toString()),
             closeRegistration: this.localizeUTCTimestamp(props.closeRegistration) || new Date(moment().add(1, "days").hour(23).minute(59).second(59).millisecond(999).toString()),
             archive: false || this.props.archive,
-            activity: this.props.activity
+            activity: this.props.activity,
+            publicDisplay:!!this.props.publicDisplay
         }
         this.mutation = new Mutation({mutation: this.props.mutation, onSubmit: this.handleSubmit})
 
@@ -235,13 +239,14 @@ class EventFormInner extends Component {
     }
 
     hasRequiredValues = () => {
-        let haveValues = this.state.name != "" && this.state.address
+        let haveValues = this.state.name && this.state.address
         let changedValues = this.state.name != this.props.name ||
         this.normalizeDate(this.state.openRegistration) != this.normalizeDate(this.props.openRegistration) ||
         this.normalizeDate(this.state.closeRegistration) != this.normalizeDate(this.props.closeRegistration) ||
         this.state.address != this.props.address ||
         this.state.capacity != this.props.capacity ||
-        this.state.archive != this.props.archive
+        this.state.archive != this.props.archive ||
+        this.state.publicDisplay != this.props.publicDisplay
         return haveValues && changedValues
     }
 
@@ -274,7 +279,8 @@ class EventFormInner extends Component {
                 seatsLeft: this.state.capacity - (this.props.capacity - this.props.seatsLeft) || this.state.capacity,
                 address: this.state.address,
                 name: this.state.name,
-                archive:this.state.archive
+                archive:this.state.archive,
+                publicDisplay:this.state.publicDisplay
             }
 
             return {"id": this.props.id,  event}
@@ -342,6 +348,12 @@ class EventFormInner extends Component {
                                         <input checked={this.state.archive} name='archive' type='checkbox'  onChange={this.handleChange}></input>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>Public: </td>
+                                    <td>
+                                        <input checked={this.state.publicDisplay} name='publicDisplay' type='checkbox'  onChange={this.handleChange}></input>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </form>
@@ -373,7 +385,7 @@ class EventForm extends Component {
 
     render = () => {
         return <div>
-            <Popup className='payment-overview-popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+            <Popup className='payment-popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
                 <ReactQuery query={GET_DROPDOWN}>
                     <EventFormInner {...this.props} handleSubmit={this.clearPopupState} mutation={(
                             this.props.id)
