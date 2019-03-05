@@ -1,0 +1,17 @@
+.manage-addons-textarea {
+    height: 50px;
+    width: 100%;
+}
+.manage-addon-container {
+    flex: 1;
+    justify-content: space-between;
+    padding: 40px;
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: white;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    min-height: 300px;
+    box-sizing: border-box;
+}
