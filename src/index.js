@@ -6,7 +6,7 @@ import App from './app/App'
 import {DelvReact} from './delv/delv-react'
 
 const delvConfig = {
-    url: 'http://localhost:3005/graphql',
+    url: 'https://fun2learncode-api.herokuapp.com/graphql',
     handleError: (error) => {
         if(error.response && error.response.data){
             error.response.data.errors.forEach((err)=>{
