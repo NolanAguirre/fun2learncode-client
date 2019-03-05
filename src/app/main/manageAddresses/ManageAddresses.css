@@ -1,8 +1,21 @@
-.manage-address-form-header{
+.manage-address-card {
+    flex: 1;
+    justify-content: space-between;
+    padding: 40px;
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: white;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    min-height: 340px;
+    box-sizing: border-box;
+}
+.manage-address-form-header {
     text-align: center;
     margin: 0 0 5px 0;
 }
-.create-address-form{
+.create-address-form {
     min-width: 400px;
-    margin:0 auto;
+    margin: 0 auto;
 }

@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
-import {SecureRoute, Location, GridView, ArchiveOptions} from '../common/Common'
+import {SecureRoute, GridView, ArchiveOptions} from '../common/Common'
 import './ManageAddresses.css'
 
-const GET_ADDRESSES = (archive) => `{
+const GET_ADDRESSES = archive => `{
     allAddresses(condition:{${archive}}){
         nodes{
       id
@@ -48,219 +48,212 @@ const UPDATE_ADDRESS = `mutation($id:UUID!, $address:AddressPatch!){
   }
 }`
 
-function CreateAddressFrom(props){
-    if(props.edit){
-        return <form className='create-address-form' onSubmit={props.onSubmit}>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>Street: </td>
-                            <td><input name="street" value={props.street} onChange={props.handleChange}></input></td>
-                            <td>Alias: </td>
-                            <td><input name="alias" value={props.alias} onChange={props.handleChange}></input></td>
-                        </tr>
-                        <tr>
-                            <td>City: </td>
-                            <td><input name="city" value={props.city} onChange={props.handleChange}></input></td>
-                            <td>Zipcode: </td>
-                            <td><input name="zipcode" value={props.zipcode} onChange={props.handleChange} type="number"></input></td>
-                        </tr>
-                        <tr>
-                            <td>State: </td>
-                            <td><input name="state" value={props.state} onChange={props.handleChange}></input></td>
-                            <td>Archive: </td>
-                            <td><input name="archive" checked={props.archive} onChange={props.handleChange} type="checkbox"></input></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button type="submit">finish</button>
-            </form>
-        }
-        return <React.Fragment>
-            <table className='create-address-form'>
-                <tbody>
-                    <tr>
-                        <td>Street: </td>
-                        <td>{props.street}</td>
-                        <td>Alias: </td>
-                        <td>{props.alias}</td>
-                    </tr>
-                    <tr>
-                        <td>City: </td>
-                        <td>{props.city}</td>
-                        <td>Zipcode: </td>
-                        <td>{props.zipcode}</td>
-                    </tr>
-                    <tr>
-                        <td>State: </td>
-                        <td>{props.state}</td>
-                        <td>Archive: </td>
-                        <td>{props.archive?'True':'False'}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <button onClick={props.toggleEdit}>edit</button>
-        </React.Fragment>
-
-}
-
-function UpdateAddressForm(props){
-    if(props.edit){
-        return <form onSubmit={props.onSubmit}>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>Street: </td>
-                            <td><input name="street" value={props.street} onChange={props.handleChange}></input></td>
-                        </tr>
-                        <tr>
-                            <td>City: </td>
-                            <td><input name="city" value={props.city} onChange={props.handleChange}></input></td>
-                        </tr>
-                        <tr>
-                            <td>State: </td>
-                            <td><input name="state" value={props.state} onChange={props.handleChange}></input></td>
-                        </tr>
-                        <tr>
-                            <td>Alias: </td>
-                            <td><input name="alias" value={props.alias} onChange={props.handleChange}></input></td>
-                        </tr>
-                        <tr>
-                            <td>Zipcode: </td>
-                            <td><input name="zipcode" value={props.zipcode} onChange={props.handleChange} type="number"></input></td>
-                        </tr>
-                        <tr>
-                            <td>Archive: </td>
-                            <td><input name="archive" checked={props.archive} onChange={props.handleChange} type="checkbox"></input></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button type="submit">finish</button>
-            </form>
-    }
-    return <React.Fragment>
-        <table>
-            <tbody>
-                <tr>
-                    <td>Street: </td>
-                    <td>{props.street}</td>
-                </tr>
-                <tr>
-                    <td>City: </td>
-                    <td>{props.city}</td>
-                </tr>
-                <tr>
-                    <td>State: </td>
-                    <td>{props.state}</td>
-                </tr>
-                <tr>
-                    <td>Alias: </td>
-                    <td>{props.alias}</td>
-                </tr>
-                <tr>
-                    <td>Zipcode: </td>
-                    <td>{props.zipcode}</td>
-                </tr>
-                <tr>
-                    <td>Archive: </td>
-                    <td>{props.archive?'True':'False'}</td>
-                </tr>
-            </tbody>
-        </table>
-        <button onClick={props.toggleEdit}>edit</button>
-    </React.Fragment>
-}
-
-class ManageAddressForm extends Component{
-    constructor(props){
+class ManageAddressForm extends Component {
+    constructor(props) {
         super(props)
         this.state = {
-            edit:false,
-            street: props.street || "",
-            city: props.city || "",
-            state: props.state || "",
-            alias: props.alias || "",
+            edit: false,
+            street: props.street || '',
+            city: props.city || '',
+            state: props.state || '',
+            alias: props.alias || '',
             zipcode: props.zipcode || 78664,
             archive: props.archive || false
         }
         this.mutation = new Mutation({
-            mutation:props.mutation,
-            onSubmit:this.handleSubmit
+            mutation: props.mutation,
+            onSubmit: this.handleSubmit
         })
     }
 
     toggleEdit = () => {
-        this.setState({edit:!this.state.edit})
+        this.setState({edit: !this.state.edit})
     }
 
-    handleChange = (event) => {
-      const target = event.target
-      const value = target.type === 'checkbox'
-        ? target.checked
-        : target.value
-      const name = target.name
-      this.setState({ [name]: value })
+    handleChange = event => {
+        const target = event.target
+        const value = target.type === 'checkbox' ? target.checked : target.value
+        const name = target.name
+        this.setState({[name]: value})
     }
 
-    hasRequiredValues = () =>{
-        let haveValues =  this.state.street != "" &&
-               this.state.city != "" &&
-               this.state.state != "" &&
-               this.state.alias != "" &&
-               this.state.zipcode
-        let changedValues = this.state.street != this.props.street ||
-               this.state.city != this.props.city ||
-               this.state.state != this.props.state ||
-               this.state.alias != this.props.alias ||
-               this.state.zipcode != this.props.zipcode ||
-               this.state.archive != this.props.archive
-         return haveValues && changedValues
+    hasRequiredValues = () => {
+        let haveValues =
+            this.state.street &&
+            this.state.city &&
+            this.state.state &&
+            this.state.alias &&
+            this.state.zipcode
+        let changedValues =
+            this.state.street !== this.props.street ||
+            this.state.city !== this.props.city ||
+            this.state.state !== this.props.state ||
+            this.state.alias !== this.props.alias ||
+            this.state.zipcode !== this.props.zipcode ||
+            this.state.archive !== this.props.archive
+        return haveValues && changedValues
     }
 
-    handleSubmit = (event) => {
-        event.preventDefault();
-        if(this.hasRequiredValues()){
+    handleSubmit = event => {
+        event.preventDefault()
+        if (this.hasRequiredValues()) {
             let address = Object.assign({}, this.state)
             delete address.edit
-            this.setState({edit:false})
+            this.setState({edit: false})
             if (this.props.id) {
-                return {id:this.props.id, address}
-            }else{
-                return {address:{address}}
+                return {id: this.props.id, address}
+            } else {
+                return {address: {address}}
             }
         }
-        this.setState({edit:false})
+        this.setState({edit: false})
         return false
     }
 
     render = () => {
-        return <div className="grid-item-container">
-            <h2 className="manage-address-form-header">{this.props.alias}</h2>
-            {this.props.id?<UpdateAddressForm {...this.state} handleChange={this.handleChange} onSubmit={this.mutation.onSubmit} toggleEdit={this.toggleEdit}/>:
-            <CreateAddressFrom {...this.state} handleChange={this.handleChange} onSubmit={this.mutation.onSubmit} toggleEdit={this.toggleEdit}/>}
+        if (this.state.edit) {
+            return (
+                <div className='manage-address-card'>
+                    <h2 className='manage-address-form-header'>{this.props.alias}</h2>
+                    <form onSubmit={this.mutation.onSubmit}>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>Street: </td>
+                                    <td>
+                                        <input
+                                            name='street'
+                                            value={this.state.street}
+                                            onChange={this.handleChange}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>City: </td>
+                                    <td>
+                                        <input
+                                            name='city'
+                                            value={this.state.city}
+                                            onChange={this.handleChange}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>State: </td>
+                                    <td>
+                                        <input
+                                            name='state'
+                                            value={this.state.state}
+                                            onChange={this.handleChange}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Alias: </td>
+                                    <td>
+                                        <input
+                                            name='alias'
+                                            value={this.state.alias}
+                                            onChange={this.handleChange}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Zipcode: </td>
+                                    <td>
+                                        <input
+                                            name='zipcode'
+                                            value={this.state.zipcode}
+                                            onChange={this.handleChange}
+                                            type='number'
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Archive: </td>
+                                    <td>
+                                        <input
+                                            name='archive'
+                                            checked={this.state.archive}
+                                            onChange={this.handleChange}
+                                            type='checkbox'
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div
+                            className='styled-button margin-top-10'
+                            onClick={this.mutation.onSubmit}>
+                            Finish
+                        </div>
+                        <button className='hacky-submit-button' type='submit' />
+                    </form>
+                </div>
+            )
+        }
+        return (
+            <div className='manage-address-card'>
+                <h2 className='manage-address-form-header'>{this.props.alias}</h2>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Street: </td>
+                            <td>{this.props.street}</td>
+                        </tr>
+                        <tr>
+                            <td>City: </td>
+                            <td>{this.props.city}</td>
+                        </tr>
+                        <tr>
+                            <td>State: </td>
+                            <td>{this.props.state}</td>
+                        </tr>
+                        <tr>
+                            <td>Alias: </td>
+                            <td>{this.props.alias}</td>
+                        </tr>
+                        <tr>
+                            <td>Zipcode: </td>
+                            <td>{this.props.zipcode}</td>
+                        </tr>
+                        <tr>
+                            <td>Archive: </td>
+                            <td>{this.props.archive ? 'True' : 'False'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div className='styled-button margin-top-10' onClick={this.toggleEdit}>
+                    Edit
+                </div>
             </div>
+        )
     }
 }
 
-function ManageAddressesInner(props){
-    const addresses = props.allAddresses.nodes.map((address) => <ManageAddressForm mutation={UPDATE_ADDRESS} key={address.id} {...address} />)
-    return <GridView className="container column" fillerStyle={'grid-item-container'} itemsPerRow={3}>{addresses}</GridView>
+function ManageAddressesInner(props) {
+    const addresses = props.allAddresses.nodes.map(address => (
+        <ManageAddressForm mutation={UPDATE_ADDRESS} key={address.id} {...address} />
+    ))
+    return (
+        <GridView className='container column' fillerStyle={'manage-address-card'} itemsPerRow={3}>
+            {[<ManageAddressForm mutation={CREATE_ADDRESS} alias={'New Address'} />, ...addresses]}
+        </GridView>
+    )
 }
 
-
-function ManageAddresses(props){
-    return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
-        <div className="main-contents column container">
-            <div className="container column">
-                <ManageAddressForm mutation={CREATE_ADDRESS} alias={"New Address"} />
+function ManageAddresses(props) {
+    return (
+        <SecureRoute ignoreResult roles={['FTLC_OWNER', 'FTLC_ADMIN']}>
+            <div className='main-contents column container'>
+                <ArchiveOptions query={GET_ADDRESSES}>
+                    <ReactQuery>
+                        <ManageAddressesInner />
+                    </ReactQuery>
+                </ArchiveOptions>
             </div>
-            <ArchiveOptions query={GET_ADDRESSES}>
-                <ReactQuery>
-                    <ManageAddressesInner />
-                </ReactQuery>
-            </ArchiveOptions>
-        </div>
-    </SecureRoute>
+        </SecureRoute>
+    )
 }
 
 export default ManageAddresses
