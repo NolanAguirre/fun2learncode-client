@@ -1,11 +1,24 @@
-.recent-events-container{
-    width:100%;
+.recent-events-container {
+    width: 100%;
 }
-.recent-event{
-    background-color: white;
-    flex:1;
-    padding:20px;
-}
-.recent-event-day-container{
 
+.recent-event-btn {
+    min-width: 75px;
+    text-align: center;
+    padding: 10px;
+    background-color: #4bc82e;
+    color: white;
+    transition-duration: 0.1s;
+}
+
+.recent-event-btn:hover {
+    background-color: #41a62a;
+}
+.recent-event-day-container {
+    margin: 20px;
+    overflow-y: auto;
+}
+.recent-event-student-conatiner {
+    padding: 5px;
+    border: 2px solid gray;
 }
