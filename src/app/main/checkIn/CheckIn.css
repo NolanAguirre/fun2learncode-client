@@ -1,9 +1,9 @@
-.check-in-input{
-    margin-bottom: 80px;
+.check-in{
+    height:525px;
 }
 .check-in-student{
     padding: 10px;
-    background-color: #41a62a;
+    background-color: #4bc82e;
     border-radius: 8px;
     flex: 0 0 auto;
     margin: 10px 0 10px 0;
@@ -11,7 +11,7 @@
 
 .check-in-student-selected{
     padding: 10px;
-    background-color: green;
+    background-color: #41a62a;
     color:white;
     border-radius: 8px;
     flex: 0 0 auto;
@@ -19,7 +19,13 @@
 }
 .check-in-container{
     display: flex;
-    flex:1;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    height: 300px;
+    margin-bottom: 10px;
+}
+.check-in-choice-container{
+    overflow-y: auto;
+    height: 300px;
+    margin-bottom: 10px;
 }

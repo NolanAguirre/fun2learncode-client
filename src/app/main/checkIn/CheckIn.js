@@ -7,7 +7,7 @@ import Logo from '../../logos/drawing.svg'
 import moment from 'moment'
 
 const GET_POSSIBLE_EVENTS = `{
-  allDateIntervals(filter: {start: {greaterThan: "${moment().subtract(1000,'hours').toISOString()}", lessThan: "${moment().add(1000,'hours').toISOString()}"}}) {
+  allDateIntervals(filter: {start: {greaterThan: "${moment().subtract(10000,'hours').toISOString()}", lessThan: "${moment().add(10000,'hours').toISOString()}"}}) {
     nodes {
       start
       end
@@ -58,14 +58,14 @@ const localize = (timestamp) =>{
     return moment(moment.utc(timestamp)).local()
 }
 
-const TEMPLATE = (dateInterval, event, student) => {
+const TEMPLATE = (dateInterval, event, student, instructor) => {
     const NOW = new Date().toISOString()
 return `${genRandomId()}:createAttendance(input:{attendance:{dateInterval:"${dateInterval}",event:"${event}", student:"${student}", checkInTime:"${NOW}"present:true}}){
     attendance{
       id
     }
   }
-  ${genRandomId()}:createEventLog(input: {eventLog: {dateInterval: "${dateInterval}", event: "${event}", student: "${student}", comment:"Student signed in at ${localize(NOW).format('h:mm a')}."}}) {
+  ${genRandomId()}:createEventLog(input: {eventLog: {dateInterval: "${dateInterval}", instructor:"${instructor}", event: "${event}", student: "${student}", comment:"Student signed in at ${localize(NOW).format('h:mm a')}."}}) {
     eventLog {
       id
     }
@@ -100,7 +100,7 @@ class CheckInChoice extends Component{
     handleSubmit = (event) => {
         event.preventDefault()
 		if(this.selected && this.selected.length > 0){
-			let mutation = this.selected.map((element)=>{return TEMPLATE(element.dateInterval.id, element.event.id, element.student.id)})
+			let mutation = this.selected.map((element)=>{return TEMPLATE(element.dateInterval.id, element.event.id, element.student.id, this.props.instructorId)})
 	        new Mutation({
 	            mutation:`mutation{${mutation}}`,
 	            onSubmit:()=>{return {}},
@@ -117,14 +117,13 @@ class CheckInChoice extends Component{
 
     render = () => {
 		if(this.state.signedIn){
-			return <div className='section center-y'>
+			return <div className='check-in-container'>
 				<h1 className='center-text'>You've Been Signed in!</h1>
 			</div>
 
 		}else{
-			return <div className='container column section'>
-				<form className='section container column' onSubmit={this.handleSubmit}>
-					<div className='section'>
+			return <form className='section container column custom-scrollbar' onSubmit={this.handleSubmit}>
+					<div className='check-in-choice-container'>
 						<MultiSelect multiSelect setSelected={this.setSelected} items={this.props.choices}>
 							<Selectable className={{base:'check-in-student', selected:'check-in-student-selected'}}>
 								<InlineEvent/>
@@ -133,7 +132,6 @@ class CheckInChoice extends Component{
 					</div>
 					<div className='event-register-btn center-text' onClick={this.handleSubmit}>Check in</div>
 				</form>
-			</div>
 		}
     }
 }
@@ -209,17 +207,17 @@ class CheckInInner extends Component{
 	}
 
     render = () => {
-        return <div className='login-widget'>
+        return <div className='login-container check-in'>
               <div className='login-headers'>
-                <a><img className='nav-logo' src={Logo} /></a>
+                <h1>Sign In</h1>
               </div>
               {this.state.choices?
-                  <CheckInChoice reset={this.reset} choices={this.state.choices}/>:<React.Fragment>
+                  <CheckInChoice reset={this.reset} instructorId={this.props.getUserData.id} choices={this.state.choices}/>:<React.Fragment>
+                  <div className='check-in-container'>
 					  <div className='error'>{this.state.error}</div>
-                <div className='check-in-container'>
-                    <input className='styled-input margin-top-40' ref={this.name} placeholder='Students last name' onChange={this.clearError}></input>
-                    <div className='event-register-btn center-text' onClick={this.loadStudents}>Check in</div>
+                    <input className='styled-input' ref={this.name} placeholder='Students last name' onChange={this.clearError}></input>
               </div>
+              <div className='event-register-btn center-text' onClick={this.loadStudents}>Check in</div>
 		  </React.Fragment>}
             </div>
 
@@ -227,7 +225,7 @@ class CheckInInner extends Component{
 }
 
 function CheckIn(props){
-    return <SecureRoute ignoreResult roles={['FTLC_ATTENDANT']}>
+    return <SecureRoute roles={['FTLC_ATTENDANT']}>
         <ReactQuery query={GET_POSSIBLE_EVENTS}>
             <CheckInInner />
         </ReactQuery>
