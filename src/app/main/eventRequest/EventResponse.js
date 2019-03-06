@@ -7,7 +7,7 @@ import './EventRequest.css'
 import Popup from "reactjs-popup"
 
 const GET_REQUESTS = (userId) => `{
-  allEventRequests(condition:{userId:"${userId}"}){
+  allEventRequests(condition:{userId:"${userId}", status:PENDING}){
     nodes{
       id
       userId
@@ -18,7 +18,7 @@ const GET_REQUESTS = (userId) => `{
   }
 }`
 
-const UPDATE_EVENT_REQUEST = `mutation ($id:UUID!, $event: UUID!, $accessToken: String!, $status: RequestType!) {
+const UPDATE_EVENT_REQUEST = `mutation ($id:UUID!, $event: UUID, $accessToken: String, $status: RequestType!) {
   updateEventRequestById(input: {id:$id, eventRequestPatch: {event: $event, accessToken: $accessToken, status: $status}}) {
     eventRequest {
       id
@@ -48,7 +48,7 @@ class EventResponseInner extends Component{
     }
 
     hasRequiredValues = () => {
-        return this.state.accessToken.length >= 20 && this.state.event.length === 36
+        return (this.state.accessToken.length >= 20 && this.state.event.length === 36 && this.state.grant) || !this.state.grant
     }
 
 	handleSubmit = (event) => {
@@ -56,8 +56,8 @@ class EventResponseInner extends Component{
 		if(window.confirm('Are you sure? this account cannot be undone or edited after submission.') && this.hasRequiredValues()){
             return {
                 id:this.props.id,
-                accessToken:this.state.accessToken,
-                event:this.state.event,
+                accessToken:(this.state.accessToken==="")?null:this.state.accessToken,
+                event:(this.state.event==="")?null:this.state.event,
                 status: (this.state.grant)?'ACCEPTED':'DECLINED'
             }
 		}
@@ -67,15 +67,15 @@ class EventResponseInner extends Component{
 	}
 
 	render = () => {
-		return <div className='activity-card'>
+		return <div className='event-response'>
 					<div>Event information:</div>
 					<div>{this.props.information}</div>
 					<div className='error center-text'>{this.state.error}</div>
-					<form onSubmit={this.handleSubmit} className='container column'>
+					<form onSubmit={this.mutation.onSubmit} className='container column'>
                         <input className='styled-input' value={this.state.event} onChange={this.handleChange} name='event'placeholder='Event Id'/>
                         <input className='styled-input' value={this.state.accessToken} onChange={this.handleChange} name='accessToken'placeholder='Access Token'/>
                         <div>Grant:<input checked={this.state.grant} name='grant' type='checkbox'  onChange={this.handleChange}/></div>
-						<div className='event-register-btn center-text margin-top-10' onClick={this.handleSubmit}>Submit response</div>
+						<div className='event-register-btn center-text margin-top-10' onClick={this.mutation.onSubmit}>Submit response</div>
 						<button className='hacky-submit-button' type='submit'/>
 					</form>
 				</div>
@@ -83,11 +83,11 @@ class EventResponseInner extends Component{
 }
 
 function Inbetween(props){
-    return <GridView> {props.allEventRequests.nodes.map((request)=> <EventResponseInner key={request.id} {...request}/>)}</GridView>
+    return <GridView itemsPerRow={2} fillerStyle='event-response'>{props.allEventRequests.nodes.map((request)=> <EventResponseInner key={request.id} {...request}/>)}</GridView>
 }
 
 function EventResponse(props){
-    return <ReactQuery itemsPerRow={3} query={GET_REQUESTS(props.userId)}>
+    return <ReactQuery query={GET_REQUESTS(props.userId)}>
         <Inbetween />
     </ReactQuery>
 }
