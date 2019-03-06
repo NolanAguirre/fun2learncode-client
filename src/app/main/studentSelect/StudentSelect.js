@@ -171,34 +171,38 @@ class StudentWaiverDisplay extends Component{
             attentionNeeded = true;
             return <div key={student.id} onClick={()=>{this.showPopup(student.id)}} className='waiver-needed'>{student.firstName} {student.lastName}</div>
         })
-        return <div>
+        return <div className='student-waiver-display'>
             <Popup className='payment-popup'open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
                 <StudentWaiverForm studentId={this.state.studentId}/>
             </Popup>
-            <h3 className='no-margin'>Waivers</h3>
+            <h3 className='student-waiver-header'>Waivers</h3>
             {attentionNeeded?<div className='error'>Attention Needed!</div>:''}
-            {children}
+            <div className='stuednt-waiver-status-container'>
+                {children}
+            </div>
         </div>
     }
 }
 
 function StudentSelectInner(props){
     return <div className='student-select-inner'>
-        <div className='students-container'>
-            <MultiSelect items={props.allStudents.nodes} {...props}>
-                <Selectable className={{selected:'selected-student-preview-container', base: 'student-preview-container'}}>
-                    <StudentPreview />
-                 </Selectable>
-            </MultiSelect>
-            {props.children}
+        <div className='student-select-left'>
+            <h3 className='student-select-header'>{(props.multiSelect)?'Select students':'Select a student'}</h3>
+            <div className='students-container'>
+                <MultiSelect items={props.allStudents.nodes} {...props}>
+                    <Selectable className={{selected:'selected-student-preview-container', base: 'student-preview-container'}}>
+                        <StudentPreview />
+                     </Selectable>
+                </MultiSelect>
+                {props.children}
+             </div>
          </div>
         <StudentWaiverDisplay allStudents={props.allStudents} />
     </div>
 }
 
 function StudentSelect(props) {
-    return <div className='styled-container column custom-scrollbar'>
-            <h3>{(props.multiSelect)?'Select students':'Select a student'}</h3>
+    return <div className='styled-container custom-scrollbar'>
                 <ReactQuery query={GET_STUDENTS_BY_PARENT(props.userId)} skipLoading>
                     <StudentSelectInner {...props}>
                         {props.createStudent?<StudentForm client={props.client} parentId={props.userId}/>:''}

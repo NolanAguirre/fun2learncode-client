@@ -1,11 +1,17 @@
+.student-select-header{
+    max-width: 100%;
+}
 .student-select-inner{
     display: flex;
     flex:1;
-    justify-content: space-between;
+    max-width: 100%;
+}
+.student-select-left{
+    width:calc(100% - 150px)
 }
 .students-container{
-    display: flex;
     flex:1;
+    display: flex;
     overflow-x: auto;
 }
 .create-student-container h1{
@@ -30,4 +36,19 @@
 }
 .waiver-needed{
     color:red;
+}
+.student-waiver-header{
+    margin-bottom: 0px;
+}
+.student-waiver-display{
+    max-width: 100%;
+    padding-left: 5px;
+    box-sizing:border-box;
+    max-height: 170px;
+    display:flex;
+    flex-direction: column;
+}
+
+.stuednt-waiver-status-container{
+    overflow-y: auto;
 }
