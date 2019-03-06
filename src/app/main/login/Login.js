@@ -23,8 +23,8 @@ class Login extends Component {
         event.preventDefault()
         if(!this.validEmail()){
             this.setState({error:'No valid email address provided.'})
-        }else if(!this.state.password){
-            this.setState({error:'No password provided.'})
+        }else if(!this.state.password || (this.state.password && this.state.password.length < 6)){
+            this.setState({error:'No valid password provided.'})
         }else{
             axios.post('http://localhost:3005/authenticate', {
                 email: this.state.email,
@@ -42,10 +42,9 @@ class Login extends Component {
 
     render = () => {
         let child = <div className='error'>{this.state.error}</div>
-        if(this.state.error === 'Email or Password was incorrect'){
+        if(this.state.error === 'Email or Password was incorrect.'){
             child = <React.Fragment>
-                <div className='error'>Incorrect email or password.</div>
-                <Link to={'/recover'}>Forgot password?</Link>
+                <div className='error'>Incorrect email or password. <Link to={'/recover'}>Forgot password?</Link></div>
             </React.Fragment>
         }
         return <div className='login-container'>
