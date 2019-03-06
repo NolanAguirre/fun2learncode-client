@@ -29,6 +29,7 @@
 .registration-addons-container{
     display: flex;
     overflow-x: auto;
+    overflow-y:hidden;
 }
 
 .addon-select-filler{

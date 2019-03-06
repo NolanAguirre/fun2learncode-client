@@ -16,7 +16,7 @@ function Addon(props) {
 
 function AddonSelect (props) {
     if(props.addons && props.addons.length > 0){
-        return <div className={props.className}>
+        return <div className={props.className + ' custom-scrollbar'}>
             <h3>Add-ons</h3>
             <div className='registration-addons-container'>
                 <MultiSelect multiSelect setSelected={props.setSelected} items={props.addons}>
