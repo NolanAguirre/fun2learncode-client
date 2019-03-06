@@ -5,7 +5,6 @@ import Logo from '../logos/drawing.svg'
 import xicon from '../logos/x-icon.svg'
 import SmallLogo from '../logos/small-logo.svg'
 import Menu from '../logos/menu.svg'
-import gql from 'graphql-tag'
 import {ReactQuery} from '../../delv/delv-react'
 
 const GET_USER_DATA = `{
@@ -16,7 +15,7 @@ const GET_USER_DATA = `{
         role
     }
 }`
-const admins = ['FTLC_OWNER', 'FTLC_LEAD_INSTRUCTOR', 'FTLC_ADMIN']
+const admins = ['FTLC_OWNER', 'FTLC_ADMIN']
 const employee = ['FTLC_OWNER', 'FTLC_INSTRUCTOR', 'FTLC_ADMIN']
 const routeNames = [
     {
@@ -26,7 +25,7 @@ const routeNames = [
             return !user || !admins.includes(user.role)
         }
     }, {
-        name: 'Manage Students',
+        name: 'Students',
         route: 'User/Manage Students',
         test:(user) => {
             return user && user.role === 'FTLC_USER'
@@ -72,6 +71,12 @@ const routeNames = [
         route: 'Recent Events',
         test:(user) => {
             return user && employee.includes(user.role)
+        }
+    },{
+        name: 'News Letter',
+        route: 'Admin/News Letter',
+        test:(user) => {
+            return user && admins.includes(user.role)
         }
     },{
         name: 'Announcements',
