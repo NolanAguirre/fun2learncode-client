@@ -39,6 +39,7 @@ function OrderRow(props){
 
 function Order(props){
 	const snapshot = props.payment.snapshot
+    console.log(snapshot)
     const event = snapshot._event
     const pc = snapshot._promoCode
 	let refundRequest = props.payment.refundRequestsByPayment.nodes[0]

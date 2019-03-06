@@ -14,7 +14,6 @@
 }
 .order-body > div{
     flex:1;
-    /* border: 2px solid black; */
     margin: 5px 20px;
 }
 .show-order-history-btn-container{
@@ -39,4 +38,11 @@
 }
 .order-table td{
     padding: 0px 10px;
+}
+
+@media screen and (max-width: 500px) {
+    .order-container{
+        padding:10px;
+    }
+
 }
