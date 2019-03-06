@@ -64,12 +64,11 @@ function ActivitiesInner(props) {
         )
     })
     return (
-        <div className='container column main-contents'>
+        <div className='main-contents activities'>
             <h1 className='category-header'>{props.catagory}</h1>
             <GridView
-                className='container column section'
                 itemsPerRow={3}
-                fillerStyle='activity-card'>
+                fillerStyle='activity-card card'>
                 {child}
             </GridView>
         </div>
