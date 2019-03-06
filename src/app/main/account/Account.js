@@ -33,6 +33,7 @@ class UpdateEmail extends Component{
             customCache: this.customCache
         })
     }
+    componentWillUnmount = () => this.mutation.removeListeners()
     customCache = (cache, data) => {
         const {
             updateUserById: {
@@ -57,7 +58,7 @@ class UpdateEmail extends Component{
     }
 
     validEmail = () => {
-        return this.state.email.match('^.+@.+\..+$')
+        return this.state.email.match(/^.+@.+\..+$/)
     }
 
     handleSubmit = (event) => {
@@ -75,8 +76,9 @@ class UpdateEmail extends Component{
         }
         return {email:this.state.email}
     }
+
     handleResolve = (data) => {
-        if(data.errors){
+        if(!data.updateUserById){
            this.setState({error:"Email is not valid, or is taken already."})
         }else{
            this.setState({complete:true})
@@ -85,7 +87,7 @@ class UpdateEmail extends Component{
 
     render = () => {
         if(this.state.complete){
-            return <div className='center-y section'>
+            return <div className="login-form">
                     <div className='center-text'>Email has been changed.</div>
                 </div>
         }else{
@@ -109,10 +111,10 @@ class AccountInner extends Component{
 
     render = () => {
         const user = this.props.getUserData;
-        return <div className="container column main-contents">
-            <h2>My Account</h2>
-            <div className='account-top-container'>
-                <div>
+        return <div className="account main-contents">
+            <h2 className='account-header'>My Account</h2>
+            <div className='account-info-container'>
+                <div className='account-info-section'>
                     <h3>Account Information</h3>
                     <table>
                         <tbody>
@@ -123,8 +125,11 @@ class AccountInner extends Component{
                             <tr>
                                 <td>Email: </td>
                                 <td>{user.email}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
                                 <td>
-                                    <BasicPopup className='payment-popup'>
+                                    <BasicPopup className='popup'>
                                         <div className="login-container">
                                             <h2 className='center-text'>Change email</h2>
                                             <UpdateEmail email={user.email} mutation={UPDATE_EMAIl(user.id)}/>
@@ -140,7 +145,7 @@ class AccountInner extends Component{
                             <tr>
                                 <td></td>
                                 <td>
-                                    <BasicPopup className='payment-popup'>
+                                    <BasicPopup className='popup'>
                                         <div className="login-container">
                                             <h2 className='center-text'>Reset Password</h2>
                                             <PasswordReset mutation={RESET_PASSWORD}/>
@@ -160,7 +165,7 @@ class AccountInner extends Component{
                 </div>
 
             </div>
-            <div className='styled-container column'>
+            <div className='account-order-history-container'>
                 <h2>Order History</h2>
                 <OrderHistory userId={this.props.getUserData.id} />
             </div>
