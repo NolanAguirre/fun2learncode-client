@@ -1,9 +1,5 @@
-.event-log-container{
-    background-color: white;
-    flex:1;
+.event-log-card{
     min-width: 300px;
-    padding:20px;
-    box-sizing: border-box;
 }
 .event-log{
     padding:5px;
