@@ -31,11 +31,6 @@ class ManageAnnouncementsInner extends Component{
         this.setState({[key]: value})
     }
 
-    handleContentEditableChange = (event) => {
-        event.persist();
-        this.setState({message:event.target.textContent})
-    }
-
     handleChange = (event) => {
       const target = event.target
       const value = target.type === 'checkbox'
@@ -46,8 +41,7 @@ class ManageAnnouncementsInner extends Component{
     }
 
     hasRequiredValues = () =>{
-        return this.state.title != "" &&
-               this.state.message != ""
+        return this.state.title && this.state.message
     }
 
     handleSubmit = (event) => {
@@ -74,7 +68,7 @@ class ManageAnnouncementsInner extends Component{
                     <input className='announcement-title-input' name="title" onChange={this.handleChange} value={this.state.title} placeholder='Title' />
                 </div>
                 <h3 className='no-margin'>Announcement message:</h3>
-                <div id='message' onInput={this.handleContentEditableChange} className="styled-textarea" suppressContentEditableWarning={true} contentEditable></div>
+                <textarea className='announcement-message-textarea' name="message" onChange={this.handleChange} value={this.state.message} />
                 <div className='event-register-btn center-text margin-top-40' onClick={this.mutation.onSubmit}>Create</div>
                 <button className='hacky-submit-button' type='submit'/>
             </form>
