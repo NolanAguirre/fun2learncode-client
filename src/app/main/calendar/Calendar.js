@@ -228,7 +228,6 @@ ${moment(event.start).format('h:mm a')} to ${moment(event.end).format('h:mm a')}
     }
 
     render = () => {
-        //TODO make this popup pretty, and check to make sure that end is greater than start
         return <React.Fragment>
             <Popup
           className="calendar-popup"
@@ -236,19 +235,19 @@ ${moment(event.start).format('h:mm a')} to ${moment(event.end).format('h:mm a')}
           closeOnDocumentClick
           onClose={this.clearPopupState}>
                 <div>
-                    <h3 className='center-text'>Set time of day</h3>
+                    <h1 className='calendar-popup-header'>Set time of day</h1>
                     <div className='error'>{(this.state.startTime > this.state.endTime)?'Start time must be before end time':''}</div>
                       <table className='calendar-time-table'>
                           <tbody>
                               <tr>
                                   <td>Event Start Time:</td>
                                   <td><DateTime className="time-input" timeFormat='H:mm' dateFormat={false} value={this.state.startTime} onChange={(time) => {this.handleTimeChange("startTime", time)}}/></td>
-                                  <td>{moment(this.state.startTime).format('h:mm a')}</td>
+                                  <td className='calendar-time'>{moment(this.state.startTime).format('h:mm a')}</td>
                               </tr>
                               <tr>
                                   <td>Event End Time:</td>
                                   <td><DateTime className="time-input" timeFormat='H:mm' dateFormat={false} value={this.state.endTime}  onChange={(time) => {this.handleTimeChange("endTime", time)}}/></td>
-                                  <td>{moment(this.state.endTime).format('h:mm a')}</td>
+                                  <td className='calendar-time'>{moment(this.state.endTime).format('h:mm a')}</td>
                               </tr>
                           </tbody>
                       </table>

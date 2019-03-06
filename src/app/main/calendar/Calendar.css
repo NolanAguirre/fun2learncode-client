@@ -1,11 +1,22 @@
 .calendar-popup{
     width:400px !important;
+    padding:40px!important;
     display: flex;
     justify-content: center;
+}
+.calendar-popup-header{
+    margin-bottom: 0;
 }
 .calendar-time-table{
     font-size: 18px;
 }
 .calendar-time-table td{
     padding-top: 20px;
+}
+.calendar-time{
+    width:155px;
+}
+
+.calendar-time-table .rdtPicker{
+    width:200px;
 }

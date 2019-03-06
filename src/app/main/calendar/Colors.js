@@ -42,7 +42,6 @@ class Colors {
     this.index = 0
   }
   register (key) {
-     //console.log(stringToInt(key))
     this[key] = colors[this.index++ % colors.length]
   }
   get (key) {
