@@ -3,7 +3,7 @@ import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
 import {SecureRoute, GridView} from '../common/Common'
 import moment from 'moment';
-
+import './InstructorLogs.css'
 const GET_INSTRUCTOR_LOGS = `{
   allEventLogs(condition:{instructor:null}){
     nodes{
@@ -66,30 +66,27 @@ class InstructorLogForm extends Component{
             instructor: props.instructorId,
             comment:''
         }
-        this.id = Math.random().toString(36).substr(2, 9)
         this.mutation = new Mutation({
             mutation:CREATE_LOG,
             onSubmit:this.handleSubmit,
             onResolve: this.resetState
         })
     }
-    componentWillUnmount = () => {
-        this.mutation.removeListeners()
-    }
-    handleDescriptionChange = (event) => {
-        event.persist();
-        this.setState({comment:event.target.textContent})
+    componentWillUnmount = () => this.mutation.removeListeners()
+    handleInputChange = event => {
+        const target = event.target
+        const value = target.type === 'checkbox' ? target.checked : target.value
+        const name = target.name
+        this.setState({[name]: value})
     }
     handleSubmit = (event) => {
         event.preventDefault();
-        //!window.confirm('Do you want to write a log with no comment?')
-        if(this.state.comment && this.state.comment != ''){
+        if(this.state.comment){
             return {eventLog:this.state}
         }
         return false;
     }
     resetState = () => {
-        setTimeout(()=>document.getElementById(`${this.id}`).innerHTML = '', 0);
         this.setState({event: this.props.eventId,
         dateInterval: this.props.dateId,
         student:this.props.studentId,
@@ -97,14 +94,13 @@ class InstructorLogForm extends Component{
         comment:''})
     }
 
+
     render = () => {
-        return <div className="column section">
-            <form onSubmit={this.mutation.onSubmit}>
-                <div id={this.id} onInput={this.handleDescriptionChange} className="styled-textarea" suppressContentEditableWarning={true} contentEditable></div>
+        return <form className="instructor-logs" onSubmit={this.mutation.onSubmit}>
+                <textarea name='comment' value={this.state.comment} onChange={this.handleInputChange} className='activity-description-textarea'/>
                 <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Write Log</div>
                 <button className='hacky-submit-button' type='submit'/>
             </form>
-        </div>
     }
 }
 

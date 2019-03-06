@@ -1,0 +1,7 @@
+.instructor-logs{
+    margin-top: 10px;
+    display: flex;
+    height:150px;
+    flex-direction: column;
+    justify-content: flex-end;
+}
