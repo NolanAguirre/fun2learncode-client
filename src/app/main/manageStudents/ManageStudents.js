@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './ManageStudents.css'
 import StudentSelect from '../studentSelect/StudentSelect'
 import { ReactQuery } from '../../../delv/delv-react'
-import {SecureRoute, Location, GridView, DatesTable, TimeRangeSelector} from '../common/Common'
+import {SecureRoute, GridView, TimeRangeSelector} from '../common/Common'
 import moment from 'moment';
 import Popup from "reactjs-popup"
 const GET_DATES_WITH_STUDENT = (studentId) => {
@@ -27,12 +27,11 @@ const GET_DATES_WITH_STUDENT = (studentId) => {
                   id
                   start
                   end
-                  eventLogsByDateInterval(condition: {student: "${studentId}"}, filter: {instructor: {notEqualTo: null}}) {
+                  eventLogsByDateInterval(condition: {student: "${studentId}"}) {
                     nodes {
                       student
                       id
                       comment
-                      instructor
                       userByInstructor {
                         id
                         firstName
@@ -55,15 +54,13 @@ const localize = (timestamp) =>{
 }
 
 function EventLog(props) {
-    return <div>
-        <h3>{props.firstName} said...</h3>
-        <div>{props.comment}</div>
-    </div>
+    return <div className='event-log'><span className='manage-students-instructor'>{props.firstName} said:</span><br /> {props.comment}</div>
 }
 
 function EventLogs(props){
     if (props.logs.length > 0){
-        return<div>
+        return<div className='manage-students-event-logs-container'>
+            <h1>{props.name} {props.date}</h1>
             {props.logs.map(log=><EventLog key={log.id} firstName={log.userByInstructor.firstName} comment={log.comment} />)}
         </div>
     }
@@ -86,8 +83,8 @@ class EventMonthDate extends Component {
 
     render = () => {
         return <div className='event-month-date-container'>
-            <Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
-                <EventLogs logs={this.props.date.eventLogsByDateInterval.nodes} />
+            <Popup className='popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+                <EventLogs logs={this.props.date.eventLogsByDateInterval.nodes} name={this.props.date.activityName} date={localize(this.props.date.start).format('dddd Do')}/>
             </Popup>
             <h3 className='margin-bottom-10'>{this.props.date.activityName}</h3>
             <div className='event-mont-date-body'>
@@ -112,7 +109,7 @@ class EventMonth extends Component{
         })
         return <React.Fragment>
             <h2>{this.props.monthName}</h2>
-                <GridView itemsPerRow={5} className='event-month' fillerStyle='filler-event-month-date-container'>
+                <GridView itemsPerRow={5} className='event-month' fillerStyle='event-month-date-container'>
                     {dates}
                 </GridView>
         </React.Fragment>
@@ -153,7 +150,7 @@ class EventMonths extends Component{
     }
 
     render = () => {
-        return <div className="styled-container column">
+        return <div className="event-months">
             {this.filterToMonth()}
         </div>
     }
