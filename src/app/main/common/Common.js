@@ -111,7 +111,7 @@ function GridView (props){
     while(items.length){
         let children = items.splice(0,itemsPerRow)
         while(children.length < itemsPerRow){
-            children.push(<div className={props.fillerStyle || 'grid-filler'} key={children.length}></div>)
+            children.push(<div className={`${props.fillerStyle} filler`|| 'grid-filler'} key={children.length}></div>)
         }
         formatted.push(<div className={props.rowStyle || "grid-view-row"} key={items.length}>{children}</div>)
     }
@@ -324,10 +324,10 @@ class TimeRangeSelector extends Component{
 
     render = () => {
         return <React.Fragment>
-        <div className='container'>
-            Start
-            <DateTime className="full-date-input" dateFormat="MMMM YYYY" timeFormat={false} value={this.state.start} onChange={(time) =>{this.handleTimeChange("start", time)}}/>
-            Past <input className="full-date-input" name={"past"} value={this.state.past} onChange={this.handleChange}/> Months
+        <div className='time-range-selector'>
+            Start &nbsp;
+            <DateTime className="time-range-time" dateFormat="MMMM YYYY" timeFormat={false} value={this.state.start} onChange={(time) =>{this.handleTimeChange("start", time)}}/> &nbsp;
+            Past &nbsp; <input className="time-range-month" name={"past"} value={this.state.past} onChange={this.handleChange}/>&nbsp; Months
         </div>
         {React.cloneElement(this.props.children, {query:this.props.query(moment(this.state.start).subtract(this.state.past, 'months').endOf('month').toISOString(),
             moment(this.state.start).endOf('month').toISOString())})}

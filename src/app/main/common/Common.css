@@ -9,54 +9,67 @@
     flex-wrap: wrap;
     width:100%;
 }
-.grid-filler{
-    flex:1;
+
+.grid-view-row > *{
+    margin: 15px;
 }
+
 .filler{
     background-color: inherit!important;
+    box-shadow: none!important;
+    border-color: transparent!important;
 }
-.grid-item-container{
-    padding: 40px;
-    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    background-color: white;
-    flex:1;
-    margin:10px;
-    display:flex;
-    flex-direction: column;
-}
-.grid-item-container:first-child{
-    margin-left: 0 !important;
-}
-.grid-item-container:last-child{
-    margin-right: 0 !important;
-}
-@media screen and (max-width: 450px) {
-    .maps-container{
-        display: none;
-    }
-}
+
 .archive-options-container{
     display: flex;
     justify-content: center;
-    background-color: white;
     padding:5px;
 }
 .archive-option-btn{
     width:60px;
     padding: 10px;
-    background-color: #41a62a;
+    background-color: #4bc82e;
     color: white;
 }
 .selected-archive-option-btn{
-    background-color: #348e20!important;
+    background-color: #41a62a!important;
 }
 
 .archive-option-btn:first-child{
-    border-right: 2px solid white;
+    margin-right: 2px;
     border-radius: 10px 0 0 10px;
 
 }
 .archive-option-btn:last-child{
-    border-left: 2px solid white;
+    margin-left: 2px;
     border-radius: 0 10px 10px 0;
+}
+.time-range-selector{
+    display:flex;
+    justify-content: center;
+    line-height: 33px;
+}
+.time-range-month{
+    width:40px;
+    display: block;
+    box-sizing: border-box;
+    padding: .5rem .75rem;
+    color: #1a2e34;
+    background-color: #fff;
+    border: 1px solid #cdd6e4;
+    border-radius: .1875rem;
+    box-shadow: none;
+    background-clip: padding-box;
+}
+.time-range-time input{
+    width:200px;
+    display: block;
+    box-sizing: border-box;
+    padding: .5rem .75rem;
+    color: #1a2e34;
+    background-color: #fff;
+    border: 1px solid #cdd6e4;
+    border-radius: .1875rem;
+    box-shadow: none;
+    background-clip: padding-box;
 }
