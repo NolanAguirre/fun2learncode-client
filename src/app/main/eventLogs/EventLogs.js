@@ -50,10 +50,12 @@ const localize = (timestamp) =>{
 function EventLog(props){
     return <div className="card event-log-card">
         <h3>{localize(props.date.start).format('MMMM, Do h:mm a')} - {localize(props.date.end).format('h:mm a')}</h3>
-        {props.logs.map(log =>{
-            const instructor = (log.instructor && log.instructor.firstName) || 'Attendant'
-            return <div className='event-log' key={log.key}><div>{instructor} said:</div>{log.comment}</div>
-        })}
+        <div className='write-event-logs-container'>
+            {props.logs.map(log =>{
+                const instructor = (log.instructor && log.instructor.firstName) || 'Attendant'
+                return <div className='event-log' key={log.key}><div>{instructor} said:</div>{log.comment}</div>
+            })}
+        </div>
         {props.user.role=== 'FTLC_USER'?'':<InstructorLogForm eventId={props.event} studentId={props.student} dateId={props.date.id} instructorId={props.user.id}/>}
     </div>
 }
