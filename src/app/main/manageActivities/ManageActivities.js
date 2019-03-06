@@ -183,7 +183,7 @@ class ManageActivitiesForm extends Component {
         if (this.state.edit) {
             return (
                 <form
-                    className='activity-card manage-activity-card'
+                    className='card manage-activity-card'
                     key={this.props.id}
                     onSubmit={this.mutation.onSubmit}>
                     <textarea
@@ -241,7 +241,7 @@ class ManageActivitiesForm extends Component {
             )
         } else {
             return (
-                <div className='activity-card manage-activity-card'>
+                <div className='card manage-activity-card'>
                     <img
                         alt='Event'
                         className='activity-image'
@@ -303,7 +303,7 @@ function ManageActivitiesInner(props) {
         ...mapped
     ]
     return (
-        <GridView fillerStyle='activity-card' className='container column section' itemsPerRow={3}>
+        <GridView fillerStyle='card' className='container column section' itemsPerRow={3}>
             {child}
         </GridView>
     )
