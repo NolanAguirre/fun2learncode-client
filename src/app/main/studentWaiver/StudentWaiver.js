@@ -65,12 +65,17 @@ class StudentWaiverForm extends Component{
         }
         this.mutation = new Mutation({
             mutation: CREATE_STUDENT_WAIVER,
-            onSubmit: this.handleSubmit
+            onSubmit: this.handleSubmit,
+            onResolve: this.handleResolve
         })
     }
 
+    componentWillUnmount = () => {
+        this.mutation.removeListeners()
+    }
+
     hasRequiredValues = () =>{
-        let haveValues =  (this.state.pickupOne ||
+        let haveValues = (this.state.pickupOne ||
                this.state.pickupTwo)&&
                this.state.primaryCare &&
                this.state.emergencyPhone.length === 14 &&
@@ -83,20 +88,21 @@ class StudentWaiverForm extends Component{
         if(this.hasRequiredValues()){
             return {studentWaiver:{...this.state, student:this.props.studentId}}
         }
-        this.clearPopupState()
         return false
     }
 
-    formatNumber = (n) => {
-        let formatted = ''
-        n = n.replace(/[^0-9]+/g, '')
-        if(n.length >= 7){
-            return`(${n.substring(0, 3)})-${n.substring(3, 6)}-${n.substring(6,10)}`
-        }else if (n.length >= 3){
-            return`(${n.substring(0, 3)})-${n.substring(3, 6)}`
-        }else if(n.length > 0){
-            return`(${n.substring(0, 3)}`
+    formatNumber = (event) => {
+        const target = event.target;
+        const name = target.name;
+        let value = target.value.replace(/[^0-9]+/g, '')
+        if(value.length >= 7){
+            value = `(${value.substring(0, 3)})-${value.substring(3, 6)}-${value.substring(6,10)}`
+        }else if (value.length >= 3){
+            value = `(${value.substring(0, 3)})-${value.substring(3, 6)}`
+        }else if(value.length > 0){
+            value = `(${value.substring(0, 3)}`
         }
+        this.setState({[name]: value});
     }
 
     handleChange = (event) => {
@@ -105,33 +111,33 @@ class StudentWaiverForm extends Component{
             ? target.checked
             : target.value;
         const name = target.name;
-        if(name.endsWith('Phone')){
-            this.setState({[name]:this.formatNumber(value)})
-            return
-        }
         this.setState({[name]: value});
     }
 
-    handleTextAreaChange = (event) => {
-        event.persist();
-        this.setState({other:event.target.textContent})
+    handleResolve = () => {
+        this.setState({complete:true})
     }
 
     render = () => {
+        if(this.state.complete){
+            return <div className='student-waiver-container'>
+                    <div className='center-text'>Student Waiver created</div>
+            </div>
+        }
         return <form className='student-waiver-container' onSubmit={this.mutation.onSubmit}>
                 <h2 className='center-text'>Student Waiver</h2>
                 Primary care name:
                 <input className='styled-input' name='primaryCare' onChange={this.handleChange} />
                 Primary care phone:
-                <input className='styled-input' value={this.state.primaryCarePhone} name='primaryCarePhone' onChange={this.handleChange} />
+                <input className='styled-input' value={this.state.primaryCarePhone} name='primaryCarePhone' onChange={this.handleChange} onBlur={this.formatNumber}/>
                 Emergency phone:
-                <input className='styled-input' value={this.state.emergencyPhone} name='emergencyPhone' onChange={this.handleChange} />
+                <input className='styled-input' value={this.state.emergencyPhone} name='emergencyPhone' onChange={this.handleChange} onBlur={this.formatNumber}/>
                 Allowed pickup name one:
                 <input className='styled-input' name='pickupOne' onChange={this.handleChange} />
                 Allowed pickup name two:
                 <input className='styled-input' name='pickupTwo' onChange={this.handleChange} />
                 Allergies/Other information:
-                <div id='new' onInput={this.handleTextAreaChange} className="styled-textarea" style={{minHeight:'80px'}} suppressContentEditableWarning={true} contentEditable></div>
+                <textarea className='student-waiver-other' name='other' valu={this.state.other} onChange={this.handleChange} placeholder='Please include who to ask for if the emergency phone is an office number.'/>
                 <div className='styled-button margin-top-10' onClick={this.mutation.onSubmit}>Finish waiver</div>
             </form>
     }

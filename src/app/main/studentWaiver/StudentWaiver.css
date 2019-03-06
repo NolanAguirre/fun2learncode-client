@@ -1,5 +1,17 @@
 .student-waiver-container{
-    width:500px;
+    min-height: 400px;
+    width:515px;
     background-color: white;
     padding:20px;
+    box-sizing: border-box;
+}
+.student-waiver-other{
+    width:100%;
+    box-sizing: border-box;
+    height:80px
+}
+@media screen and (max-width: 515px) {
+    .student-waiver-container{
+        width: 100%!important;
+    }
 }
