@@ -30,3 +30,7 @@
     padding:20px;
     background-color: white;
 }
+.account-order-history-container > .page-loading{
+    max-width: 300px!important;
+    max-height: 300px!important;
+}

@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
 import graphql from 'graphql-anywhere'
-
 import TypeMap from './TypeMap'
 import Delv from './delv'
 import Query from './Query'
-var _ = require('lodash');
+import _ from 'lodash';
+import loadingIcon from '../app/logos/loading.svg'
 
 function DelvReact(props){
     Delv.config({...props.config})
@@ -108,7 +108,9 @@ class ReactQuery extends Component {
             if (this.props.loading) {
                 return this.props.loading
             }
-            return <div>loading</div>
+            return <div className='page-loading'>
+                <img alt='Loading' className='loading-icon center-x' src={loadingIcon} />
+            </div>
         }
         return React.cloneElement(this.props.children, {
             ...this.state.queryResult, ...otherProps

@@ -4,7 +4,6 @@ import Activity from './activity/Activity'
 import {ReactQuery} from '../../../delv/delv-react'
 import SadFace from '../../logos/sadface.svg'
 import {GridView} from '../common/Common'
-import loadingIcon from '../../logos/loading.svg'
 const GET_ACTIVITIES_IN_CATAGORY = name => {
     return `{
   allCategories(condition: {name: "${name}"}) {
@@ -76,13 +75,8 @@ function ActivitiesInner(props) {
 }
 
 function Activities(props) {
-    const loading = (
-        <div className='page-loading'>
-            <img alt='Loading' className='loading-icon center-x' src={loadingIcon} />
-        </div>
-    )
     return (
-        <ReactQuery query={GET_ACTIVITIES_IN_CATAGORY(props.match.params.type)} loading={loading}>
+        <ReactQuery query={GET_ACTIVITIES_IN_CATAGORY(props.match.params.type)}>
             <ActivitiesInner history={props.history} catagory={props.match.params.type} />
         </ReactQuery>
     )
