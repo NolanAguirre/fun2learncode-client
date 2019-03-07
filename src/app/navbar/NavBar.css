@@ -70,6 +70,6 @@ header a {
     .nav-logo{
         width:80px;
         height:60px;
-        margin-left: calc(50% - 90px);
+        margin-left: calc(50% - 100px);
     }
 }
