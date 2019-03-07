@@ -98,7 +98,7 @@ class InstructorLogForm extends Component{
     render = () => {
         return <form className="instructor-logs" onSubmit={this.mutation.onSubmit}>
                 <textarea name='comment' value={this.state.comment} onChange={this.handleInputChange} className='activity-description-textarea'/>
-                <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Write Log</div>
+                <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Write Log</div>
                 <button className='hacky-submit-button' type='submit'/>
             </form>
     }

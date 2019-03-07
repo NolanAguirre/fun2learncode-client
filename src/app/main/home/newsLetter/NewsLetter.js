@@ -59,7 +59,7 @@ class NewsLetter extends Component{
                 <form onSubmit={this.mutation.onSubmit} className='conatiner'>
                     <div className='news-letter-input-container'>
                         <input className='news-letter-input' name='email' onChange={this.handleChange}/>
-                        <div className='news-letter-btn event-register-btn center-text' onClick={this.mutation.onSubmit}>Join</div>
+                        <div className='news-letter-btn styled-button center-text' onClick={this.mutation.onSubmit}>Join</div>
                         {overlay}
                     </div>
                     <button className='hacky-submit-button' type='submit'/>

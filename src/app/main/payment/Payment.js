@@ -3,7 +3,6 @@ import Mutation from '../../../delv/Mutation'
 import Query from '../../../delv/Query'
 import {ReactQuery} from '../../../delv/delv-react'
 import {SecureRoute} from '../common/Common'
-import {Link} from 'react-router-dom'
 import Popup from "reactjs-popup"
 import './Payment.css'
 import {CardNumberElement,
@@ -24,69 +23,6 @@ const USER_DATA = `{
         role
     }
 }`
-
-const UPDATE_ORDER_HISTORY = (id, students) => `{
-  allPayments(condition: {userId: "${id}"}) {
-    nodes {
-      id
-      snapshot
-      status
-      createOn
-      userId
-      eventRegistrationsByPayment {
-        nodes {
-          studentByStudent {
-            id
-            eventRegistrationsByStudent {
-              nodes {
-                id
-                eventByEvent {
-                  id
-                  activityByActivity {
-                    name
-                    id
-                  }
-                  dateJoinsByEvent {
-                    nodes {
-                        id
-                      dateIntervalByDateInterval {
-                        id
-                        start
-                        end
-                        eventLogsByDateInterval(filter: {instructor: {notEqualTo: null}, student:{in:${students}}}) {
-                          nodes {
-                            student
-                            id
-                            comment
-                            instructor
-                            userByInstructor {
-                              id
-                              firstName
-                              lastName
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      refundRequestsByPayment {
-        nodes {
-          id
-          reason
-          status
-          createdOn
-        }
-      }
-    }
-  }
-}`
-
 const createStripeStyle = {
     style: {
       base: {
@@ -114,18 +50,19 @@ class AddressForm extends Component{
     }
     handleSubmit = (event) => {
         event.preventDefault();
-        if(this.state.address === ''){
+        if(!this.state.address){
             this.setState({addressError:'Address is required.'})
-        }else if(this.state.city === ''){
+        }else if(!this.state.city){
             this.setState({cityError:'City is required.'})
-        }else if(this.state.state === ''){
+        }else if(!this.state.state){
             this.setState({stateError:'State is required.'})
         }else{
             this.props.setLoading();
-            axios.post('http://localhost:3005/store', {promoCode:this.state.promoCode, ...this.props.info}).then((data)=>{
-                this.props.callback({response:data, address:this.state.address, city:this.state.city, state:this.state.state});
+            console.log(JSON.stringify({promoCode:this.state.promoCode, ...this.props.info}))
+            axios.post('http://localhost:3005/payment/begin', {promoCode:this.state.promoCode, ...this.props.info}).then((data)=>{
+               this.props.callback({response:data, address:this.state.address, city:this.state.city, state:this.state.state});
             }).catch((error)=>{
-                console.log(error)
+               console.log(error)
             })
         }
     }
@@ -157,7 +94,7 @@ class AddressForm extends Component{
                  <div className='small-input edge-margin'>
                   </div>
               </div>
-               <div className='event-register-btn center-text' onClick={this.handleSubmit}>Next</div>
+               <div className='styled-button center-text' onClick={this.handleSubmit}>Next</div>
                <button className='hacky-submit-button' type='submit'/>
           </div>
       </form>
@@ -214,7 +151,7 @@ class PaymentInformationEntry extends Component{
             return <form  className='container section' onSubmit={this.handleSubmit}>
                   <div className='payment-container'>
                      <h1 className='center-text no-margin'>Total: 0$</h1>
-                     <div className='event-register-btn center-text' onClick={this.handleSubmit}>Submit</div>
+                     <div className='styled-button center-text' onClick={this.handleSubmit}>Submit</div>
                      <button className='hacky-submit-button' type='submit'/>
                   </div>
               </form>
@@ -247,7 +184,7 @@ class PaymentInformationEntry extends Component{
                         <PostalCodeElement className='styled-input' {...createStripeStyle}/>
                     </div>
                 </div>
-                 <div className='event-register-btn center-text' onClick={this.handleSubmit}>Submit</div>
+                 <div className='styled-button center-text' onClick={this.handleSubmit}>Submit</div>
                  <button className='hacky-submit-button' type='submit'/>
               </div>
           </form>
@@ -275,11 +212,10 @@ class Payment extends Component {
     }
 
     onCardComplete = (token) => {
-        axios.post('http://localhost:3005/charge', {token, user:this.props.info.user}).then((res)=>{
+        axios.post('http://localhost:3005/payment/process', {token, user:this.props.info.user}).then((res)=>{ //TODO URL
             if(res.data.error){
                 this.setState({UI:'error', error:res.data.error, loading:false})
             }else{
-                new Query({query:UPDATE_ORDER_HISTORY(this.props.info.user, JSON.stringify(res.data.students)), networkPolicy:'network-only'}).query();
                 this.setState({UI:'complete' ,loading:false, preventClose:true})
             }
         }).catch((error)=>{
@@ -302,12 +238,12 @@ class Payment extends Component {
                     <div className='section center-y'>
                         <div className='error center-text'>{this.state.error}</div>
                 </div>
-                <div className='event-register-btn center-text' onClick={()=>{this.setState({UI:'address', loading:false})}}>Back</div>
+                <div className='styled-button center-text' onClick={()=>{this.setState({UI:'address', loading:false})}}>Back</div>
             </div>
         }else if(this.state.UI === 'complete'){
             child = <div className='payment-container'>
                 <h2 className='center-text'>Transaction Complete!</h2>
-                <Link to={`/`}><div className="event-register-btn center-x center-text" style={{width:'200px'}}>Home</div></Link>
+                <a href='/'><div className="styled-button center-x center-text" style={{width:'200px'}}>Home</div></a>
             </div>
         }else if(this.state.UI === 'card'){
             child = <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
@@ -319,13 +255,13 @@ class Payment extends Component {
             child = <AddressForm setLoading={this.setLoading} info={this.props.info} city={this.state.city} state={this.state.state} address={this.state.address} total={this.state.total} callback={this.onAddressComplete}/>
         }
         return <React.Fragment>
-            <Popup className='payment-overview-popup' open={this.state.showPopup} closeOnEscape={!(this.state.loading || this.state.preventClose)} closeOnDocumentClick={!(this.state.loading || this.state.preventClose)} onClose={this.clearPopupState}>
-                <div className='login-widget' style={{position:'relative'}}>
+            <Popup className='payment-popup' open={this.state.showPopup} closeOnEscape={!(this.state.loading || this.state.preventClose)} closeOnDocumentClick={!(this.state.loading || this.state.preventClose)} onClose={this.clearPopupState}>
+                <div className='login-container' style={{position:'relative'}}>
                     {child}
                     <div className={this.state.loading?'payment-loading':'hidden-payment-loading'}><img className='loading-icon center-x' src={loading}/></div>
                 </div>
             </Popup>
-            <div className="event-register-btn" onClick={this.showPopup}> Continue to Payment</div>
+            <div className="styled-button" onClick={this.showPopup}> Continue to Payment</div>
         </React.Fragment>
     }
 }

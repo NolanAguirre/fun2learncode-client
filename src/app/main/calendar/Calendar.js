@@ -251,7 +251,7 @@ ${moment(event.start).format('h:mm a')} to ${moment(event.end).format('h:mm a')}
                               </tr>
                           </tbody>
                       </table>
-                      <div className='event-register-btn center-text margin-top-10' onClick={this.closePopup}>Set</div>
+                      <div className='styled-button center-text margin-top-10' onClick={this.closePopup}>Set</div>
                       <button className='hacky-submit-button' type='submit'/>
   		          </div>
             </Popup>

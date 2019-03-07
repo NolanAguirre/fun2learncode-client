@@ -56,7 +56,7 @@ class RefundResponse extends Component{
 		}
 		if(window.confirm('Are you sure? this account cannot be undone or edited after submission.')){
 			if(this.state.grant){
-				axios.post('http://localhost:3005/refund', {
+				axios.post('http://localhost:3005/payment/refund', {
 					user:this.props.userId,
 					reason:this.state.grantedReason,
 					paymentId:this.props.paymentId,
@@ -93,7 +93,7 @@ class RefundResponse extends Component{
 								Remove registration:<input checked={this.state.remove} name='remove' type='checkbox'  onChange={this.handleChange}/>
 							</div>:''}
 						</div>
-						<div className='event-register-btn center-text margin-top-10' onClick={this.handleSubmit}>Submit response</div>
+						<div className='styled-button center-text margin-top-10' onClick={this.handleSubmit}>Submit response</div>
 						<button className='hacky-submit-button' type='submit'/>
 					</form>
 				</div>

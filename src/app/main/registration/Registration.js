@@ -5,18 +5,13 @@ import StudentSelect from '../studentSelect/StudentSelect'
 import AddonSelect from '../addonSelect/AddonSelect'
 import PaymentOverview from '../paymentOverview/PaymentOverview'
 import FullEvent from '../events/event/FullEvent';
-import {SecureRoute, DatesTable, MultiSelect, Selectable} from '../common/Common'
+import {SecureRoute} from '../common/Common'
 import {ReactQuery} from '../../../delv/delv-react'
-import Mutation from '../../../delv/Mutation'
 import Delv from '../../../delv/delv'
 import Payment from '../payment/Payment'
-import axios from 'axios'
 import moment from 'moment'
-
-const GET_EVENT_INFO_BY_ID = (id) => `{
-  allEvents(condition: {id: "${id}"}) {
-    nodes {
-      id
+const NOW = new Date().toISOString()
+const EVENT_FRAGMENT = `id
       archive
       name
       openRegistration
@@ -24,6 +19,15 @@ const GET_EVENT_INFO_BY_ID = (id) => `{
       seatsLeft
       capacity
       price
+      publicDisplay
+      registrationOverridesByEvent(filter:{validEnd:{greaterThanOrEqualTo:"${NOW}"}}){
+        nodes{
+          id
+          validEnd
+          modifiedPrice
+          student
+        }
+      }
       addOnJoinsByEvent {
         nodes {
           id
@@ -61,8 +65,20 @@ const GET_EVENT_INFO_BY_ID = (id) => `{
             }
           }
         }
-      }
+      }`
+
+
+const GET_EVENT_INFO_BY_ID = (id) => `{
+  allEvents(condition: {id: "${id}", publicDisplay:true}) {
+    nodes {
+     ${EVENT_FRAGMENT}
     }
+    }
+
+}`
+const GET_EVENT_BY_TOKEN = (token) => `{
+  eventByToken(arg0:"${token}"){
+      ${EVENT_FRAGMENT}
   }
 }`
 
@@ -93,6 +109,7 @@ class RegistrationInner extends Component{
             }else if(!res.data.data.checkWaiver){
                 this.setState({error:`${student.firstName} ${student.lastName} has no waiver on file.`})
             }else{
+                this.setState({})
                 return true
             }
             return false
@@ -121,8 +138,13 @@ class RegistrationInner extends Component{
     }
     render = () =>{
         const info = this.getSelections();
+        if(this.props.error){
+            return 'No Event Found'
+        }
         return <div className='registration-container main-contents'>
             <h2>Registration</h2>
+            <div className='error'>{moment(this.props.event.closeRegistration).unix() < moment().unix()
+                ?'Registration for this event has already closed, you will not be able to register unless you have been granted an override.':''}</div>
             <div className='styled-container'>
                 <div className='section'>
                     <FullEvent event={this.props.event}
@@ -131,9 +153,7 @@ class RegistrationInner extends Component{
                                 prerequisites={this.props.prerequisites}
                                 dates={this.props.dates}/>
                 </div>
-                <div className='section'>
-                   <PaymentOverview event={{price: this.props.event.price,id: this.props.event.id,name: this.props.activity.name}} addons={this.state.addons} students={this.state.students}/>
-               </div>
+                <PaymentOverview event={{price: this.props.event.price,id: this.props.event.id,name: this.props.activity.name}} overrides={this.props.overrides} addons={this.state.addons} students={this.state.students}/>
             </div>
             <div className='error'>{this.state.error}</div>
             <StudentSelect className='styled-container' multiSelect createStudent isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} userId={this.props.getUserData.id}/>
@@ -144,10 +164,17 @@ class RegistrationInner extends Component{
 }
 
 function RegistrationInbetween(props){
+    const query = (window.location.href.includes('Private'))?GET_EVENT_BY_TOKEN(props.match.params.id):GET_EVENT_INFO_BY_ID(props.match.params.id)
+    const networkPolicy = (window.location.href.includes('Private'))?'network-no-cache':'network-once'
     function formatResult(queryResult){
-        const event = queryResult.allEvents.nodes[0]
+        console.log(queryResult)
+        const event = (window.location.href.includes('Private'))? queryResult.data.eventByToken:queryResult.allEvents.nodes[0]
+        if(!event){
+            return {error:'No event found'}
+        }
         const addons =  event.addOnJoinsByEvent.nodes.map(element=>element.addOnByAddOn)
         const activity = event.activityByActivity;
+        const overrides = event.registrationOverridesByEvent
         const dates = event.dateJoinsByEvent;
         const address = event.addressByAddress;
         const prerequisites = activity.activityPrerequisitesByActivity.nodes.map((prereq) => {return prereq.activityByPrerequisite})
@@ -157,10 +184,11 @@ function RegistrationInbetween(props){
             activity,
             dates,
             address,
-            prerequisites
+            prerequisites,
+            overrides
         }
     }
-    return <ReactQuery formatResult={formatResult} query={GET_EVENT_INFO_BY_ID(props.match.params.id)}>
+    return <ReactQuery formatResult={formatResult} query={query} networkPolicy={networkPolicy}>
         <RegistrationInner eventId={props.match.params.id} getUserData={props.getUserData}/>
     </ReactQuery>
 }

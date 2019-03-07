@@ -59,7 +59,7 @@ function EventsInner(props) { // TODO group this by address so i dont have to lo
     }
     return <div className='main-contents container column'>
         <h1 className='center-text'>{props.activityName}</h1>
-        <GridView className="manage-addresses-body" fillerStyle='filler-styled-container edge-margin section' itemsPerRow={2} >{events}</GridView>
+        <GridView fillerStyle='card event-card' itemsPerRow={2} >{events}</GridView>
     </div>
 }
 

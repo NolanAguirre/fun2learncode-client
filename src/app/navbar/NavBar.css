@@ -1,7 +1,7 @@
 .navbar-desktop{
     padding: 0 50px;
     display:flex;
-    border-bottom: 2px solid #4bc82e;
+    border-bottom: 2px solid #41a62a;
     background-color: white;
 }
 .navbar-mobile{
@@ -40,7 +40,7 @@ header a {
     }
     .navbar-mobile{
         background-color: white;
-        border-bottom: 2px solid #4bc82e;
+        border-bottom: 2px solid #41a62a;
         display:block;
         display:flex;
         flex:1;
@@ -54,7 +54,7 @@ header a {
         padding:0px 5px;
         left: -180px;
         top:0px;
-        background-color: #4bc82e;
+        background-color: #41a62a;
     }
     .nav-item-container.open{
         transition: .7s;

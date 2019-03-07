@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+
 import util from 'util'
 import TypeMap from './TypeMap'
 import axios from 'axios'
@@ -16,7 +16,7 @@ class Delv {
     config = ({url, handleError}) => {
         this.url = url
         this.handleError = handleError
-        // this.loadIntrospection() //development purposes
+        this.loadIntrospection() //development purposes
     }
 
     loadIntrospection = () => { //development purposes
@@ -77,6 +77,7 @@ class Delv {
                         cache.processIntoCache(res.data.data)
                     }
                 } catch(error) {
+                    console.trace()
                     console.log(`Error occured trying to cach responce data: ${error.message}`)
                 }
                 if(returnRes){
@@ -127,7 +128,6 @@ class Delv {
             this.queries.add(options.query, options.variables)
             query = this.queries.includes(options.query, options.variables)
             this.queryHttp({...options, customCache:(cache, data)=>{
-                console.log('caching by query')
                 cache.cache[query.id] = data;
             }}, false, true)
         }

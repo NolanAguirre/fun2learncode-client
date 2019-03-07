@@ -161,7 +161,7 @@ class OrderHistory extends Component{
 			</ReactQuery>
 		}
 		return <div className='show-order-history-btn-container'>
-			<div className='event-register-btn center-text' onClick={this.showHistory}>View order history</div>
+			<div className='styled-button center-text' onClick={this.showHistory}>View order history</div>
 		</div>
 
 	}

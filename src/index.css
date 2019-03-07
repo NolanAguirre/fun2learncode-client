@@ -15,21 +15,13 @@ body {
     background-color: white;
     padding: 20px 40px;
     margin-bottom: 10px;
-    border-bottom: 2px solid #4bc82e;
 }
-
-.filler-styled-container{
-    display:flex;
-    flex-wrap: wrap;
-    padding: 20px 40px;
-    margin-bottom: 10px;
-    border-bottom: 2px transparent;
-}
-
 .no-margin{
     margin:0;
 }
-
+.column{
+    flex-direction: column;
+}
 .section{
     flex:1;
 }
@@ -96,15 +88,17 @@ body {
 }
 
 .styled-button{
+    min-width: 100px;
+    text-align: center;
     padding: 20px;
     font-size: 20px;
-    background-color: #4bc82e;
+    background-color: #41a62a;
     color: white;
     transition-duration: .1s;
 }
 
 .styled-button:hover{
-    background-color: #41a62a;
+    background-color: #317f1f;
 }
 
 .float-down{
@@ -121,4 +115,35 @@ body {
 
 .box-shadow{
     box-shadow: 0 4px 40px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.popup{
+    overflow-y: auto;
+    max-height:80vh!important;
+    width:auto !important;
+    padding:0!important;
+    border:0!important;
+}
+
+
+@media screen and (max-width: 800px) {
+    .popup{
+        width:100vw!important;
+        max-height:80vh!important;
+    }
+}
+
+@media screen and (max-width: 420px) {
+    .error{
+        font-size: 14px;
+    }
+}
+@media screen and (max-width: 380px) {
+    .error{
+        font-size: 12px;
+    }
+}
+@media screen and (max-width: 340px) {
+    .error{
+        font-size: 10px;
+    }
 }

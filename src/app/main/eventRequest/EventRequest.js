@@ -59,7 +59,7 @@ class EventRequest extends Component{
                 <div>Event details:</div>
                 <textarea name='information' value={this.state.information} onChange={this.handleInputChange} className='activity-description-textarea'/>
                 <span className='refund-footer'>Include desired price (paid in full by requestee), location, time and general description.</span>
-                <div className='event-register-btn center-text margin-top-10' onClick={this.mutation.onSubmit}>Submit for review</div>
+                <div className='styled-button center-text margin-top-10' onClick={this.mutation.onSubmit}>Submit for review</div>
                 <button className='hacky-submit-button' type='submit'/>
             </form>
         }

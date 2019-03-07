@@ -57,7 +57,7 @@
 .payment-loading{
     z-index: 1000;
     position:absolute;
-    /* background-color: white; */
+    background-color: white;
     width:calc(100% - 80px);
     height:calc(100% - 80px);
 }

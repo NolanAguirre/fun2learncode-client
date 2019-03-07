@@ -10,11 +10,25 @@
 
 @media screen and (max-width: 1200px) {
     .main-contents{
-        max-width: 100vw;
+        max-width: 1000px;
         display: flex;
         flex:1;
     }
-    .fit-parent{
-        max-width: inherit;
+
+}
+
+@media screen and (max-width: 1000px) {
+    .main-contents{
+        max-width: 800px;
+        display: flex;
+        flex:1;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .main-contents{
+        max-width: 100vw;
+        display: flex;
+        flex:1;
     }
 }

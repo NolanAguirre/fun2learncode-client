@@ -66,8 +66,8 @@ const CREATE_PROMO_CODE = `mutation($promoCode:PromoCodeInput!){
   }
 }`
 
-const UPDATE_PROMO_CODE = `mutation($archive:Boolean, $disable:Boolean, $id:UUID!){
-  updatePromoCodeById(input:{promoCodePatch:{archive:$archive,disabled:$disable},id:$id}){
+const UPDATE_PROMO_CODE = `mutation($archive:Boolean, $disabled:Boolean, $id:UUID!){
+  updatePromoCodeById(input:{promoCodePatch:{archive:$archive,disabled:$disabled},id:$id}){
     promoCode{
       ${PROMO_FRAGMENT}
     }
@@ -185,7 +185,7 @@ class CreatePromoCode extends Component{
                     <div>Uses <input name='uses' onChange={this.handleChange} value={this.state.uses} type='number' style={{width:'100px'}}/></div>
                 </div>
             </div>
-            <div className='event-register-btn center-text center-x' style={{width:'200px'}}onClick={this.mutation.onSubmit}>Create</div>
+            <div className='styled-button center-text center-x' style={{width:'200px'}}onClick={this.mutation.onSubmit}>Create</div>
             <button className='hacky-submit-button' type='submit'/>
         </form>
     }
@@ -234,7 +234,7 @@ class DisablePromoCode extends Component{
         return 'All'
     }
     render = () => {
-        return <form className='grid-item-container'>
+        return <form className='promo-card'>
             <table>
                 <tbody>
                     <tr>
@@ -271,37 +271,31 @@ class DisablePromoCode extends Component{
                     </tr>
                 </tbody>
             </table>
-            <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>update</div>
+            <div className='styled-button center-text' onClick={this.mutation.onSubmit}>update</div>
             <button className='hacky-submit-button' type='submit'/>
         </form>
     }
 }
 
 function ViewPromoCodes(props){
-    return <GridView itemsPerRow={4}>
+    return <GridView fillerStyle='promo-card'>
         {props.allPromoCodes.nodes.map(promoCode=><DisablePromoCode key={promoCode.code}{...promoCode}/>)}
     </GridView>
 }
 
-class ManagePromoCodesInner extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return <React.Fragment>
-            <CreatePromoCode {...this.props}/>
-            <ArchiveOptions query={GET_PROMO_CODES}>
-                <ReactQuery>
-                    <ViewPromoCodes />
-                </ReactQuery>
-            </ArchiveOptions>
-        </React.Fragment>
-    }
+function ManagePromoCodesInner(props){
+    return <React.Fragment>
+        <CreatePromoCode {...props}/>
+        <ArchiveOptions query={GET_PROMO_CODES}>
+            <ReactQuery>
+                <ViewPromoCodes />
+            </ReactQuery>
+        </ArchiveOptions>
+    </React.Fragment>
 }
 
 function ManagePromoCodes(props){
-    return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
+    return <SecureRoute ignoreResult roles={["FTLC_OWNER", "FTLC_ADMIN"]}>
         <div className='main-contents container column margin-top-10'>
             <ReactQuery query={GET_DROPDOWN}>
                     <ManagePromoCodesInner />

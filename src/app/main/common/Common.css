@@ -28,11 +28,11 @@
 .archive-option-btn{
     width:60px;
     padding: 10px;
-    background-color: #4bc82e;
+    background-color: #41a62a;
     color: white;
 }
 .selected-archive-option-btn{
-    background-color: #41a62a!important;
+    background-color: #317f1f!important;
 }
 
 .archive-option-btn:first-child{

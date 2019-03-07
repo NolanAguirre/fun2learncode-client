@@ -69,7 +69,7 @@ class ManageAnnouncementsInner extends Component{
                 </div>
                 <h3 className='no-margin'>Announcement message:</h3>
                 <textarea className='announcement-message-textarea' name="message" onChange={this.handleChange} value={this.state.message} />
-                <div className='event-register-btn center-text margin-top-40' onClick={this.mutation.onSubmit}>Create</div>
+                <div className='styled-button center-text margin-top-40' onClick={this.mutation.onSubmit}>Create</div>
                 <button className='hacky-submit-button' type='submit'/>
             </form>
 
@@ -77,7 +77,7 @@ class ManageAnnouncementsInner extends Component{
 }
 
 function ManageAnnouncements(props){
-    return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
+    return <SecureRoute ignoreResult roles={["FTLC_OWNER", "FTLC_ADMIN"]}>
         <ManageAnnouncementsInner />
     </SecureRoute>
 }

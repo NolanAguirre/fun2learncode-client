@@ -75,7 +75,7 @@ class EventResponseInner extends Component{
                         <input className='styled-input' value={this.state.event} onChange={this.handleChange} name='event'placeholder='Event Id'/>
                         <input className='styled-input' value={this.state.accessToken} onChange={this.handleChange} name='accessToken'placeholder='Access Token'/>
                         <div>Grant:<input checked={this.state.grant} name='grant' type='checkbox'  onChange={this.handleChange}/></div>
-						<div className='event-register-btn center-text margin-top-10' onClick={this.mutation.onSubmit}>Submit response</div>
+						<div className='styled-button center-text margin-top-10' onClick={this.mutation.onSubmit}>Submit response</div>
 						<button className='hacky-submit-button' type='submit'/>
 					</form>
 				</div>

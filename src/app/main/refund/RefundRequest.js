@@ -9,10 +9,11 @@ const CREATE_REFUND_REQUEST = `mutation($payment:UUID!, $reason:String!){
 	createRefundRequest(input:{refundRequest:{reason:$reason, payment:$payment}}){
     refundRequest{
 	  id
-	  reason
-	  status
-	  createdOn
-	  grantedReason
+      reason
+      amountRefunded
+      grantedReason
+      status
+      createdOn
 	  paymentByPayment{
 		  id
 	  }
@@ -62,7 +63,7 @@ class RefundRequest extends Component{
 					<span>Reason for refund:</span>
 					<div id='refund-request-reason' onInput={this.handleReasonChange} className='styled-textarea' suppressContentEditableWarning={true} contentEditable></div>
 					<span className='refund-footer'>Actual refund amounts may vary depending on promo code usage, distance from event start and other factors.</span>
-					<div className='event-register-btn center-text margin-top-10' onClick={this.mutation.onSubmit}>Submit for review</div>
+					<div className='styled-button center-text margin-top-10' onClick={this.mutation.onSubmit}>Submit for review</div>
 					<button className='hacky-submit-button' type='submit'/>
 				</form>
 			</Popup>

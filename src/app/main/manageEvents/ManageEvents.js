@@ -8,7 +8,7 @@ import {SecureRoute, CustomProvider, BasicPopup} from '../common/Common'
 import {EventsPreview, EventInfo} from './EventsPreview';
 
 function ManageEvents(props){
-    return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
+    return <SecureRoute ignoreResult roles={["FTLC_OWNER", "FTLC_ADMIN"]}>
             <div className="manage-events-container main-contents">
                     <EventsPreview />
                     <div className="container column section">

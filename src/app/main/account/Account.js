@@ -97,7 +97,7 @@ class UpdateEmail extends Component{
                     <div className='error'>{this.state.error}</div>
                     <input className='styled-input' name='email' type='email' onChange={this.handleChange} placeholder='email' />
                 </div>
-                <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Change email</div>
+                <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Change email</div>
                 <button className='hacky-submit-button' type='submit'/>
             </form>
         }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import graphql from 'graphql-anywhere'
-import gql from 'graphql-tag'
+
 import TypeMap from './TypeMap'
 import Delv from './delv'
 import Query from './Query'

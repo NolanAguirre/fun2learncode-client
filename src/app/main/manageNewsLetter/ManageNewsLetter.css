@@ -1,0 +1,20 @@
+.manage-news-letter{
+    background-color: white;
+    padding:20px;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.news-letter-html{
+    height: 100%;
+    white-space: pre-wrap;
+}
+
+#emailPreview{
+    margin:20px;
+    border: 2px solid black;
+}
+.news-letter-btn-container{
+    display: flex;
+    justify-content: space-around;
+}

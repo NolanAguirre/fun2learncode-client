@@ -17,9 +17,15 @@ function PaymentOverview(props){
     let rowCount = 0;
     let adjustedPrice;
     students.forEach((student) => {
+        adjustedPrice = event.price
+        props.overrides.nodes.forEach((override)=>{
+            if(override.student === student.id){
+                adjustedPrice = override.modifiedPrice
+            }
+        })
         rowCount++;
-        rows.push(<PaymentOverviewRow key={rowCount} type={'Event'} name={event.name} student={student.firstName + " " + student.lastName} price={event.price} />)
-        total+= event.price
+        rows.push(<PaymentOverviewRow key={rowCount} type={'Event'} name={event.name} student={student.firstName + " " + student.lastName} price={adjustedPrice} />)
+        total+= adjustedPrice
         addons.forEach((addon)=>{
             rowCount++;
             total+= addon.price

@@ -52,7 +52,7 @@ class RecoverPassword extends Component{
               <div className='error'>{this.state.error}</div>
               <input className='styled-input' name='email' type='email' onChange={this.handleChange} placeholder='email' />
             </div>
-            <div className='event-register-btn center-text' onClick={this.handleSubmit}>Reset Password</div>
+            <div className='styled-button center-text' onClick={this.handleSubmit}>Reset Password</div>
             </React.Fragment>
         }
         return <div className='container section'>

@@ -218,9 +218,9 @@ class EventFormInner extends Component {
             address: props.address,
             openRegistration: this.localizeUTCTimestamp(props.openRegistration) || new Date(moment().hour(23).minute(59).second(59).millisecond(999).toString()),
             closeRegistration: this.localizeUTCTimestamp(props.closeRegistration) || new Date(moment().add(1, "days").hour(23).minute(59).second(59).millisecond(999).toString()),
-            archive: false || this.props.archive,
+            archive: this.props.archive,
             activity: this.props.activity,
-            publicDisplay:!!this.props.publicDisplay
+            publicDisplay: !!this.props.publicDisplay
         }
         this.mutation = new Mutation({mutation: this.props.mutation, onSubmit: this.handleSubmit})
 
@@ -364,7 +364,7 @@ class EventFormInner extends Component {
                         <AddonJoinForm event={this.props.id} addons={addonOptions}/></div>:""}
 
             </div>
-            <div className='event-register-btn center-text margin-top-10' onClick={this.mutation.onSubmit}>{(this.props.id)?'Update':'Create'}</div>
+            <div className='styled-button center-text margin-top-10' onClick={this.mutation.onSubmit}>{(this.props.id)?'Update':'Create'}</div>
         </div>
     }
 }

@@ -238,6 +238,7 @@ function StudentForm(props){
                 <h2>Student info</h2>
                 <div>{props.firstName} {props.lastName}</div>
                 Date of Birth: {moment(props.dateOfBirth).format('MMMM, YYYY')}
+                <div>{props.id}</div>
             </div>
         </div>
     </div>
@@ -319,7 +320,7 @@ class ManageUsersInner extends Component {
             child.push(<tr key={x}>{rows}</tr>)
         }
         return<div className='manage-users'>
-            <Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState} className='main-contents'>
+            <Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState} className='mobile-popup'>
                 <ManageUserForm user={this.state.user}/>
             </Popup>
             <table className='manage-users-table'>
@@ -332,7 +333,7 @@ class ManageUsersInner extends Component {
 }
 
 function ManageUsers(props){
-    return <SecureRoute ignoreResult roles={["FTLC_LEAD_INSTRUCTOR", "FTLC_OWNER", "FTLC_ADMIN"]}>
+    return <SecureRoute ignoreResult roles={["FTLC_OWNER", "FTLC_ADMIN"]}>
         <ReactQuery query={GET_USERS}>
             <ManageUsersInner />
         </ReactQuery>

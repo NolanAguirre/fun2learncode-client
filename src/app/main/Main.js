@@ -14,6 +14,8 @@ import ManageAddresses from './manageAddresses/ManageAddresses'
 import ManageActivities from './manageActivities/ManageActivities'
 import ManageAddons from './manageAddons/ManageAddons'
 import ManageUsers from  './manageUsers/ManageUsers'
+import ManageNewsLetter from './manageNewsLetter/ManageNewsLetter'
+import ManageAnnouncements from './manageAnnouncements/ManageAnnouncements'
 import {SignUp} from './signUp/SignUp'
 import CheckIn from './checkIn/CheckIn'
 import Account from './account/Account'
@@ -21,7 +23,6 @@ import Test from './test/Test'
 import ManagePromoCodes from './managePromoCodes/ManagePromoCodes'
 import ResetPassword from './resetPassword/ResetPassword'
 import RecoverPassword from './recoverPassword/RecoverPassword'
-import ManageAnnouncements from './manageAnnouncements/ManageAnnouncements'
 import RecentEvents from './recentEvents/RecentEvents'
 
 class Main extends Component {
@@ -39,6 +40,7 @@ class Main extends Component {
             <Route exact path='/Sign up' component={SignUp} />
 
             <Route path='/Registration/:id' component={Registration} />
+            <Route path='/Private/Registration/:id' component={Registration} />
             <Route exact path='/User/Manage Students' component={ManageStudents} />
             <Route path='/Logs/:eventId/:studentId' component={EventLogs} />
             <Route path='/User/Account' component={Account} />
@@ -52,6 +54,7 @@ class Main extends Component {
             <Route exact path='/Admin/Manage Users' component={ManageUsers} />
             <Route exact path='/Admin/Manage Promo Codes' component={ManagePromoCodes} />
             <Route exact path='/Admin/Announcements' component={ManageAnnouncements} />
+            <Route exact path='/Admin/News Letter' component={ManageNewsLetter} />
             <Route exact path='/Recent Events' component={RecentEvents} />
 
             <Route exact path='/test' component={Test} />

@@ -134,7 +134,7 @@ class StudentForm extends Component{
                                 </div>
                             </div>
                             <div>
-                                <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Add student</div>
+                                <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Add student</div>
                                 <button className='hacky-submit-button' type='submit'/>
                             </div>
                     </form>

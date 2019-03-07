@@ -28,7 +28,7 @@ class PasswordReset extends Component{
     }
 
     passwordValid = () =>{
-        return this.state.password.match('^[a-zA-Z0-9]*$') && this.state.password.length > 5;
+        return this.state.password.match(/^[a-zA-Z0-9]*$/) && this.state.password.length > 5;
     }
 
     handleSubmit = (event) => {
@@ -62,7 +62,7 @@ class PasswordReset extends Component{
                     <input className='styled-input' name='password' type='password' onChange={this.handleChange} placeholder='password' />
                 </div>
                 <input className='styled-input' name='repeatPassword' type='password' onChange={this.handleChange} placeholder='repeat password' />
-                <div className='event-register-btn center-text' onClick={this.mutation.onSubmit}>Update Password</div>
+                <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Update Password</div>
                 <button className='hacky-submit-button' type='submit'/>
             </form>
         }

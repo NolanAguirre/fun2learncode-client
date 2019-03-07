@@ -122,7 +122,7 @@ class CheckInChoice extends Component{
 			</div>
 
 		}else{
-			return <form className='section container column custom-scrollbar' onSubmit={this.handleSubmit}>
+			return <form className='custom-scrollbar' onSubmit={this.handleSubmit}>
 					<div className='check-in-choice-container'>
 						<MultiSelect multiSelect setSelected={this.setSelected} items={this.props.choices}>
 							<Selectable className={{base:'check-in-student', selected:'check-in-student-selected'}}>
@@ -130,7 +130,7 @@ class CheckInChoice extends Component{
 							</Selectable>
 						</MultiSelect>
 					</div>
-					<div className='event-register-btn center-text' onClick={this.handleSubmit}>Check in</div>
+					<div className='styled-button center-text' onClick={this.handleSubmit}>Check in</div>
 				</form>
 		}
     }
@@ -217,7 +217,7 @@ class CheckInInner extends Component{
 					  <div className='error'>{this.state.error}</div>
                     <input className='styled-input' ref={this.name} placeholder='Students last name' onChange={this.clearError}></input>
               </div>
-              <div className='event-register-btn center-text' onClick={this.loadStudents}>Check in</div>
+              <div className='styled-button center-text' onClick={this.loadStudents}>Check in</div>
 		  </React.Fragment>}
             </div>
 
