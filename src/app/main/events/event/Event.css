@@ -6,7 +6,13 @@
     display:flex;
     flex-direction: column;
     justify-content: flex-end;
-
+    margin-top: 4px;
+}
+.event-body-container{
+    display: flex;
+    flex:1;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 .event-register-header{
     margin-bottom:10px;

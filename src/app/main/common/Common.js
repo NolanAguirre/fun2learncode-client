@@ -95,7 +95,7 @@ function DatesTable(props){
           return <React.Fragment key={index}>
               <tr className='no-wrap-row'>
             <td>{localize(date.start).format(props.startFormat || "ddd MMM Do")}</td>
-            <td>{localize(date.start).format(props.startFormat || "h:mm a") + "-" + localize(date.end).format(props.startFormat || "h:mm a")}</td>
+            <td>{localize(date.start).format(props.startFormat || "h:mma") + "-" + localize(date.end).format(props.startFormat || "h:mma")}</td>
           </tr>
         </React.Fragment>
         })}

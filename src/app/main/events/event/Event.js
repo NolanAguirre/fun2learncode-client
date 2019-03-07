@@ -9,7 +9,7 @@ function EventComponent (props) {
             city={props.location.city}
             state={props.location.state}
             alias={props.location.alias} />
-        <div className='section container'>
+        <div className='event-body-container'>
             <div className='section container column'>
                 <h3 className='center-text'>Dates</h3>
                 <DatesTable className='center-x' dates={props.dates}/>
