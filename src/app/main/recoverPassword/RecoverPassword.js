@@ -43,7 +43,7 @@ class RecoverPassword extends Component{
         }else{
             child = <React.Fragment>
             <div>
-              <h3 className='center-text'>Forgot your password?</h3>
+              <h2 className='center-text'>Forgot your password?</h2>
               <div className='center-text gray'>
                   You can reset it by entering your account email and clicking "Reset Password".
               </div>
@@ -57,13 +57,8 @@ class RecoverPassword extends Component{
         }
         return <div className='container section'>
             <div className='login-container'>
-              <div className='login-container'>
-                  <div className='login-headers'>
-                        <a><img className='nav-logo' src={Logo}/></a>
-                  </div>
                   {child}
               </div>
-            </div>
         </div>
     }
 }
