@@ -16,7 +16,7 @@ class Delv {
     config = ({url, handleError}) => {
         this.url = url
         this.handleError = handleError
-        this.loadIntrospection() //development purposes
+        //this.loadIntrospection() //development purposes
     }
 
     loadIntrospection = () => { //development purposes
