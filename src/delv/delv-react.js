@@ -17,7 +17,8 @@ class ReactQuery extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            queryResult: ''
+            queryResult: '',
+            loading:true
         }
         this.query = new Query({
             query: this.props.query,
@@ -72,16 +73,14 @@ class ReactQuery extends Component {
     }
 
     onFetch = (promise) => {
-        if(!this.props.skipLoading){
-            this.setState({queryResult: ''})
-        }
+        this.setState({loading:true})
         if(this.props.onFetch){
             this.props.onFetch(promise)
         }
     }
 
     onResolve = (data) => {
-        this.setState({queryResult: data})
+        this.setState({queryResult: data, loading:false})
         if(this.props.onResolve){
             this.props.onResolve(data)
         }
@@ -105,7 +104,7 @@ class ReactQuery extends Component {
             children,
             ...otherProps
         } = this.props
-        if (this.state.queryResult === '') {
+        if (this.state.loading && !this.props.skipLoading) {
             if (this.props.loading) {
                 return this.props.loading
             }

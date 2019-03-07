@@ -92,7 +92,7 @@ class Announcements extends Component{
                 </div>:''}
             </div>
             <div className='announcements-container'>
-                <ReactQuery query={ANNOUNCEMENTS(params)} skipLoading>
+                <ReactQuery query={ANNOUNCEMENTS(params)}>
                     <AnnouncementsDisplay />
                 </ReactQuery>
             </div>

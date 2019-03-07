@@ -203,7 +203,7 @@ function StudentSelectInner(props){
 
 function StudentSelect(props) {
     return <div className='styled-container custom-scrollbar'>
-                <ReactQuery query={GET_STUDENTS_BY_PARENT(props.userId)} skipLoading>
+                <ReactQuery query={GET_STUDENTS_BY_PARENT(props.userId)}>
                     <StudentSelectInner {...props}>
                         {props.createStudent?<StudentForm client={props.client} parentId={props.userId}/>:''}
                     </StudentSelectInner>
