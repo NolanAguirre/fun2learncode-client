@@ -26,6 +26,19 @@
 }
 
 .terms-of-service-container{
+    max-width:500px;
     max-height: 90vh;
     overflow-y: scroll;
+}
+.sign-up-form{
+
+}
+
+.sign-up-form > *:not(:first-child){
+    margin-top: 40px
+}
+@media screen and (max-width: 515px) {
+    .sign-up-form > *:not(:first-child){
+        margin-top: 20px
+    }
 }
