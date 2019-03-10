@@ -157,17 +157,19 @@ class AccountInner extends Component{
                         </tbody>
                     </table>
                 </div>
-                <div className='account-event-request-section'>
-                    <h3 className='center-text'>Request an event</h3>
-                    <div className='margin-top-40'>
-                        <EventRequest/>
-                    </div>
-                </div>
-
             </div>
             <div className='account-order-history-container'>
                 <h2>Order History</h2>
                 <OrderHistory userId={this.props.getUserData.id} />
+            </div>
+            <div className='private-event'>
+                <div className='account-event-request-section'>
+                    <h2 className='center-text'>Request private event</h2>
+                    <EventRequest/>
+                </div>
+                <div className='private-event-footer'>
+                    This feature is intended for birthday parties and similar events, to request a public event email info@fun2learncode.com
+                </div>
             </div>
         </div>
     }
