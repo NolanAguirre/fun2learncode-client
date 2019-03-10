@@ -68,4 +68,8 @@
     .announcement-arrow{
         padding:0px;
     }
+    .announcement-body-container{
+        max-width: 300px;
+        width:auto;
+    }
 }

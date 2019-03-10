@@ -24,7 +24,7 @@ const TOTAL_COUNT = `{
 }`
 
 function AnnouncementsDisplay(props){
-    return  props.allAnnouncements.nodes.sort((a,b)=>a.id < b.id).map((item)=>{
+    return  props.allAnnouncements.nodes.sort((a,b)=>b.id - a.id).map((item)=>{
         return <div key={item.nodeId} className='announcement-body-container'>
             <h2 className='center-text'>{item.title}</h2>
             <div className='created-on center-text'> announcement made: {moment(item.createdOn).format('MMM Do YYYY')}</div>
