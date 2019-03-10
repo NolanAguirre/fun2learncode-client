@@ -12,7 +12,7 @@ import Mutation from '../../../delv/Mutation'
 const fomatEvents = (result) => {
     return {
         allEvents:{
-            nodes:result.allEvents.nodes.sort((a,b)=>{return a.id > b.id})
+            nodes:result.allEvents.nodes.sort((a,b)=> moment(a.closeRegistration).unix() - moment(b.closeRegistration).unix())
         }
     }
 }
