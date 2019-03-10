@@ -36,7 +36,7 @@ function Location (props) {
   return (<div className='center-text margin-bottom-10'>
     <div>
       <h3>{props.alias}</h3>
-      <div>{props.street}, {props.city} {props.state}</div>
+      <div>{props.street}, {props.city}, {props.state}</div>
     </div>
   </div>)
 }
