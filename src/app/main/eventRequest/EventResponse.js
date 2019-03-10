@@ -2,9 +2,7 @@ import React, { Component } from 'react'
 import {GridView} from '../common/Common';
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
-import axios from 'axios'
 import './EventRequest.css'
-import Popup from "reactjs-popup"
 
 const GET_REQUESTS = (userId) => `{
   allEventRequests(condition:{userId:"${userId}", status:PENDING}){
@@ -72,8 +70,8 @@ class EventResponseInner extends Component{
 					<div>{this.props.information}</div>
 					<div className='error center-text'>{this.state.error}</div>
 					<form onSubmit={this.mutation.onSubmit} className='container column'>
-                        <input className='styled-input' value={this.state.event} onChange={this.handleChange} name='event'placeholder='Event Id'/>
-                        <input className='styled-input' value={this.state.accessToken} onChange={this.handleChange} name='accessToken'placeholder='Access Token'/>
+                        <input autoComplete='off' className='styled-input' value={this.state.event} onChange={this.handleChange} name='event'placeholder='Event Id'/>
+                        <input autoComplete="off" className='styled-input' value={this.state.accessToken} onChange={this.handleChange} name='accessToken'placeholder='Access Token'/>
                         <div>Grant:<input checked={this.state.grant} name='grant' type='checkbox'  onChange={this.handleChange}/></div>
 						<div className='styled-button center-text margin-top-10' onClick={this.mutation.onSubmit}>Submit response</div>
 						<button className='hacky-submit-button' type='submit'/>
