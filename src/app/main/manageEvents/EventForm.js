@@ -9,7 +9,7 @@ import moment from 'moment';
 import Popup from "reactjs-popup"
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
-import Logo from '../../logos/x-icon.svg'
+import xicon from '../../logos/x-icon.svg'
 
 const GET_DROPDOWN = `{
   allAddresses {
@@ -145,7 +145,7 @@ function AddonJoins(props) {
                 {addon.addOnByAddOn.name}
                 <div className="prerequisite-x-container">
                     <button className="no-style-button" type="submit">
-                        <img className="x-icon" alt='x-icon' src={Logo}/>
+                        <img className="x-icon" alt='x-icon' src={xicon}/>
                     </button>
                 </div>
             </div>
@@ -239,14 +239,16 @@ class EventFormInner extends Component {
     }
 
     hasRequiredValues = () => {
-        let haveValues = this.state.name && this.state.address
+        let haveValues = this.state.name && this.state.address && this.state.price >= 0
         let changedValues = this.state.name != this.props.name ||
         this.normalizeDate(this.state.openRegistration) != this.normalizeDate(this.props.openRegistration) ||
         this.normalizeDate(this.state.closeRegistration) != this.normalizeDate(this.props.closeRegistration) ||
         this.state.address != this.props.address ||
         this.state.capacity != this.props.capacity ||
         this.state.archive != this.props.archive ||
-        this.state.publicDisplay != this.props.publicDisplay
+        this.state.publicDisplay != this.props.publicDisplay ||
+        this.state.price != this.props.price ||
+        this.state.activity != this.props.activity
         return haveValues && changedValues
     }
 
@@ -385,13 +387,18 @@ class EventForm extends Component {
 
     render = () => {
         return <div>
-            <Popup className='payment-popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+            <Popup className='popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+            <div className='popup-inner'>
+                <div className='close-popup'>
+                    <img onClick={this.clearPopupState} src={xicon}/>
+                </div>
                 <ReactQuery query={GET_DROPDOWN}>
                     <EventFormInner {...this.props} handleSubmit={this.clearPopupState} mutation={(
                             this.props.id)
                             ? UPDATE_EVENT
                             : CREATE_EVENT}/>
                 </ReactQuery>
+                </div>
             </Popup>
             <div onClick={this.showPopup}>
                 {this.props.buttonText || <div className='styled-button'>Create new event</div>}
