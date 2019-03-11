@@ -16,7 +16,7 @@ function ManageEvents(props){
                             <EventForm/>
                             <BasicPopup>
                                 <QueryFullEvent />
-                                <button>full event details</button>
+                                <div className="styled-button">full event details</div>
                             </BasicPopup>
                         </div>
                         <DragAndDropMutation/>
