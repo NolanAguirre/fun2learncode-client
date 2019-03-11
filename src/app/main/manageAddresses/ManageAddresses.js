@@ -237,7 +237,7 @@ function ManageAddressesInner(props) {
     ))
     return (
         <GridView className='container column' fillerStyle={'manage-address-card'} itemsPerRow={3}>
-            {[<ManageAddressForm mutation={CREATE_ADDRESS} alias={'New Address'} />, ...addresses]}
+            {[<ManageAddressForm mutation={CREATE_ADDRESS} alias='New Address' key='new'/>, ...addresses]}
         </GridView>
     )
 }
