@@ -57,8 +57,7 @@ class AddressForm extends Component{
         }else if(!this.state.state){
             this.setState({stateError:'State is required.'})
         }else{
-            this.props.setLoading();
-            console.log(JSON.stringify({promoCode:this.state.promoCode, ...this.props.info}))
+            this.props.setLoading(true);
             axios.post('http://localhost:3005/payment/begin', {promoCode:this.state.promoCode, ...this.props.info}).then((data)=>{
                this.props.callback({response:data, address:this.state.address, city:this.state.city, state:this.state.state});
             }).catch((error)=>{
@@ -121,22 +120,23 @@ class PaymentInformationEntry extends Component{
                 if(this.props.total < 1){
                     this.props.callback()
                 }else{
-                    this.props.setLoading()
+                    this.props.setLoading(true)
                     this.props.stripe.createToken({
                         name: this.state.cardholder,
                         address_line1:this.props.address,
                         address_city:this.props.city,
                         address_state:this.props.state,
                         address_country:'US'
-                    }).then(({token:{id}, error}) => {
+                    }).then(({token, error}) => {
                         if(error){
+                            this.props.setLoading(false)
                             this.isProcessing = false;
                             this.setState({stripeError:error.message})
                         }else{
                             if(this.state.stripeError){
                                 this.setState({stripeError:null})
                             }
-                            this.props.callback(id)
+                            this.props.callback(token.id)
                         }
                     });
                 }
@@ -207,8 +207,8 @@ class Payment extends Component {
 
     clearPopupState = () => this.setState({showPopup: false})
 
-    setLoading = () => {
-        this.setState({loading:true})
+    setLoading = (loading) => {
+        this.setState({loading:loading})
     }
 
     onCardComplete = (token) => {
@@ -220,6 +220,7 @@ class Payment extends Component {
             }
         }).catch((error)=>{
             console.log(error)
+            this.setState({UI:'error', error:'Network error occured', loading:false})
         })
     }
 
@@ -255,7 +256,7 @@ class Payment extends Component {
             child = <AddressForm setLoading={this.setLoading} info={this.props.info} city={this.state.city} state={this.state.state} address={this.state.address} total={this.state.total} callback={this.onAddressComplete}/>
         }
         return <React.Fragment>
-            <Popup className='payment-popup' open={this.state.showPopup} closeOnEscape={!(this.state.loading || this.state.preventClose)} closeOnDocumentClick={!(this.state.loading || this.state.preventClose)} onClose={this.clearPopupState}>
+            <Popup className='payment-popup' open={this.state.showPopup} closeOnDocumentClick={false} closeOnEscape={!(this.state.loading || this.state.preventClose)} onClose={this.clearPopupState}>
                 <div className='login-container' style={{position:'relative'}}>
                     {child}
                     <div className={this.state.loading?'payment-loading':'hidden-payment-loading'}><img className='loading-icon center-x' src={loading}/></div>

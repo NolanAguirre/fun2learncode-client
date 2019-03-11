@@ -6,6 +6,7 @@ import {TimeRangeSelector, SecureRoute, GridView} from '../common/Common'
 import Popup from 'reactjs-popup'
 import {Link} from 'react-router-dom'
 import QueryFullEvent from '../events/event/QueryFullEvent'
+import xicon from '../../logos/x-icon.svg'
 
 const RECENT_EVENT = (start, end) => `{
   eventInDates(arg0: "${start}", arg1: "${end}") {
@@ -142,7 +143,7 @@ class RecentEventDays extends Component {
             })
         }
         return (
-            <div>
+            <div className='recent-event-days-container'>
                 {dates
                     .sort((a, b) => moment(a.start).unix() - moment(b.start).unix())
                     .map(date => {
@@ -159,7 +160,7 @@ function AdminEvent(props) {
             <div>
                 <h1 className='no-margin'>{props.event.activityByActivity.name}</h1>
                 <h2 className='no-margin'>{props.event.name}</h2>
-                Registration: {props.event.seatsLeft} of {props.event.capacity} <br />
+                Seats Left: {props.event.seatsLeft} of {props.event.capacity} <br />
                 Close: {localize(props.event.closeRegistration).format('MMMM, Do h:mm a')}
             </div>
             <div
@@ -209,10 +210,15 @@ class RecentEventsInner extends Component {
             <div className='recent-events-container'>
                 <Popup
                     open={this.state.showPopup}
-                    closeOnDocumentClick
+                    closeOnDocumentClick={false}
                     onClose={this.clearPopupState}
-                    className='mobile-popup'>
-                    {popupInner}
+                    className='popup'>
+                    <div className='popup-inner'>
+                        <div className='close-popup'>
+                            <img onClick={this.clearPopupState} src={xicon}/>
+                        </div>
+                        {popupInner}
+                    </div>
                 </Popup>
                 <GridView fillerStyle='manage-addon-container' itemsPerRow={3}>
                     {events}

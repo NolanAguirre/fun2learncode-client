@@ -4,6 +4,8 @@ import {BasicPopup} from '../common/Common'
 import axios from 'axios'
 import './EventRequest.css'
 import Popup from "reactjs-popup"
+import xicon from '../../logos/x-icon.svg'
+
 
 const CREATE_EVENT_REQUEST = `mutation($information:String!){
 	createEventRequest(input:{eventRequest:{information:$information}}){
@@ -64,10 +66,15 @@ class EventRequest extends Component{
             </form>
         }
 		return <React.Fragment>
-			<Popup className='popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+			<Popup className='popup' open={this.state.showPopup} closeOnDocumentClick={false} onClose={this.clearPopupState}>
+            <div className='popup-inner'>
+                <div className='close-popup'>
+                    <img onClick={this.clearPopupState} src={xicon}/>
+                </div>
                 <div className='login-container'>
 				    {child}
                 </div>
+            </div>
 			</Popup>
             <div onClick={this.showPopup} className='center-text styled-button'>Request Event</div>
 		</React.Fragment>

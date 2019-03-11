@@ -94,12 +94,13 @@ class RegistrationInner extends Component{
 
     checkPrerequisites = (student) => {
         let query = `{
-  checkPrerequisite(arg0: "${this.props.eventId}", arg1: "${student.id}")
-  checkRegistration(arg0: "${this.props.eventId}", arg1: "${student.id}")
-  checkTime(arg0: "${this.props.eventId}", arg1: "${student.id}")
+  checkPrerequisite(arg0: "${this.props.event.id}", arg1: "${student.id}")
+  checkRegistration(arg0: "${this.props.event.id}", arg1: "${student.id}")
+  checkTime(arg0: "${this.props.event.id}", arg1: "${student.id}")
   checkWaiver(arg0:"${student.id}")
 }`
         return Delv.post(query).then((res)=>{
+            console.log(res)
             if(!res.data.data.checkPrerequisite){
                 this.setState({error:`${student.firstName} ${student.lastName} does not meet the prerequisites.`})
             }else if(!res.data.data.checkRegistration){
@@ -132,7 +133,7 @@ class RegistrationInner extends Component{
         return {
             students: this.state.students.map(student=>student.id),
             addons:this.state.addons.map(addon=>addon.id),
-            event: this.props.eventId,
+            event: this.props.eventId, //returns the actual hash/id, this is important
             user:this.props.getUserData.id
         }
     }

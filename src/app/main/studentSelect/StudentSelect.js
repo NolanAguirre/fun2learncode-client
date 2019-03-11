@@ -9,6 +9,7 @@ import moment from 'moment'
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
 import {MultiSelect, Selectable} from '../common/Common'
+import xicon from '../../logos/x-icon.svg'
 
 const yearAgo = moment().subtract(1,'years').toISOString()
 
@@ -111,37 +112,41 @@ class StudentForm extends Component{
 
     render = () => {
         return <React.Fragment>
-            <Popup contentStyle={{width:"default"}}
+            <Popup className='popup'
                 open={this.state.showPopup}
-                closeOnDocumentClick
+                closeOnDocumentClick={false}
                 onClose={this.clearPopupState}>
-                <div className="login-container">
-                    <h1 className='center-text'>Add Student</h1>
-                    <div className='error'>{this.state.error}</div>
-                    <form onSubmit={this.mutation.onSubmit} className='login-form'>
-                            <div className='container'>
-                                <div className='small-input edge-margin'>
-                                    <input className='styled-input' name='firstName' value={this.state.firstName} onChange={this.handleChange} placeholder='first name' />
+                <div className='popup-inner'>
+                    <div className='close-popup'>
+                        <img onClick={this.clearPopupState} src={xicon}/>
+                    </div>
+                    <div className="login-container">
+                        <h1 className='center-text'>Add Student</h1>
+                        <div className='error'>{this.state.error}</div>
+                        <form onSubmit={this.mutation.onSubmit} className='login-form'>
+                                <div className='container'>
+                                    <div className='small-input edge-margin'>
+                                        <input className='styled-input' name='firstName' value={this.state.firstName} onChange={this.handleChange} placeholder='first name' />
+                                    </div>
+                                    <div className='small-input edge-margin'>
+                                        <input className='styled-input' name='lastName' value={this.state.lastName} onChange={this.handleChange} placeholder='last name' />
+                                    </div>
                                 </div>
-                                <div className='small-input edge-margin'>
-                                    <input className='styled-input' name='lastName' value={this.state.lastName} onChange={this.handleChange} placeholder='last name' />
+                                <div className='container margin-top-40'>
+                                    <span className='dob-label'>Date Of Birth:</span>
+                                    <div className='small-input edge-margin'>
+                                        <DateTime onChange={(time)=>this.handleTimeChange('dateOfBirth',time)}value={this.state.dateOfBirth} inputProps={{className:'styled-input'}} dateFormat="M/D/YYYY"  timeFormat={false} viewMode='years' />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className='container margin-top-40'>
-                                <span className='dob-label'>Date Of Birth:</span>
-                                <div className='small-input edge-margin'>
-                                    <DateTime onChange={(time)=>this.handleTimeChange('dateOfBirth',time)}value={this.state.dateOfBirth} inputProps={{className:'styled-input'}} dateFormat="M/D/YYYY"  timeFormat={false} viewMode='years' />
+                                <div>
+                                    <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Add student</div>
+                                    <button className='hacky-submit-button' type='submit'/>
                                 </div>
-                            </div>
-                            <div>
-                                <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Add student</div>
-                                <button className='hacky-submit-button' type='submit'/>
-                            </div>
-                    </form>
-            </div>
+                        </form>
+                    </div>
+                </div>
             </Popup>
         <div onClick={this.showPopup} className='student-preview-container'>
-
             new Student
         </div>
     </React.Fragment>
@@ -172,8 +177,13 @@ class StudentWaiverDisplay extends Component{
             return <div key={student.id} onClick={()=>{this.showPopup(student.id)}} className='waiver-needed'>{student.firstName} {student.lastName}</div>
         })
         return <div className='student-waiver-display'>
-            <Popup className='payment-popup'open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+            <Popup className='popup'open={this.state.showPopup} closeOnDocumentClick={false} onClose={this.clearPopupState}>
+            <div className='popup-inner'>
+                <div className='close-popup'>
+                    <img onClick={this.clearPopupState} src={xicon}/>
+                </div>
                 <StudentWaiverForm studentId={this.state.studentId}/>
+            </div>
             </Popup>
             <h3 className='student-waiver-header'>Waivers</h3>
             {attentionNeeded?<div className='error'>Attention Needed!</div>:''}

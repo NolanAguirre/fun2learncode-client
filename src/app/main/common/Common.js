@@ -5,6 +5,7 @@ import Popup from "reactjs-popup"
 import moment from 'moment';
 import EventSystem from '../../EventSystem'
 import DateTime from 'react-datetime'
+import xicon from '../../logos/x-icon.svg'
 
 const GET_USER_DATA = `{
     getUserData{
@@ -239,8 +240,13 @@ class BasicPopup extends Component{
 	}
 	render = () => {
 		return <React.Fragment>
-			<Popup className={this.props.className} open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
-                {this.props.children[0]}
+			<Popup className={this.props.className || 'popup'} closeOnDocumentClick={false} open={this.state.showPopup} onClose={this.clearPopupState}>
+                <div className='popup-inner'>
+                    <div className='close-popup'>
+                        <img onClick={this.clearPopupState} src={xicon}/>
+                    </div>
+                    {this.props.children[0]}
+                </div>
 			</Popup>
             <div className={this.props.buttonClassName || ''} onClick={this.showPopup}>{this.props.children[1]}</div>
 		</React.Fragment>

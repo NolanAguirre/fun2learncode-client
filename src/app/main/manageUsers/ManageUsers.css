@@ -12,7 +12,8 @@
     box-shadow: border-box;
 }
 .manage-user-popup{
-    padding:20px 40px;
+    overflow-y: auto;
+    padding: 20px 40px;
 }
 .manage-users-table{
     border-collapse: collapse;

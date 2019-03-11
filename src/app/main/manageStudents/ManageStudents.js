@@ -5,6 +5,7 @@ import { ReactQuery } from '../../../delv/delv-react'
 import {SecureRoute, GridView, TimeRangeSelector} from '../common/Common'
 import moment from 'moment';
 import Popup from "reactjs-popup"
+import xicon from '../../logos/x-icon.svg'
 const GET_DATES_WITH_STUDENT = (studentId) => {
     return (start, end) => `{
   eventInDates(arg0: "${start}", arg1: "${end}") {
@@ -58,13 +59,17 @@ function EventLog(props) {
 }
 
 function EventLogs(props){
+    let child = <div>No Logs found</div>
     if (props.logs.length > 0){
-        return<div className='manage-students-event-logs-container'>
+
+        child = <React.Fragment>
             <h1>{props.name} {props.date}</h1>
             {props.logs.map(log=><EventLog key={log.id} firstName={log.userByInstructor.firstName} comment={log.comment} />)}
-        </div>
+            </React.Fragment>
     }
-    return <div>No Logs found</div>
+    return<div className='manage-students-event-logs-container'>
+        {child}
+    </div>
 }
 
 class EventMonthDate extends Component {
@@ -83,8 +88,13 @@ class EventMonthDate extends Component {
 
     render = () => {
         return <div className='event-month-date-container'>
-            <Popup className='popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+            <Popup className='popup' open={this.state.showPopup} closeOnDocumentClick={false} onClose={this.clearPopupState}>
+            <div className='popup-inner'>
+                <div className='close-popup'>
+                    <img onClick={this.clearPopupState} src={xicon}/>
+                </div>
                 <EventLogs logs={this.props.date.eventLogsByDateInterval.nodes} name={this.props.date.activityName} date={localize(this.props.date.start).format('dddd Do')}/>
+            </div>
             </Popup>
             <h3 className='margin-bottom-10'>{this.props.date.activityName}</h3>
             <div className='event-mont-date-body'>

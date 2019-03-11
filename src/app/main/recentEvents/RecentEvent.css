@@ -2,6 +2,9 @@
     width: 100%;
 }
 
+.recent-event-days-container{
+    overflow-y: auto;
+}
 .recent-event-btn {
     min-width: 75px;
     text-align: center;

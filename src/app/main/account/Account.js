@@ -7,6 +7,7 @@ import moment from 'moment'
 import PasswordReset from '../passwordReset/PasswordReset'
 import './Account.css'
 import EventRequest from '../eventRequest/EventRequest'
+import xicon from '../../logos/x-icon.svg'
 const RESET_PASSWORD = `mutation($password:String!){
   resetPassword(input:{arg0:$password,arg1:"BY USER"}){
     clientMutationId

@@ -11,7 +11,7 @@ import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
 import Delv from '../../../delv/delv'
 import { CustomProvider } from '../common/Common'
-
+import xicon from '../../logos/x-icon.svg'
 const localizer = BigCalendar.momentLocalizer(moment)
 
 const GET_EVENTS = `{
@@ -230,30 +230,35 @@ ${moment(event.start).format('h:mm a')} to ${moment(event.end).format('h:mm a')}
     render = () => {
         return <React.Fragment>
             <Popup
-          className="calendar-popup"
+          className="popup"
+          closeOnDocumentClick={false}
           open={this.state.showPopup}
-          closeOnDocumentClick
           onClose={this.clearPopupState}>
-                <div>
-                    <h1 className='calendar-popup-header'>Set time of day</h1>
-                    <div className='error'>{(this.state.startTime > this.state.endTime)?'Start time must be before end time':''}</div>
-                      <table className='calendar-time-table'>
-                          <tbody>
-                              <tr>
-                                  <td>Event Start Time:</td>
-                                  <td><DateTime className="time-input" timeFormat='H:mm' dateFormat={false} value={this.state.startTime} onChange={(time) => {this.handleTimeChange("startTime", time)}}/></td>
-                                  <td className='calendar-time'>{moment(this.state.startTime).format('h:mm a')}</td>
-                              </tr>
-                              <tr>
-                                  <td>Event End Time:</td>
-                                  <td><DateTime className="time-input" timeFormat='H:mm' dateFormat={false} value={this.state.endTime}  onChange={(time) => {this.handleTimeChange("endTime", time)}}/></td>
-                                  <td className='calendar-time'>{moment(this.state.endTime).format('h:mm a')}</td>
-                              </tr>
-                          </tbody>
-                      </table>
-                      <div className='styled-button center-text margin-top-10' onClick={this.closePopup}>Set</div>
-                      <button className='hacky-submit-button' type='submit'/>
-  		          </div>
+          <div className='popup-inner'>
+              <div className='close-popup'>
+                  <img onClick={this.clearPopupState} src={xicon}/>
+              </div>
+              <div className="calendar-popup">
+                  <h1 className='calendar-popup-header'>Set time of day</h1>
+                  <div className='error'>{(this.state.startTime > this.state.endTime)?'Start time must be before end time':''}</div>
+                    <table className='calendar-time-table'>
+                        <tbody>
+                            <tr>
+                                <td>Event Start Time:</td>
+                                <td><DateTime className="time-input" timeFormat='H:mm' dateFormat={false} value={this.state.startTime} onChange={(time) => {this.handleTimeChange("startTime", time)}}/></td>
+                                <td className='calendar-time'>{moment(this.state.startTime).format('h:mm a')}</td>
+                            </tr>
+                            <tr>
+                                <td>Event End Time:</td>
+                                <td><DateTime className="time-input" timeFormat='H:mm' dateFormat={false} value={this.state.endTime}  onChange={(time) => {this.handleTimeChange("endTime", time)}}/></td>
+                                <td className='calendar-time'>{moment(this.state.endTime).format('h:mm a')}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div className='styled-button center-text margin-top-10' onClick={this.closePopup}>Set</div>
+                    <button className='hacky-submit-button' type='submit'/>
+                </div>
+          </div>
             </Popup>
             <DragAndDropCalendar
             selected={this.state.selected}

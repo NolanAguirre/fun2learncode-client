@@ -121,7 +121,7 @@ class StudentWaiverForm extends Component{
     render = () => {
         if(this.state.complete){
             return <div className='student-waiver-container'>
-                    <div className='center-text'>Student Waiver created</div>
+                    <h2 className='center-text'>Student Waiver created</h2>
             </div>
         }
         return <form className='student-waiver-container' onSubmit={this.mutation.onSubmit}>

@@ -33,7 +33,7 @@ function PaymentOverview(props){
         })
     })
     return <div className='payment-overview-container'>
-        <h3>Payment Summery</h3>
+        <h3>Payment Summary</h3>
         <div className='payment-table-container'>
              <table className='responsive-table custom-scrollbar'>
              <thead>

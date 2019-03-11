@@ -73,3 +73,18 @@
     box-shadow: none;
     background-clip: padding-box;
 }
+.popup-inner{
+    display: flex;
+    flex-direction: column;
+}
+.popup-inner > *:last-child{
+    padding-top: 0!important;
+}
+.close-popup{
+    height: auto;
+}
+.close-popup > img{
+    padding:15px;
+    height:20px;
+    float:right;
+}

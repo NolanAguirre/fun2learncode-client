@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import './WhatWeTeach.css'
 import Popup from "reactjs-popup"
+import xicon from '../../../logos/x-icon.svg'
 
 const TOPICS = [
     {
@@ -51,11 +52,16 @@ class WhatWeTeach extends Component{
 	}
 	render = () => {
 		return <React.Fragment>
-			<Popup className='payment-popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+			<Popup className='popup' open={this.state.showPopup} closeOnDocumentClick={false} onClose={this.clearPopupState}>
+            <div className='popup-inner'>
+                <div className='close-popup'>
+                    <img onClick={this.clearPopupState} src={xicon}/>
+                </div>
                 <div className='topic-description'>
                     <h1 className='center-text'>{this.state.text.name}</h1>
                     {this.state.text.description}
                 </div>
+            </div>
 			</Popup>
             <div className='what-we-teach'>
                 <div className='main-contents what-we-teach-center'>

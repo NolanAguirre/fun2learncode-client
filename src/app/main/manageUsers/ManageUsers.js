@@ -11,6 +11,7 @@ import {StudentWaiver} from '../studentWaiver/StudentWaiver'
 import next from '../../logos/next.svg'
 import DateTime from 'react-datetime'
 import EventResponse from '../eventRequest/EventResponse'
+import xicon from '../../logos/x-icon.svg'
 const yearAgo = moment().subtract(1,'years').toISOString()
 
 const GET_USERS = `{
@@ -208,7 +209,7 @@ class OverrideForm extends Component{
                 <tbody>
                     <tr>
                         <td>Event Id</td>
-                        <td><input value={this.state.event} onChange={this.handleChange} name='event'placeholder='Event Id'/></td>
+                        <td><input autoComplete="off" value={this.state.event} onChange={this.handleChange} name='event'placeholder='Event Id'/></td>
                     </tr>
                     <tr>
                         <td>New Price: (optional)</td>
@@ -308,11 +309,11 @@ class ManageUsersInner extends Component {
             let rows = allUsers.slice(x,x+itemsPerRow).map((user)=>{
             let className = ''
             if(user.eventRequestsByUserId.nodes.length && user.refundRequestsByUserId.nodes.length){
-                className = 'red-tint'
+                className = 'orange-tint'
             }else if(user.eventRequestsByUserId.nodes.length){
                 className='blue-tint'
             }else if(user.refundRequestsByUserId.nodes.length){
-                className='orange-tint'
+                className='red-tint'
             }
             return <td key={user.id}>
             <div className={className} onClick={()=>{this.showPopup(user)}}>{user.firstName} {user.lastName}<br/>{user.email}</div>
@@ -320,8 +321,13 @@ class ManageUsersInner extends Component {
             child.push(<tr key={x}>{rows}</tr>)
         }
         return<div className='manage-users'>
-            <Popup open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState} className='mobile-popup'>
+            <Popup open={this.state.showPopup} closeOnDocumentClick={false} onClose={this.clearPopupState} className='popup'>
+            <div className='popup-inner'>
+                <div className='close-popup'>
+                    <img onClick={this.clearPopupState} src={xicon}/>
+                </div>
                 <ManageUserForm user={this.state.user}/>
+            </div>
             </Popup>
             <table className='manage-users-table'>
                 <tbody>

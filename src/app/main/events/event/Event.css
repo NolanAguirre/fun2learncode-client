@@ -35,6 +35,9 @@
     display:flex;
     justify-content: space-between;
 }
+.query-event-date-container > * {
+    padding:10px;
+}
 .query-event-addon-container{
     display:flex;
     flex-direction: column;
@@ -44,4 +47,10 @@
     padding:10px;
     margin:0 10px;
     flex: 0 0 auto;
+}
+.query-full-event{
+    display:flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding:40px;
 }

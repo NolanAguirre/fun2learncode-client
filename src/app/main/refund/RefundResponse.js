@@ -4,6 +4,7 @@ import {BasicPopup} from '../common/Common'
 import axios from 'axios'
 import './Refund.css'
 import Popup from "reactjs-popup"
+import xicon from '../../logos/x-icon.svg'
 
 const REJECT_REFUND_REQUEST = (id, reason) => `mutation{
   updateRefundRequestById(input:{id:"${id}", refundRequestPatch:{status:DECLINED, grantedReason:"${reason}"}}){
@@ -74,8 +75,12 @@ class RefundResponse extends Component{
 
 	render = () => {
 		return <React.Fragment>
-			<Popup className='payment-popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
-				<div className='login-container'>
+			<Popup className='popup' open={this.state.showPopup} closeOnDocumentClick={false} onClose={this.clearPopupState}>
+            <div className='popup-inner'>
+                <div className='close-popup'>
+                    <img onClick={this.clearPopupState} src={xicon}/>
+                </div>
+                <div className='login-container'>
 					<div>Refund Status: {this.props.status}</div>
 					<div>Reason for refund:</div>
 					<div>{this.props.reason}</div>
@@ -97,6 +102,7 @@ class RefundResponse extends Component{
 						<button className='hacky-submit-button' type='submit'/>
 					</form>
 				</div>
+            </div>
 			</Popup>
             <div onClick={this.showPopup} className='styled-button'>Refund request</div>
 		</React.Fragment>

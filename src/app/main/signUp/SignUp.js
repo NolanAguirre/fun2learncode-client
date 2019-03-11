@@ -4,7 +4,7 @@ import Logo from '../../logos/drawing.svg'
 import Delv from '../../../delv/delv'
 import axios from 'axios'
 import Popup from 'reactjs-popup'
-
+import xicon from '../../logos/x-icon.svg'
 const CREATE_ACCOUNT = `mutation ($user: RegisterUserInput!) {
   registerUser(input: $user) {
     clientMutationId
@@ -167,7 +167,12 @@ class SignUp extends Component {
                 </div>
             </form>
             <Popup className='popup' open={this.state.showPopup} closeOnDocumentClick onClose={this.clearPopupState}>
+            <div className='popup-inner'>
+                <div className='close-popup'>
+                    <img onClick={this.clearPopupState} src={xicon}/>
+                </div>
                 <TermsAndConditions />
+            </div>
             </Popup>
         </div>
     }

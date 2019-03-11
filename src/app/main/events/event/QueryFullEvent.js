@@ -72,7 +72,7 @@ function FullEventInner(props){
               </div>
         </div>
     })
-    return <div className='container column'>
+    return <div className='query-full-event'>
         <h1>Event info</h1>
         <table>
             <tbody>

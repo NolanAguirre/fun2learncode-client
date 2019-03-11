@@ -1,7 +1,7 @@
 .calendar-popup{
-    width:400px !important;
-    padding:40px!important;
+    padding:0 40px 40px 40px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
 }
 .calendar-popup-header{
