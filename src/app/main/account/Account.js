@@ -166,7 +166,7 @@ class AccountInner extends Component{
             <div className='private-event'>
                 <div className='account-event-request-section'>
                     <h2 className='center-text'>Request private event</h2>
-                    <EventRequest/>
+                    <EventRequest userId={this.props.getUserData.id}/>
                 </div>
                 <div className='private-event-footer'>
                     This feature is intended for birthday parties and similar events, to request a public event email info@fun2learncode.com
