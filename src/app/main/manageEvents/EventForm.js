@@ -276,7 +276,7 @@ class EventFormInner extends Component {
                 activity: this.state.activity,
                 openRegistration: this.state.openRegistration.toISOString(),
                 closeRegistration: this.state.closeRegistration.toISOString(),
-                price: this.state.price,
+                price: parseFloat(this.state.price),
                 capacity: this.state.capacity,
                 seatsLeft: this.state.capacity - (this.props.capacity - this.props.seatsLeft) || this.state.capacity,
                 address: this.state.address,
@@ -284,7 +284,6 @@ class EventFormInner extends Component {
                 archive:this.state.archive,
                 publicDisplay:this.state.publicDisplay
             }
-
             return {"id": this.props.id,  event}
         }
         return false

@@ -5,17 +5,6 @@ import axios from 'axios'
 import './Refund.css'
 import Popup from "reactjs-popup"
 import xicon from '../../logos/x-icon.svg'
-
-const REJECT_REFUND_REQUEST = (id, reason) => `mutation{
-  updateRefundRequestById(input:{id:"${id}", refundRequestPatch:{status:DECLINED, grantedReason:"${reason}"}}){
-    refundRequest{
-      id
-      status
-      grantedReason
-    }
-  }
-}`
-
 class RefundResponse extends Component{
 	constructor(props){
 		super(props);
@@ -56,20 +45,13 @@ class RefundResponse extends Component{
 			return
 		}
 		if(window.confirm('Are you sure? this account cannot be undone or edited after submission.')){
-			if(this.state.grant){
-				axios.post('http://localhost:3005/payment/refund', {
-					user:this.props.userId,
-					reason:this.state.grantedReason,
-					paymentId:this.props.paymentId,
-					amount: (this.state.grant)?this.state.amountRefunded:0,
-					unregister: this.state.remove
-				})
-			}else{
-				new Mutation({
-					mutation: REJECT_REFUND_REQUEST(this.props.id, this.state.grantedReason),
-					onSubmit: ()=>{return {}}
-				}).onSubmit()
-			}
+			axios.post('http://localhost:3005/payment/refund', {
+				grantReason:this.state.grantedReason,
+				paymentId:this.props.paymentId,
+				amount: (this.state.grant)?this.state.amountRefunded:0,
+				unregister: this.state.remove,
+                grant:this.state.grant
+			})
 		}
 	}
 
@@ -104,7 +86,7 @@ class RefundResponse extends Component{
 				</div>
             </div>
 			</Popup>
-            <div onClick={this.showPopup} className='styled-button'>Refund request</div>
+            <div onClick={this.showPopup} className='styled-button'>{(this.props.refundRequest)?'Respond to request':'Give refund'}</div>
 		</React.Fragment>
 	}
 }

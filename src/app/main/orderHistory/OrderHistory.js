@@ -39,21 +39,18 @@ function OrderRow(props){
 
 function Order(props){
 	const snapshot = props.payment.snapshot
-    console.log(snapshot)
     const event = snapshot._event
     const pc = snapshot._promoCode
 	let refundRequest = props.payment.refundRequestsByPayment.nodes[0]
 	let requestForm
     let refundAmount = 0;
 	if(props.adminForm){
-		if(refundRequest){
-			if(refundRequest.status === 'PENDING'){
-				requestForm = <RefundResponse{...refundRequest} userId={props.payment.userId} paymentId={props.payment.id} total={parseFloat(props.payment.snapshot.total)}/>
-			}else{
-				requestForm = <ViewRefund {...refundRequest}/>
-                refundAmount = refundRequest.amountRefunded
-			}
-		}
+		if(refundRequest && refundRequest.status === 'ACCEPTED'){
+            requestForm = <ViewRefund {...refundRequest}/>
+            refundAmount = refundRequest.amountRefunded
+		}else{
+            requestForm = <RefundResponse{...refundRequest} userId={props.payment.userId} paymentId={props.payment.id} total={parseFloat(props.payment.snapshot.total)}/>
+        }
 	}else{
         if(!refundRequest){
             requestForm = <RefundRequest total={props.payment.snapshot.total} userId={props.payment.userId} paymentId={props.payment.id}/>
