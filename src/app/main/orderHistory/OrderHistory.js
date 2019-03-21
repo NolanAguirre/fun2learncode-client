@@ -107,7 +107,7 @@ function Order(props){
                         <tr>
                             <td></td>
                             <td>Total:</td>
-                            <td className='order-row-price'>{snapshot.total - refundAmount}$</td>
+                            <td className='order-row-price'>${snapshot.total - refundAmount}</td>
                         </tr>
                     </tbody>
                 </table>

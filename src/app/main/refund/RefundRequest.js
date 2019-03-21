@@ -66,7 +66,7 @@ class RefundRequest extends Component{
                     <img onClick={this.clearPopupState} src={xicon}/>
                 </div>
                 <form className='login-container' onSubmit={this.mutation.onSubmit}>
-					<h2 className='center-text'>Estimated refund: {this.props.total}$</h2>
+					<h2 className='center-text'>Estimated refund: ${this.props.total}</h2>
 					<div className='error'>{this.state.error}</div>
 					<span>Reason for refund:</span>
 					<div id='refund-request-reason' onInput={this.handleReasonChange} className='styled-textarea' suppressContentEditableWarning={true} contentEditable></div>

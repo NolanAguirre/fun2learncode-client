@@ -25,7 +25,7 @@ class RefundRequest extends Component{
             </React.Fragment>
         }else{
             child = <React.Fragment>
-            <div>Refunded amount: {this.props.amountRefunded}$</div>
+            <div>Refunded amount: ${this.props.amountRefunded}</div>
             <span>Reason for refund request:</span>
             <div id='refund-request-reason'>{this.props.reason}</div>
             <span>Reason for refund decision:</span>
