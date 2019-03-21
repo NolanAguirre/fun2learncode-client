@@ -49,7 +49,7 @@ class RefundRequest extends Component{
 	handleSubmit = (event) => {
 		event.preventDefault();
 		if(this.state.reason != ''){
-            axios.post('http://localhost:3005/mailing/account-action', {
+            axios.post('http://localhost:3005/mailing/account_action', {
                 user:this.props.userId
             })
 			return {payment:this.props.paymentId, reason:this.state.reason}

@@ -40,7 +40,7 @@ class EventRequest extends Component{
 	handleSubmit = (event) => {
 		event.preventDefault();
 		if(this.state.information){
-            axios.post('http://localhost:3005/mailing/account-action', {
+            axios.post('http://localhost:3005/mailing/account_action', {
                 user:this.props.userId
             })
 			return {information:this.state.information}
