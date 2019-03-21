@@ -45,7 +45,7 @@ function Order(props){
 	let requestForm
     let refundAmount = 0;
 	if(props.adminForm){
-		if(refundRequest && refundRequest.status === 'ACCEPTED'){
+		if(refundRequest && refundRequest.status !== 'PENDING'){
             requestForm = <ViewRefund {...refundRequest}/>
             refundAmount = refundRequest.amountRefunded
 		}else{
