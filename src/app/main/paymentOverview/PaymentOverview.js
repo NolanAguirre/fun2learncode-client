@@ -5,7 +5,7 @@ function PaymentOverviewRow(props){
     return <tr>
             <td>{props.student}</td>
             <td>{props.name}</td>
-            <td>{props.price}$</td>
+            <td>${props.price}</td>
         </tr>
 }
 
@@ -48,7 +48,7 @@ function PaymentOverview(props){
                 </tbody>
             </table>
         </div>
-        <span>sub-total: {total}$ </span>
+        <span>sub-total: ${total}</span>
     </div>
 }
 

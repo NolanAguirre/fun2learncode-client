@@ -150,7 +150,7 @@ class PaymentInformationEntry extends Component{
         if(this.props.total < 22){
             return <form  className='container section' onSubmit={this.handleSubmit}>
                   <div className='payment-container'>
-                     <h1 className='center-text no-margin'>Total: 0$</h1>
+                     <h1 className='center-text no-margin'>Total: $0</h1>
                      <div className='styled-button center-text' onClick={this.handleSubmit}>Submit</div>
                      <button className='hacky-submit-button' type='submit'/>
                   </div>
@@ -158,7 +158,7 @@ class PaymentInformationEntry extends Component{
         }
         return <form  className='container section' onSubmit={this.handleSubmit}>
               <div className='payment-container'>
-                  <h1 className='center-text no-margin'>Total: {this.props.total}$</h1>
+                  <h1 className='center-text no-margin'>Total: ${this.props.total}</h1>
                   <div className='error'>{this.state.stripeError}</div>
                   <div className='container'>
                       {this.state.error?<span className='error'>{this.state.error}</span>:'Cardholder name'}
