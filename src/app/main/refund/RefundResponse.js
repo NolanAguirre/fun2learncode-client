@@ -17,11 +17,6 @@ class RefundResponse extends Component{
 		this.setState({showPopup:false})
 	}
 
-	handleReasonChange = (event) => {
-        event.persist();
-        this.setState({grantedReason:event.target.textContent, error:''})
-    }
-
 	handleChange = (event) => {
         const target = event.target;
         const value = target.type === 'checkbox'
@@ -63,26 +58,26 @@ class RefundResponse extends Component{
                     <img onClick={this.clearPopupState} src={xicon}/>
                 </div>
                 <div className='login-container'>
-					<div>Refund Status: {this.props.status}</div>
-					<div>Reason for refund:</div>
-					<div>{this.props.reason}</div>
-					<div className='error center-text'>{this.state.error}</div>
-					Reason for grant:
-					<div id='refund-grant-reason' onInput={this.handleReasonChange} className='styled-textarea' suppressContentEditableWarning={true} contentEditable></div>
-					<form onSubmit={this.handleSubmit}>
-						<div style={{height:'40px'}}>
+                <div>Refund Status: {this.props.status}</div>
+                <div>Reason for refund:</div>
+                <div>{this.props.reason}</div>
+                <div className='error center-text'>{this.state.error}</div>
+                Reason for grant:
+                <textarea className='refund-textarea' value={this.state.grantReason} name='grantReason' onChange={this.handleChange}></textarea>
+                <form onSubmit={this.handleSubmit}>
+                    <div style={{height:'40px'}}>
 
-							Grant:<input checked={this.state.grant} name='grant' type='checkbox'  onChange={this.handleChange}/>
-							{this.state.grant?
-                                <React.Fragment>Amount:<input style={{width:'80px'}} type='number' name='amountRefunded' value={this.state.amountRefunded} onChange={this.handleChange}/> of {this.props.total}
-                            </React.Fragment>:''}
-							{this.state.grant?<div>
-								Remove registration:<input checked={this.state.remove} name='remove' type='checkbox'  onChange={this.handleChange}/>
-							</div>:''}
-						</div>
-						<div className='styled-button center-text margin-top-10' onClick={this.handleSubmit}>Submit response</div>
-						<button className='hacky-submit-button' type='submit'/>
-					</form>
+                        Grant:<input checked={this.state.grant} name='grant' type='checkbox'  onChange={this.handleChange}/>
+                        {this.state.grant?
+                            <React.Fragment>Amount:<input style={{width:'80px'}} type='number' name='amountRefunded' value={this.state.amountRefunded} onChange={this.handleChange}/> of {this.props.total}
+                        </React.Fragment>:''}
+                        {this.state.grant?<div>
+                            Remove registration:<input checked={this.state.remove} name='remove' type='checkbox'  onChange={this.handleChange}/>
+                        </div>:''}
+                    </div>
+                    <div className='styled-button center-text margin-top-10' onClick={this.handleSubmit}>Submit response</div>
+                    <button className='hacky-submit-button' type='submit'/>
+                </form>
 				</div>
             </div>
 			</Popup>
