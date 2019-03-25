@@ -40,8 +40,10 @@
 }
 .account-order-history-container{
     margin: 10px 0;
-    padding:20px;
+    border:20px solid white;
     background-color: white;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 .account-order-history-container > .page-loading{
     max-width: 300px!important;
