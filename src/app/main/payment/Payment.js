@@ -14,6 +14,7 @@ import {CardNumberElement,
   injectStripe} from 'react-stripe-elements'
 import axios from 'axios'
 import loading from '../../logos/loading.svg'
+import xicon from '../../logos/x-icon.svg'
 
 const USER_DATA = `{
     getUserData{
@@ -103,12 +104,12 @@ class AddressForm extends Component{
 class PaymentInformationEntry extends Component{
     constructor(props){
         super(props)
-        this.state = {cardholder:'', hidden:false};
+        this.state = {cardholder:'', saveCard:false};
         this.isProcessing = false;
     }
     handleChange = (event) => {
         const target = event.target
-        const value = target.value
+        const value = target.type === 'checkbox' ? target.checked : target.value
         const name = target.name
         this.setState({[name]: value, error:null})
     }
@@ -136,7 +137,7 @@ class PaymentInformationEntry extends Component{
                             if(this.state.stripeError){
                                 this.setState({stripeError:null})
                             }
-                            this.props.callback(token.id)
+                            this.props.callback(token.id, this.state.saveCard)
                         }
                     });
                 }
@@ -147,7 +148,7 @@ class PaymentInformationEntry extends Component{
     }
 
     render = () => {
-        if(this.props.total < 22){
+        if(this.props.total < 22){ // TODO Change this for production
             return <form  className='container section' onSubmit={this.handleSubmit}>
                   <div className='payment-container'>
                      <h1 className='center-text no-margin'>Total: $0</h1>
@@ -184,8 +185,11 @@ class PaymentInformationEntry extends Component{
                         <PostalCodeElement className='styled-input' {...createStripeStyle}/>
                     </div>
                 </div>
-                 <div className='styled-button center-text' onClick={this.handleSubmit}>Submit</div>
-                 <button className='hacky-submit-button' type='submit'/>
+                <div>
+                    <span className='save-card'>Save payment information: <input type='checkbox' checked={this.state.saveCard} name='storeCard' onChange={this.handleChange}/></span>
+                    <div className='styled-button center-text' onClick={this.handleSubmit}>Submit</div>
+                    <button className='hacky-submit-button' type='submit'/>
+                </div>
               </div>
           </form>
     }
@@ -211,8 +215,8 @@ class Payment extends Component {
         this.setState({loading:loading})
     }
 
-    onCardComplete = (token) => {
-        axios.post('http://localhost:3005/payment/process', {token, user:this.props.info.user}).then((res)=>{ //TODO URL
+    onCardComplete = (token, saveCard) => {
+        axios.post('http://localhost:3005/payment/process', {token, saveCard, user:this.props.info.user}).then((res)=>{ //TODO URL
             if(res.data.error){
                 this.setState({UI:'error', error:res.data.error, loading:false})
             }else{
@@ -256,10 +260,16 @@ class Payment extends Component {
             child = <AddressForm setLoading={this.setLoading} info={this.props.info} city={this.state.city} state={this.state.state} address={this.state.address} total={this.state.total} callback={this.onAddressComplete}/>
         }
         return <React.Fragment>
-            <Popup className='payment-popup' open={this.state.showPopup} closeOnDocumentClick={false} closeOnEscape={!(this.state.loading || this.state.preventClose)} onClose={this.clearPopupState}>
-                <div className='login-container' style={{position:'relative'}}>
-                    {child}
+            <Popup className='popup' open={this.state.showPopup} closeOnDocumentClick={false} closeOnEscape={!(this.state.loading || this.state.preventClose)} onClose={this.clearPopupState}>
+                <div className='popup-inner'>
+                    <div className='close-popup'>
+                        {(this.state.UI === 'address' || this.state.UI === 'card')?
+                        <img onClick={this.clearPopupState} src={xicon}/>:''}
+                    </div>
+                    <div className='login-container' style={{position:'relative'}}>
+                        {child}
                     <div className={this.state.loading?'payment-loading':'hidden-payment-loading'}><img className='loading-icon center-x' src={loading}/></div>
+                    </div>
                 </div>
             </Popup>
             <div className="styled-button" onClick={this.showPopup}> Continue to Payment</div>
