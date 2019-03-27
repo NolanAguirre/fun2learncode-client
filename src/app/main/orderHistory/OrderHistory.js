@@ -70,9 +70,9 @@ function Order(props){
         if(s.price){
             orderTable.push(<OrderRow key={x++} name={s.firstName} item={'Override'} cost={-(price - s.price)}/>)
         }
-        if(pc){
+        if(pc){ //TODO verify this works
             if(pc.percent){
-                price = (pc.effect/100) * - s.price || price
+                price = (pc.effect/100) * s.price || price
             }else{
                 price = -pc.effect
             }
@@ -127,7 +127,10 @@ function Order(props){
 
 function OrderHistoryInner(props){
 	let {allPayments, ...otherProps} = props
-    const orders = props.allPayments.nodes.map((payment) => { return <Order key={payment.id} payment={payment} {...otherProps}/>})
+    const orders = allPayments.nodes
+            .sort((a,b)=> moment(b.createOn).unix() - moment(a.createOn).unix())
+            .map((payment) => { return <Order key={payment.id} payment={payment} {...otherProps}/>})
+
 	if(orders.length > 0){
 		return <React.Fragment>{orders}</React.Fragment>
 	}else{
