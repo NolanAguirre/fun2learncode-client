@@ -105,75 +105,72 @@ class UpdateEmail extends Component{
     }
 }
 
-class AccountInner extends Component{
-    constructor(props){
-        super(props)
-    }
-
-    render = () => {
-        const user = this.props.getUserData;
-        return <div className="account main-contents">
-            <h2 className='account-header'>My Account</h2>
-            <div className='account-info-container'>
-                <div className='account-info-section'>
-                    <h3>Account Information</h3>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Name: </td>
-                                <td>{user.firstName} {user.lastName}</td>
-                            </tr>
-                            <tr>
-                                <td>Email: </td>
-                                <td>{user.email}</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <BasicPopup className='popup'>
-                                        <div className="login-container">
-                                            <h2 className='center-text'>Change email</h2>
-                                            <UpdateEmail email={user.email} mutation={UPDATE_EMAIl(user.id)}/>
-                                        </div>
-                                        <div style={{color:'blue'}}>Change email</div>
-                                    </BasicPopup>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Memeber since: </td>
-                                <td>{moment(user.createdOn).format('MMM, Do YYYY')}</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <BasicPopup className='popup'>
-                                        <div className="login-container">
-                                            <h2 className='center-text'>Reset Password</h2>
-                                            <PasswordReset mutation={RESET_PASSWORD}/>
-                                        </div>
-                                        <div style={{color:'blue'}}>Change Password</div>
-                                    </BasicPopup>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+function AccountInner(props){
+    const user = props.getUserData;
+    return <div className="account main-contents">
+        <h2 className='account-header'>My Account</h2>
+        <div className='account-info-container'>
+            <div className='account-info-section'>
+                <h3>Account Information</h3>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Name: </td>
+                            <td>{user.firstName} {user.lastName}</td>
+                        </tr>
+                        <tr>
+                            <td>Email: </td>
+                            <td>{user.email}</td>
+                    </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <BasicPopup className='popup'>
+                                    <div className="login-container">
+                                        <h2 className='center-text'>Change email</h2>
+                                        <UpdateEmail email={user.email} mutation={UPDATE_EMAIl(user.id)}/>
+                                    </div>
+                                    <div style={{color:'blue'}}>Change email</div>
+                                </BasicPopup>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Memeber since: </td>
+                            <td>{moment(user.createdOn).format('MMM, Do YYYY')}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <BasicPopup className='popup'>
+                                    <div className="login-container">
+                                        <h2 className='center-text'>Reset Password</h2>
+                                        <PasswordReset mutation={RESET_PASSWORD}/>
+                                    </div>
+                                    <div style={{color:'blue'}}>Change Password</div>
+                                </BasicPopup>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div className='account-order-history-container'>
-                <h2>Order History</h2>
-                <OrderHistory userId={this.props.getUserData.id} />
-            </div>
-            <div className='private-event'>
-                <div className='account-event-request-section'>
-                    <h2 className='center-text'>Request private event</h2>
-                    <EventRequest userId={this.props.getUserData.id}/>
-                </div>
-                <div className='private-event-footer'>
-                    This feature is intended for birthday parties and similar events, to request a public event email info@fun2learncode.com
-                </div>
+            <div>
+                    //TODO make form for managing credit cards
             </div>
         </div>
-    }
+        <div className='account-order-history-container'>
+            <h2>Order History</h2>
+            <OrderHistory userId={user.id} />
+        </div>
+        <div className='private-event'>
+            <div className='account-event-request-section'>
+                <h2 className='center-text'>Request private event</h2>
+                <EventRequest userId={user.id}/>
+            </div>
+            <div className='private-event-footer'>
+                This feature is intended for birthday parties and similar events, to request a public event email info@fun2learncode.com
+            </div>
+        </div>
+    </div>
 }
 
 function Account(props){
