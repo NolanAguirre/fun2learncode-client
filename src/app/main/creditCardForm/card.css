@@ -1,0 +1,16 @@
+.dropdown-payment-card{
+    min-width: 350px;
+    box-sizing: border-box;
+    height:75px;
+    background-color: white;
+    padding:10px;
+    display: flex;
+    align-items:center;
+}
+.dropdown-payment-card:nth-child(2n+2){
+    border-top: 2px solid gray;
+    border-bottom: 2px solid gray;
+}
+.dropdown-payment-card:hover{
+    background-color: rgb(230, 230, 230);
+}

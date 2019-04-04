@@ -1,0 +1,50 @@
+.card-container{
+    height: 230px;
+    min-width: 400px;
+    overflow-y: auto;
+    /* background-color: blue; */
+}
+.payment-card{
+    min-width: 300px;
+    box-sizing: border-box;
+    height:50px;
+    background-color: white;
+    border:2px solid gray;
+    margin:2px 0;
+    border-radius: 8px;
+    padding:10px;
+    display: flex;
+    align-items:center;
+}
+.selected-payment-card{
+    height:50px;
+    background-color:rgba(98, 230, 68, 0.5);
+    border:2px solid gray;
+    margin:2px 0;
+    border-radius: 8px;
+    padding:10px;
+    display: flex;
+    align-items:center;
+}
+.card-brand{
+    max-width: 70px;
+    background-color: white;
+}
+.card-info{
+    margin-left: 10px;
+}
+.card-number{
+    font-size: 14px;
+
+}
+.card-expiry{
+    font-size: 12px;
+    color:rgb(102,102,102);
+}
+.delete-card-loading{
+    display:flex;
+    flex:1;
+    justify-content: center;
+    background-color: #41a62a;
+    height:63px;
+}
