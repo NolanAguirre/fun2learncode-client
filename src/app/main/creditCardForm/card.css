@@ -6,11 +6,23 @@
     padding:10px;
     display: flex;
     align-items:center;
+    cursor: pointer;
 }
-.dropdown-payment-card:nth-child(2n+2){
-    border-top: 2px solid gray;
-    border-bottom: 2px solid gray;
+.popup-content > .dropdown-payment-card:nth-child(n+2){
+    border-top: 2px solid rgb(204, 204, 204);;
 }
 .dropdown-payment-card:hover{
     background-color: rgb(230, 230, 230);
+}
+.card-brand{
+    max-width: 70px;
+    background-color: white;
+}
+.dropdown-add{
+    /* position: absolute;
+    background-color: white;
+    z-index: 5;
+    left: 0;
+    top:0;
+    padding:20px; */
 }

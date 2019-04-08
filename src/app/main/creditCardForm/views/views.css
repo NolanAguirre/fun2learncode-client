@@ -1,13 +1,16 @@
 .card-container{
     height: 230px;
-    min-width: 400px;
+    flex:1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
     /* background-color: blue; */
 }
 .payment-card{
-    min-width: 300px;
+    flex:1;
     box-sizing: border-box;
-    height:50px;
+    max-height:75px;
     background-color: white;
     border:2px solid gray;
     margin:2px 0;
@@ -17,7 +20,8 @@
     align-items:center;
 }
 .selected-payment-card{
-    height:50px;
+    height:75px;
+    box-sizing: border-box;
     background-color:rgba(98, 230, 68, 0.5);
     border:2px solid gray;
     margin:2px 0;
@@ -47,4 +51,22 @@
     justify-content: center;
     background-color: #41a62a;
     height:63px;
+}
+.add-card-button-container{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-around;
+}
+.negative-button{
+    min-width: 100px;
+    text-align: center;
+    padding: 20px;
+    font-size: 20px;
+    transition-duration: .2s;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    color:#41a62a;
+}
+.negative-button:hover{
+    border: 2px solid rgb(204, 204, 204);
 }

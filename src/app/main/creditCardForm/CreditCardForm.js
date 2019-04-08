@@ -3,11 +3,21 @@ import CreateAccount from './views/CreateAccount'
 import ManageCards from './views/ManageCards'
 import CardDropdown from './CardDropdown'
 import axios from 'axios'
+import Popup from "reactjs-popup"
+import AddCard from './views/AddCard'
+import xicon from '../../logos/x-icon.svg'
 
+//TODO make this cancel set states on unmount
 class CreditCardForm extends Component{ //this uses rest api logic, has to sync state with server manually
     constructor(props){
         super(props)
-        this.state = {UI:'loading'}
+        this.state = {UI:'loading', showPopup:false}
+    }
+    showPopup = () => {
+        this.setState({showPopup:true})
+    }
+    closePopup = () => {
+        this.setState({showPopup:false})
     }
 
     componentWillMount = () => {
@@ -52,6 +62,9 @@ class CreditCardForm extends Component{ //this uses rest api logic, has to sync 
     }
 
     deleteCard = (cardInfo) => {
+        // return new Promise((resolve, reject) => {
+        //     setTimeout(() => {resolve('foo')}, 1000)
+        // })
         return axios.post('http://localhost:3005/stripe/delete-card', {user:this.props.user, cardInfo}).then((res)=>{
             console.log(res.data)
             if(res.data.message){
@@ -66,17 +79,28 @@ class CreditCardForm extends Component{ //this uses rest api logic, has to sync 
     }
 
     render = () => {
-        // let child
-        // if(this.state.UI === 'loading'){
-        //     return <div>Getting payment info</div>
-        // }else if(this.state.UI === 'createAccount'){
-        //     return <CreateAccount createAccount={this.createStripeAccount} />
-        // }else if(this.state.UI === 'manageCards'){
-        //     return <ManageCards cards={this.state.cards} addCard={this.addCard} deleteCard={this.deleteCard}/>
-        // }else{
-        //
-        // }
-        return <CardDropdown user={this.props.user}/>
+        let child
+        if(this.state.UI === 'loading'){
+            child = <div>Getting payment info</div>
+        }else if(this.state.UI === 'createAccount'){
+            child = <CreateAccount createAccount={this.createStripeAccount} />
+        }else if(this.state.UI === 'manageCards'){
+            child = <ManageCards cards={this.state.cards} addCard={this.addCard} deleteCard={this.deleteCard}/>
+        }
+        //closeOnDocumentClick={false}
+        return<div>
+                <Popup className='popup' onClose={this.closePopup} open={this.state.showPopup} modal  closeOnEscape={false}>
+                <div className='popup-inner'>
+                    <div className='close-popup'>
+                        <img onClick={this.closePopup} src={xicon}/>
+                    </div>
+                    <div className='payment-container'>
+                        {child}
+                    </div>
+                </div>
+            </Popup>
+            <div onClick={this.showPopup}>click me</div>
+        </div>
     }
 }
 

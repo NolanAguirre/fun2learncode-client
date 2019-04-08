@@ -3,21 +3,40 @@ import {MultiSelect, Selectable} from '../../common/Common'
 import AddCard from './AddCard'
 import Card from '../Card'
 import './views.css'
+import loadingDots from '../../../logos/loading-dots.svg'
+
+function ManageCardsButton(props){
+    if(props.isDeleting){
+        return <div className='styled-button'><img src={loadingDots}/></div>
+    } else if(props.selected) {
+        return <div className="styled-button" onClick={props.deleteCard}>Delete card</div>
+    } else {
+        return <div className='styled-button' onClick={props.addCard}>Add card</div>
+    }
+}
 
 
 class ManageCards extends Component{
     constructor(props){
         super(props)
-        this.state = {} //selected:true, isDeleting:true
+        this.state = {showPopup:false, UI:'default'} //selected:true, isDeleting:true
     }
-    setSelected = (selected) => {
-        this.setState({selected})
+    setSelected = (selected) => this.setState({selected})
+
+    showPopup = () => this.setState({showPopup:true})
+
+    closePopup = () => this.setState({showPopup:false})
+
+    addCard = (token) => {
+        this.props.addCard(token).then((response) => {
+            this.setState({addCard:false})
+        })
     }
     deleteCard = () => {
-
         if(this.state.selected){
             this.setState({isDeleting:true})
             this.props.deleteCard(this.state.selected).then((res)=>{
+                console.log(res)
                 this.setState({isDeleting:false, selected:null})
             })
         }
@@ -25,27 +44,20 @@ class ManageCards extends Component{
     render = () => {
         const cards = this.props.cards
         let button
-        if(this.state.selected){
-            if(this.state.isDeleting){
-                //button = <div className='delete-card-loading'><img src={temp}/></div>
-            }else{
-                button = <div className="styled-button" onClick={this.deleteCard}>Delete card</div>
-            }
+        if(this.state.addCard){
+            return <AddCard callback={this.addCard} back={()=>{this.setState({addCard:false})}} />
         }else{
-            button = <AddCard addCard={this.props.addCard} />
+            return <React.Fragment>
+                <div className='card-container'>
+                    <MultiSelect items={cards} setSelected={this.setSelected}>
+                        <Selectable className={{selected:'selected-payment-card', base: 'payment-card'}}>
+                            <Card />
+                        </Selectable>
+                    </MultiSelect>
+                </div>
+                <ManageCardsButton isDeleting={this.state.isDeleting} selected={this.state.selected} deleteCard={this.deleteCard} addCard={()=>{this.setState({addCard:true})}}/>
+            </React.Fragment>
         }
-        return <div>
-            <div className='card-container'>
-                <MultiSelect items={cards} setSelected={this.setSelected}>
-                    <Selectable className={{selected:'selected-payment-card', base: 'payment-card'}}>
-                        <Card />
-                    </Selectable>
-                </MultiSelect>
-            </div>
-            <div>
-                {button}
-            </div>
-        </div>
     }
 }
 

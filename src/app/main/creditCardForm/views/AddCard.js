@@ -79,14 +79,14 @@ class PaymentInformationEntry extends Component{
                     if(this.state.stripeError){
                         this.setState({stripeError:null})
                     }
-                    this.props.addCard(token)
+                    this.props.callback(token)
                 }
             });
         }
     }
 
     render = () => {
-        return <form  className='payment-container'onSubmit={this.handleSubmit}>
+        return <form onSubmit={this.handleSubmit}>
                   <div className='error'>{this.state.stripeError}</div>
                   <div className='container'>
                       {this.state.cardholderError?<span className='error'>{this.state.cardholderError}</span>:'Cardholder name'}
@@ -128,7 +128,8 @@ class PaymentInformationEntry extends Component{
                         <PostalCodeElement className='styled-input' {...createStripeStyle}/>
                     </div>
                 </div>
-                <div>
+                <div className='add-card-button-container'>
+                    <div className='negative-button center-text' onClick={this.props.back}>Cancel</div>
                     <div className='styled-button center-text' onClick={this.handleSubmit}>Save</div>
                     <button className='hacky-submit-button' type='submit'/>
                 </div>
@@ -142,15 +143,10 @@ class AddCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showPopup: false,
             loading:false,
             UI:'card'
         }
     }
-
-    showPopup = () => this.setState({showPopup: true})
-
-    clearPopupState = () => this.setState({showPopup: false})
 
     setLoading = (loading) => {
         this.setState({loading:loading})
@@ -164,17 +160,7 @@ class AddCard extends Component {
             exp_year:token.card.exp_year,
             brand:token.card.brand
         }
-        console.log(card)
-        this.props.addCard({id, card}).then((res)=>{
-            if(res.data.error){
-                this.setState({UI:'error', error:res.data.error, loading:false})
-            }else{
-                this.setState({UI:'complete' ,loading:false, preventClose:true})
-            }
-        }).catch((error)=>{
-            console.log(error)
-            this.setState({UI:'error', error:'Network error occured', loading:false})
-        })
+        this.props.callback({id, card})
     }
 
     render = () => {
@@ -184,7 +170,7 @@ class AddCard extends Component {
                     <div className='section center-y'>
                         <div className='error center-text'>{this.state.error}</div>
                 </div>
-                <div className='styled-button center-text' onClick={()=>{this.setState({UI:'address', loading:false})}}>Back</div>
+                <div className='styled-button center-text' onClick={()=>{this.setState({UI:'card', loading:false})}}>Back</div>
             </div>
         }else if(this.state.UI === 'complete'){
             child = <div className='payment-container'>
@@ -194,23 +180,14 @@ class AddCard extends Component {
         } else {
             child = <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
                     <Elements>
-                        <PaymentInfoEntry addCard={this.addCard} setLoading={this.setLoading}/>
+                        <PaymentInfoEntry callback={this.addCard} back={this.props.back} setLoading={this.setLoading}/>
                     </Elements>
                 </StripeProvider>
         }
+
         return <React.Fragment>
-            <Popup className='popup' open={this.state.showPopup} closeOnDocumentClick={false} closeOnEscape={!(this.state.loading || this.state.preventClose)} onClose={this.clearPopupState}>
-                <div className='popup-inner'>
-                    <div className='close-popup'>
-                        {(this.state.UI !== 'loading')?<img onClick={this.clearPopupState} src={xicon}/>:''}
-                    </div>
-                    <div className='login-container' style={{position:'relative'}}>
-                        {child}
-                    <div className={this.state.loading?'payment-loading':'hidden-payment-loading'}><img className='loading-icon center-x' src={loading}/></div>
-                    </div>
-                </div>
-            </Popup>
-            <div className="styled-button" onClick={this.showPopup}>Add card</div>
+            {child}
+            <div className={this.state.loading?'payment-loading':'hidden-payment-loading'}><img className='loading-icon center-x' src={loading}/></div>
         </React.Fragment>
     }
 }
