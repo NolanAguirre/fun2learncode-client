@@ -10,6 +10,7 @@ import {ReactQuery} from '../../../delv/delv-react'
 import Delv from '../../../delv/delv'
 import Payment from '../payment/Payment'
 import moment from 'moment'
+import axios from 'axios'
 const NOW = new Date().toISOString()
 const EVENT_FRAGMENT = `id
       archive
@@ -76,6 +77,7 @@ const GET_EVENT_INFO_BY_ID = (id) => `{
     }
 
 }`
+
 const GET_EVENT_BY_TOKEN = (token) => `{
   eventByToken(arg0:"${token}"){
       ${EVENT_FRAGMENT}
@@ -88,17 +90,20 @@ class RegistrationInner extends Component{
         this.state = {
             students:[],
             addons:[],
+            showPopup:false,
             error:""
         }
     }
 
+    clearPopupState = () => this.setState({showPopup: false})
+
     checkPrerequisites = (student) => {
-        let query = `{
-  checkPrerequisite(arg0: "${this.props.event.id}", arg1: "${student.id}")
-  checkRegistration(arg0: "${this.props.event.id}", arg1: "${student.id}")
-  checkTime(arg0: "${this.props.event.id}", arg1: "${student.id}")
-  checkWaiver(arg0:"${student.id}")
-}`
+        const query = `{
+          checkPrerequisite(arg0: "${this.props.event.id}", arg1: "${student.id}")
+          checkRegistration(arg0: "${this.props.event.id}", arg1: "${student.id}")
+          checkTime(arg0: "${this.props.event.id}", arg1: "${student.id}")
+          checkWaiver(arg0:"${student.id}")
+        }`
         return Delv.post(query).then((res)=>{
             console.log(res)
             if(!res.data.data.checkPrerequisite){
@@ -115,6 +120,27 @@ class RegistrationInner extends Component{
             }
             return false
         }).catch((err)=>{console.log(err)});
+    }
+
+    handleChange = (event) => {
+        const target = event.target
+        const value = target.value
+        const name = target.name
+        this.setState({[name]: value, [name+'Error']:null})
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+        axios.post('http://localhost:3005/payment/begin', {promoCode:this.state.promoCode, ...this.getSelections()}).then((response)=>{
+            console.log(response)
+            if(response.data.error){
+                this.setState({UI:'error', error:response.data.error})
+            }else{
+                this.setState({total:response.data.total, showPopup:true})
+            }
+        }).catch((error)=>{
+           console.log(error)
+        })
     }
 
     genRandomId = () =>{
@@ -138,28 +164,27 @@ class RegistrationInner extends Component{
         }
     }
     render = () =>{
-        const info = this.getSelections();
         if(this.props.error){
             return 'No Event Found'
         }
         return <div className='registration-container main-contents'>
-            <h2>Registration</h2>
+            <h2 className='registration-header'>Registration</h2>
             <div className='error'>{moment(this.props.event.closeRegistration).unix() < moment().unix()
                 ?'Registration for this event has already closed, you will not be able to register unless you have been granted an override.':''}</div>
             <div className='styled-container'>
-                <div className='section'>
-                    <FullEvent event={this.props.event}
-                                activity={this.props.activity}
-                                address={this.props.address}
-                                prerequisites={this.props.prerequisites}
-                                dates={this.props.dates}/>
-                </div>
+                <FullEvent event={this.props.event}
+                            activity={this.props.activity}
+                            address={this.props.address}
+                            prerequisites={this.props.prerequisites}
+                            dates={this.props.dates}/>
                 <PaymentOverview event={{price: this.props.event.price,id: this.props.event.id,name: this.props.activity.name}} overrides={this.props.overrides} addons={this.state.addons} students={this.state.students}/>
             </div>
             <div className='error'>{this.state.error}</div>
             <StudentSelect className='styled-container' multiSelect createStudent isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} userId={this.props.getUserData.id}/>
             <AddonSelect className='styled-container column' multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
-            <Payment info={info}/>
+            <div className='promo-code-container'> Promo Code: <input className='styled-input' name='promoCode' placeholder='Promo Code' onChange={this.handleChange}/></div>
+            <Payment showPopup={this.state.showPopup} clearPopupState={this.clearPopupState} user={this.props.getUserData.id} total={this.state.total}/>
+            <div className="styled-button" onClick={this.handleSubmit}> Continue to Payment</div>
         </div>
     }
 }

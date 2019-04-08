@@ -1,7 +1,12 @@
 .payment-container{
+    margin: auto;
+    padding: 40px;
+    background-color:white;
+    max-width: 520px;
+    min-height: 300px;
     display: flex;
-    flex:1;
     flex-direction: column;
+    box-sizing: border-box;
     justify-content: space-between;
 }
 .payment-container a{
@@ -60,4 +65,15 @@
 
 .save-card{
     font-size: 14px;
+}
+.without-save{
+    font-size: 14px;
+    color:rgb(102,102,102);
+    cursor:pointer;
+}
+
+@media screen and (max-width: 500px) {
+    .payment-container{
+        padding:20px!important;
+    }
 }
