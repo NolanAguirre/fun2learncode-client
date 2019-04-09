@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="60"
+   height="47.5"
+   viewBox="0 0 60 47.5"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="credit-card.svg"
+   inkscape:version="0.92.4 (unknown)">
+  <metadata
+     id="metadata10">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1010"
+     id="namedview6"
+     showgrid="false"
+     fit-margin-top="5"
+     fit-margin-right="5"
+     fit-margin-bottom="5"
+     fit-margin-left="5"
+     inkscape:zoom="5.6190476"
+     inkscape:cx="27"
+     inkscape:cy="-4"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4" />
+  <path
+     d="m 5,15.416667 v -6.25 C 5,6.864583 6.8645833,5 9.1666667,5 H 50.833333 C 53.133333,5 55,6.864583 55,9.166667 v 6.25 z m 50,6.25 V 38.333333 C 55,40.633333 53.133333,42.5 50.833333,42.5 H 9.1666667 C 6.8645833,42.5 5,40.633333 5,38.333333 V 21.666667 Z m -31.25,12.5 H 11.25 V 36.25 h 12.5 z M 30,30 H 11.25 v 2.083333 H 30 Z m 18.75,0 H 42.5 v 2.083333 h 6.25 z"
+     id="path2"
+     inkscape:connector-curvature="0"
+     style="stroke-width:2.08333325" />
+</svg>
