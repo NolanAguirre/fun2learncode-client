@@ -35,10 +35,8 @@ const localize = (timestamp) =>  moment(moment.utc(timestamp)).local()
 
 function Location (props) {
   return (<div className='center-text margin-bottom-10'>
-    <div>
       <h3>{props.alias}</h3>
-      <div>{props.street}, {props.city}, {props.state}</div>
-    </div>
+      <span>{props.street}, {props.city}, {props.state}</span>
   </div>)
 }
 export { Location }
