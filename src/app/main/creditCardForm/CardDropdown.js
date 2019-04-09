@@ -30,7 +30,7 @@ class CardDropdown extends Component{ //this uses rest api logic, has to sync st
         }
     }
 
-    componentWillMount = () => {
+    componentDidMount = () => {
         axios.post('http://localhost:3005/stripe/user-info', {user:this.props.user}).then((res)=>{
             if(res.data.error){
                 if(res.data.error === 'No stripe customer account on record.'){
