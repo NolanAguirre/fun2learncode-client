@@ -39,6 +39,8 @@ function OrderRow(props){
 
 function Order(props){
 	const snapshot = props.payment.snapshot
+    const userId = props.payment.userId
+    const paymentId = props.payment.id
     const event = snapshot._event
     const pc = snapshot._promoCode
 	let refundRequest = props.payment.refundRequestsByPayment.nodes[0]
@@ -46,18 +48,21 @@ function Order(props){
     let refundAmount = 0;
 	if(props.adminForm){
 		if(refundRequest && refundRequest.status !== 'PENDING'){
-            requestForm = <ViewRefund {...refundRequest}/>
+            requestForm = <div onClick={()=>{props.popup.open(<ViewRefund {...refundRequest}/>)}} className='styled-button'>View Refund</div>
             refundAmount = refundRequest.amountRefunded
 		}else{
-            requestForm = <RefundResponse{...refundRequest} userId={props.payment.userId} paymentId={props.payment.id} total={parseFloat(props.payment.snapshot.total)}/>
+            let refundPopup = ()=>{props.popup.open(
+                <RefundResponse {...refundRequest} userId={userId} paymentId={paymentId} total={parseFloat(snapshot.total)}/>
+            )}
+            requestForm = <div onClick={refundPopup} className='styled-button'>Respond to refund</div>
         }
 	}else{
         if(!refundRequest){
-            requestForm = <RefundRequest total={props.payment.snapshot.total} userId={props.payment.userId} paymentId={props.payment.id}/>
+            requestForm = <div onClick={()=>{props.popup.open(<RefundRequest total={snapshot.total} userId={userId} paymentId={paymentId}/>)}} className='styled-button'>Request Refund</div>
         }else if(refundRequest.state === 'PENDING'){
             requestForm = <span>Refund {refundRequest.status.toLowerCase()}.</span>
         }else{
-            requestForm = <ViewRefund {...refundRequest}/>
+            requestForm = <div onClick={()=>{props.popup.open(<ViewRefund {...refundRequest}/>)}} className='styled-button'>View Refund</div>
             refundAmount = refundRequest.amountRefunded
         }
 	}
@@ -76,20 +81,22 @@ function Order(props){
             }else{
                 price = -pc.effect
             }
-            orderTable.push(<OrderRow key={x++} name={''} item={'Promo Code' } cost={price}/>)
+            orderTable.push(<OrderRow key={x++} name={''} item={'Promo Code'} cost={price}/>)
         }
         snapshot._addons.forEach((a)=>{
             orderTable.push(<OrderRow key={x++} name={s.first_name} item={a.name} cost={a.price}/>)
         })
     })
-
-    return <div className='order-container'>
+    if(refundAmount){
+        orderTable.push(<OrderRow key={x++} name={''} item={'refund'} cost={-1 * refundAmount.toFixed(2)}/>)
+    }
+    const fullEventPopup = ()=>{props.popup.open(<QueryFullEvent eventId={event.id} />)}
+        return <div className='order-container'>
 		<div className='order-header'>
 			<h3 className='no-margin'>{moment(props.payment.createOn).format('MMMM, Do YYYY')}</h3>
-			<span>Order # {props.payment.id}</span>
+			<span>Order # {paymentId}</span>
 		</div>
-
-		<div className='order-body'>
+    		<div className='order-body'>
             <div>
                 <table className='order-table'>
                     <tbody>
@@ -99,11 +106,6 @@ function Order(props){
                             <th>Price</th>
                         </tr>
                         {orderTable}
-                        {refundAmount?<tr>
-                            <td></td>
-                            <td>Refund:</td>
-                            <td className='order-row-price'>-{refundAmount.toFixed(2)}</td>
-                        </tr>:null}
                         <tr>
                             <td></td>
                             <td>Total:</td>
@@ -116,10 +118,7 @@ function Order(props){
 				{requestForm}
 			</div>
 			<div className='float-down'>
-                <BasicPopup>
-                    <QueryFullEvent eventId={event.id} />
-                    <div className='styled-button center-text'>View event details</div>
-                </BasicPopup>
+                <div onClick={fullEventPopup} className='styled-button'>View event details</div>
 			</div>
 		</div>
     </div>

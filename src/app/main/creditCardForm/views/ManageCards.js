@@ -21,43 +21,29 @@ class ManageCards extends Component{
         super(props)
         this.state = {showPopup:false, UI:'default'} //selected:true, isDeleting:true
     }
+
     setSelected = (selected) => this.setState({selected})
 
-    showPopup = () => this.setState({showPopup:true})
-
-    closePopup = () => this.setState({showPopup:false})
-
-    addCard = (token) => {
-        this.props.addCard(token).then((response) => {
-            this.setState({addCard:false})
-        })
-    }
     deleteCard = () => {
         if(this.state.selected){
             this.setState({isDeleting:true})
-            this.props.deleteCard(this.state.selected).then((res)=>{
-                console.log(res)
+            this.props.deleteCard(this.state.selected).then((response)=>{
                 this.setState({isDeleting:false, selected:null})
             })
         }
     }
     render = () => {
         const cards = this.props.cards
-        let button
-        if(this.state.addCard){
-            return <AddCard callback={this.addCard} back={()=>{this.setState({addCard:false})}} />
-        }else{
-            return <React.Fragment>
-                <div className='card-container'>
-                    <MultiSelect items={cards} setSelected={this.setSelected}>
-                        <Selectable className={{selected:'selected-payment-card', base: 'payment-card'}}>
-                            <Card />
-                        </Selectable>
-                    </MultiSelect>
-                </div>
-                <ManageCardsButton isDeleting={this.state.isDeleting} selected={this.state.selected} deleteCard={this.deleteCard} addCard={()=>{this.setState({addCard:true})}}/>
-            </React.Fragment>
-        }
+        return <div className='payment-container'>
+            <div className='card-container'>
+                <MultiSelect items={cards} setSelected={this.setSelected}>
+                    <Selectable className={{selected:'selected-payment-card', base: 'payment-card'}}>
+                        <Card />
+                    </Selectable>
+                </MultiSelect>
+            </div>
+            <ManageCardsButton isDeleting={this.state.isDeleting} selected={this.state.selected} deleteCard={this.deleteCard} addCard={this.props.addCard}/>
+        </div>
     }
 }
 

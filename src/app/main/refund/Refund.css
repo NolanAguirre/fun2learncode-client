@@ -1,5 +1,10 @@
 .refund-textarea{
     height:100%;
+    min-height: 200px;
     box-sizing: border-box;
     color:rgb(102, 102, 102);
+}
+.refund-complete{
+    padding:40px;
+    font-size: 24px;
 }

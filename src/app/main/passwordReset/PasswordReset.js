@@ -56,15 +56,18 @@ class PasswordReset extends Component{
                     <div className='center-text'>Password has been changed.</div>
                 </div>
         }else{
-            return <form onSubmit={this.mutation.onSubmit} className='login-form'>
-                <div>
-                    <div className='error'>{this.state.error}</div>
-                    <input className='styled-input' name='password' type='password' onChange={this.handleChange} placeholder='password' />
-                </div>
-                <input className='styled-input' name='repeatPassword' type='password' onChange={this.handleChange} placeholder='repeat password' />
-                <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Update Password</div>
-                <button className='hacky-submit-button' type='submit'/>
-            </form>
+            return<React.Fragment>
+                <h2 className='center-text'>Reset Password</h2>
+                <form onSubmit={this.mutation.onSubmit} className='payment-container'>
+                    <div>
+                        <div className='error'>{this.state.error}</div>
+                        <input className='styled-input' name='password' type='password' onChange={this.handleChange} placeholder='password' />
+                    </div>
+                    <input className='styled-input' name='repeatPassword' type='password' onChange={this.handleChange} placeholder='repeat password' />
+                    <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Update Password</div>
+                    <button className='hacky-submit-button' type='submit'/>
+                </form>
+            </React.Fragment>
         }
     }
 }

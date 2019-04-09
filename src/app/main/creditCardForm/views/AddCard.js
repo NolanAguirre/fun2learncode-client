@@ -185,10 +185,10 @@ class AddCard extends Component {
                 </StripeProvider>
         }
 
-        return <React.Fragment>
+        return <div className='payment-container'>
             {child}
             <div className={this.state.loading?'payment-loading':'hidden-payment-loading'}><img className='loading-icon center-x' src={loading}/></div>
-        </React.Fragment>
+        </div>
     }
 }
 

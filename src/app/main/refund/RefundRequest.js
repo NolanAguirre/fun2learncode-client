@@ -25,20 +25,15 @@ const CREATE_REFUND_REQUEST = `mutation($payment:UUID!, $reason:String!){
 class RefundRequest extends Component{
 	constructor(props){
 		super(props);
-		this.state = {reason:'',showPopup:false, error:''}
+		this.state = {reason:'', error:'', complete:false}
 		this.mutation = new Mutation({
 			mutation:CREATE_REFUND_REQUEST,
-			onSubmit:this.handleSubmit
+			onSubmit:this.handleSubmit,
+            onResolve:this.onResolve
 		})
 	}
 	componentWillUnmount = () => {
 		this.mutation.removeListeners()
-	}
-	showPopup = () => {
-		this.setState({showPopup:true})
-	}
-	clearPopupState = () => {
-		this.setState({showPopup:false})
 	}
     handleChange = (event) => {
         const target = event.target;
@@ -60,15 +55,21 @@ class RefundRequest extends Component{
 		this.setState({error:'Please provide a reason for the refund.'})
 		return false;
 	}
+    onResolve = (data) => {
+        if(data.error){
+            this.setState({complete:true, error:data.error})
+        } else {
+            this.setState({complete:true})
+        }
+    }
 
 	render = () => {
-		return <React.Fragment>
-			<Popup className='popup' open={this.state.showPopup} closeOnDocumentClick={false} onClose={this.clearPopupState}>
-            <div className='popup-inner'>
-                <div className='close-popup'>
-                    <img onClick={this.clearPopupState} src={xicon}/>
-                </div>
-                <form className='login-container' onSubmit={this.mutation.onSubmit}>
+        if(this.state.complete){
+            return <div className='refund-complete'>
+                Refund request has been send.
+            </div>
+        }else{
+            return <form className='payment-container' onSubmit={this.mutation.onSubmit}>
                     <h2 className='center-text'>Estimated refund: ${this.props.total}</h2>
                     <div className='error'>{this.state.error}</div>
                     <span>Reason for refund:</span>
@@ -77,10 +78,7 @@ class RefundRequest extends Component{
                     <div className='styled-button center-text margin-top-10' onClick={this.mutation.onSubmit}>Submit for review</div>
                     <button className='hacky-submit-button' type='submit'/>
                 </form>
-            </div>
-			</Popup>
-            <div onClick={this.showPopup} className='center-text styled-button'>Request refund</div>
-		</React.Fragment>
+        }
 	}
 }
 

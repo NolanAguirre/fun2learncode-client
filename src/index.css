@@ -131,7 +131,10 @@ body {
     max-width: 400px;
 }
 
-
+.link-text{
+    color:blue;
+    cursor: pointer;
+}
 @media screen and (max-width: 800px) {
     .popup{
         width:100vw!important;

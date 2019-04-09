@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import {OrderHistory} from '../orderHistory/OrderHistory'
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
-import {SecureRoute, BasicPopup} from '../common/Common'
+import {SecureRoute, BasicPopup, RoutePopup} from '../common/Common'
 import moment from 'moment'
 import PasswordReset from '../passwordReset/PasswordReset'
 import './Account.css'
 import EventRequest from '../eventRequest/EventRequest'
+import CreditCardForm from '../creditCardForm/CreditCardForm'
 import xicon from '../../logos/x-icon.svg'
 const RESET_PASSWORD = `mutation($password:String!){
   resetPassword(input:{arg0:$password,arg1:"BY USER"}){
@@ -92,21 +93,27 @@ class UpdateEmail extends Component{
                     <div className='center-text'>Email has been changed.</div>
                 </div>
         }else{
-            return <form onSubmit={this.mutation.onSubmit} className="login-form">
-                <div />
-                <div>
-                    <div className='error'>{this.state.error}</div>
-                    <input className='styled-input' name='email' type='email' onChange={this.handleChange} placeholder='email' />
-                </div>
-                <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Change email</div>
-                <button className='hacky-submit-button' type='submit'/>
-            </form>
+            return <React.Fragment>
+                <h2 className='center-text'>Change email</h2>
+                <form onSubmit={this.mutation.onSubmit} className="payment-container">
+                    <div/>
+                    <div>
+                        <div className='error'>{this.state.error}</div>
+                        <input className='styled-input' name='email' type='email' onChange={this.handleChange} placeholder='email' />
+                    </div>
+                    <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Change email</div>
+                    <button className='hacky-submit-button' type='submit'/>
+                </form>
+            </React.Fragment>
         }
     }
 }
 
 function AccountInner(props){
     const user = props.getUserData;
+    const emailPopup = () => {props.popup.open(<UpdateEmail email={user.email} mutation={UPDATE_EMAIl(user.id)}/>)}
+    const passwordPopup = () => {props.popup.open(<PasswordReset mutation={RESET_PASSWORD}/>)}
+    const creditCardPopup = () => {props.popup.open(<CreditCardForm user={user.id}/>)}
     return <div className="account main-contents">
         <h2 className='account-header'>My Account</h2>
         <div className='account-info-container'>
@@ -125,13 +132,7 @@ function AccountInner(props){
                         <tr>
                             <td></td>
                             <td>
-                                <BasicPopup className='popup'>
-                                    <div className="login-container">
-                                        <h2 className='center-text'>Change email</h2>
-                                        <UpdateEmail email={user.email} mutation={UPDATE_EMAIl(user.id)}/>
-                                    </div>
-                                    <div style={{color:'blue'}}>Change email</div>
-                                </BasicPopup>
+                                <div className='link-text' onClick={emailPopup}>Change email</div>
                             </td>
                         </tr>
                         <tr>
@@ -139,27 +140,24 @@ function AccountInner(props){
                             <td>{moment(user.createdOn).format('MMM, Do YYYY')}</td>
                         </tr>
                         <tr>
-                            <td></td>
+                            <td>Password: </td>
                             <td>
-                                <BasicPopup className='popup'>
-                                    <div className="login-container">
-                                        <h2 className='center-text'>Reset Password</h2>
-                                        <PasswordReset mutation={RESET_PASSWORD}/>
-                                    </div>
-                                    <div style={{color:'blue'}}>Change Password</div>
-                                </BasicPopup>
+                                <div className='link-text' onClick={passwordPopup}>Change Password</div>
                             </td>
+                        </tr>
+                        <tr>
+                            <td>Payment methods: </td>
+                            <td><div className='link-text' onClick={creditCardPopup}>Manage</div></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div>
-                    //TODO make form for managing credit cards
+            <div className="account-info-section">
             </div>
         </div>
         <div className='account-order-history-container'>
             <h2>Order History</h2>
-            <OrderHistory userId={user.id} />
+            <OrderHistory userId={user.id} popup={props.popup}/>
         </div>
         <div className='private-event'>
             <div className='account-event-request-section'>
@@ -175,8 +173,8 @@ function AccountInner(props){
 
 function Account(props){
     return <SecureRoute roles={["FTLC_USER"]}>
-        <AccountInner />
+        <AccountInner {...props}/>
     </SecureRoute>
 }
 
-export default Account
+export default RoutePopup(Account)
