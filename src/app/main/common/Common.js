@@ -343,3 +343,40 @@ class TimeRangeSelector extends Component{
 
 
 export { TimeRangeSelector }
+
+function RoutePopup (WrappedComponent){
+    return class extends Component {
+        constructor(props){
+            super(props);
+            this.state = {}
+        }
+        openPopup = (component) => {
+            this.setState({showPopup:true, popupInner:component})
+        }
+        closePopup = () => {
+            this.setState({showPopup:false})
+        }
+        preventClose = () => {
+            this.preventClose = true
+        }
+        allowClose = () => {}
+        render = () => {
+            const popupProps = {
+                open:this.openPopup,
+                close:this.closePopup
+            }
+            return <React.Fragment>
+            <Popup className={'popup'} open={this.state.showPopup} onClose={this.closePopup}>
+                <div className="popup-inner">
+                    <div className='close-popup'>
+                        <img onClick={this.closePopup} src={xicon}/>
+                    </div>
+                    {this.state.popupInner}
+                </div>
+			</Popup>
+            <WrappedComponent popup={popupProps} {...this.props}/>
+            </React.Fragment>
+        }
+    }
+}
+export {RoutePopup}
