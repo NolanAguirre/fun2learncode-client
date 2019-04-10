@@ -33,6 +33,10 @@ class Cache {
             return Object.values(root)
         }
 
+        if(fieldName === 'allCreditCards'){
+            return Object.values(this.cache['CreditCard'])
+        }
+
         let conflict = this.keyConflict.get(fieldName)
         let fieldType = typeMap.get(fieldName);
         if(fieldType.endsWith('Connection')){
@@ -55,8 +59,9 @@ class Cache {
                 }
                 return intersection;
             }
-            if(this.cache[childType])
-            return this.cache[childType][ids]
+            if(this.cache[childType]){
+                return this.cache[childType][ids]
+            }
         }else if(this.cache[fieldType]){
             if( this.cache[fieldType][this.cache[fieldName]]){
                 return this.cache[fieldType][this.cache[fieldName]]
@@ -158,7 +163,7 @@ class Cache {
     }
 
     formatObject = (object, isRoot, parentObject) => {
-        if (object['__typename'].endsWith('Payload') || object['__typename'] === 'query') {
+        if (object['__typename'] && (object['__typename'].endsWith('Payload') || object['__typename'] === 'query')) {
             for (let key in object) {
                 let value = object[key]
                 if (key !== '__typename') {
@@ -168,6 +173,13 @@ class Cache {
                 }
             }
             return;
+        }
+
+        if(object instanceof Array){
+            object.forEach((obj) => {
+                this.formatObject(obj, undefined, undefined)
+            })
+            return
         }
 
         if (this.isLeaf(object)) {
@@ -191,7 +203,7 @@ class Cache {
             return object[UID]
         }
 
-        if (object['__typename'].endsWith('Connection')) {
+        if (object['__typename'] && object['__typename'].endsWith('Connection')) {
             if (!this.cache[this.getChildType(object)]) {
                 this.cache[this.getChildType(object)] = {}
             }
@@ -304,6 +316,8 @@ class Cache {
                     }
                     this.formatObject(value[k])
                 }
+            } else {
+                this.removeObject(value)
             }
         }
         CacheEmitter.emitCacheUpdate();
@@ -318,6 +332,7 @@ class Cache {
         }
         //console.log('emitting cache update')
         CacheEmitter.emitCacheUpdate();
+        console.log(this.cache)
     }
 
     loadQuery = (query) => {

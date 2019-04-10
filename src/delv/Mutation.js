@@ -28,7 +28,7 @@ class Mutation{
 
     onResolve = (data) => {
         if(this.resolve){
-            this.resolve(data)
+            this.resolve(data.data, data.errors)
         }
         this.refetchQueries.forEach((query)=>{
             Delv.query({

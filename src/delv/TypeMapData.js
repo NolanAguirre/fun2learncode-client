@@ -145,5 +145,6 @@ export default {
    "promoCodeUseByUserIdAndPromoCode":"PromoCodeUse",
    "registrationOverrideByStudentAndEvent":"RegistrationOverride",
    "eventByToken":"Event",
-   "eventRequestsByEvent":"EventRequestsConnection"
+   "eventRequestsByEvent":"EventRequestsConnection",
+   'allCreditCards':'CreditCard'
 }
