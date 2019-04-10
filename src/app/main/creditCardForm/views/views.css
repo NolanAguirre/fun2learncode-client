@@ -70,3 +70,12 @@
 .negative-button:hover{
     border: 2px solid rgb(204, 204, 204);
 }
+
+.styled-loading-button{
+    min-width: 100px;
+    text-align: center;
+    padding: 10px;
+    font-size: 20px;
+    background-color: #41a62a;
+    color: white;
+}

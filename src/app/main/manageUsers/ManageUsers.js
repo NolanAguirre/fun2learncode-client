@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Mutation from '../../../delv/Mutation'
-import {DropDown, BasicPopup, SecureRoute, GridView} from '../common/Common';
+import {DropDown, BasicPopup, SecureRoute, GridView, RoutePopup} from '../common/Common';
 import {ReactQuery} from '../../../delv/delv-react'
 import moment from 'moment';
 import {StatelessOrderHistory} from '../orderHistory/OrderHistory'
@@ -346,4 +346,4 @@ function ManageUsers(props){
     </SecureRoute>
 }
 
-export default ManageUsers
+export default RoutePopup(ManageUsers)

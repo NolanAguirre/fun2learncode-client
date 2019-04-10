@@ -6,8 +6,8 @@ import './views.css'
 import loadingDots from '../../../logos/loading-dots.svg'
 
 function ManageCardsButton(props){
-    if(props.isDeleting){
-        return <div className='styled-button'><img src={loadingDots}/></div>
+    if(props.isDeleting ){
+        return <div className='styled-loading-button'><img src={loadingDots}/></div>
     } else if(props.selected) {
         return <div className="styled-button" onClick={props.deleteCard}>Delete card</div>
     } else {
@@ -27,9 +27,7 @@ class ManageCards extends Component{
     deleteCard = () => {
         if(this.state.selected){
             this.setState({isDeleting:true})
-            this.props.deleteCard(this.state.selected).then((response)=>{
-                this.setState({isDeleting:false, selected:null})
-            })
+            this.props.deleteCard(this.state.selected, () => {this.setState({isDeleting:false, selected:null})})
         }
     }
     render = () => {

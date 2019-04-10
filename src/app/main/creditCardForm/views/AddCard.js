@@ -1,9 +1,4 @@
 import React, { Component } from 'react'
-import Mutation from '../../../../delv/Mutation'
-import Query from '../../../../delv/Query'
-import {ReactQuery} from '../../../../delv/delv-react'
-import {SecureRoute} from '../../common/Common'
-import Popup from "reactjs-popup"
 import {CardNumberElement,
   CardExpiryElement,
   CardCVCElement,
@@ -11,18 +6,10 @@ import {CardNumberElement,
   StripeProvider,
   Elements,
   injectStripe} from 'react-stripe-elements'
-import axios from 'axios'
 import loading from '../../../logos/loading.svg'
 import xicon from '../../../logos/x-icon.svg'
 
-const USER_DATA = `{
-    getUserData{
-        id
-        firstName
-        lastName
-        role
-    }
-}`
+
 
 //TODO add option to use stored credit cards.
 const createStripeStyle = {
@@ -70,7 +57,6 @@ class PaymentInformationEntry extends Component{
                 address_state:this.state.state,
                 address_country:'US'
             }).then(({token, error}) => {
-                console.log(JSON.stringify(token))
                 if(error){
                     this.props.setLoading(false)
                     this.isProcessing = false;
@@ -79,7 +65,15 @@ class PaymentInformationEntry extends Component{
                     if(this.state.stripeError){
                         this.setState({stripeError:null})
                     }
-                    this.props.callback(token)
+                    console.log(token)
+                    this.props.resolve({
+                        token:token.id,
+                        card:{
+                            last4:token.card.last4,
+                            exp_year:token.card.exp_year,
+                            exp_month:token.card.exp_month,
+                            brand:token.card.brand
+                    }})
                 }
             });
         }
@@ -144,7 +138,6 @@ class AddCard extends Component {
         super(props);
         this.state = {
             loading:false,
-            UI:'card'
         }
     }
 
@@ -152,41 +145,13 @@ class AddCard extends Component {
         this.setState({loading:loading})
     }
 
-    addCard = (token) => {
-        const id = token.id
-        const card = {
-            last4: token.card.last4,
-            exp_month: token.card.exp_month,
-            exp_year:token.card.exp_year,
-            brand:token.card.brand
-        }
-        this.props.callback({id, card})
-    }
-
     render = () => {
-        let child;
-        if(this.state.UI === 'error'){
-            child = <div className='section container column'>
-                    <div className='section center-y'>
-                        <div className='error center-text'>{this.state.error}</div>
-                </div>
-                <div className='styled-button center-text' onClick={()=>{this.setState({UI:'card', loading:false})}}>Back</div>
-            </div>
-        }else if(this.state.UI === 'complete'){
-            child = <div className='payment-container'>
-                <h2 className='center-text'>Card has been added</h2>
-                <div className="styled-button center-x center-text" style={{width:'200px'}} onClick={()=>{this.setState({UI:'card', loading:false, showPopup:false})}}>Close</div>
-            </div>
-        } else {
-            child = <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
-                    <Elements>
-                        <PaymentInfoEntry callback={this.addCard} back={this.props.back} setLoading={this.setLoading}/>
-                    </Elements>
-                </StripeProvider>
-        }
-
         return <div className='payment-container'>
-            {child}
+            <StripeProvider apiKey='pk_test_GcXQlSWyjflCxQsqQoNz8kRb'>
+               <Elements>
+                   <PaymentInfoEntry resolve={this.props.resolve} back={this.props.back} setLoading={this.setLoading}/>
+               </Elements>
+           </StripeProvider>
             <div className={this.state.loading?'payment-loading':'hidden-payment-loading'}><img className='loading-icon center-x' src={loading}/></div>
         </div>
     }

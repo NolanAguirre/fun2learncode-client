@@ -4,6 +4,7 @@
     height:75px;
     background-color: white;
     padding:10px;
+    border-top: 2px transparent;
     display: flex;
     align-items:center;
     cursor: pointer;
