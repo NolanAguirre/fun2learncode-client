@@ -139,29 +139,29 @@ class MultiSelect extends Component {
     }
 
     toggle = async (newItem) =>{ // if props selected students returns false or nothing it updates
-        if(!this.props.isValidChoice || await this.props.isValidChoice(newItem)){
-            if(this.state.selected.filter((item)=>{return item.id===newItem.id}).length === 1){
-                if(this.props.alwaysSelect){
-                    const newSelected = this.state.selected.filter((item)=>{return item.id!==newItem.id})
-                    if(newSelected.length === 0){
-                        return;
-                    }
-                    if(this.props.multiSelect){
-                        this.props.setSelected(newSelected)
-                    }else{
-                        this.props.setSelected(null)
-                    }
-                    this.setState({selected:newSelected})
-                }else{
-                    const newSelected = this.state.selected.filter((item)=>{return item.id!==newItem.id})
-                    if(this.props.multiSelect){
-                        this.props.setSelected(newSelected)
-                    }else{
-                        this.props.setSelected(null)
-                    }
-                    this.setState({selected:newSelected})
+        if(this.state.selected.filter((item)=>{return item.id===newItem.id}).length === 1){
+            if(this.props.alwaysSelect){
+                const newSelected = this.state.selected.filter((item)=>{return item.id!==newItem.id})
+                if(newSelected.length === 0){
+                    return;
                 }
+                if(this.props.multiSelect){
+                    this.props.setSelected(newSelected)
+                }else{
+                    this.props.setSelected(null)
+                }
+                this.setState({selected:newSelected})
             }else{
+                const newSelected = this.state.selected.filter((item)=>{return item.id!==newItem.id})
+                if(this.props.multiSelect){
+                    this.props.setSelected(newSelected)
+                }else{
+                    this.props.setSelected(null)
+                }
+                this.setState({selected:newSelected})
+            }
+        }else{
+            if(!this.props.isValidChoice || await this.props.isValidChoice(newItem)){
                 if(this.props.multiSelect){
                     this.props.setSelected([...this.state.selected, newItem])
                     this.setState({selected:[...this.state.selected, newItem]})
