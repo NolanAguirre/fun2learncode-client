@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import './StudentWaiver.css'
 import Mutation from '../../../delv/Mutation'
-
+import moment from 'moment'
 const CREATE_STUDENT_WAIVER = `mutation ($studentWaiver: StudentWaiverInput!) {
   createStudentWaiver(input: {studentWaiver: $studentWaiver}) {
     studentWaiver {
@@ -14,38 +14,40 @@ const CREATE_STUDENT_WAIVER = `mutation ($studentWaiver: StudentWaiverInput!) {
   }
 }`
 
+const localize = (timestamp) =>  moment(moment.utc(timestamp)).local()
+
 function StudentWaiver(props){
-    return <div className='student-waiver-container'>
+    return <div className='view-student-waiver-container'>
             <h2 className='center-text'>Student Waiver</h2>
             <table>
                 <tbody>
                     <tr>
                         <td>Primary care name:</td>
-                        <td>{props.primaryCare}</td>
+                        <td>{props.primaryCare || 'No Waiver on record'}</td>
                     </tr>
                     <tr>
                         <td>Primary care phone:</td>
-                        <td>{props.primaryCarePhone}</td>
+                        <td>{props.primaryCarePhone  || 'No Waiver on record'}</td>
                     </tr>
                     <tr>
                         <td>Emergency phone:</td>
-                        <td>{props.emergencyPhone}</td>
+                        <td>{props.emergencyPhone  || 'No Waiver on record'}</td>
                     </tr>
                     <tr>
                         <td>Pickup one:</td>
-                        <td>{props.pickupOne}</td>
+                        <td>{props.pickupOne  || 'No Waiver on record'}</td>
                     </tr>
                     <tr>
                         <td>Pickup two:</td>
-                        <td>{props.pickupTwo}</td>
+                        <td>{props.pickupTwo  || 'No Waiver on record'}</td>
                     </tr>
                     <tr>
                         <td>Created on:</td>
-                        <td>{props.createdOn}</td>
+                        <td>{moment(props.createdOn).format("MM/DD/YYYY")}</td>
                     </tr>
                 </tbody>
             </table>
-            Allergies/Other information:
+            Allergies/Other:
             {props.other}
         </div>
 }

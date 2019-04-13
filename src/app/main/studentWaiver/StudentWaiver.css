@@ -5,6 +5,11 @@
     padding:20px;
     box-sizing: border-box;
 }
+.view-student-waiver-container{
+    background-color: white;
+    box-sizing: border-box;
+    flex:1;
+}
 .student-waiver-other{
     width:100%;
     box-sizing: border-box;
