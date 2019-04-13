@@ -54,7 +54,11 @@ function Order(props){
             let refundPopup = ()=>{props.popup.open(
                 <RefundResponse {...refundRequest} userId={userId} paymentId={paymentId} total={parseFloat(snapshot.total)}/>
             )}
-            requestForm = <div onClick={refundPopup} className='styled-button'>Respond to refund</div>
+            if(refundRequest && refundRequest.status === 'PENDING'){
+                requestForm = <div onClick={refundPopup} className='styled-button'>Respond to request</div>
+            }else{
+                requestForm = <div onClick={refundPopup} className='styled-button'>Issue refund</div>
+            }
         }
 	}else{
         if(!refundRequest){
