@@ -81,7 +81,7 @@ class Delv {
                     console.log(`Error occured trying to cach responce data: ${error.message}`)
                 }
                 if(returnRes){
-                    onResolve(res.data.data)
+                    onResolve(res.data)
                 }else{
                     onResolve(cache.loadQuery(query))
                 }
@@ -123,7 +123,7 @@ class Delv {
     cacheByQuery = (options) => {
         let query = this.queries.includes(options.query, options.variables)
         if(query){
-            options.onResolve(cache.cache[query.id])
+            options.onResolve({data:cache.cache[query.id]})
         }else{
             this.queries.add(options.query, options.variables)
             query = this.queries.includes(options.query, options.variables)

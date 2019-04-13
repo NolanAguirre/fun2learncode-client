@@ -27,18 +27,21 @@ class Mutation{
     }
 
     onResolve = (data) => {
+        let query
         if(this.resolve){
-            this.resolve(data.data, data.errors)
+            query = this.resolve(data.data, data.errors)
         }
-        this.refetchQueries.forEach((query)=>{
-            Delv.query({
-                query:query,
-                networkPolicy:'network-only',
-                variables:{},
-                onResolve:()=>{},
-                onFetch:()=>{},
+        [query, ...this.refetchQueries].forEach((q)=>{
+            if(q){
+                Delv.query({
+                    query:query,
+                    networkPolicy:'network-only',
+                    variables:{},
+                    onResolve:()=>{},
+                    onFetch:()=>{},
 
-            })
+                })
+            }
         })
     }
 

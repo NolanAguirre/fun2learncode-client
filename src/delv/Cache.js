@@ -2,7 +2,6 @@ import graphql from 'graphql-anywhere'
 import typeMap from './TypeMap'
 import CacheEmitter from './CacheEmitter';
 const gql = require('graphql-tag')
-const util = require('util');
 var _ = require('lodash');
 
 let UID = 'id'
