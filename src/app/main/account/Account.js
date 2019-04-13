@@ -89,19 +89,19 @@ class UpdateEmail extends Component{
 
     render = () => {
         if(this.state.complete){
-            return <div className="login-form">
-                    <div className='center-text'>Email has been changed.</div>
+            return <div className="popup-inner-complete">
+                    Email has been updated.
                 </div>
         }else{
             return <React.Fragment>
-                <h2 className='center-text'>Change email</h2>
+                <h2 className='center-text'>Update email</h2>
                 <form onSubmit={this.mutation.onSubmit} className="payment-container">
                     <div/>
                     <div>
                         <div className='error'>{this.state.error}</div>
                         <input className='styled-input' name='email' type='email' onChange={this.handleChange} placeholder='email' />
                     </div>
-                    <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Change email</div>
+                    <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Update email</div>
                     <button className='hacky-submit-button' type='submit'/>
                 </form>
             </React.Fragment>
@@ -132,7 +132,7 @@ function AccountInner(props){
                         <tr>
                             <td></td>
                             <td>
-                                <div className='link-text' onClick={emailPopup}>Change email</div>
+                                <div className='link-text' onClick={emailPopup}>Update email</div>
                             </td>
                         </tr>
                         <tr>
@@ -142,7 +142,7 @@ function AccountInner(props){
                         <tr>
                             <td>Password: </td>
                             <td>
-                                <div className='link-text' onClick={passwordPopup}>Change Password</div>
+                                <div className='link-text' onClick={passwordPopup}>Update Password</div>
                             </td>
                         </tr>
                         <tr>
