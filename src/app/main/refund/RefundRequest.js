@@ -32,9 +32,7 @@ class RefundRequest extends Component{
             onResolve:this.onResolve
 		})
 	}
-	componentWillUnmount = () => {
-		this.mutation.removeListeners()
-	}
+    componentWillUnmount = () => this.mutation.removeListeners()
     handleChange = (event) => {
         const target = event.target;
         const value = target.type === 'checkbox'
@@ -65,7 +63,7 @@ class RefundRequest extends Component{
 
 	render = () => {
         if(this.state.complete){
-            return <div className='refund-complete'>
+            return <div className='popup-inner-complete'>
                 Refund request has been send.
             </div>
         }else{

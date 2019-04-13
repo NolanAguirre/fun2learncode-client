@@ -88,13 +88,14 @@ body {
 }
 
 .styled-button{
+    border-radius: 8px;
     min-width: 100px;
     text-align: center;
     padding: 20px;
     font-size: 20px;
     background-color: #41a62a;
     color: white;
-    transition-duration: .1s;
+    transition-duration: background-color .1s ;
 }
 
 .styled-button:hover{

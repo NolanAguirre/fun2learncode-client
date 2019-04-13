@@ -65,7 +65,6 @@ class PaymentInformationEntry extends Component{
                     if(this.state.stripeError){
                         this.setState({stripeError:null})
                     }
-                    console.log(token)
                     this.props.resolve({
                         token:token.id,
                         card:{

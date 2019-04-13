@@ -9,8 +9,8 @@
     align-items:center;
     cursor: pointer;
 }
-.popup-content > .dropdown-payment-card:nth-child(n+2){
-    border-top: 2px solid rgb(204, 204, 204);;
+.popup-content > .dropdown-payment-card:nth-of-type(n+2){
+    border-top: 2px solid rgb(204, 204, 204);
 }
 .dropdown-payment-card:hover{
     background-color: rgb(230, 230, 230);
