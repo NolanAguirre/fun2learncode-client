@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import './Registration.css'
+import Mutation from '../../../delv/Mutation'
 import Login from '../login/Login'
 import StudentSelect from '../studentSelect/StudentSelect'
 import AddonSelect from '../addonSelect/AddonSelect'
@@ -10,7 +11,6 @@ import {ReactQuery} from '../../../delv/delv-react'
 import Delv from '../../../delv/delv'
 import Payment from '../payment/Payment'
 import moment from 'moment'
-import axios from 'axios'
 const NOW = new Date().toISOString()
 const EVENT_FRAGMENT = `id
       archive
@@ -84,6 +84,9 @@ const GET_EVENT_BY_TOKEN = (token) => `{
   }
 }`
 
+const BEGIN = `mutation($event:UUID!, $students:[UUID]!, $addons:[UUID], $promoCode:String){
+	beginTransaction(event:$event, students:$students, addons:$addons, promoCode:$promoCode)
+}`
 class RegistrationInner extends Component{
     constructor(props){
         super(props)
@@ -93,7 +96,14 @@ class RegistrationInner extends Component{
             showPopup:false,
             error:""
         }
+        this.mutation = new Mutation({
+            mutation:BEGIN,
+            onSubmit:this.handleSubmit,
+            onResolve:this.handleResolve
+        })
     }
+
+    componentWillUnmount = () => this.mutation.removeListeners()
 
     clearPopupState = () => this.setState({showPopup: false})
 
@@ -131,18 +141,21 @@ class RegistrationInner extends Component{
 
     handleSubmit = (event) => {
         event.preventDefault();
-        axios.post('http://localhost:3005/payment/begin', {promoCode:this.state.promoCode, ...this.getSelections()}).then((response)=>{
-            console.log(response)
-            if(response.data.error){
-                this.setState({UI:'error', error:response.data.error})
-            }else{
-                this.setState({total:response.data.total, showPopup:true})
-            }
-        }).catch((error)=>{
-           console.log(error)
-        })
+        if(this.state.students.length === 0){
+            this.setState({error:'Please select at least one student.'})
+        }else{
+            return this.getSelections()
+        }
+        return false
     }
 
+    handleResolve = (data, error) => {
+        if(error){
+            this.setState({UI:'error', error:error})
+        }else{
+            this.setState({total:data.beginTransaction, showPopup:true})
+        }
+    }
     genRandomId = () =>{
         return '_' + Math.random().toString(36).substr(2, 9);
     }
@@ -159,8 +172,8 @@ class RegistrationInner extends Component{
         return {
             students: this.state.students.map(student=>student.id),
             addons:this.state.addons.map(addon=>addon.id),
-            event: this.props.eventId, //returns the actual hash/id, this is important
-            user:this.props.getUserData.id
+            event: this.props.eventId,
+            promoCode:this.state.promoCode
         }
     }
     render = () =>{
@@ -184,7 +197,7 @@ class RegistrationInner extends Component{
             <AddonSelect className='styled-container column' multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
             <div className='promo-code-container'> Promo Code: <input className='styled-input' name='promoCode' placeholder='Promo Code' onChange={this.handleChange}/></div>
             <Payment showPopup={this.state.showPopup} clearPopupState={this.clearPopupState} user={this.props.getUserData.id} total={this.state.total}/>
-            <div className="styled-button" onClick={this.handleSubmit}> Continue to Payment</div>
+            <div className="styled-button" onClick={this.mutation.onSubmit}> Continue to Payment</div>
         </div>
     }
 }

@@ -13,19 +13,51 @@ import {CardNumberElement,
   StripeProvider,
   Elements,
   injectStripe} from 'react-stripe-elements'
-import axios from 'axios'
 import loading from '../../logos/loading.svg'
 import xicon from '../../logos/x-icon.svg'
-import CardDropdown from '../creditCardForm/CardDropdown'
+import CreditCardForm from '../creditCardForm/CreditCardForm'
 
-const USER_DATA = `{
-    getUserData{
-        id
-        firstName
-        lastName
-        role
-    }
+const PROCESS = `mutation ($card: CreditCardInput, $token: String) {
+  processTransaction(input: $card, token: $token)
 }`
+const UPDATE_CACHE = (id) => `{
+  allPayments(condition: {id: "${id}"}) {
+    nodes {
+      id
+      snapshot
+      status
+      createOn
+      userId
+      eventRegistrationsByPayment{
+        nodes{
+          id
+          student
+          registeredBy
+          userByRegisteredBy{
+            id
+          }
+          payment
+          registeredOn
+          eventByEvent{
+            id
+            seatsLeft
+          }
+        }
+      }
+      refundRequestsByPayment {
+        nodes {
+          id
+          reason
+          amountRefunded
+          grantedReason
+          status
+          createdOn
+        }
+      }
+    }
+  }
+}`
+
 class Payment extends Component {
     constructor(props) {
         super(props);
@@ -33,6 +65,11 @@ class Payment extends Component {
             loading:false,
             UI:'choose'
         }
+        this.mutation = new Mutation({
+            mutation:PROCESS,
+            onSubmit:this.handleSubmit,
+            onResolve:this.handleResolve
+        })
     }
 
     setLoading = (loading) => {
@@ -41,24 +78,35 @@ class Payment extends Component {
 
     onCardComplete = (token) => {
         console.log(token)
-        this.activeCard = token
-        this.onSubmit()
+        this.activeCard = token.id
+        this.mutation.onSubmit()
     }
 
-    onSubmit = () => {
-        axios.post('http://localhost:3005/payment/process', {paymentItem:this.activeCard, user:this.props.user}).then((res)=>{ //TODO URL
-            if(res.data.error){
-                this.setState({UI:'error', error:res.data.error, loading:false})
+    handleSubmit = () => {
+        if(this.activeCard){
+            if(this.activeCard instanceof Object){
+                const{
+                    id,
+                    ...card
+                } = this.activeCard
+                this.setState({loading:true, preventClose:true})
+                return {card:card}
             }else{
-                this.setState({UI:'complete' ,loading:false, preventClose:true})
+                return {token:this.activeCard}
             }
-        }).catch((error)=>{
+        }
+        return false;
+    }
+    handleResolve = (data, error) => {
+        if(data){
+            this.setState({loading:false, UI:'complete'})
+            return UPDATE_CACHE(data.processTransaction)
+        }else{
             console.log(error)
-            this.setState({UI:'error', error:'Network error occured', loading:false})
-        })
+        }
     }
 
-    setActiveCard = (card) => this.activeCard = {cardInfo: card}
+    setActiveCard = (card) => this.activeCard = card
 
 
     render = () => {
@@ -68,15 +116,15 @@ class Payment extends Component {
                     <div className='section center-y'>
                         <div className='error center-text'>{this.state.error}</div>
                     </div>
-                <div className='styled-button center-text' onClick={()=>{this.setState({UI:'address', loading:false})}}>Back</div>
+                <div className='styled-button center-text' onClick={()=>{this.setState({UI:'choose', loading:false})}}>Back</div>
             </div>
         }else if(this.state.UI === 'choose'){
             child = <React.Fragment>
                 <h2 className='center-text'>Select payment method</h2>
                 <span>Total : ${this.props.total}</span>
-                <CardDropdown user={this.props.user} setActiveCard={this.setActiveCard}/>
+                <CreditCardForm user={this.props.user} setActiveCard={this.setActiveCard} dropdown/>
                 <span className='without-save' onClick={()=>{this.setState({UI:'card'})}}>Continue without saving payment method.</span>
-                <div className='styled-button center-text' onClick={this.onSubmit}>Submit</div>
+                <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Submit</div>
             </React.Fragment>
         }else if(this.state.UI === 'complete'){
             child = <React.Fragment>
@@ -84,7 +132,7 @@ class Payment extends Component {
                 <a href='/'><div className="styled-button center-x center-text" style={{width:'200px'}}>Home</div></a>
             </React.Fragment>
         }else if(this.state.UI === 'card'){
-            child = <AddCard callback={this.onCardComplete} />
+            child = <AddCard resolve={this.onCardComplete} />
         }
         return <Popup className='popup' open={this.props.showPopup} closeOnDocumentClick={false} closeOnEscape={!(this.state.loading || this.state.preventClose)} onClose={this.props.clearPopupState}>
                 <div className='popup-inner'>
