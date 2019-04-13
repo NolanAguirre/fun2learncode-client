@@ -28,15 +28,24 @@ const TOPICS = [
     }
 ]
 
-function WhatWeTeachSection(props){
-    return<div className='teach-center'>
-            <div className='teach-container'>
-                <div className='teach-text'>
-                    <h3 className='no-margin center-text'>{props.name}</h3>
-                    <p onClick={()=>props.onClick(props.name)}className='center-text'>Learn more</p>
-                </div>
+class WhatWeTeachSection extends Component{
+    constructor(props){
+        super(props)
+        this.state={showPopup:false}
+    }
+
+    render = () => {
+        return<div className='teach-center'>
+                <h3 className='no-margin center-text'>{this.props.name}</h3>
+                <Popup
+                contentStyle={{padding:'0px!important'}}
+                open={this.state.showPopup} trigger={<p className='learn-more'>Learn more</p>}>
+                    <div className='topic-description'>
+                        {TOPICS.filter((item)=>item.name===this.props.name)[0].description}
+                    </div>
+            	</Popup>
             </div>
-        </div>
+    }
 }
 class WhatWeTeach extends Component{
     constructor(props){
@@ -52,17 +61,6 @@ class WhatWeTeach extends Component{
 	}
 	render = () => {
 		return <React.Fragment>
-			<Popup className='popup' open={this.state.showPopup} closeOnDocumentClick={false} onClose={this.clearPopupState}>
-            <div className='popup-inner'>
-                <div className='close-popup'>
-                    <img onClick={this.clearPopupState} src={xicon}/>
-                </div>
-                <div className='topic-description'>
-                    <h1 className='center-text'>{this.state.text.name}</h1>
-                    {this.state.text.description}
-                </div>
-            </div>
-			</Popup>
             <div className='what-we-teach'>
                 <div className='main-contents what-we-teach-center'>
                     <h1 className='center-text'>What we teach</h1>
