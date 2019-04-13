@@ -37,7 +37,16 @@
     max-height: 24px;
 }
 .back-container{
+    padding:10px;
     font-size: 38px;
+}
+.admin-student-info{
+    display: flex;
+    flex-wrap: wrap;
+    flex:1;
+}
+.student-form:nth-of-type(n+2){
+    border-top: 2px solid rgb(204, 204, 204);
 }
 .manage-users-table tr:nth-child(even) td:nth-child(odd),
  .manage-users-table tr:nth-child(odd) td:nth-child(even)

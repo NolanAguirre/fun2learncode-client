@@ -228,9 +228,9 @@ class OverrideForm extends Component{
 
 function StudentForm(props){
     const studentWaiver = props.studentWaiversByStudent.nodes[0]
-    return<div>
+    return<div className='student-form'>
         <h3 className='no-margin'>{props.firstName} {props.lastName}</h3>
-        <div className='section container'>
+        <div className='admin-student-info'>
             <OverrideForm studentId={props.id} />
             <div className='section'>
                 <StudentWaiver {...studentWaiver}/>
@@ -254,29 +254,43 @@ class ManageUserForm extends Component{
         super(props)
         this.state = {UI:'default'}
     }
+    open = (component) => {
+        this.setState({UI:'refund', refund:component})
+    }
     render = () => {
+
         const user = this.props.user
         if(this.state.UI === 'students'){
-            return<div className='manage-user-popup'>
-                <h1>{user.firstName} {user.lastName}s Students</h1> // TODO add '
+            return <React.Fragment><div className='manage-user-popup'>
+                <h1>{user.firstName} {user.lastName}'s Students</h1>
                 <ReactQuery query={GET_STUDENTS(user.id)}>
                     <StudentsForm/>
                 </ReactQuery>
-                <div className='back-container' onClick={()=>{this.setState({UI:'default'})}}> <img className='previous back-arrow' src={next} title='Icon made by Gregor Cresnar'/> Back</div>
             </div>
+            <div className='back-container' onClick={()=>{this.setState({UI:'default'})}}> <img className='previous back-arrow' src={next} title='Icon made by Gregor Cresnar'/> Back</div>
+            </React.Fragment>
         }else if(this.state.UI === 'orders'){
-            return <div className='manage-user-popup'>
+            const wrappedPopup = {open:this.open, close:this.props.popup.close}
+            return<React.Fragment>
+            <div className='manage-user-popup'>
                 <h1>{user.firstName} {user.lastName}s order history</h1>
-                <StatelessOrderHistory userId={user.id} adminForm/>
-                <div className='back-container' onClick={()=>{this.setState({UI:'default'})}}> <img className='previous back-arrow' src={next} title='Icon made by Gregor Cresnar'/> Back</div>
+                <StatelessOrderHistory userId={user.id} adminForm popup={wrappedPopup}/>
             </div>
+            <div className='back-container' onClick={()=>{this.setState({UI:'default'})}}> <img className='previous back-arrow' src={next} title='Icon made by Gregor Cresnar'/> Back</div>
+            </React.Fragment>
         }else if(this.state.UI === 'events'){
-            return <div className='manage-user-popup'>
+            return <React.Fragment> <div className='manage-user-popup'>
                <h1>{user.firstName} {user.lastName}s Event Requests</h1>
-               <EventResponse userId={user.id}/>
-               <div className='back-container' onClick={()=>{this.setState({UI:'default'})}}> <img className='previous back-arrow' src={next} title='Icon made by Gregor Cresnar'/> Back</div>
+               <EventResponse userId={user.id} popup={this.props.popup}/>
            </div>
-        }
+           <div className='back-container' onClick={()=>{this.setState({UI:'default'})}}> <img className='previous back-arrow' src={next} title='Icon made by Gregor Cresnar'/> Back</div>
+           </React.Fragment>
+       }else if(this.state.UI === 'refund'){
+           return <React.Fragment>
+               {this.state.refund}
+               <div className='back-container' onClick={()=>{this.setState({UI:'orders'})}}> <img className='previous back-arrow' src={next} title='Icon made by Gregor Cresnar'/> Back</div>
+           </React.Fragment>
+       }
         return <div className='manage-user-popup'>
             <h1>{user.firstName} {user.lastName}</h1>
             <UserForm user={user} />
@@ -299,9 +313,6 @@ class ManageUsersInner extends Component {
     showPopup = (user) => {
         this.setState({showPopup:true, user})
     }
-    clearPopupState = () => {
-        this.setState({showPopup:false, user:undefined})
-    }
     render = () => {
         const allUsers = this.props.allUsers.nodes
         let child = [];
@@ -315,20 +326,14 @@ class ManageUsersInner extends Component {
             }else if(user.refundRequestsByUserId.nodes.length){
                 className='red-tint'
             }
+            const userFormPopup = () => {this.props.popup.open(<ManageUserForm user={user} popup={this.props.popup}/>)}
             return <td key={user.id}>
-            <div className={className} onClick={()=>{this.showPopup(user)}}>{user.firstName} {user.lastName}<br/>{user.email}</div>
+            <div className={className} onClick={userFormPopup}>{user.firstName} {user.lastName}<br/>{user.email}</div>
         </td>})
             child.push(<tr key={x}>{rows}</tr>)
+
         }
         return<div className='manage-users'>
-            <Popup open={this.state.showPopup} closeOnDocumentClick={false} onClose={this.clearPopupState} className='popup'>
-            <div className='popup-inner'>
-                <div className='close-popup'>
-                    <img onClick={this.clearPopupState} src={xicon}/>
-                </div>
-                <ManageUserForm user={this.state.user}/>
-            </div>
-            </Popup>
             <table className='manage-users-table'>
                 <tbody>
                     {child}
@@ -341,7 +346,7 @@ class ManageUsersInner extends Component {
 function ManageUsers(props){
     return <SecureRoute ignoreResult roles={["FTLC_OWNER", "FTLC_ADMIN"]}>
         <ReactQuery query={GET_USERS}>
-            <ManageUsersInner />
+            <ManageUsersInner {...props}/>
         </ReactQuery>
     </SecureRoute>
 }
