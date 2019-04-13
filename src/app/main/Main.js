@@ -34,34 +34,34 @@ class Main extends Component {
       <div className='main'>
           <Switch>
             <Route exact path='/' component={Home} />
-            <Route exact path='/Activity/:type' component={Activities} />
-            <Route exact path='/Login' component={Login} />
-            <Route path='/Events/:name/:id' component={Events} />
-            <Route exact path='/Sign up' component={SignUp} />
+            <Route exact path='/activity/:type' component={Activities} />
+            <Route exact path='/login' component={Login} />
+            <Route path='/events/:name/:id' component={Events} />
+            <Route exact path='/sign-up' component={SignUp} />
 
-            <Route path='/Registration/:id' component={Registration} />
-            <Route path='/Private/Registration/:id' component={Registration} />
-            <Route exact path='/User/Manage Students' component={ManageStudents} />
-            <Route path='/Logs/:eventId/:studentId' component={EventLogs} />
-            <Route path='/User/Account' component={Account} />
+            <Route path='/registration/:id' component={Registration} />
+            <Route path='/private/registration/:id' component={Registration} />
+            <Route exact path='/user/manage-students' component={ManageStudents} />
+            <Route path='/logs/:eventId/:studentId' component={EventLogs} />
+            <Route path='/user/account' component={Account} />
             <Route path='/reset/:token' component={ResetPassword} />
             <Route path='/recover' component={RecoverPassword} />
 
-            <Route exact path='/Admin/Manage Events' component={ManageEvents} />
-            <Route exact path='/Admin/Manage Addresses' component={ManageAddresses} />
-            <Route exact path='/Admin/Manage Activities' component={ManageActivities} />
-            <Route exact path='/Admin/Manage Addons' component={ManageAddons} />
-            <Route exact path='/Admin/Manage Users' component={ManageUsers} />
-            <Route exact path='/Admin/Manage Promo Codes' component={ManagePromoCodes} />
-            <Route exact path='/Admin/Announcements' component={ManageAnnouncements} />
-            <Route exact path='/Admin/News Letter' component={ManageNewsLetter} />
-            <Route exact path='/Recent Events' component={RecentEvents} />
+            <Route exact path='/admin/manage-events' component={ManageEvents} />
+            <Route exact path='/admin/manage-addresses' component={ManageAddresses} />
+            <Route exact path='/admin/manage-activities' component={ManageActivities} />
+            <Route exact path='/admin/manage-addons' component={ManageAddons} />
+            <Route exact path='/admin/manage-users' component={ManageUsers} />
+            <Route exact path='/admin/manage-promo-codes' component={ManagePromoCodes} />
+            <Route exact path='/admin/announcements' component={ManageAnnouncements} />
+            <Route exact path='/admin/news-letter' component={ManageNewsLetter} />
+            <Route exact path='/recent-events' component={RecentEvents} />
 
             <Route exact path='/test' component={Test} />
 
-            <Route exact path='/Attendant/Check In' component={CheckIn} />
+            <Route exact path='/attendant/check-in' component={CheckIn} />
 
-            <Route exact path='/Logout' component={Logout} />
+            <Route exact path='/logout' component={Logout} />
           </Switch>
       </div>
     )

@@ -79,7 +79,7 @@ function RecentEventStudent(props) {
             </h3>
             <div>{moment(props.dateOfBirth).format('MMM YYYY')}</div>
             <div>Check in: {checkIn}</div>
-            <Link to={`/Logs/${props.eventId}/${props.id}`} target='_blank'>
+            <Link to={`/logs/${props.eventId}/${props.id}`} target='_blank'>
                 View/Write logs
             </Link>
         </div>

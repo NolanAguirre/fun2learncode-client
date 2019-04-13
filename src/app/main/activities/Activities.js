@@ -31,6 +31,12 @@ const GET_ACTIVITIES_IN_CATAGORY = name => {
     }
   }
 }`
+
+const CATEGORY_MAP = {
+    'summer-camps':'Summer Camps',
+    'classes':'Classes',
+    'labs':'Labs',
+    'workshops':'Workshops'
 }
 
 function ActivitiesInner(props) {
@@ -76,8 +82,8 @@ function ActivitiesInner(props) {
 
 function Activities(props) {
     return (
-        <ReactQuery query={GET_ACTIVITIES_IN_CATAGORY(props.match.params.type)}>
-            <ActivitiesInner history={props.history} catagory={props.match.params.type} />
+        <ReactQuery query={GET_ACTIVITIES_IN_CATAGORY(CATEGORY_MAP[props.match.params.type])}>
+            <ActivitiesInner history={props.history} catagory={CATEGORY_MAP[props.match.params.type]} />
         </ReactQuery>
     )
 }

@@ -15,7 +15,7 @@ function EventComponent (props) {
                 <DatesTable className='center-x' dates={props.dates}/>
             </div>
                 <div className='event-btn-container'>
-                    <Link className='default-link styled-button' to={`/Registration/${props.id}`}>
+                    <Link className='default-link styled-button' to={`/registration/${props.id}`}>
                         <h2 className='event-register-header'>Register Now</h2>
                         <div>
                             <span className='event-register-price'>${props.price}</span>

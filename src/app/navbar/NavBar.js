@@ -26,109 +26,109 @@ const routeNames = [
         }
     }, {
         name: 'Students',
-        route: 'User/Manage Students',
+        route: 'user/manage-students',
         test:(user) => {
             return user && user.role === 'FTLC_USER'
         }
     }, {
         name: 'Account',
-        route: 'User/Account',
+        route: 'user/account',
         test:(user) => {
             return user && user.role === 'FTLC_USER'
         }
     }, {
         name: 'Summer Camps',
-        route: 'Activity/Summer Camps',
+        route: 'activity/summer-camps',
         test:(user) => {
             return !user || user.role === 'FTLC_USER'
         }
     }, {
         name: 'Classes',
-        route: 'Activity/Classes',
+        route: 'activity/classes',
         test:(user) => {
             return !user || user.role === 'FTLC_USER'
         }
     }, {
         name: 'Labs',
-        route: 'Activity/Labs',
+        route: 'activity/labs',
         test:(user) => {
             return !user || user.role === 'FTLC_USER'
         }
     }, {
-        name: 'Workshops',
-        route: 'Activity/Workshops',
+        name: 'workshops',
+        route: 'activity/workshops',
         test:(user) => {
             return !user || user.role === 'FTLC_USER'
         }
     }, {
         name: 'Login',
-        route: 'Login',
+        route: 'login',
         test:(user) => {
             return !user
         }
     },{
         name: 'Recent Events',
-        route: 'Recent Events',
+        route: 'recent-events',
         test:(user) => {
             return user && employee.includes(user.role)
         }
     },{
         name: 'News Letter',
-        route: 'Admin/News Letter',
+        route: 'admin/news-letter',
         test:(user) => {
             return user && admins.includes(user.role)
         }
     },{
         name: 'Announcements',
-        route: 'Admin/Announcements',
+        route: 'admin/announcements',
         test:(user) => {
             return user && admins.includes(user.role)
         }
     }, {
         name: 'Activities',
-        route: 'Admin/Manage Activities',
+        route: 'admin/manage-activities',
         test:(user) => {
             return user && admins.includes(user.role)
         }
     }, {
         name: 'Events',
-        route: 'Admin/Manage Events',
+        route: 'admin/manage-events',
         test:(user) => {
             return user && admins.includes(user.role)
         }
     }, {
         name: 'Addresses',
-        route: 'Admin/Manage Addresses',
+        route: 'admin/manage-addresses',
         test:(user) => {
             return user && admins.includes(user.role)
         }
     }, {
         name: 'Users',
-        route: 'Admin/Manage Users',
+        route: 'admin/manage-users',
         test:(user) => {
             return user && admins.includes(user.role)
         }
     }, {
         name: 'Check In',
-        route: 'Attendant/Check In',
+        route: 'attendant/check-in',
         test:(user) => {
             return user && user.role === 'FTLC_ATTENDANT'
         }
     }, {
         name: 'Addons',
-        route: 'Admin/Manage Addons',
+        route: 'admin/manage-addons',
         test:(user) => {
             return user && admins.includes(user.role)
         }
     }, {
         name: 'Promo Codes',
-        route: 'Admin/Manage Promo Codes',
+        route: 'admin/manage-promo-codes',
         test:(user) => {
             return user && admins.includes(user.role)
         }
     }, {
         name: 'Logout',
-        route: 'Logout',
+        route: 'logout',
         test:(user) => {
             return user
         }
