@@ -1,14 +1,11 @@
 import React, {Component} from 'react'
 import './Home.css'
-import Section from './section/Section'
-import { ReactQuery } from '../../../delv/delv-react'
-import {GridView} from '../common/Common'
 import spline from '../../logos/spline.svg'
 import WhatWeTeach from './whatWeTeach/WhatWeTeach'
 import Announcement from './announcement/Announcement'
 import NewsLetter from './newsLetter/NewsLetter'
 import WhoWeAre from './whoWeAre/WhoWeAre'
-
+import ClassStructure from './classStructure/ClassStructure'
 const GET_ACTIVITIES = `{
   allCategories {
     nodes {
@@ -18,16 +15,6 @@ const GET_ACTIVITIES = `{
     }
   }
 }`
-
-function HomeInner(props){
-    const items = props.allCategories.nodes.map((element) => {
-      return <Section name={element.name} description={element.description} key={element.id} />
-    })
-    return<GridView className='container column' itemsPerRow={2}>
-        {items}
-    </GridView>
-}
-
 
 function Home (props) {
   return <div className='home'>
@@ -48,9 +35,7 @@ function Home (props) {
     </div>
     <div className='class-structure main-contents'>
         <h1 className='center-text'>Class Structure</h1>
-        <ReactQuery query={GET_ACTIVITIES}>
-            <HomeInner />
-        </ReactQuery>
+        <ClassStructure />
     </div>
     <div className='spline flipped-spline-container'>
         <img className='flipped-spline' src={spline}/>
