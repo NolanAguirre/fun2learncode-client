@@ -4,8 +4,7 @@ import Activity from './activity/Activity'
 import {ReactQuery} from '../../../delv/delv-react'
 import SadFace from '../../logos/sadface.svg'
 import {GridView} from '../common/Common'
-const GET_ACTIVITIES_IN_CATAGORY = name => {
-    return `{
+const GET_ACTIVITIES_IN_CATAGORY = name => `{
   allCategories(condition: {name: "${name}"}) {
     nodes {
       id

@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 import './ManageAnnouncements.css'
-import {ReactQuery} from '../../../delv/delv-react'
 import {SecureRoute} from '../common/Common'
-import DateTime from 'react-datetime';
 import Mutation from '../../../delv/Mutation'
-import moment from 'moment'
 
 const CREATE_ANNOUNCEMENT = `mutation($announcement:AnnouncementInput!){
   createAnnouncement(input:{announcement:$announcement}){

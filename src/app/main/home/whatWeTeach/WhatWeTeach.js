@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import './WhatWeTeach.css'
 import Popup from "reactjs-popup"
-import xicon from '../../../logos/x-icon.svg'
 
 const TOPICS = [
     {

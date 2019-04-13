@@ -1,35 +1,7 @@
 import React, {Component} from 'react';
 import Mutation from '../../../delv/Mutation'
-import {ReactQuery} from '../../../delv/delv-react'
-import {SecureRoute, GridView} from '../common/Common'
 import moment from 'moment';
 import './InstructorLogs.css'
-const GET_INSTRUCTOR_LOGS = `{
-  allEventLogs(condition:{instructor:null}){
-    nodes{
-      id
-      instructor
-      comment
-      dateIntervalByDateInterval{
-          id
-          start
-      }
-      eventByEvent{
-        id
-        activityByActivity{
-          id
-          name
-        }
-      }
-      studentByStudent{
-        id
-        firstName
-        lastName
-      }
-    }
-  }
-}`
-
 const CREATE_LOG = `mutation ($eventLog: EventLogInput!) {
   createEventLog(input: {eventLog:$eventLog}) {
     eventLog {

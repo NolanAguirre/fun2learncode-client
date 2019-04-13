@@ -73,13 +73,11 @@ class PrerequisiteForm extends Component{
         this.setState({[name]: value});
     }
 
-    toggleEdit = () =>{
-        this.setState({edit: !this.state.edit })
-    }
+    toggleEdit = () => this.setState({edit: !this.state.edit })
 
     handleSubmit = (event) => { // TODO implement hasRequiredValues
         event.preventDefault();
-        if (this.state.prerequisite != undefined) {
+        if (this.state.prerequisite) {
             let activityPrerequisite = {
                 activity: this.props.activityId,
                 prerequisite:this.state.prerequisite

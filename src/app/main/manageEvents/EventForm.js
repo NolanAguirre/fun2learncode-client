@@ -3,8 +3,6 @@ import {DropDown, EventDropDownInner} from '../common/Common';
 import './EventForm.css';
 import DateTime from 'react-datetime';
 import '../../../react-datetime.css'
-import Colors from '../calendar/Colors'
-import EventsPreview from './EventsPreview';
 import moment from 'moment';
 import Popup from "reactjs-popup"
 import Mutation from '../../../delv/Mutation'
@@ -180,7 +178,7 @@ class AddonJoinForm extends Component {
 
     handleSubmit = (event) => { // TODO implement hasRequiredValues
         event.preventDefault();
-        if (this.state.addon != undefined) {
+        if (this.state.addon) {
             let addOnJoin = {
                 addOn: this.state.addon,
                 event: this.props.event
@@ -240,15 +238,15 @@ class EventFormInner extends Component {
 
     hasRequiredValues = () => {
         let haveValues = this.state.name && this.state.address && this.state.price >= 0
-        let changedValues = this.state.name != this.props.name ||
-        this.normalizeDate(this.state.openRegistration) != this.normalizeDate(this.props.openRegistration) ||
-        this.normalizeDate(this.state.closeRegistration) != this.normalizeDate(this.props.closeRegistration) ||
-        this.state.address != this.props.address ||
-        this.state.capacity != this.props.capacity ||
-        this.state.archive != this.props.archive ||
-        this.state.publicDisplay != this.props.publicDisplay ||
-        this.state.price != this.props.price ||
-        this.state.activity != this.props.activity
+        let changedValues = this.state.name !== this.props.name ||
+        this.normalizeDate(this.state.openRegistration) !== this.normalizeDate(this.props.openRegistration) ||
+        this.normalizeDate(this.state.closeRegistration) !== this.normalizeDate(this.props.closeRegistration) ||
+        this.state.address !== this.props.address ||
+        this.state.capacity !== this.props.capacity ||
+        this.state.archive !== this.props.archive ||
+        this.state.publicDisplay !== this.props.publicDisplay ||
+        this.state.price !== this.props.price ||
+        this.state.activity !== this.props.activity
         return haveValues && changedValues
     }
 

@@ -1,9 +1,8 @@
 import Delv from './delv'
 import graphql from 'graphql-anywhere'
 import TypeMap from './TypeMap'
-import CacheEmitter from './CacheEmitter';
+import CacheEmitter from './CacheEmitter'
 const gql = require('graphql-tag')
-var _ = require('lodash');
 
 class Query {
     constructor({query, variables, networkPolicy, onFetch, onResolve, onError, formatResult}) {
@@ -17,14 +16,14 @@ class Query {
         this.format = formatResult
         this.id = '_' + Math.random().toString(36).substr(2, 9)
         this.types = [];
-        if(networkPolicy != 'network-no-cache' && networkPolicy != 'cache-by-query'){
+        if(networkPolicy !== 'network-no-cache' && networkPolicy !== 'cache-by-query'){
             this.mapTypes()
         }
     }
 
     mapTypes = () => {
         const resolver = (fieldName, root, args, context, info) => {
-            if (!info.isLeaf && fieldName != 'nodes') {
+            if (!info.isLeaf && fieldName !== 'nodes') {
                 this.types.push(TypeMap.guessChildType(TypeMap.get(fieldName)))
             }
             return {}

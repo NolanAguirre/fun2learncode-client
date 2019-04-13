@@ -3,7 +3,6 @@ import './CheckIn.css'
 import {SecureRoute, MultiSelect, Selectable} from '../common/Common'
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
-import Logo from '../../logos/drawing.svg'
 import moment from 'moment'
 
 const GET_POSSIBLE_EVENTS = `{

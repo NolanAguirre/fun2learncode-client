@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {MultiSelect, Selectable} from '../../common/Common'
-import AddCard from './AddCard'
 import Card from '../Card'
 import './views.css'
 import loadingDots from '../../../logos/loading-dots.svg'

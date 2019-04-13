@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import './Announcement.css'
-import Mutation from '../../../../delv/Mutation'
 import next from '../../../logos/next.svg'
 import moment from 'moment'
 import { ReactQuery } from '../../../../delv/delv-react'

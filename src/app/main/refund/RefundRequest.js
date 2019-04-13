@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 import Mutation from '../../../delv/Mutation'
-import {BasicPopup} from '../common/Common'
 import axios from 'axios'
 import './Refund.css'
-import Popup from "reactjs-popup"
-import xicon from '../../logos/x-icon.svg'
 
 const CREATE_REFUND_REQUEST = `mutation($payment:UUID!, $reason:String!){
 	createRefundRequest(input:{refundRequest:{reason:$reason, payment:$payment}}){
@@ -44,7 +41,7 @@ class RefundRequest extends Component{
 
 	handleSubmit = (event) => {
 		event.preventDefault();
-		if(this.state.reason != ''){
+		if(this.state.reason){
             axios.post('http://localhost:3005/mailing/account_action', {
                 user:this.props.userId
             })

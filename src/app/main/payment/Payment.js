@@ -1,18 +1,8 @@
 import React, { Component } from 'react'
 import Mutation from '../../../delv/Mutation'
-import Query from '../../../delv/Query'
 import AddCard from '../creditCardForm/views/AddCard'
-import {ReactQuery} from '../../../delv/delv-react'
-import {SecureRoute} from '../common/Common'
 import Popup from "reactjs-popup"
 import './Payment.css'
-import {CardNumberElement,
-  CardExpiryElement,
-  CardCVCElement,
-  PostalCodeElement,
-  StripeProvider,
-  Elements,
-  injectStripe} from 'react-stripe-elements'
 import loading from '../../logos/loading.svg'
 import xicon from '../../logos/x-icon.svg'
 import CreditCardForm from '../creditCardForm/CreditCardForm'

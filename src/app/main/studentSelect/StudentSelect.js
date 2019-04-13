@@ -3,7 +3,6 @@ import './StudentSelect.css'
 import StudentPreview from './studentPreview/StudentPreview'
 import {StudentWaiverForm} from '../studentWaiver/StudentWaiver'
 import Popup from "reactjs-popup"
-import {CreateAccount} from '../signUp/SignUp'
 import DateTime from 'react-datetime';
 import moment from 'moment'
 import Mutation from '../../../delv/Mutation'
@@ -118,7 +117,7 @@ class StudentForm extends Component{
                 onClose={this.clearPopupState}>
                 <div className='popup-inner'>
                     <div className='close-popup'>
-                        <img onClick={this.clearPopupState} src={xicon}/>
+                        <img onClick={this.clearPopupState} src={xicon} alt='close'/>
                     </div>
                     <div className="login-container">
                         <h1 className='center-text'>Add Student</h1>
@@ -180,7 +179,7 @@ class StudentWaiverDisplay extends Component{
             <Popup className='popup'open={this.state.showPopup} closeOnDocumentClick={false} onClose={this.clearPopupState}>
             <div className='popup-inner'>
                 <div className='close-popup'>
-                    <img onClick={this.clearPopupState} src={xicon}/>
+                    <img onClick={this.clearPopupState} src={xicon} alt='close'/>
                 </div>
                 <StudentWaiverForm studentId={this.state.studentId}/>
             </div>

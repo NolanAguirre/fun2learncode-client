@@ -1,14 +1,12 @@
 import React, { Component } from 'react'
 import {OrderHistory} from '../orderHistory/OrderHistory'
 import Mutation from '../../../delv/Mutation'
-import {ReactQuery} from '../../../delv/delv-react'
-import {SecureRoute, BasicPopup, RoutePopup} from '../common/Common'
+import {SecureRoute, RoutePopup} from '../common/Common'
 import moment from 'moment'
 import PasswordReset from '../passwordReset/PasswordReset'
 import './Account.css'
 import EventRequest from '../eventRequest/EventRequest'
 import CreditCardForm from '../creditCardForm/CreditCardForm'
-import xicon from '../../logos/x-icon.svg'
 const RESET_PASSWORD = `mutation($password:String!){
   resetPassword(input:{arg0:$password,arg1:"BY USER"}){
     clientMutationId

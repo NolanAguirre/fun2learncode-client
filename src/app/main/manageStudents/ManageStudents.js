@@ -59,7 +59,7 @@ function EventMonthDate(props){
     const logsPopup = () => {
         props.popup.open(
             <React.Fragment>
-            <div className='manage-students-event-logs-container'>
+            <div className='payment-container'>
                 <h1>{props.date.activityName} {localize(props.date.start).format('dddd Do')}</h1>
                 {props.date.eventLogsByDateInterval.nodes.map(log=><EventLog key={log.id} firstName={log.userByInstructor.firstName} comment={log.comment} />)}
             </div>

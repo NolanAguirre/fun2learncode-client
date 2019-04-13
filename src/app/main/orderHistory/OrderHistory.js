@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {ReactQuery} from '../../../delv/delv-react'
-import {SecureRoute, BasicPopup} from '../common/Common'
 import moment from 'moment'
 import './OrderHistory.css'
 import RefundRequest from '../refund/RefundRequest'
@@ -73,7 +72,6 @@ function Order(props){
     let orderTable = []
     let x = 0;
     snapshot._students.forEach((s)=>{
-        const override = snapshot._overrides.filter((o)=>o.student === s.id)[0]
         let price = event.price
         orderTable.push(<OrderRow key={x++} name={s.first_name} item={snapshot._activity.name} cost={price}/>)
         if(s.price){
