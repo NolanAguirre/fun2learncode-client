@@ -203,11 +203,12 @@ class RegistrationInner extends Component{
 }
 
 function RegistrationInbetween(props){
-    const query = (window.location.href.includes('Private'))?GET_EVENT_BY_TOKEN(props.match.params.id):GET_EVENT_INFO_BY_ID(props.match.params.id)
-    const networkPolicy = (window.location.href.includes('Private'))?'network-no-cache':'network-once'
+    const isPrivate = window.location.href.includes('private')
+    const query = (isPrivate)?GET_EVENT_BY_TOKEN(props.match.params.id):GET_EVENT_INFO_BY_ID(props.match.params.id)
+    const networkPolicy = (isPrivate)?'network-no-cache':'network-once'
     function formatResult(queryResult){
         console.log(queryResult)
-        const event = (window.location.href.includes('Private'))? queryResult.data.eventByToken:queryResult.allEvents.nodes[0]
+        const event = (isPrivate)? queryResult.data.eventByToken:queryResult.allEvents.nodes[0]
         if(!event){
             return {error:'No event found'}
         }
