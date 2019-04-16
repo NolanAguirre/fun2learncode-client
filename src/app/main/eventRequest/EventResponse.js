@@ -20,6 +20,7 @@ const UPDATE_EVENT_REQUEST = `mutation ($id:UUID!, $event: UUID, $accessToken: S
   updateEventRequestById(input: {id:$id, eventRequestPatch: {event: $event, accessToken: $accessToken, status: $status}}) {
     eventRequest {
       id
+      userId
       status
       accessToken
     }

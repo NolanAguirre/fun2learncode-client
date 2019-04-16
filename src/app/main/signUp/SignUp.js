@@ -7,7 +7,9 @@ import Popup from 'reactjs-popup'
 import xicon from '../../logos/x-icon.svg'
 const CREATE_ACCOUNT = `mutation ($user: RegisterUserInput!) {
   registerUser(input: $user) {
-    clientMutationId
+    user{
+      id
+    }
   }
 }`
 
