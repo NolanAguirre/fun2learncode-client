@@ -10,20 +10,20 @@ const TOPICS = [
         name: 'Kodu',
         description:'Kodu lets kids create games on the PC and Xbox via a simple visual programming language. Kodu can be used to teach creativity, problem solving, storytelling, as well as programming. Anyone can use Kodu to make a game, young children as well as adults with no design or programming skills.'
     },{
-        name: 'Minecraft Redstone',
-        description:''
+        name: 'Python',
+        description:' '
     },{
         name:'Minecraft Mods',
-        description:''
-    },{
-        name: 'Python',
-        description:''
+        description:' '
     },{
         name: 'Java',
-        description:''
+        description:' '
     },{
-        name: 'Unity/VR',
-        description:''
+        name: 'Unity',
+        description:' '
+    },{
+        name: 'VR',
+        description:' '
     }
 ]
 
@@ -47,33 +47,22 @@ class WhatWeTeachSection extends Component{
     }
 }
 class WhatWeTeach extends Component{
-    constructor(props){
-        super(props);
-        this.state = {showPopup:false, text:''}
-    }
-	showPopup = (name) => {
-        const text = TOPICS.filter((item)=>item.name===name)[0]
-		this.setState({showPopup:true, text})
-	}
-	clearPopupState = () => {
-		this.setState({showPopup:false, text:''})
-	}
 	render = () => {
 		return <React.Fragment>
             <div className='what-we-teach'>
                 <div className='main-contents what-we-teach-center'>
                     <h1 className='center-text'>What we teach</h1>
                     <div className='teach-row'>
-                        <WhatWeTeachSection onClick={()=>this.showPopup('Scratch')} name='Scratch'/>
-                        <WhatWeTeachSection onClick={()=>this.showPopup('Kodu')} name='Kodu'/>
-                        <WhatWeTeachSection onClick={()=>this.showPopup('Minecraft Redstone')} name='Minecraft Redstone'/>
-                        <WhatWeTeachSection onClick={()=>this.showPopup('Minecraft Mods')} name='Minecraft Mods'/>
+                        <WhatWeTeachSection name='Scratch'/>
+                        <WhatWeTeachSection name='Kodu'/>
+                        <WhatWeTeachSection name='Python'/>
+                        <WhatWeTeachSection name='Minecraft Mods'/>
                     </div>
                     <div className='teach-row'>
                         <div></div>
-                        <WhatWeTeachSection onClick={()=>this.showPopup('Python')} name='Python'/>
-                        <WhatWeTeachSection onClick={()=>this.showPopup('Java')} name='Java'/>
-                        <WhatWeTeachSection onClick={()=>this.showPopup('Unity/VR')} name='Unity/VR'/>
+                        <WhatWeTeachSection name='Java'/>
+                        <WhatWeTeachSection name='Unity'/>
+                        <WhatWeTeachSection  name='VR'/>
                         <div></div>
                     </div>
                 </div>
