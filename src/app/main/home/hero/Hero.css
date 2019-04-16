@@ -1,0 +1,42 @@
+.welcome-one{
+    background-image: url("../../../logos/one.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: -999;
+    height: calc(100vh - 80.5px);
+    display:flex;
+    transition: 1s;
+    background-position: center;
+}
+.welcome-two{
+    background-image: url("../../../logos/two.JPG");
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: -999;
+    height: calc(100vh - 80.5px);
+    display:flex;
+    transition: 1s;
+    background-position: center;
+}
+.welcome-three{
+    background-image: url("../../../logos/three.JPG");
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: -999;
+    height: calc(100vh - 80.5px);
+    display:flex;
+    transition: 1s;
+    background-position: center;
+}
+
+
+.welcome-text{
+    margin:0px;
+    color:white;
+    animation: fadein 2s;
+}
+
+@keyframes fadein {
+    from { margin-bottom : 2000px; }
+    to   { margin-bottom : 0px;}
+}

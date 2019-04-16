@@ -6,6 +6,8 @@ import Announcement from './announcement/Announcement'
 import NewsLetter from './newsLetter/NewsLetter'
 import WhoWeAre from './whoWeAre/WhoWeAre'
 import ClassStructure from './classStructure/ClassStructure'
+import Hero from './hero/Hero'
+
 const GET_ACTIVITIES = `{
   allCategories {
     nodes {
@@ -18,13 +20,7 @@ const GET_ACTIVITIES = `{
 
 function Home (props) {
   return <div className='home'>
-    <div className='welcome'>
-        <div className='center-y section container'>
-            <div className='center-x'>
-                <h1 className='welcome-text'>Welcome to Fun 2 Learn Code</h1>
-            </div>
-        </div>
-    </div>
+    <Hero />
     <WhoWeAre />
     <div className='spline flipped-spline-container'>
         <img className='flipped-spline' src={spline}/>

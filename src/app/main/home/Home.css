@@ -2,22 +2,6 @@
     flex:1;
     background-color: white;
 }
-.welcome {
-    background-image: url(https://cdnp3.stackassets.com/fbe182dc117b199b8251133c364b01b914d0607e/store/opt/596/298/32bb9213074b411ae8ba18b9eff135c928c606aab40df5f78a235c79be6c/c2d6b3d66788cefbd0ff3879a65a05ed0f2c7363_main_hero_image.jpg);
-    z-index: -999;
-    height: calc(100vh - 80.5px);
-    display:flex;
-}
-.welcome-text{
-    color:white;
-    animation: fadein 2s;
-}
-
-@keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
 .spline{
     overflow-x: hidden;
     overflow-y: visible;
