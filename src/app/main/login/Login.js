@@ -3,12 +3,17 @@ import './Login.css'
 import {Link} from 'react-router-dom'
 import Logo from '../../logos/drawing.svg'
 import axios from 'axios'
-import Delv from '../../../delv/delv'
+
 class Login extends Component {
     constructor(props) {
         super(props)
         this.state = {email: '', password: ''}
     }
+    componentDidMount = () => {
+        this.mounted = true
+        this.loading = false
+    }
+    componentWillUnmount = () => this.mounted = false
 
     validEmail = () =>  this.state.email.match(/^.+@.+\..+$/)
 
@@ -21,19 +26,22 @@ class Login extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault()
+        if(this.loading) return;
         if(!this.validEmail()){
             this.setState({error:'No valid email address provided.'})
         }else if(!this.state.password || (this.state.password && this.state.password.length < 6)){
             this.setState({error:'No valid password provided.'})
         }else{
+            this.loading = true
             axios.post('http://localhost:3005/authenticate', {
                 email: this.state.email,
                 password: this.state.password
             }).then((res) => {
+                if(!this.mounted) return;
+                this.loading = false
                 if (res.data.error) {
                     this.setState({error:res.data.error})
                 } else {
-                    Delv.clearCache()
                     window.location.href = this.props.redirectUrl || '/'
                 }
             })
