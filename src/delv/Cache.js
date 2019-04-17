@@ -33,7 +33,11 @@ class Cache {
         }
 
         if(fieldName === 'allCreditCards'){
-            return Object.values(this.cache['CreditCard'])
+            if(this.cache['CreditCard']){
+                return Object.values(this.cache['CreditCard'])
+            }else{
+                return []
+            }
         }
 
         let conflict = this.keyConflict.get(fieldName)
@@ -71,7 +75,7 @@ class Cache {
                 return this.cache[fieldType][root[fieldType]]
             }
         }
-        return null;
+        return null
 
     }
 
