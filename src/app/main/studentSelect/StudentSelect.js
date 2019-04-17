@@ -7,8 +7,7 @@ import DateTime from 'react-datetime';
 import moment from 'moment'
 import Mutation from '../../../delv/Mutation'
 import {ReactQuery} from '../../../delv/delv-react'
-import {MultiSelect, Selectable} from '../common/Common'
-import xicon from '../../logos/x-icon.svg'
+import {MultiSelect, Selectable, RoutePoup} from '../common/Common'
 
 const yearAgo = moment().subtract(1,'years').toISOString()
 
@@ -55,13 +54,15 @@ function toProperCaps(string) {
 class StudentForm extends Component{
     constructor(props){
         super(props);
-        this.state = {showPopup:false, dateOfBirth:moment(), firstName:'', lastName:''}
+        this.state = { dateOfBirth:moment(), firstName:'', lastName:''}
         this.mutation = new Mutation({
             mutation:CREATE_STUDENT,
             onSubmit:this.handleSubmit,
             onResolve:this.onResolve
         })
     }
+
+    componentWillUnmount = () => this.mutation.removeListeners()
 
     handleChange = (event) => {
       const target = event.target
@@ -74,8 +75,8 @@ class StudentForm extends Component{
     }
 
     hasRequiredValues = () =>{
-        let haveValues =  this.state.firstName !== '' &&
-               this.state.lastName !== '' &&
+        let haveValues =  this.state.firstName &&
+               this.state.lastName &&
                this.state.dateOfBirth
          return haveValues
     }
@@ -86,114 +87,69 @@ class StudentForm extends Component{
             let student = Object.assign({}, this.state)
             delete student.error
             delete student.showPopup
-            this.clearPopupState()
             return {student: { student }}
         }
-        this.clearPopupState()
         return false
     }
 
     onResolve = () => {
-        this.setState({dateOfBirth:moment()})
+        this.props.popup.close()
     }
 
     handleTimeChange = (key, value)=> {
         this.setState({[key]:value})
     }
 
-    showPopup = () =>{
-        this.setState({showPopup:true});
-    }
-
-    clearPopupState = () =>{
-        this.setState({showPopup:false});
-    }
-
     render = () => {
-        return <React.Fragment>
-            <Popup className='popup'
-                open={this.state.showPopup}
-                closeOnDocumentClick={false}
-                onClose={this.clearPopupState}>
-                <div className='popup-inner'>
-                    <div className='close-popup'>
-                        <img onClick={this.clearPopupState} src={xicon} alt='close'/>
+        return <div className="login-container">
+            <h1 className='center-text'>Add Student</h1>
+            <div className='error'>{this.state.error}</div>
+            <form onSubmit={this.mutation.onSubmit} className='login-form'>
+                    <div className='container'>
+                        <div className='small-input edge-margin'>
+                            <input className='styled-input' name='firstName' value={this.state.firstName} onChange={this.handleChange} placeholder='first name' />
+                        </div>
+                        <div className='small-input edge-margin'>
+                            <input className='styled-input' name='lastName' value={this.state.lastName} onChange={this.handleChange} placeholder='last name' />
+                        </div>
                     </div>
-                    <div className="login-container">
-                        <h1 className='center-text'>Add Student</h1>
-                        <div className='error'>{this.state.error}</div>
-                        <form onSubmit={this.mutation.onSubmit} className='login-form'>
-                                <div className='container'>
-                                    <div className='small-input edge-margin'>
-                                        <input className='styled-input' name='firstName' value={this.state.firstName} onChange={this.handleChange} placeholder='first name' />
-                                    </div>
-                                    <div className='small-input edge-margin'>
-                                        <input className='styled-input' name='lastName' value={this.state.lastName} onChange={this.handleChange} placeholder='last name' />
-                                    </div>
-                                </div>
-                                <div className='container margin-top-40'>
-                                    <span className='dob-label'>Date Of Birth:</span>
-                                    <div className='small-input edge-margin'>
-                                        <DateTime onChange={(time)=>this.handleTimeChange('dateOfBirth',time)}value={this.state.dateOfBirth} inputProps={{className:'styled-input'}} dateFormat="M/D/YYYY"  timeFormat={false} viewMode='years' />
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Add student</div>
-                                    <button className='hacky-submit-button' type='submit'/>
-                                </div>
-                        </form>
+                    <div className='container margin-top-40'>
+                        <span className='dob-label'>Date Of Birth:</span>
+                        <div className='small-input edge-margin'>
+                            <DateTime onChange={(time)=>this.handleTimeChange('dateOfBirth',time)}value={this.state.dateOfBirth} inputProps={{className:'styled-input'}} dateFormat="M/D/YYYY"  timeFormat={false} viewMode='years' />
+                        </div>
                     </div>
-                </div>
-            </Popup>
-        <div onClick={this.showPopup} className='student-preview-container'>
-            new Student
+                    <div>
+                        <div className='styled-button center-text' onClick={this.mutation.onSubmit}>Add student</div>
+                        <button className='hacky-submit-button' type='submit'/>
+                    </div>
+            </form>
         </div>
-    </React.Fragment>
     }
 
 }
 
-class StudentWaiverDisplay extends Component{
-    constructor(props){
-        super(props)
-        this.state = {showPopup:false}
-    }
-    showPopup = (id) => {
-        this.setState({showPopup:true, studentId:id});
-    }
-    clearPopupState = () =>{
-        this.setState({showPopup:false});
-    }
-
-    render = () => {
-        let attentionNeeded = false;
-        const children = this.props.allStudents.nodes.map((student)=>{
-            const waiver = student.studentWaiversByStudent.nodes[0];
-            if(waiver){
-                return <div key={student.id} className='waiver-found'>{student.firstName} {student.lastName}</div>
-            }
-            attentionNeeded = true;
-            return <div key={student.id} onClick={()=>{this.showPopup(student.id)}} className='waiver-needed'>{student.firstName} {student.lastName}</div>
-        })
-        return <div className='student-waiver-display'>
-            <Popup className='popup'open={this.state.showPopup} closeOnDocumentClick={false} onClose={this.clearPopupState}>
-            <div className='popup-inner'>
-                <div className='close-popup'>
-                    <img onClick={this.clearPopupState} src={xicon} alt='close'/>
-                </div>
-                <StudentWaiverForm studentId={this.state.studentId}/>
-            </div>
-            </Popup>
-            <h3 className='student-waiver-header'>Waivers</h3>
-            {attentionNeeded?<div className='error'>Attention Needed!</div>:''}
-            <div className='stuednt-waiver-status-container'>
-                {children}
-            </div>
+function StudentWaiverDisplay(props){
+    let attentionNeeded = false;
+    const children = props.allStudents.nodes.map((student)=>{
+        const waiver = student.studentWaiversByStudent.nodes[0];
+        if(waiver){
+            return <div key={student.id} className='waiver-found'>{student.firstName} {student.lastName}</div>
+        }
+        attentionNeeded = true;
+        return <div key={student.id} onClick={()=>{props.popup.open(<StudentWaiverForm studentId={student.id}/>)}} className='waiver-needed'>{student.firstName} {student.lastName}</div>
+    })
+    return <div className='student-waiver-display'>
+        <h3 className='student-waiver-header'>Waivers</h3>
+        {attentionNeeded?<div className='error'>Attention Needed!</div>:''}
+        <div className='stuednt-waiver-status-container'>
+            {children}
         </div>
-    }
+    </div>
 }
 
 function StudentSelectInner(props){
+    const newStudentPopup = () => {props.popup.open(<StudentForm client={props.client} parentId={props.userId} popup={props.popup}/>)}
     return <div className='student-select-inner'>
         <div className='student-select-left'>
             <h3 className='student-select-header'>{(props.multiSelect)?'Select students':'Select a student'}</h3>
@@ -203,19 +159,17 @@ function StudentSelectInner(props){
                         <StudentPreview />
                      </Selectable>
                 </MultiSelect>
-                {props.children}
+                {props.createStudent?<StudentPreview className='student-preview-container'item={{firstName:'new',lastName:'Student'}} onClick={newStudentPopup}/>:''}
              </div>
          </div>
-        <StudentWaiverDisplay allStudents={props.allStudents} />
+        {props.hideWaivers?'':<StudentWaiverDisplay allStudents={props.allStudents} popup={props.popup}/>}
     </div>
 }
 
 function StudentSelect(props) {
     return <div className='styled-container custom-scrollbar'>
                 <ReactQuery query={GET_STUDENTS_BY_PARENT(props.userId)}>
-                    <StudentSelectInner {...props}>
-                        {props.createStudent?<StudentForm client={props.client} parentId={props.userId}/>:''}
-                    </StudentSelectInner>
+                    <StudentSelectInner {...props} />
                 </ReactQuery>
           </div>
 }

@@ -135,7 +135,7 @@ class ManageStudentsInner extends Component {
         </TimeRangeSelector>
     }
       return <div className='manage-students-container main-contents'>
-          <StudentSelect setSelected={this.setSelectedStudents} userId={this.props.getUserData.id} createStudent/>
+          <StudentSelect setSelected={this.setSelectedStudents} userId={this.props.getUserData.id} createStudent popup={this.props.popup}/>
           {child}
       </div>
   }

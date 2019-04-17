@@ -72,9 +72,7 @@ class StudentWaiverForm extends Component{
         })
     }
 
-    componentWillUnmount = () => {
-        this.mutation.removeListeners()
-    }
+    componentWillUnmount = () => this.mutation.removeListeners()
 
     hasRequiredValues = () =>{
         let haveValues = (this.state.pickupOne ||
@@ -122,9 +120,7 @@ class StudentWaiverForm extends Component{
 
     render = () => {
         if(this.state.complete){
-            return <div className='student-waiver-container'>
-                    <h2 className='center-text'>Student Waiver created</h2>
-            </div>
+            return <div className='popup-inner-complete'>Student Waiver created</div>
         }
         return <form className='student-waiver-container' onSubmit={this.mutation.onSubmit}>
                 <h2 className='center-text'>Student Waiver</h2>
