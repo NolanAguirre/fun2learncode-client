@@ -62,7 +62,7 @@ class ManageAnnouncementsInner extends Component{
     render = () => {
         return <form className="announcement-container main-contents" onSubmit={this.mutation.onSubmit}>
                 <div className='center-x'>
-                    <input className='announcement-title-input' name="title" onChange={this.handleChange} value={this.state.title} placeholder='Title' />
+                    <input className='styled-input' name="title" onChange={this.handleChange} value={this.state.title} placeholder='Title' />
                 </div>
                 <h3 className='no-margin'>Announcement message:</h3>
                 <textarea className='announcement-message-textarea' name="message" onChange={this.handleChange} value={this.state.message} />

@@ -1,6 +1,6 @@
 .login-container{
     margin: auto;
-    padding: 40px!important;
+    padding: 40px;
     background-color:white;
     width: 515px;
     min-height: 500px;
@@ -27,6 +27,13 @@
 @media screen and (max-width: 515px) {
     .login-container{
         width: 100%!important;
+        padding:20px;
         box-sizing: border-box;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .login-container{
+        min-height: 400px;
     }
 }

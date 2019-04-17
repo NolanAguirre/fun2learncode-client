@@ -17,14 +17,13 @@ const createStripeStyle = {
       base: {
         fontSize:'24px',
         color: '#424770',
-        letterSpacing: '0.025em',
-        fontFamily: 'Source Code Pro, monospace'
+        letterSpacing: '0.025em'
       },
       invalid: {
         color: '#9e2146',
       }
     }
-  };
+  }
 class PaymentInformationEntry extends Component{
     constructor(props){
         super(props)
@@ -88,7 +87,7 @@ class PaymentInformationEntry extends Component{
                 <div className='sign-up-input-container'>
                       <div className='payment-input-container'>
                            {this.state.addressError?<span className='error'>{this.state.addressError}</span>:'Address'}
-                        <input className='styled-input' name='address' value={this.state.address} onChange={this.handleChange}/>
+                        <input className='styled-input' name='address' value={this.state.address} onChange={this.handleChange} placeholder='Street address'/>
                       </div>
                 </div>
                 <div className='container'>

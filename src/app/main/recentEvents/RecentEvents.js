@@ -164,14 +164,14 @@ function AdminEvent(props) {
                 Close: {localize(props.event.closeRegistration).format('MMMM, Do h:mm a')}
             </div>
             <div
-                className='recent-event-btn'
+                className=' styled-button recent-event-btn'
                 onClick={() => {
                     props.onClick(props.event.id, 'registration')
                 }}>
                 View Registration Data
             </div>
             <div
-                className='recent-event-btn'
+                className='styled-button recent-event-btn'
                 onClick={() => {
                     props.onClick(props.event.id, 'default')
                 }}>

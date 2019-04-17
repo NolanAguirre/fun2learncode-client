@@ -1,5 +1,5 @@
 .registration-header{
-    font-size: 56px;
+    font-size: 3rem;
     font-weight: normal;
     color:rgb(102, 102, 102);
     margin-bottom: 0px;
@@ -16,6 +16,7 @@
     padding:20px;
     white-space: nowrap;
     align-items: center;
+    margin-bottom: 10px;
 }
 .promo-code-container input{
 }

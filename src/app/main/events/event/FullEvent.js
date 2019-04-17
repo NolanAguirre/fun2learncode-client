@@ -3,7 +3,7 @@ import './Event.css'
 import {DatesTable} from '../../common/Common'
 
 function FullEvent(props){
-    return <div className='container column'>
+    return <div className='container column section'>
         <h3>Event Information</h3>
         <div className="section container">
             <table className="section">

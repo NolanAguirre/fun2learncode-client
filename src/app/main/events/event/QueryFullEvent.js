@@ -62,7 +62,7 @@ function FullEventInner(props){
     }
     const address = event.addressByAddress
     const addons = event.addOnJoinsByEvent.nodes.map((a)=>{
-        return <div key={a.id} className='query-event-addon-container'>
+        return <span key={a.id} className='query-event-addon-container'>
               <h3>{a.addOnByAddOn.name}</h3>
               <div className='addon-container-description'>
                   {a.addOnByAddOn.description}
@@ -70,9 +70,9 @@ function FullEventInner(props){
               <div>
                   {a.addOnByAddOn.price}$
               </div>
-        </div>
+        </span>
     })
-    return <div className='query-full-event'>
+    return <div className='manage-user-popup'>
         <h1>Event info</h1>
         <table>
             <tbody>

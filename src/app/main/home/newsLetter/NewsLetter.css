@@ -9,6 +9,11 @@
     max-width: 800px;
     margin: 0 auto;
 }
+@media screen and (max-width: 500px) {
+    .news-letter-section{
+        padding:20px;
+    }
+}
 .news-letter-input{
     display: block;
     width: calc(100% - 77px);
@@ -24,7 +29,7 @@
     background-clip: padding-box;
 }
 .news-letter-btn{
-    padding: 10px!important;
+    padding: 10px 5px!important;
     font-size: 18px!important;
 }
 .news-letter-input-container{

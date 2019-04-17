@@ -10,3 +10,6 @@
     padding:40px;
     font-size: 24px;
 }
+.view-refund-container{
+    min-height: 100px!important;
+}

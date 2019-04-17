@@ -5,8 +5,8 @@ import './views.css'
 import loadingDots from '../../../logos/loading-dots.svg'
 
 function ManageCardsButton(props){
-    if(props.isDeleting ){
-        return <div className='styled-loading-button'><img src={loadingDots}/></div>
+    if(props.isDeleting){
+        return <img src={loadingDots}/>
     } else if(props.selected) {
         return <div className="styled-button" onClick={props.deleteCard}>Delete card</div>
     } else {

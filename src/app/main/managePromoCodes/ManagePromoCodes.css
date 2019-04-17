@@ -1,5 +1,5 @@
 .promo-form-column{
-    width:350px;
+    min-width: 300px;
 }
 .promo-form-column > div{
     min-height:25px;

@@ -19,7 +19,7 @@ function ViewRequest(props){
         <div>{props.grantedReason}</div>
         </React.Fragment>
     }
-	return <div className='payment-container'>
+	return <div className='payment-container view-refund-container'>
             <h2 className='center-text'>Status: {props.status}</h2>
             {child}
         </div>

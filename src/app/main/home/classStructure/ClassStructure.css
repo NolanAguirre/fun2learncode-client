@@ -10,11 +10,8 @@
 
 @media screen and (max-width: 420px) {
     .styled-container{
-        display:flex;
-        background-color: white;
         padding: 10px 20px;
         margin-bottom: 10px;
-        border-bottom: 2px solid #b0c9ab;
     }
 
 }

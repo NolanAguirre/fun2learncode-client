@@ -6,17 +6,9 @@
     overflow-y: auto;
 }
 .recent-event-btn {
-    min-width: 75px;
-    text-align: center;
-    padding: 10px;
-    background-color: #41a62a;
-    color: white;
-    transition-duration: 0.1s;
+    padding: 10px!important;
 }
 
-.recent-event-btn:hover {
-    background-color: #41a62a;
-}
 .recent-event-day-container {
     margin: 20px;
     overflow-y: auto;
