@@ -52,9 +52,7 @@ class PasswordReset extends Component{
 
     render = () => {
         if(this.state.complete){
-            return <div className='center-y section'>
-                    <div className='center-text'>Password has been changed.</div>
-                </div>
+            return<div className='popup-inner-complete'>Password has been changed.</div>
         }else{
             return<React.Fragment>
                 <h2 className='center-text'>Reset Password</h2>

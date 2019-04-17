@@ -112,6 +112,7 @@ function AccountInner(props){
     const emailPopup = () => {props.popup.open(<UpdateEmail email={user.email} mutation={UPDATE_EMAIl(user.id)}/>)}
     const passwordPopup = () => {props.popup.open(<PasswordReset mutation={RESET_PASSWORD}/>)}
     const creditCardPopup = () => {props.popup.open(<CreditCardForm user={user.id}/>)}
+    const eventRequestPopup = () => {props.popup.open(<EventRequest userId={user.id}/>)}
     return <div className="account main-contents">
         <h2 className='account-header'>My Account</h2>
         <div className='account-info-container'>
@@ -160,7 +161,7 @@ function AccountInner(props){
         <div className='private-event'>
             <div className='account-event-request-section'>
                 <h2 className='center-text'>Request private event</h2>
-                <EventRequest userId={user.id}/>
+                <div onClick={eventRequestPopup} className='center-text styled-button'>Request Event</div>
             </div>
             <div className='private-event-footer'>
                 This feature is intended for birthday parties and similar events, to request a public event email info@fun2learncode.com

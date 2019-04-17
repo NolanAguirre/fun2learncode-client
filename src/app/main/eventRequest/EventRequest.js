@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import Mutation from '../../../delv/Mutation'
-import axios from 'axios'
 import './EventRequest.css'
-import Popup from "reactjs-popup"
-import xicon from '../../logos/x-icon.svg'
 
 
 const CREATE_EVENT_REQUEST = `mutation($information:String!){
@@ -48,35 +45,20 @@ class EventRequest extends Component{
 	render = () => {
         let child
         if(this.state.complete){
-            child = <div className='login-form'>
-                <div />
-				<div className='center-text'>Event request has been made. Response will be sent via email.</div>
-                <div />
-			</div>
+            return  <div className='popup-inner-complete'>Event request has been made. Response will be sent via email.</div>
         }else{
-            child = <form className='login-form' onSubmit={this.mutation.onSubmit}>
-                <h2 className='event-request-header'>Event Request</h2>
-                <div className='error'>{this.state.error}</div>
-                <div>Event details:</div>
-                <textarea name='information' value={this.state.information} onChange={this.handleInputChange} className='activity-description-textarea'/>
-                <span className='refund-footer'>Include desired price (paid in full by requestee), location, time and general description.</span>
-                <div className='styled-button center-text margin-top-10' onClick={this.mutation.onSubmit}>Submit for review</div>
-                <button className='hacky-submit-button' type='submit'/>
-            </form>
-        }
-		return <React.Fragment>
-			<Popup className='popup' open={this.state.showPopup} closeOnDocumentClick={false} onClose={this.clearPopupState}>
-            <div className='popup-inner'>
-                <div className='close-popup'>
-                    <img onClick={this.clearPopupState} src={xicon}/>
-                </div>
-                <div className='login-container'>
-				    {child}
-                </div>
+            return <div className='payment-container'>
+                <form className='login-form' onSubmit={this.mutation.onSubmit}>
+                    <h2 className='event-request-header'>Event Request</h2>
+                    <div className='error'>{this.state.error}</div>
+                    <div>Event details:</div>
+                    <textarea name='information' value={this.state.information} onChange={this.handleInputChange} className='activity-description-textarea'/>
+                    <span className='refund-footer'>Include desired price (paid in full by requestee), location, time and general description.</span>
+                    <div className='styled-button center-text margin-top-10' onClick={this.mutation.onSubmit}>Submit for review</div>
+                    <button className='hacky-submit-button' type='submit'/>
+                </form>
             </div>
-			</Popup>
-            <div onClick={this.showPopup} className='center-text styled-button'>Request Event</div>
-		</React.Fragment>
+        }
 	}
 }
 
