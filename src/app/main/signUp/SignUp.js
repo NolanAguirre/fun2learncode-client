@@ -77,34 +77,34 @@ class SignUp extends Component {
         let errors = ''
         serverErrors.forEach(error=>{
             if(error.message === 'duplicate key value violates unique constraint "users_email_key"'){
-                errors += 'The email given is not available. \n'
+                errors = 'The email given is not available.'
                 return
             }
             if(error.message === 'new row for relation "users" violates check constraint "users_email_check"'){
-                errors += 'The email give is not valid. \n'
+                errors = 'The email given is not valid.'
                 return
             }
             if(error.message === 'new row for relation "users" violates check constraint "users_first_name_check"'){
-                errors += 'No first name provided. \n'
+                errors = 'No first name provided.'
                 return
             }
             if(error.message === 'new row for relation "users" violates check constraint "users_last_name_check"'){
-                errors += 'No last name provided. \n'
+                errors = 'No last name provided.'
                 return
             }
             if(error.message === 'new row for relation "users" violates check constraint "users_last_name_check"'){
-                errors += 'No last name provided. \n'
+                errors = 'No last name provided.'
                 return
             }
             if(error.message === 'Password must be between 6 and 72 characters.'){
-                errors += 'Password must be between 6 and 72 characters.'
+                errors = 'Password must be between 6 and 72 characters.'
                 return
             }
             if(error.message === 'No password was provided.'){
-                errors += 'No password was provided. \n'
+                errors = 'No password was provided.'
                 return
             }
-            errors += 'An Unknown error occured while attemping to make your account \n'
+            errors = 'An Unknown error occured while attemping to make your account.'
         })
         if(errors){
             this.setState({error:errors})
@@ -115,11 +115,11 @@ class SignUp extends Component {
         event.preventDefault()
         if(this.hasRequiredValues()){
             if(!this.validEmail()){
-                this.setState({error:'The email give is not valid.'})
+                this.setState({error:'The email given is not available.'})
             }else if(!this.passwordValid()){
                 this.setState({error:'Password must be between 5 and 72 characters'})
             }else if(!this.passwordMatch()){
-                this.setState({error:'The passwords to not match.'})
+                this.setState({error:'Passwords do not match.'})
             }else {
                 let uniqueEmail = await this.uniqueEmail()
                 if(uniqueEmail){
@@ -127,7 +127,7 @@ class SignUp extends Component {
                     delete user.repeatPassword
                     delete user.error
                     delete user.showPopup
-                    axios.post('http://localhost:3005/graphql', { query: CREATE_ACCOUNT,variables:{user}}).then((res) => {
+                    axios.post('http://localhost:3005/graphql', {query: CREATE_ACCOUNT,variables:{user}}).then((res) => {
                         if(res.data.errors){
                             this.handleServerErrors(res.data.errors)
                         }else{

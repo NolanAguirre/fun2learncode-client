@@ -181,7 +181,7 @@ class RegistrationInner extends Component{
             return 'No Event Found'
         }
         return <div className='registration-container main-contents'>
-            <h2 className='registration-header'>Registration</h2>
+            <h1 className='registration-header'>Registration</h1>
             <div className='error'>{moment(this.props.event.closeRegistration).unix() < moment().unix()
                 ?'Registration for this event has already closed, you will not be able to register unless you have been granted an override.':''}</div>
             <div className='styled-container'>
@@ -193,7 +193,7 @@ class RegistrationInner extends Component{
                 <PaymentOverview event={{price: this.props.event.price,id: this.props.event.id,name: this.props.activity.name}} overrides={this.props.overrides} addons={this.state.addons} students={this.state.students}/>
             </div>
             <div className='error'>{this.state.error}</div>
-            <StudentSelect className='styled-container' multiSelect createStudent isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} userId={this.props.getUserData.id}/>
+            <StudentSelect className='styled-container' multiSelect createStudent isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} userId={this.props.getUserData.id} hideWaivers/>
             <AddonSelect className='styled-container column' multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
             <div className='promo-code-container'> Promo Code: <input className='styled-input' name='promoCode' placeholder='Promo Code' onChange={this.handleChange}/></div>
             <Payment showPopup={this.state.showPopup} clearPopupState={this.clearPopupState} user={this.props.getUserData.id} total={this.state.total}/>

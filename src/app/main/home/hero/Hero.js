@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {Link} from 'react-router-dom'
 import './Hero.css'
 
 const classNames = ['welcome-one', 'welcome-two', 'welcome-three']
@@ -21,8 +22,9 @@ class Hero extends Component{
             <div className='center-y section container'>
                 <div className='center-x'>
                     <h1 className='welcome-text'>Welcome to Fun 2 Learn Code</h1>
-                    <div>
-                        <h3>View Summer Camps    View Labs</h3>
+                    <div className='hero-link-container'>
+                        <div className='hero-link'><Link to='/activity/summer-camps'>View Camps</Link></div>
+                        <div className='hero-link'><Link to='/activity/labs'>View Labs</Link></div>
                     </div>
                 </div>
             </div>

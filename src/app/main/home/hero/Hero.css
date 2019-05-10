@@ -31,12 +31,44 @@
 
 
 .welcome-text{
+    font-size: 2rem;
     margin:0px;
     color:white;
+    animation: fadein 1s;
+}
+
+.hero-link-container{
+    margin-top:1rem;
+    display:flex;
+    justify-content: space-around;
     animation: fadein 2s;
 }
 
+.hero-link{
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color:white;
+    border: 2px solid white;
+    border-radius: 5px;
+    padding:10px;
+}
+
+.hero-link a{
+    color:white;
+    text-decoration: none;
+}
+
 @keyframes fadein {
-    from { margin-bottom : 2000px; }
-    to   { margin-bottom : 0px;}
+    from { opacity: 0; }
+    to   { opacity: 1;}
+}
+
+@media screen and (max-width: 370px) {
+    .welcome-text{
+        font-size: 1.8rem;
+    }
+    .hero-link{
+        font-size: 1.2rem;
+    }
 }
