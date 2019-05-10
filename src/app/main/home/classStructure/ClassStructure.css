@@ -1,5 +1,8 @@
+
+
 .section-card{
-    min-width: 300px;
+    flex:1;
+    min-width: 25rem;
     justify-content: flex-start!important;
 }
 .home-section{

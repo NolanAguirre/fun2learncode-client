@@ -50,8 +50,8 @@ class WhatWeTeach extends Component{
 	render = () => {
 		return <React.Fragment>
             <div className='what-we-teach'>
-                <div className='main-contents what-we-teach-center'>
-                    <h1 className='center-text'>What we teach</h1>
+                <div className='what-we-teach-center'>
+                    <h1 className='what-we-teach-header'>What we teach</h1>
                     <div className='teach-row'>
                         <WhatWeTeachSection name='Scratch'/>
                         <WhatWeTeachSection name='Kodu'/>

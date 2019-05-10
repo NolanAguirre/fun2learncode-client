@@ -4,26 +4,10 @@
     justify-content: center;
 }
 .main-contents{
-    max-width: 1200px;
+    max-width: 150rem;
     flex:1;
 }
 
-@media screen and (max-width: 1200px) {
-    .main-contents{
-        max-width: 1000px;
-        display: flex;
-        flex:1;
-    }
-
-}
-
-@media screen and (max-width: 1000px) {
-    .main-contents{
-        max-width: 800px;
-        display: flex;
-        flex:1;
-    }
-}
 
 @media screen and (max-width: 800px) {
     .main-contents{

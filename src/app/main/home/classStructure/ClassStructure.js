@@ -29,7 +29,7 @@ function ClassStructure(props){
             </div>
         </div>
     })
-    return <GridView className='container column' itemsPerRow={2}>
+    return <GridView className='' itemsPerRow={2}>
         {items}
     </GridView>
 }

@@ -110,7 +110,7 @@ class Announcements extends Component{
 function Announcement(props){
     return <div>
         <div className='center-x section container column main-contents'>
-            <h1 className='center-text'>Announcements</h1>
+            <h1 className='who-we-are-header'>Announcements</h1>
             <ReactQuery networkPolicy='network-no-cache' loading={<div>loading when i shouldnt</div>} query={TOTAL_COUNT}>
                 <Announcements />
             </ReactQuery>

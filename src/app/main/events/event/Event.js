@@ -11,7 +11,7 @@ function EventComponent (props) {
             alias={props.location.alias} />
         <div className='event-body-container'>
             <div className='section container column'>
-                <h3 className='center-text'>Dates</h3>
+                <h3 className='date-table-header'>Dates</h3>
                 <DatesTable className='center-x' dates={props.dates}/>
             </div>
                 <div className='event-btn-container'>

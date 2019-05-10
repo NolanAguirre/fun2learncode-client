@@ -1,8 +1,12 @@
 .event-card{
-    min-width: 275px;
+    min-width: 34rem;
+}
+.date-table-header{
+    font-size: 2rem;
+    text-align: center;
 }
 .event-btn-container{
-    min-width: 200px;
+    min-width: 25rem;
     display:flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -15,16 +19,17 @@
     flex-wrap: wrap;
 }
 .event-register-header{
-    margin-bottom:10px;
+    margin-bottom:1rem;
     margin-top: 0px;
+    font-size: 3rem;
 }
 .event-register-price{
-    font-size: 32px;
+    font-size: 4rem;
 }
 .event-register-seats{
     position: relative;
     top: -4px;
-    font-size: 20px;
+    font-size: 2.5rem;
 }
 .event-btn-container > a{
     box-sizing: border-box;

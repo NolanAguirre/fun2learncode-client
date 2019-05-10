@@ -30,7 +30,7 @@ function Home (props) {
         <img  src={spline}/>
     </div>
     <div className='class-structure main-contents'>
-        <h1 className='center-text'>Class Structure</h1>
+        <h1 className='who-we-are-header'>Class Structure</h1>
         <ClassStructure />
     </div>
     <div className='spline flipped-spline-container'>

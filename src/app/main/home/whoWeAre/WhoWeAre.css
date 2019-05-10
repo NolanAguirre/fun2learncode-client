@@ -1,7 +1,13 @@
 .who-we-are {
     background-color: white;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
-
+.who-we-are-header{
+    color:rgb(102, 102, 102);
+    font-size: 4rem;
+}
 .who-we-are-container{
     display:flex;
     flex-wrap: wrap;
@@ -12,10 +18,11 @@
     flex:1;
     box-sizing: border-box;
     min-width: 300px;
-    max-width: 500px;
+    max-width: 60rem;
     color:rgb(102, 102, 102);
-    border: 2px solid #41a62a;
-    padding:20px;
-    border-radius: 20px;
-    margin: 10px 0;
+    border: .25rem solid #41a62a;
+    padding:2rem;
+    border-radius: 2rem;
+    margin: 1rem;
+    font-size: 2rem;
 }

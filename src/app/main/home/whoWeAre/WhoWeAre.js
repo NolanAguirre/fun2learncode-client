@@ -3,9 +3,8 @@ import './WhoWeAre.css'
 
 function WhoWeAre(props){
     return <div className='who-we-are'>
-        <div className='main-contents container column center-x'>
-            <h1 className='center-text' style={{color:'rgb(102, 102, 102)'}}>Who we are</h1>
-            <div className='who-we-are-container'>
+            <h1 className='center-text who-we-are-header'>Who we are</h1>
+            <div className='who-we-are-container main-content'>
                 <div className='who-we-are-section'>
                     <h2>Our Goal</h2>
                     Fun 2 Learn Code offers a deiverse selection of project-based learning experiences focused on students intrests.
@@ -16,10 +15,9 @@ function WhoWeAre(props){
                 <div className='who-we-are-section'>
                     <h2>About us</h2>
                     Founded in 2013 by Manny Castro, Fun 2 Learn Code's roots stem from the need for accessable and afforable summer camp options
-                    in the programming field. 
+                    in the programming field.
                 </div>
             </div>
-        </div>
     </div>
 }
 

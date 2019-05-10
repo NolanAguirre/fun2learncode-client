@@ -4,7 +4,9 @@
 }
 
 .category-header {
-    font-size: 3rem;
+    padding-left: 1rem;
+    margin: 1rem 0;
+    font-size: 5rem;
     font-weight: normal;
     color:rgb(102, 102, 102);
 }

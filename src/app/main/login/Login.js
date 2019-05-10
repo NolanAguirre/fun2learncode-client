@@ -66,7 +66,7 @@ class Login extends Component {
                 <div className='styled-button center-text' onClick={this.handleSubmit}>Log In</div>
                 <button className='hacky-submit-button' type='submit'/>
             </form>
-            <Link to={'/sign-up'}>Sign up</Link>
+            <Link to={'/sign-up'} className='sign-up-link'>Sign up</Link>
         </div>
     }
 }

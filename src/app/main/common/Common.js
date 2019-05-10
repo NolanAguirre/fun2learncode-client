@@ -35,8 +35,8 @@ const localize = (timestamp) =>  moment(moment.utc(timestamp)).local()
 
 function Location (props) {
   return (<div className='center-text margin-bottom-10'>
-      <h3>{props.alias}</h3>
-      <span>{props.street}, {props.city}, {props.state}</span>
+      <h3 className='location-alias'>{props.alias}</h3>
+      <span className='location-address'>{props.street}, {props.city}, {props.state}</span>
   </div>)
 }
 export { Location }
@@ -93,8 +93,8 @@ function DatesTable(props){
         {dates.map((date, index) => {
           return <React.Fragment key={index}>
               <tr className='no-wrap-row'>
-            <td>{localize(date.start).format(props.startFormat || "ddd MMM Do")}</td>
-            <td>{localize(date.start).format(props.startFormat || "h:mma") + "-" + localize(date.end).format(props.startFormat || "h:mma")}</td>
+            <td className='date-table-row'>{localize(date.start).format(props.startFormat || "ddd MMM Do")}</td>
+            <td className='date-table-row'>{localize(date.start).format(props.startFormat || "h:mma") + "-" + localize(date.end).format(props.startFormat || "h:mma")}</td>
           </tr>
         </React.Fragment>
         })}
