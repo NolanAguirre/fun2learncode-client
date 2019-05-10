@@ -1,7 +1,6 @@
 html{
-    font-size: 100%;
+    font-size: 125%;
 }
-
 body {
   margin: 0;
   padding: 0;
@@ -140,6 +139,31 @@ body {
     color:blue;
     cursor: pointer;
 }
+@media screen and (max-width: 3900px) {
+    html{
+        font-size: 100%;
+    }
+}
+@media screen and (max-width: 1920px) {
+    html{
+        font-size: 50%;
+    }
+}
+@media screen and (max-width:1024px) {
+    html{
+        font-size: 45%;
+    }
+}
+@media screen and (max-width: 768px) {
+    html{
+        font-size: 40%;
+    }
+}
+@media screen and (max-width: 320px) {
+    html{
+        font-size: 35%;
+    }
+}
 
 @media screen and (max-width: 800px) {
     .popup{
@@ -149,9 +173,6 @@ body {
 }
 
 @media screen and (max-width: 420px) {
-    html{
-        font-size: 80%;
-    }
     .error{
         font-size: 14px;
     }
