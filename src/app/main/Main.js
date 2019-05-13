@@ -14,7 +14,6 @@ import ManageAddresses from './manageAddresses/ManageAddresses'
 import ManageActivities from './manageActivities/ManageActivities'
 import ManageAddons from './manageAddons/ManageAddons'
 import ManageUsers from  './manageUsers/ManageUsers'
-import ManageNewsLetter from './manageNewsLetter/ManageNewsLetter'
 import ManageAnnouncements from './manageAnnouncements/ManageAnnouncements'
 import {SignUp} from './signUp/SignUp'
 import CheckIn from './checkIn/CheckIn'
@@ -54,7 +53,6 @@ class Main extends Component {
             <Route exact path='/admin/manage-users' component={ManageUsers} />
             <Route exact path='/admin/manage-promo-codes' component={ManagePromoCodes} />
             <Route exact path='/admin/announcements' component={ManageAnnouncements} />
-            <Route exact path='/admin/news-letter' component={ManageNewsLetter} />
             <Route exact path='/recent-events' component={RecentEvents} />
 
             <Route exact path='/test' component={Test} />

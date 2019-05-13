@@ -73,12 +73,6 @@ const routeNames = [
             return user && employee.includes(user.role)
         }
     },{
-        name: 'News Letter',
-        route: 'admin/news-letter',
-        test:(user) => {
-            return user && admins.includes(user.role)
-        }
-    },{
         name: 'Announcements',
         route: 'admin/announcements',
         test:(user) => {
