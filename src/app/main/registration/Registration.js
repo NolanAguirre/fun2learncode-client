@@ -6,7 +6,7 @@ import StudentSelect from '../studentSelect/StudentSelect'
 import AddonSelect from '../addonSelect/AddonSelect'
 import PaymentOverview from '../paymentOverview/PaymentOverview'
 import FullEvent from '../events/event/FullEvent';
-import {SecureRoute} from '../common/Common'
+import {SecureRoute, RoutePopup} from '../common/Common'
 import {ReactQuery} from '../../../delv/delv-react'
 import Delv from '../../../delv/delv'
 import Payment from '../payment/Payment'
@@ -154,6 +154,7 @@ class RegistrationInner extends Component{
             this.setState({UI:'error', error:error})
         }else{
             this.setState({total:data.beginTransaction, showPopup:true})
+            this.props.popup.open(<Payment popup={this.props.popup} user={this.props.getUserData.id} total={this.state.total}/>)
         }
     }
     genRandomId = () =>{
@@ -193,10 +194,9 @@ class RegistrationInner extends Component{
                 <PaymentOverview event={{price: this.props.event.price,id: this.props.event.id,name: this.props.activity.name}} overrides={this.props.overrides} addons={this.state.addons} students={this.state.students}/>
             </div>
             <div className='error'>{this.state.error}</div>
-            <StudentSelect className='styled-container' multiSelect createStudent isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} userId={this.props.getUserData.id} hideWaivers/>
+            <StudentSelect popup={this.props.popup} className='styled-container' multiSelect isValidChoice={this.checkPrerequisites} setSelected={this.setSelectedStudents} userId={this.props.getUserData.id}/>
             <AddonSelect className='styled-container column' multiSelect setSelected={this.setSelectedAddons} addons={this.props.addons} />
             <div className='promo-code-container'> Promo Code: <input className='styled-input' name='promoCode' placeholder='Promo Code' onChange={this.handleChange}/></div>
-            <Payment showPopup={this.state.showPopup} clearPopupState={this.clearPopupState} user={this.props.getUserData.id} total={this.state.total}/>
             <div className="styled-button" onClick={this.mutation.onSubmit}> Continue to Payment</div>
         </div>
     }
@@ -229,7 +229,7 @@ function RegistrationInbetween(props){
         }
     }
     return <ReactQuery formatResult={formatResult} query={query} networkPolicy={networkPolicy}>
-        <RegistrationInner eventId={props.match.params.id} getUserData={props.getUserData}/>
+        <RegistrationInner popup={props.popup} eventId={props.match.params.id} getUserData={props.getUserData}/>
     </ReactQuery>
 }
 
@@ -241,4 +241,4 @@ function Registration(props){
         </SecureRoute>
 }
 
-export default Registration
+export default RoutePopup(Registration)

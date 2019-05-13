@@ -1,12 +1,10 @@
 .event-preview-container{
     margin-right: 10px;
-    max-height: 725px;
+    max-height: calc(100vh - 25rem);
     overflow-y: auto;
-    min-width: 250px;
+    min-width: 25rem;
 }
-.event-preview-container::-webkit-scrollbar{
-    display:none;
-}
+
 
 .event-preview-header{
     display: flex;

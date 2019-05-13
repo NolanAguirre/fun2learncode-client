@@ -1,9 +1,12 @@
 .student-waiver-container{
-    min-height: 400px;
-    width:515px;
-    background-color: white;
-    padding:20px;
+    padding: 4rem;
+    background-color:white;
+    width: 60rem;
+    min-height: 60rem;
+    display: flex;
+    flex-direction: column;
     box-sizing: border-box;
+    font-size: 2rem;
 }
 .view-student-waiver-container{
     background-color: white;
@@ -13,7 +16,7 @@
 .student-waiver-other{
     width:100%;
     box-sizing: border-box;
-    height:80px
+    height:9rem
 }
 @media screen and (max-width: 515px) {
     .student-waiver-container{

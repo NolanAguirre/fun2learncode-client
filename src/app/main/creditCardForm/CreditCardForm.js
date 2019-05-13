@@ -61,25 +61,34 @@ class CreditCardFormInner extends Component{ //this uses rest api logic, has to 
         this.mutation = new Mutation({
             mutation:DELETE_CARD,
             onSubmit:()=> {return {card:card}},
-            customCache: (cache, data) => {console.log(data);cache.remove(data)},
+            customCache: (cache, data) => {cache.remove(data)},
             onResolve: ()=>{
                 cb()
             }
         }).onSubmit()
     }
 
-    showAddCard = () => {this.setState({UI:'addCard'})}
+    showAddCard = () => {
+        if(this.props.showAddCard){
+            this.props.showAddCard()
+        }
+        this.setState({UI:'addCard'})
+    }
 
     render = () => {
+        let back = ()=>{this.setState({UI:'manageCards'})}
+        if(this.props.back){
+            back = () => {this.props.back(); this.setState({UI:'manageCards'})}
+        }
         if(this.props.dropdown){
             if(this.state.UI === 'addCard'){
-                return <AddCard resolve={this.addCard} back={()=>{this.setState({UI:'manageCards'})}} />
+                return <AddCard resolve={this.addCard} back={back} />
             }else if(this.state.UI === 'manageCards'){
                 return <CardDropdown cards={this.props.allCreditCards} addCard={this.showAddCard} setActiveCard={this.props.setActiveCard}/>
             }
         }else{
             if(this.state.UI === 'addCard'){
-                return <AddCard resolve={this.addCard} back={()=>{this.setState({UI:'manageCards'})}} />
+                return <AddCard resolve={this.addCard} back={back} />
             }else if(this.state.UI === 'manageCards'){
                 return <ManageCards cards={this.props.allCreditCards} addCard={this.showAddCard} deleteCard={this.deleteCard}/>
             }

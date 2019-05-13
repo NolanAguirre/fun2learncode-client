@@ -18,7 +18,7 @@ const localize = (timestamp) =>  moment(moment.utc(timestamp)).local()
 
 function StudentWaiver(props){
     return <div className='view-student-waiver-container'>
-            <h2 className='center-text'>Student Waiver</h2>
+            <h2 className='center-text no-margin'>Student Waiver</h2>
             <table>
                 <tbody>
                     <tr>
@@ -123,7 +123,7 @@ class StudentWaiverForm extends Component{
             return <div className='popup-inner-complete'>Student Waiver created</div>
         }
         return <form className='student-waiver-container' onSubmit={this.mutation.onSubmit}>
-                <h2 className='center-text'>Student Waiver</h2>
+                <h2 className='center-text no-margin'>Student Waiver</h2>
                 Primary care name:
                 <input className='styled-input' name='primaryCare' onChange={this.handleChange} />
                 Primary care phone:

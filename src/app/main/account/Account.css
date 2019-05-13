@@ -1,15 +1,17 @@
 .account{
     display:flex;
     flex-direction: column;
+    font-size: 2rem;
 }
 .account-header{
     font-size: 32px;
     font-weight: normal;
     color:rgb(102, 102, 102);
+    font-size: 4rem;
 }
 .account-info-container{
     background-color: white;
-    padding:20px;
+    padding:3rem;
     display:flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -34,13 +36,13 @@
 }
 .private-event-footer{
     color:gray;
-    font-size: 12px;
+    font-size: 1.5rem;
     text-align: center;
     margin-top: 5px;
 }
 .account-order-history-container{
-    margin: 10px 0;
-    border:20px solid white;
+    margin: 1rem 0;
+    border:2rem solid white;
     background-color: white;
     max-height: 80vh;
     overflow-y: auto;

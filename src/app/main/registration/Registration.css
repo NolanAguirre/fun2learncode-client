@@ -9,6 +9,7 @@
     flex-direction: column;
     box-sizing: border-box;
     padding-bottom: 20px;
+    font-size: 2rem;
 }
 
 .promo-code-container{

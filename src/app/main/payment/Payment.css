@@ -1,9 +1,9 @@
 .payment-container{
     margin: auto;
-    padding: 40px;
+    padding: 0 4rem 4rem 4rem;
     background-color:white;
-    max-width: 520px;
-    min-height: 300px;
+    max-width: 54rem;
+    min-height: 35rem;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;

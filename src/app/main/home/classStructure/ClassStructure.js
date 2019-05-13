@@ -23,7 +23,7 @@ function ClassStructure(props){
 
     const items = STRUCTURES.map((item)=>{
         return <div className="card section-card" key={item.name}>
-            <h2 className='center-text'>{item.name}</h2>
+            <h2 className='what-we-teach-header'>{item.name}</h2>
             <div className="container column">
                 <div className="home-section">{item.description}</div>
             </div>

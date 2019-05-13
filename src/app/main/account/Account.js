@@ -117,7 +117,7 @@ function AccountInner(props){
         <h2 className='account-header'>My Account</h2>
         <div className='account-info-container'>
             <div className='account-info-section'>
-                <h3>Account Information</h3>
+                <h3 className='no-margin'>Account Information</h3>
                 <table>
                     <tbody>
                         <tr>

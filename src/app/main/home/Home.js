@@ -29,7 +29,7 @@ function Home (props) {
     <div className='spline'>
         <img  src={spline}/>
     </div>
-    <div className='class-structure main-contents'>
+    <div className='class-structure'>
         <h1 className='who-we-are-header'>Class Structure</h1>
         <ClassStructure />
     </div>

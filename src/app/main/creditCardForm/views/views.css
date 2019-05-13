@@ -58,17 +58,18 @@
     justify-content: space-around;
 }
 .negative-button{
-    min-width: 100px;
+    border-radius: 1rem;
+    min-width: 20rem;
+    padding: 2.5rem;
+    font-size: 2.5rem;
     text-align: center;
-    padding: 20px;
-    font-size: 20px;
     transition-duration: .2s;
-    border: 2px solid transparent;
+    border: .3rem solid transparent;
     border-radius: 8px;
     color:#41a62a;
 }
 .negative-button:hover{
-    border: 2px solid rgb(204, 204, 204);
+    border: .3rem solid rgb(204, 204, 204);
 }
 
 .styled-loading-button{
