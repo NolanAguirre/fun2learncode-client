@@ -9,6 +9,7 @@ class Login extends Component {
         super(props)
         this.state = {email: '', password: ''}
     }
+
     componentDidMount = () => {
         this.mounted = true
         this.loading = false
@@ -32,17 +33,21 @@ class Login extends Component {
         }else if(!this.state.password || (this.state.password && this.state.password.length < 6)){
             this.setState({error:'No valid password provided.'})
         }else{
-            this.loading = true
+            this.setState({loading:true})
             axios.post('http://localhost:3005/authenticate', {
                 email: this.state.email,
                 password: this.state.password
             }).then((res) => {
                 if(!this.mounted) return;
-                this.loading = false
                 if (res.data.error) {
                     this.setState({error:res.data.error})
                 } else {
-                    window.location.href = this.props.redirectUrl || '/'
+                    this.setState({loading:false, done:true})
+                    setTimeout(()=>{
+                        if(this.mounted){
+                            window.location.href = this.props.redirectUrl || '/'
+                        }
+                    }, 500)
                 }
             })
         }

@@ -9,12 +9,13 @@
 .spline img{
     position: relative;
     left:-10px;
-    top:0;
+    top:0px;
     width:calc(100% + 20px);
     height:auto;
 }
 
 .flipped-spline {
+    top:5px!important;
     transform: scaleY(-1);
 }
 .gap-cover{

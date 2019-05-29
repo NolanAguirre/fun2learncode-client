@@ -56,10 +56,11 @@
 .time-range-selector{
     display:flex;
     justify-content: center;
-    line-height: 33px;
+    align-items: center;
 }
 .time-range-month{
-    width:40px;
+    font-size: 2rem;
+    width:4rem;
     display: block;
     box-sizing: border-box;
     padding: .5rem .75rem;
@@ -70,8 +71,13 @@
     box-shadow: none;
     background-clip: padding-box;
 }
+.time-range-time{
+
+    width:15rem!important;
+}
+
 .time-range-time input{
-    width:200px;
+    font-size: 2rem;
     display: block;
     box-sizing: border-box;
     padding: .5rem .75rem;

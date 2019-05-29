@@ -5,13 +5,13 @@
 .rdt {
 }
 .form-control{
-    max-width: 115px;
+    max-width: 15rem;
 }
 .rdtPicker {
   display: none;
   position: absolute;
-  width: 250px;
-  padding: 4px;
+  min-width: 20rem;
+  padding: .5rem;
   margin-top: 1px;
   z-index: 99999 !important;
   background: #fff;

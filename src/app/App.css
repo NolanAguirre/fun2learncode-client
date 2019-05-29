@@ -15,13 +15,13 @@
 }
 
 .custom-scrollbar *::-webkit-scrollbar{
-    height: 12px;              /* height of horizontal scrollbar ← You're missing this */
-    width: 10px;
+    height: 1rem;              /* height of horizontal scrollbar ← You're missing this */
+    width: 1rem;
 	background-color: #F5F5F5;
 }
 
 .custom-scrollbar *::-webkit-scrollbar-thumb{
-	border-radius: 10px;
+	border-radius: 1rem;
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
 	background-color: #868282;
 }
